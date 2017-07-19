@@ -1,0 +1,45 @@
+
+logging:
+  level:
+    net.flyingfishflash.ledger: DEBUG
+    #ROOT: DEBUG
+
+spring:
+  profiles:
+    active: dev-postgresql
+
+---
+
+spring:
+  profiles: dev-h2
+
+  jpa:
+    hibernate:
+      ddl-auto: drop-create
+    show-sql: true
+
+  h2:
+    console:
+      enabled: true 
+
+  datasource:
+    url: jdbc:h2:mem:ledger-concept;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+
+---
+
+spring:
+  profiles: dev-postgresql
+
+  jpa:
+    hibernate:
+      ddl-auto: drop-create
+    show-sql: true
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ledger-concept
+    username: gregory
+    password: 
+    platform: POSTGRESQL
+  
