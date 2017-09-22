@@ -38,8 +38,8 @@ public class Account {
 	private String description;
 	private boolean hidden;
 	private boolean placeholder;
-	private long left;
-	private long right;
+	private long lft;
+	private long rgt;
 	private int depth;
 
 }
