@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger.domain;
+package net.flyingfishflash.ledger.domain.legacy;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
