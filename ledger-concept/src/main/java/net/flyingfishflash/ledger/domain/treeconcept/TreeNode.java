@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger;
+package net.flyingfishflash.ledger.domain.treeconcept;
 
 
 //https://coderanch.com/t/629306/Simple-Hibernate-Lazy-Loading

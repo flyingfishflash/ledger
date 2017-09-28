@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger;
+package net.flyingfishflash.ledger.domain.treeconcept;
 
 public class HibernateExample
 {
