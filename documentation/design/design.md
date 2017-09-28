@@ -1,4 +1,3 @@
-
 ### Design Thoughts
 
 
@@ -8,7 +7,7 @@ Account
 Transaction  
 Split  
 Commodity 
-Currency (undecided)
+Currency (undecided)  
 Price  
 Institution
 
