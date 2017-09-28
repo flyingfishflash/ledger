@@ -1,15 +1,16 @@
 
-
 ### Design Thoughts
 
 
-Five Essential Objects (Entities):
+Entities:
 
-Accounts  
-Transactions  
-Splits  
-Commodities  
-Prices  
+Account  
+Transaction  
+Split  
+Commodity 
+Currency (undecided)
+Price  
+Institution
 
 Transactions are collections of Splits  
 - A Transaction consists of a minimum of two splits  
@@ -17,4 +18,4 @@ Transactions are collections of Splits
 - The sum of the amounts of all splits associated with a transaction should be zero  
 
 Institutions
-- Accounts may, but are not required, to be associated with an institution
+- Institutions may be associated with one or more Accounts
