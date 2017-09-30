@@ -1,6 +1,6 @@
 import net.flyingfishflash.ledger.domain.AccountSide;
 import net.flyingfishflash.ledger.domain.AccountingEntry;
-import net.flyingfishflash.ledger.domain.AccountingTransaction;
+import net.flyingfishflash.ledger.domain.Transaction;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -16,7 +16,7 @@ public class AccountingTransactionTest {
         entries.add(new AccountingEntry(new BigDecimal(50), "Cash", AccountSide.DEBIT));
         entries.add(new AccountingEntry(new BigDecimal(50), "Liabilities", AccountSide.CREDIT));
         // Act + Assert
-        AccountingTransaction t = new AccountingTransaction(entries);
+        Transaction t = new Transaction(entries);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -26,7 +26,7 @@ public class AccountingTransactionTest {
         entries.add(new AccountingEntry(new BigDecimal(10), "Cash", AccountSide.DEBIT));
         entries.add(new AccountingEntry(new BigDecimal(50), "Liabilities", AccountSide.CREDIT));
         // Act + Assert
-        AccountingTransaction t = new AccountingTransaction(entries);
+        Transaction t = new Transaction(entries);
     }
 
     public void testInfo() {

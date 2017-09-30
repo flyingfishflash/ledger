@@ -10,33 +10,33 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class AccountingTransactionBuilder {
+public class TransactionBuilder {
     final private Set<AccountingEntry> entries = new HashSet<>();
     final private Map<String, String> info;
 
-    private AccountingTransactionBuilder(@Nullable Map<String, String> info) {
+    private TransactionBuilder(@Nullable Map<String, String> info) {
         this.info = info;
     }
 
-    public static AccountingTransactionBuilder create(@Nullable Map<String, String>  info) {
-        return new AccountingTransactionBuilder(info);
+    public static TransactionBuilder create(@Nullable Map<String, String>  info) {
+        return new TransactionBuilder(info);
     }
 
-    public static AccountingTransactionBuilder create() {
-        return new AccountingTransactionBuilder(null);
+    public static TransactionBuilder create() {
+        return new TransactionBuilder(null);
     }
 
-    public AccountingTransactionBuilder debit(BigDecimal amount, String accountNumber) {
+    public TransactionBuilder debit(BigDecimal amount, String accountNumber) {
         entries.add(new AccountingEntry(amount, accountNumber, AccountSide.DEBIT));
         return this;
     }
 
-    public AccountingTransactionBuilder credit(BigDecimal amount, String accountNumber) {
+    public TransactionBuilder credit(BigDecimal amount, String accountNumber) {
         entries.add(new AccountingEntry(amount, accountNumber, AccountSide.CREDIT));
         return this;
     }
 
-    public AccountingTransaction build() {
-        return new AccountingTransaction(entries, info, Instant.now().toEpochMilli());
+    public Transaction build() {
+        return new Transaction(entries, info, Instant.now().toEpochMilli());
     }
 }

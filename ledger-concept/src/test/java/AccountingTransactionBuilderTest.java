@@ -1,6 +1,6 @@
 import net.flyingfishflash.ledger.domain.AccountingEntry;
-import net.flyingfishflash.ledger.domain.AccountingTransaction;
-import net.flyingfishflash.ledger.domain.AccountingTransactionBuilder;
+import net.flyingfishflash.ledger.domain.Transaction;
+import net.flyingfishflash.ledger.domain.TransactionBuilder;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class AccountingTransactionBuilderTest {
 
         // Act
         // We borrow money and get it part of it in cash, the rest as a wire transfer
-        AccountingTransaction t = AccountingTransactionBuilder
+        Transaction t = TransactionBuilder
                 .create(null)
                 .debit(new BigDecimal(10), cashAccountNumber)
                 .debit(new BigDecimal(25), checkingAccountNumber)
@@ -32,7 +32,7 @@ public class AccountingTransactionBuilderTest {
         Assert.assertEquals(new BigDecimal(35), getEntryById(t, liabilitiesAccountNumber).getAmount());
     }
 
-    private AccountingEntry getEntryById(AccountingTransaction t, String accountId) {
+    private AccountingEntry getEntryById(Transaction t, String accountId) {
         return t.getEntries().stream()
                 .filter(e -> Objects.equals(e.getAccountNumber(), accountId))
                 .findFirst().get();

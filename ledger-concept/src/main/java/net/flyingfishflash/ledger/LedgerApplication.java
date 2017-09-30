@@ -6,6 +6,10 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 
 import net.flyingfishflash.ledger.domain.*;
+import net.flyingfishflash.ledger.domain.treeconcept.Tree;
+import net.flyingfishflash.ledger.domain.treeconcept.Node;
+import net.flyingfishflash.ledger.domain.treeconcept.TraversalStrategy;
+
 import static net.flyingfishflash.ledger.domain.AccountSide.DEBIT;
 
 import java.math.BigDecimal;
@@ -21,41 +25,8 @@ public class LedgerApplication {
 		SpringApplication.run(LedgerApplication.class, args);
 		
 		showLedger();
+		tree();
 /*		
-		Tree tree = new Tree();
-
-        tree.addNode("Root");
-        tree.addNode("Assets", "Root");
-        tree.addNode("Liabilities", "Root");
-        tree.addNode("Current Liabilities", "Liabilities");
-        tree.addNode("Fixed Liabilities", "Liabilities");
-        tree.addNode("Transient Liabilities", "Liabilities");
-        tree.addNode("Income", "Root");
-        tree.addNode("Expense", "Root");
-        tree.addNode("Equity", "Root");
-        tree.addNode("Financial Assets", "Assets");
-        tree.addNode("Fixed Assets", "Assets");
-
-        tree.display("Root");
-
-        System.out.println("n***** DEPTH-FIRST ITERATION *****");
-
-        // Default traversal strategy is 'depth-first'
-        Iterator<Node> depthIterator = tree.iterator("Root");
-
-        while (depthIterator.hasNext()) {
-            Node node = depthIterator.next();
-            System.out.println(node.getIdentifier());
-        }
-
-        System.out.println("n***** BREADTH-FIRST ITERATION *****");
-
-        Iterator<Node> breadthIterator = tree.iterator("Root", TraversalStrategy.BREADTH_FIRST);
-
-        while (breadthIterator.hasNext()) {
-            Node node = breadthIterator.next();
-            System.out.println(node.getIdentifier());
-        }
 */
 	}
 	
@@ -73,7 +44,7 @@ public class LedgerApplication {
         Ledger ledger = new Ledger(coa);
 
         // Accounts Receivable 35 was settled with cash 10 and wire transfer 25
-        AccountingTransaction t = ledger.createTransaction(null)
+        Transaction t = ledger.createTransaction(null)
                 .debit(new BigDecimal(10), cashAccountNumber)
                 .debit(new BigDecimal(25), checkingAccountNumber)
                 .credit(new BigDecimal(35), accountsReceivableAccountNumber)
@@ -87,5 +58,44 @@ public class LedgerApplication {
         TrialBalanceResult trialBalanceResult = ledger.computeTrialBalance();
         System.out.println(trialBalanceResult.toString());
 	}
+
+public static void tree() {
+
+	Tree tree = new Tree();
+
+    tree.addNode("Root");
+    tree.addNode("Assets", "Root");
+    tree.addNode("Liabilities", "Root");
+    tree.addNode("Current Liabilities", "Liabilities");
+    tree.addNode("Fixed Liabilities", "Liabilities");
+    tree.addNode("Transient Liabilities", "Liabilities");
+    tree.addNode("Income", "Root");
+    tree.addNode("Expense", "Root");
+    tree.addNode("Equity", "Root");
+    tree.addNode("Financial Assets", "Assets");
+    tree.addNode("Fixed Assets", "Assets");
+
+    tree.display("Root");
+
+    System.out.println("n***** DEPTH-FIRST ITERATION *****");
+
+    // Default traversal strategy is 'depth-first'
+    Iterator<Node> depthIterator = tree.iterator("Root");
+
+    while (depthIterator.hasNext()) {
+        Node node = depthIterator.next();
+        System.out.println(node.getIdentifier());
+    }
+
+    System.out.println("n***** BREADTH-FIRST ITERATION *****");
+
+    Iterator<Node> breadthIterator = tree.iterator("Root", TraversalStrategy.BREADTH_FIRST);
+
+    while (breadthIterator.hasNext()) {
+        Node node = breadthIterator.next();
+        System.out.println(node.getIdentifier());
+    }
+
+}
 
 }

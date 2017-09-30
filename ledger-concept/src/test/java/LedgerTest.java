@@ -2,8 +2,8 @@ import net.flyingfishflash.ledger.domain.Journal;
 import net.flyingfishflash.ledger.domain.Ledger;
 import net.flyingfishflash.ledger.domain.ChartOfAccounts;
 import net.flyingfishflash.ledger.domain.ChartOfAccountsBuilder;
-import net.flyingfishflash.ledger.domain.AccountingTransaction;
-import net.flyingfishflash.ledger.domain.AccountingTransactionBuilder;
+import net.flyingfishflash.ledger.domain.Transaction;
+import net.flyingfishflash.ledger.domain.TransactionBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -29,12 +29,12 @@ public class LedgerTest {
         Journal journal = new Journal();
 
         // Deposit cash in the bank
-        AccountingTransaction t1 = AccountingTransactionBuilder.create()
+        Transaction t1 = TransactionBuilder.create()
                 .debit(new BigDecimal(222), checkingAccountNumber)
                 .credit(new BigDecimal(222), cashAccountNumber)
                 .build();
         // Get a loan
-        AccountingTransaction t2 = AccountingTransactionBuilder.create()
+        Transaction t2 = TransactionBuilder.create()
                 .debit(new BigDecimal(111), checkingAccountNumber)
                 .credit(new BigDecimal(111), liabilitiesAccountNumber)
                 .build();

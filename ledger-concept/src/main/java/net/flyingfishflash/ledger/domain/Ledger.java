@@ -33,11 +33,11 @@ final public class Ledger {
         journal.getTransactions().forEach(this::commitTransaction);
     }
 
-    public AccountingTransactionBuilder createTransaction(@Nullable Map<String, String> info) {
-        return AccountingTransactionBuilder.create(info);
+    public TransactionBuilder createTransaction(@Nullable Map<String, String> info) {
+        return TransactionBuilder.create(info);
     }
 
-    public void commitTransaction(AccountingTransaction transaction) {
+    public void commitTransaction(Transaction transaction) {
         // Add entries to accounts
         transaction.getEntries().forEach(this::addAccountEntry);
         journal.addTransaction(transaction);

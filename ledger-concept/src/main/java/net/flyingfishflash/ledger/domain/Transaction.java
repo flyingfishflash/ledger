@@ -15,7 +15,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Represents a group of related account entries.
  */
-public class AccountingTransaction {
+public class Transaction {
     final private Set<AccountingEntry> entries;
 
     final private long bookingDateTimestamp;
@@ -23,7 +23,7 @@ public class AccountingTransaction {
     @Getter
     final private Map<String, String> info;
 
-    public AccountingTransaction(Set<AccountingEntry> entries,
+    public Transaction(Set<AccountingEntry> entries,
                                  @Nullable Map<String, String> info,
                                  long bookingDateTimestamp) {
         if (info == null) info = new HashMap<>();
@@ -36,11 +36,11 @@ public class AccountingTransaction {
         entries.forEach(e -> e.setTransaction(this));
     }
 
-    public AccountingTransaction(Set<AccountingEntry> entries, Map<String, String> info) {
+    public Transaction(Set<AccountingEntry> entries, Map<String, String> info) {
         this(entries, info, Instant.now().toEpochMilli());
     }
 
-    public AccountingTransaction(Set<AccountingEntry> entries) {
+    public Transaction(Set<AccountingEntry> entries) {
         this(entries, null, Instant.now().toEpochMilli());
     }
 

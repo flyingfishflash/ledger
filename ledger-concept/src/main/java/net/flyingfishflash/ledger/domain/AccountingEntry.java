@@ -1,7 +1,7 @@
 package net.flyingfishflash.ledger.domain;
 
 import com.google.common.base.MoreObjects;
-import net.flyingfishflash.ledger.domain.AccountingTransaction;
+import net.flyingfishflash.ledger.domain.Transaction;
 import lombok.Getter;
 
 import java.math.BigDecimal;
@@ -24,7 +24,7 @@ public final class AccountingEntry {
     @Getter
     final private String accountNumber;
 
-    private AccountingTransaction transaction;
+    private Transaction transaction;
     // Indicates if the transaction was set
     private boolean freeze = false;
 
@@ -41,7 +41,7 @@ public final class AccountingEntry {
      * Throws a NullPointerException if no transaction is associated.
      * @return Associated transaction
      */
-    public AccountingTransaction getTransaction() {
+    public Transaction getTransaction() {
         checkNotNull(transaction, "Getter returning null. You have to set a transaction.");
         return transaction;
     }
@@ -50,7 +50,7 @@ public final class AccountingEntry {
      * This setter is required to enable circular references between entries and transactions.
      * @param transaction The transaction belonging to this entry
      */
-    public void setTransaction(AccountingTransaction transaction) {
+    public void setTransaction(Transaction transaction) {
         checkState(!freeze, "An AccountingEntry's transaction can only be set once");
         checkNotNull(transaction);
         this.transaction = transaction;
