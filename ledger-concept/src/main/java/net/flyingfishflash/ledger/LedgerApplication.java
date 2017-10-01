@@ -1,14 +1,28 @@
 package net.flyingfishflash.ledger;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.orm.jpa.vendor.HibernateJpaSessionFactoryBean;
 
-import net.flyingfishflash.ledger.domain.*;
-import net.flyingfishflash.ledger.domain.treeconcept.Tree;
-import net.flyingfishflash.ledger.domain.treeconcept.Node;
-import net.flyingfishflash.ledger.domain.treeconcept.TraversalStrategy;
+import com.google.common.util.concurrent.Service;
+
+import net.flyingfishflash.ledger.domain.ChartOfAccounts;
+import net.flyingfishflash.ledger.domain.ChartOfAccountsBuilder;
+import net.flyingfishflash.ledger.domain.Ledger;
+import net.flyingfishflash.ledger.domain.Transaction;
+import net.flyingfishflash.ledger.domain.TrialBalanceResult;
+
+//import net.flyingfishflash.ledger.domain.treeconcept.Tree;
+//import net.flyingfishflash.ledger.domain.treeconcept.Node;
+//import net.flyingfishflash.ledger.domain.treeconcept.TraversalStrategy;
+
+import net.flyingfishflash.ledger.domain.nestedset.Node;
+import net.flyingfishflash.ledger.domain.nestedset.NodeDAO;
+import net.flyingfishflash.ledger.domain.nestedset.NodeService;
+import net.flyingfishflash.ledger.domain.nestedset.NodeServiceImpl;
 
 import static net.flyingfishflash.ledger.domain.AccountSide.DEBIT;
 
@@ -16,19 +30,27 @@ import java.math.BigDecimal;
 import java.util.Iterator;
 
 
-@EnableAutoConfiguration
-@ComponentScan("net.flyingfishflash.ledger")
 @SpringBootApplication
+//@EnableAutoConfiguration
+@ComponentScan("net.flyingfishflash.ledger")
 public class LedgerApplication {
-
-	public static void main(String[] args) {
+	
+	public static void main(String[] args) throws Exception {
 		SpringApplication.run(LedgerApplication.class, args);
 		
-		showLedger();
-		tree();
-/*		
-*/
+		//NodeServiceImpl service = new msg
+		
+		//showLedger();
+		
+
+	}		
+
+	@Bean
+	public HibernateJpaSessionFactoryBean sessionFactory() {
+	    return new HibernateJpaSessionFactoryBean();
 	}
+
+	
 	
 	public static void showLedger( ) {
         String cashAccountNumber = "000001";
@@ -59,6 +81,8 @@ public class LedgerApplication {
         System.out.println(trialBalanceResult.toString());
 	}
 
+/*	
+	
 public static void tree() {
 
 	Tree tree = new Tree();
@@ -93,9 +117,8 @@ public static void tree() {
 
     while (breadthIterator.hasNext()) {
         Node node = breadthIterator.next();
-        System.out.println(node.getIdentifier());
-    }
-
-}
+        System.out.println(node.getIdentifier()); }
+	}
+*/
 
 }

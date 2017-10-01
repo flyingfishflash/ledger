@@ -1,3 +1,5 @@
+/*
+
 package net.flyingfishflash.ledger.domain.treeconcept;
 
 
@@ -81,3 +83,5 @@ public class TreeNode
       return new TreeNode( data );
    }
 }
+
+*/

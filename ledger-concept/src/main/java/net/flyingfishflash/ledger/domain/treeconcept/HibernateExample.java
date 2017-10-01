@@ -1,3 +1,5 @@
+/*
+
 package net.flyingfishflash.ledger.domain.treeconcept;
 
 public class HibernateExample
@@ -203,3 +205,5 @@ public class HibernateExample
       }
    }
 }
+
+*/
