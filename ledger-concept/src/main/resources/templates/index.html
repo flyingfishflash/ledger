@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>General Ledger</title>
+	<title>Ledger</title>
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
 </head>
 <body>
 	<nav class="navbar navbar-default">
 		<div class="container-fluid">
 		    <div class="navbar-header">
-		    	<a class="navbar-brand" href="/">General Ledger</a>
+		    	<a class="navbar-brand" href="/">Ledger</a>
 		    </div>
 		    	<ul class="nav navbar-nav">
 		    	<li><a href="/ledger">Home</a></li>
@@ -16,22 +16,70 @@
 	  	</div>
 	</nav>
 	<div class="container">
-	<h2>Welcome to your general ledger.</h2>
+	<h2>Ledger</h2>
 	<p>
-	You can add accounts and transactions to the general ledger. Transactions 
-	are added in accordance to the double-entry bookkeeping system, where every
-	transaction has to be recorded twice, once as a debit entry and once as a 
-	credit entry.
+	--- Future Splash / Sign In ---<br /><br />
+	</p>
+	<p></p>
+	<p>
+	<h4>Entities:</h4>
+	<ul>
+		<li>Account</li>
+		<li>Transaction</li>
+		<li>Split</li>
+		<li>Commodity / Currency</li>
+		<li>Price</li>
+		<li>Institution</li>
+	</ul>
 	</p>
 	<p>
-	Accounts can be deleted if they have no transactions. Transactions can be 
-	deleted or updated. When a transaction is deleted or updated then both 
-	corresponding entries are modified as well.
+	<h4>Account</h4>
+	<ul>
+		<li>Persisted as a Nested Set (Pre Order Tree Traversal)</li>
+	</ul>
 	</p>
 	<p>
-	You can also view the trial balance, which is a statement of all credits and 
-	debits in the general ledger. You can view the general ledger and trial 
-	balance in the application and you can export them to a .csv file.
+	<h4>Transaction</h4>
+	<ul>
+		<li>Collection of Splits</li>
+		<li>Minimum of two Splits  </li>
+	</ul>
+	</p>
+	<p>
+	<h4>Split</h4>
+	<ul>
+		<li>Each Split is an amount credited or debited to an Account  </li>
+		<li>The sum of the amounts of all splits associated with a transaction should be zero  </li>
+	</ul>
+	</p>
+	<p>
+	<h4>Commodity</h4>
+	<ul>
+		<li>To store information about a commodity/security (stock)</li>
+	</ul>
+	</p>
+	<p>
+	<h4>Price</h4>
+	<ul>
+		<li>Price of a commidity or security at a given time</li>
+		<li>Updated via Yahoo Finance API</li>
+		<li>Updated manually</li>
+	</ul>
+	</p>
+	<p>
+	<h4>Institution</h4>
+	<ul>
+		<li>Institutions may be associated with one or more Accounts</li>
+	</ul>
+	</p>
+	<p>
+	<h3>Links</h3>
+	<ul>
+		<li><a href="http://mikehillyer.com/articles/managing-hierarchical-data-in-mysql/" 
+       		   target="_blank">http://mikehillyer.com/articles/managing-hierarchical-data-in-mysql/</a></li>
+       	<li><a href="http://www.quesucede.com/page/show/id/java-tree-implementation" 
+               target="_blank">http://www.quesucede.com/page/show/id/java-tree-implementation/</a></li>
+    </ul>
 	</p>
 	</div>
 </body>
