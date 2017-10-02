@@ -20,7 +20,6 @@ import net.flyingfishflash.ledger.domain.TrialBalanceResult;
 //import net.flyingfishflash.ledger.domain.treeconcept.TraversalStrategy;
 
 import net.flyingfishflash.ledger.domain.nestedset.Node;
-import net.flyingfishflash.ledger.domain.nestedset.NodeDAO;
 import net.flyingfishflash.ledger.domain.nestedset.NodeService;
 import net.flyingfishflash.ledger.domain.nestedset.NodeServiceImpl;
 
@@ -30,18 +29,29 @@ import java.math.BigDecimal;
 import java.util.Iterator;
 
 
+
+
 @SpringBootApplication
-//@EnableAutoConfiguration
 @ComponentScan("net.flyingfishflash.ledger")
 public class LedgerApplication {
+	
 	
 	public static void main(String[] args) throws Exception {
 		SpringApplication.run(LedgerApplication.class, args);
 		
-		//NodeServiceImpl service = new msg
-		
 		//showLedger();
-		
+
+/*		
+		Node mynode = new Node();
+		NodeService service = new NodeServiceImpl();
+		mynode = service.createNode();
+		mynode.makeRoot();
+		System.out.println(mynode.getId());
+		System.out.println(mynode.getLft());
+		System.out.println(mynode.getRgt());
+		System.out.println(mynode.getName());
+*/		
+	
 
 	}		
 

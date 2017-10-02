@@ -60,7 +60,9 @@ public class NodeDAOImpl implements NodeDAO {
     @Override
     @Transactional
     public void save(Node n) {
+        logger.info("Added new node1");
         Session session = sessionFactory.getCurrentSession();
+        logger.info("Added new node2");
         session.persist(n);
         logger.info("Added new node");
     }
