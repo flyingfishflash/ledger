@@ -2,7 +2,7 @@ package net.flyingfishflash.ledger.domain;
 
 import net.flyingfishflash.ledger.domain.AccountSide;
 import net.flyingfishflash.ledger.domain.AccountingEntry;
-import lombok.Getter;
+//import lombok.Getter;
 
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
@@ -20,8 +20,12 @@ public class Transaction {
 
     final private long bookingDateTimestamp;
 
-    @Getter
+    //@Getter
     final private Map<String, String> info;
+    
+    public Map<String, String> getInfo() {
+    	return info;
+    }
 
     public Transaction(Set<AccountingEntry> entries,
                                  @Nullable Map<String, String> info,

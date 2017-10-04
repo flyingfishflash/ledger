@@ -2,7 +2,7 @@ package net.flyingfishflash.ledger.domain;
 
 import com.google.common.base.MoreObjects;
 import net.flyingfishflash.ledger.domain.Transaction;
-import lombok.Getter;
+//import lombok.Getter;
 
 import java.math.BigDecimal;
 
@@ -15,19 +15,32 @@ import static com.google.common.base.Preconditions.*;
  */
 public final class AccountingEntry {
 
-    @Getter
+    //@Getter
     final private BigDecimal amount;
 
-    @Getter
+    //@Getter
     final private AccountSide accountSide;
 
-    @Getter
+    //@Getter
     final private String accountNumber;
 
     private Transaction transaction;
     // Indicates if the transaction was set
     private boolean freeze = false;
 
+    
+    public BigDecimal getAmount() {
+    	return amount;
+    }
+    
+    public AccountSide getAccountSide() {
+    	return accountSide;
+    }
+    
+    public String getAccountNumber() {
+    	return accountNumber;
+    }
+    
     public AccountingEntry(BigDecimal amount, String accountNumber, AccountSide accountSide) {
         this.amount = checkNotNull(amount);
         this.accountNumber = checkNotNull(accountNumber);

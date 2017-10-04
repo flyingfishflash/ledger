@@ -1,7 +1,7 @@
 package net.flyingfishflash.ledger.domain;
 
 import com.google.common.base.MoreObjects;
-import lombok.Getter;
+//import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 final public class Account {
     final private List<AccountingEntry> entries = new ArrayList<>();
 
-    @Getter
+    //@Getter
     final private AccountDetails accountDetails;
 
     public Account(AccountDetails accountDetails) {
@@ -63,5 +63,9 @@ final public class Account {
                 .add("entries", entries)
                 .add("accountDetails", accountDetails)
                 .toString();
+    }
+    
+    public AccountDetails getAccountDetails() {
+    	return accountDetails;
     }
 }

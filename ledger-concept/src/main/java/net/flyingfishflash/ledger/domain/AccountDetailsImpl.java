@@ -1,7 +1,7 @@
 package net.flyingfishflash.ledger.domain;
 
 import com.google.common.base.MoreObjects;
-import lombok.Getter;
+//import lombok.Getter;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -11,15 +11,27 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class AccountDetailsImpl implements AccountDetails {
 
-    @Getter
+    //@Getter
     private final String accountNumber;
 
-    @Getter
+    //@Getter
     private final AccountSide increaseSide;
 
-    @Getter
+    //@Getter
     private final String name;
+    
+    public String getName() {
+    	return name;
+    }
 
+    public String getAccountNumber() {
+    	return accountNumber;
+    }
+    
+    public AccountSide getIncreaseSide() {
+    	return increaseSide;
+    }
+    
     public AccountDetailsImpl(String accountNumber, String name, AccountSide increaseSide) {
         this.accountNumber = checkNotNull(accountNumber);
         this.increaseSide = checkNotNull(increaseSide);

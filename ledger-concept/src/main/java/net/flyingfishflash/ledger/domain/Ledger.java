@@ -2,7 +2,7 @@ package net.flyingfishflash.ledger.domain;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Sets;
-import lombok.Getter;
+//import lombok.Getter;
 
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
@@ -17,7 +17,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 final public class Ledger {
     final private HashMap<String, Account> accountNumberToAccount = new HashMap<>();
 
-    @Getter
+    //@Getter
     final private Journal journal = new Journal();
     final private ChartOfAccounts coa;
 
@@ -49,6 +49,11 @@ final public class Ledger {
 
     public BigDecimal getAccountBalance(String accountNumber) {
         return accountNumberToAccount.get(accountNumber).getBalance();
+    }
+    
+    public Journal getJournal() {
+    	// may be issues with this, removed lombok
+    	return journal;
     }
 
     private void addAccount(AccountDetails accountDetails) {
