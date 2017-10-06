@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.orm.jpa.vendor.HibernateJpaSessionFactoryBean;
 
-import com.google.common.util.concurrent.Service;
+//import com.google.common.util.concurrent.Service;
 
 import net.flyingfishflash.ledger.domain.ChartOfAccounts;
 import net.flyingfishflash.ledger.domain.ChartOfAccountsBuilder;
@@ -20,25 +20,48 @@ import net.flyingfishflash.ledger.domain.TrialBalanceResult;
 //import net.flyingfishflash.ledger.domain.treeconcept.TraversalStrategy;
 
 import net.flyingfishflash.ledger.domain.nestedset.Node;
+import net.flyingfishflash.ledger.domain.nestedset.NodeDAO;
+import net.flyingfishflash.ledger.domain.nestedset.NodeDAOImpl;
 import net.flyingfishflash.ledger.domain.nestedset.NodeService;
 import net.flyingfishflash.ledger.domain.nestedset.NodeServiceImpl;
 
 import static net.flyingfishflash.ledger.domain.AccountSide.DEBIT;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Iterator;
-
-
+import java.util.List;
 
 
 @SpringBootApplication
 @ComponentScan("net.flyingfishflash.ledger")
 public class LedgerApplication {
 	
+	//@Autowired
+	public static NodeService service;
+	@Autowired
+	private NodeDAO dao;
+	
+	private static Integer defaultValue = 10;
+
+	public static void init() throws Exception {
+	    if (service.findRoot() == null) {
+	        Node root = service.createNode();
+	        root.makeRoot();
+	        service.save(root);
+	        service.addChildAsLast(root, "child1", defaultValue);
+	    }
+		
+	}
+	
 	
 	public static void main(String[] args) throws Exception {
 		SpringApplication.run(LedgerApplication.class, args);
+
+		//NodeDAO nDao = new NodeDAOImpl();
+		//List<Node> nodes = new ArrayList<Node>(nDao.findWholeTree());
 		
+		//	init();
 		//showLedger();
 
 /*		

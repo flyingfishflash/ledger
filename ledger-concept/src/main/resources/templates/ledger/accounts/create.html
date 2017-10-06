@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+
+<head th:replace="fragments :: head"></head>
+
+<body class="container">
+
+<h1 th:text="${title}">Default Title</h1>
+
+<nav><a href="/ledger/accounts">List</a></nav>
+
+<!--p th:unless="${nodes} and ${nodes.size()}">No nodes to display</p-->
+
+<table class="table">
+
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Value</th>
+        <th>Left</th>
+        <th>Right</th>
+        <th>Parent</th>
+        <th>Depth</th>
+    </tr>
+
+    <tr th:each="node : ${nodes}">
+        <td th:text="${node.id}"></td>
+        <td th:text="${node.name}"></td>
+        <td th:text="${node.value}"></td>
+        <td th:text="${node.lft}"></td>
+        <td th:text="${node.rgt}"></td>
+        <td th:text="${node.parent}"></td>
+        <td th:text="${node.depth}"></td>
+    </tr>
+
+</table>
+
+</body>
+</html>

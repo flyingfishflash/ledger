@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-@Component
+//@Component
 public class NodeDAOImpl implements NodeDAO {
 
     private static final Logger logger = LoggerFactory.getLogger(NodeDAOImpl.class);

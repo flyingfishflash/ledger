@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
+
 <head th:replace="fragments :: head"></head>
 
 <body class="container">
@@ -8,8 +9,7 @@
 
 <nav th:replace="fragments :: navigation"></nav>
 
-<p th:unless="${nodes} and ${nodes.size()}">no nodes :(</p>
-
+<p th:unless="${nodes} and ${nodes.size()}">No nodes to display</p>
 
 <table class="table">
 
@@ -21,7 +21,7 @@
         <th>Right</th>
         <th>Parent</th>
         <th>Depth</th>
-        <th>Action1</th>
+        <th>Action</th>
     </tr>
 
     <tr th:each="node : ${nodes}">
@@ -32,7 +32,8 @@
         <td th:text="${node.rgt}"></td>
         <td th:text="${node.parent}"></td>
         <td th:text="${node.depth}"></td>
-        <td><button type="button" class="btn btn-sm">Add Child</button></td>
+        <td><a th:href="@{'/ledger/accounts/create?parentId=' + ${node.id}}" class="btn btn-outline-secondary btn-sm">Add Child</a></td>
+        <!--button type="button" class="btn btn-sm">Add Child</button></td-->
 
     </tr>
 
