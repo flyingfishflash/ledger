@@ -7,6 +7,8 @@ logging:
 spring:
   profiles:
     active: dev-postgresql
+  thymeleaf:
+    cache: false #enable in production
 
 ---
 
