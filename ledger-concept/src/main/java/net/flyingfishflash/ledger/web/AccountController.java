@@ -21,7 +21,7 @@ import net.flyingfishflash.ledger.domain.nestedset.NodeService;
 @Controller
 public class AccountController {
 	
-    private static final Logger logger = LoggerFactory.getLogger(NodeDAOImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
 	
     @Autowired
     private NodeService service;
