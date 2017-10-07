@@ -1,46 +1,16 @@
 <!DOCTYPE html>
-<html style="font-size: 14px">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
 
 <head th:replace="fragments :: head"></head>
 
 <body>
 
-	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-	  <a class="navbar-brand" href="#">
-		<img src="/images/project-icon.jpg" width="30" height="30" alt=""></img>
-	  	Ledger
-	  </a>
-	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-	    <span class="navbar-toggler-icon"></span>
-	  </button>
-	  <div class="collapse navbar-collapse" id="navbarNavDropdown">
-	    <ul class="navbar-nav">
-	      <li class="nav-item dropdown">
-	        <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-	          Book
-	        </a>
-	        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-	          <a class="dropdown-item" href="/ledger/accounts">Accounts</a>
-	          <a class="dropdown-item" href="#">Transactions</a>
-	          <a class="dropdown-item" href="#">Securities</a>
-	        </div>
-	      </li>
-	      <li class="nav-item active">
-	        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-	      </li>
-	      <li class="nav-item">
-	        <a class="nav-link" href="#">Notes</a>
-	      </li>
-	    </ul>
-	  </div>
-	</nav>
+<nav th:replace="fragments :: navigation_main"></nav>
 
-	<div class="container">
-	<h2>Ledger</h2>
-	<p>
-	--- Future Splash / Sign In ---<br /><br />
-	</p>
-	<p></p>
+<div class="container">
+
+<h2 th:text="${title}">Default Title</h2>
+
 	<p>
 	<h4>Entities:</h4>
 	<ul>
@@ -101,7 +71,7 @@
                target="_blank">http://www.quesucede.com/page/show/id/java-tree-implementation/</a></li>
     </ul>
 	</p>
-	</div>
+</div>
 
 <div th:replace="fragments :: bootstrapjs"></div>	
 

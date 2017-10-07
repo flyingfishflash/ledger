@@ -29,7 +29,8 @@ public class AccountController {
     // display table of accounts with options to create/update/delete
     @RequestMapping(value = "/ledger/accounts", method = RequestMethod.GET)
     public String nodes(Model model) throws Exception {
-        List<Node> nodes = new ArrayList<Node>(service.findWholeTree());
+    	logger.info("@RequestMapping: /ledger/accounts");
+    	List<Node> nodes = new ArrayList<Node>(service.findWholeTree());
         model.addAttribute("title", "Accounts");
         model.addAttribute("nodes", nodes);
         model.addAttribute("node", new Node());
@@ -38,6 +39,7 @@ public class AccountController {
 
     @RequestMapping(value = "/ledger/accounts/create", method = RequestMethod.GET)
     public String createNode(@RequestParam(name="parentId", defaultValue="1") int parentId, Model model) throws Exception {
+    	logger.info("@RequestMapping: /ledger/accounts/create");
     	logger.info("RequestParam: " + parentId);
     	// TODO NullPointer Exception if parentId does not exist in nested set
     	Node parent = service.findOneById(parentId);

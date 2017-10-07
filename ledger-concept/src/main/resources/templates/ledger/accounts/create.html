@@ -3,11 +3,15 @@
 
 <head th:replace="fragments :: head"></head>
 
-<body class="container">
+<body>
 
-<h1 th:text="${title}">Default Title</h1>
+<nav th:replace="fragments :: navigation_main"></nav>
 
-<nav><a href="/ledger/accounts">List</a></nav>
+<div class="container">
+
+<h2 th:text="${title}">Default Title</h2>
+
+<nav th:replace="fragments :: navigation"></nav>
 
 <!--p th:unless="${nodes} and ${nodes.size()}">No nodes to display</p-->
 
@@ -34,6 +38,8 @@
     </tr>
 
 </table>
+
+</div>
 
 <div th:replace="fragments :: bootstrapjs"></div>
 
