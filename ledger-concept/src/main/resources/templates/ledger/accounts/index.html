@@ -11,9 +11,10 @@
 
 <h2 th:text="${title}">Default Title</h2>
 
-<nav th:replace="fragments :: navigation"></nav>
+<!--nav th:replace="fragments :: navigation"></nav-->
+<p><a th:href="@{'/ledger/accounts/create?parentAccountId=1'}" class="text-muted">Add First Level Account</a></p>
 
-<p th:unless="${nodes} and ${nodes.size()}">No nodes to display</p>
+<!--p th:unless="${nodes} and ${nodes.size()}">No nodes to display</p-->
 
 <table class="table">
 
@@ -36,7 +37,8 @@
         <td th:text="${node.rgt}"></td>
         <td th:text="${node.parent}"></td>
         <td th:text="${node.depth}"></td>
-        <td><a th:href="@{'/ledger/accounts/create?parentId=' + ${node.id}}" class="btn btn-outline-secondary btn-sm">Add Child</a></td>
+        <td><a th:href="@{'/ledger/accounts/create?parentAccountId=' + ${node.id}}" class="text-muted">Add Child</a></td>
+        <!--class="btn btn-outline-secondary btn-sm"-->
         <!--button type="button" class="btn btn-sm">Add Child</button></td-->
 
     </tr>

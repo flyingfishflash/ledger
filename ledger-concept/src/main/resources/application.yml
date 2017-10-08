@@ -3,12 +3,15 @@ logging:
   level:
     net.flyingfishflash.ledger: DEBUG
     #ROOT: DEBUG
+    #org.thymeleaf: TRACE
+    #org.springframework.boot: TRACE
 
 spring:
   profiles:
     active: dev-postgresql
   thymeleaf:
     cache: false #enable in production
+
 
 ---
 
