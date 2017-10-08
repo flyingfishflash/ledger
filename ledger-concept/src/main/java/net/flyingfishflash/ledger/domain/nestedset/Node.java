@@ -1,6 +1,9 @@
 package net.flyingfishflash.ledger.domain.nestedset;
 
 import javax.persistence.*;
+
+import org.hibernate.annotations.Formula;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +38,6 @@ public class Node {
     @OneToMany(mappedBy = "parent", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Node> children = new ArrayList<Node>();
 
-
     public List<Node> getChildren() {
         return this.children;
     }
@@ -51,7 +53,7 @@ public class Node {
     public void setParent(Node parent) {
         this.parent = parent;
     }
-
+    
     public int getDepth() {
         return depth;
     }

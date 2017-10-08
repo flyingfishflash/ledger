@@ -1,6 +1,7 @@
 package net.flyingfishflash.ledger.web;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -26,17 +27,26 @@ public class AccountController {
     @Autowired
     private NodeService service;
     
-    // display table of accounts with options to create/update/delete
+    // Display table of accounts that includes options for create/update/delete
+    // TODO Reorder an account in the hierarchy, potentially by changing its parent account
     @RequestMapping(value = "/ledger/accounts", method = RequestMethod.GET)
-    public String nodes(Model model) throws Exception {
+    public String listNodes(Model model) throws Exception {
     	logger.info("@RequestMapping: /ledger/accounts");
     	List<Node> nodes = new ArrayList<Node>(service.findWholeTree());
+    	// Remove Root node from list of nodes 
+    	Iterator<Node> it = nodes.iterator();
+		while (it.hasNext()) {
+		  Node node = it.next();
+		  if (node.isRoot()) {
+		    it.remove();
+		  }
+		}
         model.addAttribute("title", "Accounts");
         model.addAttribute("nodes", nodes);
-        model.addAttribute("node", new Node());
         return "/ledger/accounts/index";
     }
-    // TODO Should not show the 'root' account (ID = 1)
+    
+    // Open form for creating a new account
     @RequestMapping(value = "/ledger/accounts/create", method = RequestMethod.GET)
     public String createNode(@RequestParam(name="parentAccountId", defaultValue="1") int parentAccountId, Model model) throws Exception {
     	logger.info("@RequestMapping: /ledger/accounts/create (GET)");
@@ -50,6 +60,7 @@ public class AccountController {
         return "/ledger/accounts/create";
     }
     
+    // Submit form for creating a new account
     // 	POST http://localhost:8080/ledger/accounts/create?parentAccountId=1
     @RequestMapping(value = "/ledger/accounts/create", method = RequestMethod.POST)
     public String saveNode(@ModelAttribute("node") Node node, @RequestParam("parentAccountId") int parentAccountId/*, @RequestParam("method") String method*/) throws Exception {

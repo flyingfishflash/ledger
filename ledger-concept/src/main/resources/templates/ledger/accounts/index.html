@@ -12,7 +12,8 @@
 <h2 th:text="${title}">Default Title</h2>
 
 <!--nav th:replace="fragments :: navigation"></nav-->
-<p><a th:href="@{'/ledger/accounts/create?parentAccountId=1'}" class="text-muted">Add First Level Account</a></p>
+<p><a th:href="@{'/ledger/accounts/create?parentAccountId=1'}" class="text-muted">Create Top Level Account</a></p>
+<br />
 
 <!--p th:unless="${nodes} and ${nodes.size()}">No nodes to display</p-->
 
@@ -26,7 +27,7 @@
         <th>Right</th>
         <th>Parent</th>
         <th>Depth</th>
-        <th>Action</th>
+        <th>Actions</th>
     </tr>
 
     <tr th:each="node : ${nodes}">
@@ -35,9 +36,12 @@
         <td th:text="${node.value}"></td>
         <td th:text="${node.lft}"></td>
         <td th:text="${node.rgt}"></td>
-        <td th:text="${node.parent}"></td>
+        <td th:text="${node.parent.id}"></td>
         <td th:text="${node.depth}"></td>
-        <td><a th:href="@{'/ledger/accounts/create?parentAccountId=' + ${node.id}}" class="text-muted">Add Child</a></td>
+        <td><a th:href="@{'#''}" class="text-muted">Edit</a> |
+            <a th:href="@{'/ledger/accounts/create?parentAccountId=' + ${node.id}}" class="text-muted">Add Child</a> |
+            <a th:href="@{'#''}" class="text-muted">Remove</a>
+        </td>
         <!--class="btn btn-outline-secondary btn-sm"-->
         <!--button type="button" class="btn btn-sm">Add Child</button></td-->
 
