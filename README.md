@@ -8,6 +8,10 @@ Git
 * https://www.atlassian.com/blog/archives/simple-git-workflow-simple
 
 
+Persistence
+* http://www.springboottutorial.com/introduction-to-jpa-with-spring-boot-data-jpa
+
+
 Persisting Hierarchial Data
 
 * http://mikehillyer.com/articles/managing-hierarchical-data-in-mysql/
