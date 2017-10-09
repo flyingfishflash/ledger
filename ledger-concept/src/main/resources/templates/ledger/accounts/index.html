@@ -40,7 +40,7 @@
         <td th:text="${node.depth}"></td>
         <td><a th:href="@{'#''}" class="text-muted">Edit</a> |
             <a th:href="@{'/ledger/accounts/create?parentAccountId=' + ${node.id}}" class="text-muted">Add Child</a> |
-            <a th:href="@{'#''}" class="text-muted">Remove</a>
+            <a th:href="@{'/ledger/accounts/delete?parentAccountId=' + ${node.id}}" class="text-muted">Remove</a>
         </td>
         <!--class="btn btn-outline-secondary btn-sm"-->
         <!--button type="button" class="btn btn-sm">Add Child</button></td-->

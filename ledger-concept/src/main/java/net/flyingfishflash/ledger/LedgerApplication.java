@@ -1,5 +1,7 @@
 package net.flyingfishflash.ledger;
 
+import org.hibernate.SessionFactory;
+import org.hibernate.jpa.HibernateEntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -37,24 +39,6 @@ import java.util.List;
 @ComponentScan("net.flyingfishflash.ledger")
 public class LedgerApplication {
 	
-	//@Autowired
-	public static NodeService service;
-	@Autowired
-	private NodeDAO dao;
-	
-	private static Integer defaultValue = 10;
-
-	public static void init() throws Exception {
-	    if (service.findRoot() == null) {
-	        Node root = service.createNode();
-	        root.makeRoot();
-	        service.save(root);
-	        service.addChildAsLast(root, "child1", defaultValue);
-	    }
-		
-	}
-	
-	
 	public static void main(String[] args) throws Exception {
 		SpringApplication.run(LedgerApplication.class, args);
 
@@ -83,7 +67,6 @@ public class LedgerApplication {
 	    return new HibernateJpaSessionFactoryBean();
 	}
 
-	
 	
 	public static void showLedger( ) {
         String cashAccountNumber = "000001";

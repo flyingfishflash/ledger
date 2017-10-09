@@ -39,10 +39,10 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
     show-sql: true
     properties:
-        hibernate.current_session_context_class: org.springframework.orm.hibernate4.SpringSessionContext
+        hibernate.current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
 
   datasource:
     url: jdbc:postgresql://localhost:5432/ledger-concept

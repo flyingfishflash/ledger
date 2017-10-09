@@ -19,7 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-//@Component
+@Component
+@Transactional
 public class NodeDAOImpl implements NodeDAO {
 
     private static final Logger logger = LoggerFactory.getLogger(NodeDAOImpl.class);
@@ -478,6 +479,7 @@ public class NodeDAOImpl implements NodeDAO {
      * @param n
      */
     @Override
+    @Transactional
     public void deleteNode(Node n) {
         int left = n.getLft();
         int right = n.getRgt();
@@ -485,7 +487,12 @@ public class NodeDAOImpl implements NodeDAO {
         Query query;
         Query query2;
         Session session = sessionFactory.getCurrentSession();
+        logger.info("begin transaction");
+        session.beginTransaction();
+        session.update(n);
         session.delete(n);
+        session.getTransaction().commit();
+        logger.info("commit transaction");
         query = session.createSQLQuery("update Node set rgt = rgt - :width where rgt > :rightParam");
         query2 = session.createSQLQuery("update Node set lft = lft - :width where lft >= :rightParam");
         query.setParameter("rightParam", right);
@@ -497,7 +504,7 @@ public class NodeDAOImpl implements NodeDAO {
     }
 
     /**
-     * Moves node to antoher subtree/parent (not working yet)
+     * Moves node to another subtree/parent (not working yet)
      *
      * @param node
      * @param newParent
