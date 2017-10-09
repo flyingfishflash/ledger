@@ -1,8 +1,5 @@
 package net.flyingfishflash.ledger;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.jpa.HibernateEntityManagerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -17,22 +14,24 @@ import net.flyingfishflash.ledger.domain.Ledger;
 import net.flyingfishflash.ledger.domain.Transaction;
 import net.flyingfishflash.ledger.domain.TrialBalanceResult;
 
+import static net.flyingfishflash.ledger.domain.AccountSide.DEBIT;
+
 //import net.flyingfishflash.ledger.domain.treeconcept.Tree;
 //import net.flyingfishflash.ledger.domain.treeconcept.Node;
 //import net.flyingfishflash.ledger.domain.treeconcept.TraversalStrategy;
 
+import java.math.BigDecimal;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import net.flyingfishflash.ledger.domain.nestedset.Node;
 import net.flyingfishflash.ledger.domain.nestedset.NodeDAO;
 import net.flyingfishflash.ledger.domain.nestedset.NodeDAOImpl;
 import net.flyingfishflash.ledger.domain.nestedset.NodeService;
 import net.flyingfishflash.ledger.domain.nestedset.NodeServiceImpl;
 
-import static net.flyingfishflash.ledger.domain.AccountSide.DEBIT;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 
 @SpringBootApplication

@@ -65,16 +65,9 @@ public class AccountController {
     public String deleteNode(@RequestParam(name="parentAccountId") int parentAccountId) throws Exception {
     	logger.info("@RequestMapping: /ledger/accounts/delete (GET)");
     	logger.info("RequestParam: " + parentAccountId);
-    	// TODO Handle NullPointer Exception if parentId does not exist in nested set
-    	//logger.info("Parent: " + target.getId() + ": " + target.getName());
     	service.deleteNode(service.findOneById(parentAccountId));
-        //model.addAttribute("title", "Delete Account");
-        //model.addAttribute("parent", target);
-        //model.addAttribute("node", new Node());
         return "redirect:/ledger/accounts";
     }
-    
-    
     
     // Submit form for creating a new account
     // 	POST http://localhost:8080/ledger/accounts/create?parentAccountId=1
