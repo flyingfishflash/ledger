@@ -35,7 +35,7 @@ public class Node {
     @JoinColumn(name = "parent_id")
     private Node parent;
 
-    @OneToMany(mappedBy = "parent", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "parent", cascade = {CascadeType.MERGE, CascadeType.REMOVE, CascadeType.REFRESH, CascadeType.DETACH/*, CascadeType.PERSIST*/}, fetch = FetchType.EAGER)
     private List<Node> children = new ArrayList<Node>();
 
     public List<Node> getChildren() {

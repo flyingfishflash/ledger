@@ -104,9 +104,13 @@
             <version>3.0.0</version>
         </dependency>
 
+		<dependency>
+		  <groupId>org.hibernate</groupId>
+		  <artifactId>hibernate-jpamodelgen</artifactId>
+		  <!--version>5.2.11.Final</version-->
+		</dependency>
+
 	</dependencies>
-
-
 
 	<build>
 		<plugins>
@@ -114,8 +118,21 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+			    <groupId>com.mysema.maven</groupId>
+			    <artifactId>apt-maven-plugin</artifactId>
+			    <executions>
+			        <execution>
+			            <goals>
+			                <goal>process</goal>
+			            </goals>
+			            <configuration>
+			                <!-- outputDirectory>target/generated-sources/java</outputDirectory-->
+			                <processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor>
+			            </configuration>
+			        </execution>
+			    </executions>
+			</plugin>			
 		</plugins>
 	</build>
-
-
 </project>

@@ -1,10 +1,8 @@
 package net.flyingfishflash.ledger.domain.nestedset;
 
 import net.flyingfishflash.ledger.domain.nestedset.Node;
-import org.hibernate.Criteria;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
+import javax.persistence.criteria.CriteriaQuery;
 
 public interface NodeDAO {
 
@@ -22,31 +20,29 @@ public interface NodeDAO {
 
     public Integer countChildren(Node n);
 
-    public List<Node> getDescendants(Node n);
-
-    public Integer countDescendants(Node n);
-
+    public CriteriaQuery<Node> childrenOf(Node n);
+    
     public Node getFirstChild(Node n);
 
     public Node getLastChild(Node n);
 
-    public List<Node> getSiblings(Node n, boolean includeNode);
+    public List<Node> getDescendants(Node n);
 
-    public Criteria descendantsOf(Criteria c, Node n);
+    public Integer countDescendants(Node n);
 
-    public Criteria childrenOf(Criteria c, Node n);
+    public List<Node> getSiblings(Node n);
 
-    public Criteria siblingsOf(Criteria c, Node n);
+    public CriteriaQuery<Node> siblingsOf(Node n);
+    
+    public List<Node> descendantsOf(Node n);
 
-    public Criteria ancestorsOf(Criteria c, Node n);
+    public CriteriaQuery<Node> ancestorsOf(Node n);
 
     public List<Node> getAncestors(Node n);
 
     public Node findOneById(Integer nodeId);
 
     public List<Node> filterByDepth(Integer depth);
-
-    public Criteria prune(Criteria c, Node n);
 
     public Node getParent(Node n);
 
@@ -66,5 +62,5 @@ public interface NodeDAO {
 
     public void deleteNode(Node n);
 
-    public void moveToOtherTree(Node node, Node newParent);
+    //public void moveToOtherTree(Node node, Node newParent); // Broken
 }

@@ -4,7 +4,7 @@ logging:
     net.flyingfishflash.ledger: DEBUG
     #ROOT: DEBUG
     #org.thymeleaf: TRACE
-    #org.springframework.boot: TRACE
+    org.hibernate.event.internal.DefaultPersistEventListener: TRACE
 
 spring:
   profiles:
