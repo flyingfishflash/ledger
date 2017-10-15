@@ -65,7 +65,9 @@ public class AccountController {
     public String deleteNode(@RequestParam(name="parentAccountId") int parentAccountId) throws Exception {
     	logger.info("@RequestMapping: /ledger/accounts/delete (GET)");
     	logger.info("RequestParam: " + parentAccountId);
-    	service.deleteNode(service.findOneById(parentAccountId));
+    	Node n = service.findOneById(parentAccountId);
+    	//service.deleteDescendants(n);
+    	service.deleteNode(n);
         return "redirect:/ledger/accounts";
     }
     
@@ -87,6 +89,35 @@ public class AccountController {
         return "redirect:/ledger/accounts";
 
     }
+    
+    // sloppy test URL
+    @RequestMapping(value = "/ledger/accounts/test", method = RequestMethod.GET)
+    public String test(@ModelAttribute("node") Node node, @RequestParam("parentAccountId") int parentAccountId/*, @RequestParam("method") String method*/) throws Exception {
+    	logger.info("@RequestMapping: /ledger/accounts/test (POST)");
+        Node parent = service.findOneById(parentAccountId);
+        List<Node> nodes = service.getSiblings(parent);
+        logger.info("nodes.size: " + nodes.size());
+        Iterator<Node> it = nodes.iterator();
+		while (it.hasNext()) {
+		  Node node1 = it.next();
+		  	System.out.println("Sibling ID: " + node1.getId() + " Sibling Name: " + node1.getName());
+		  }
+		Node n = service.getParent(parent);
+	  	System.out.println("Parent ID: " + n.getId() + " Parent Name: " + n.getName());
+        /*
+        Node n = service.getLastChild(parent);
+	  	System.out.println("Child ID: " + n.getId() + " Child Name: " + n.getName());
+        //System.out.println(parent.toString());
+        //System.out.println(parent.getId());
+        //System.out.println(parent.getName());
+        */
+        return "redirect:/ledger/accounts";
+
+    }
+    
+    
+    
+    
     
 
 }

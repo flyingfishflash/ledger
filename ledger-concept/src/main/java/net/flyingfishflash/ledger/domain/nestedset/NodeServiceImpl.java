@@ -2,14 +2,20 @@ package net.flyingfishflash.ledger.domain.nestedset;
 
 import net.flyingfishflash.ledger.domain.nestedset.Node;
 import net.flyingfishflash.ledger.domain.nestedset.NodeDAO;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Iterator;
 import java.util.List;
 
 @Service
 public class NodeServiceImpl implements NodeService {
+
+    private static final Logger logger = LoggerFactory.getLogger(NodeServiceImpl.class);
 
     @Autowired
     private NodeDAO dao;
@@ -142,7 +148,7 @@ public class NodeServiceImpl implements NodeService {
     @Override
     @Transactional
     public List<Node> getSiblings(Node n) {
-        return dao.getSiblings(n, false);
+        return dao.getSiblings(n);
     }
 
     /**
@@ -333,12 +339,14 @@ public class NodeServiceImpl implements NodeService {
      * @param node
      * @param newParent
      */
+    /*
     @Override
     @Transactional
-    //TODO Make that works
+    //TODO Broken
     public void moveToOtherTree(Node node, Node newParent) {
         dao.moveToOtherTree(node, newParent);
     }
+    */
 
     @Override
     @Transactional
@@ -346,6 +354,25 @@ public class NodeServiceImpl implements NodeService {
         currentNode.setValue(node.getValue());
         currentNode.setName(node.getName());
         return currentNode;
+    }
+
+	@Override
+	public List<Node> getAncestors(Node n) {
+		return removeRoot(dao.getAncestors(n));
+	}
+	
+	@Override
+    public List<Node> removeRoot(List<Node> nodes) {
+
+    	Iterator<Node> it = nodes.iterator();
+		while (it.hasNext()) {
+			Node node = it.next();
+			if (node.isRoot()) {
+				it.remove();
+			}
+		  }
+
+		 return nodes;
     }
 
 }

@@ -26,6 +26,8 @@ public interface NodeService {
 
     public Integer countDescendants(Node n);
 
+    public List<Node> getAncestors(Node n);
+    
     public Node getFirstChild(Node n);
 
     public Node getLastChild(Node n);
@@ -53,8 +55,10 @@ public interface NodeService {
     public int getSumOfLeaf(Node leaf) throws Exception;
 
     public void deleteNode(Node n);
-
-    public void moveToOtherTree(Node node, Node newParent);
+    
+    //public void moveToOtherTree(Node node, Node newParent); // Broken
 
     public Node updateFields(Node currentNode, Node node);
+    
+    public List<Node> removeRoot(List<Node> nodes);
 }

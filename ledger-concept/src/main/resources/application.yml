@@ -4,7 +4,7 @@ logging:
     net.flyingfishflash.ledger: DEBUG
     #ROOT: DEBUG
     #org.thymeleaf: TRACE
-    #org.springframework.boot: TRACE
+    org.hibernate.event.internal.DefaultPersistEventListener: TRACE
 
 spring:
   profiles:
@@ -41,8 +41,8 @@ spring:
     hibernate:
       ddl-auto: create
     show-sql: true
-    properties:
-        hibernate.current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+    #properties:
+        #hibernate.current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
 
   datasource:
     url: jdbc:postgresql://localhost:5432/ledger-concept
