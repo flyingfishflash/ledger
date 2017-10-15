@@ -28,7 +28,7 @@ spring:
       enabled: true 
 
   datasource:
-    url: jdbc:h2:mem:ledger-concept;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:mem:ledger;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     username: sa
     password:
 
@@ -45,7 +45,7 @@ spring:
         #hibernate.current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/ledger-concept
+    url: jdbc:postgresql://localhost:5432/ledger
     username: gregory
     password: 
     platform: POSTGRESQL
