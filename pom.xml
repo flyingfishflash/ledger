@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>net.flyingfishflash</groupId>
-	<artifactId>ledger-concept</artifactId>
+	<artifactId>ledger</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>Ledger (Proof of Concept)</name>
+	<name>Ledger</name>
 	<description>Java-based double-entry bookkeeping engine for personal finance management.</description>
 
 	<parent>
