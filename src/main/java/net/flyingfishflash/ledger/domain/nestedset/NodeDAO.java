@@ -6,8 +6,6 @@ import javax.persistence.criteria.CriteriaQuery;
 
 public interface NodeDAO {
 
-    public List<Node> findAllLeafNodes(Node p);
-
     public Node createNode();
 
     public void save(Node n);
@@ -58,9 +56,15 @@ public interface NodeDAO {
 
     public List<Node> findWholeTree();
 
+    public List<Node> findAllLeafNodes();
+    
+    public List<Node> findLeafNodes(Node n);
+    
     public void updateChildrenCollection(Node n, boolean children, String direction);
 
     public void deleteNode(Node n);
-
+    
+    public void removeSubtree(Node n);
+    
     //public void moveToOtherTree(Node node, Node newParent); // Broken
 }

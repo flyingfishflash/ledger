@@ -2,13 +2,12 @@ package net.flyingfishflash.ledger.domain.nestedset;
 
 import javax.persistence.*;
 
-import org.hibernate.annotations.Formula;
-
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "Node")
+//@MappedSuperclass
 public class Node {
 
     @Id
@@ -34,17 +33,18 @@ public class Node {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parent_id")
     private Node parent;
+    
+    //@OneToMany(mappedBy = "parent", /*cascade = {CascadeType.MERGE, CascadeType.REMOVE, CascadeType.REFRESH, CascadeType.DETACH, CascadeType.PERSIST},*/ fetch = FetchType.EAGER)
+    //private List<Node> children = new ArrayList<Node>();
+    
+    
+    //public List<Node> getChildren() {
+    //    return this.children;
+    //}
 
-    @OneToMany(mappedBy = "parent", cascade = {CascadeType.MERGE, CascadeType.REMOVE, CascadeType.REFRESH, CascadeType.DETACH/*, CascadeType.PERSIST*/}, fetch = FetchType.EAGER)
-    private List<Node> children = new ArrayList<Node>();
-
-    public List<Node> getChildren() {
-        return this.children;
-    }
-
-    public void setChildren(List<Node> children) {
-        this.children = children;
-    }
+    //public void setChildren(List<Node> children) {
+    //    this.children = children;
+    //}
 
     public Node getParent() {
         return parent;
@@ -78,6 +78,7 @@ public class Node {
         this.id = id;
     }
 
+ 
     public String getName() {
         return name;
     }
@@ -184,7 +185,7 @@ public class Node {
 
         List<Node> nodes = new ArrayList<Node>();
         nodes.add(this);
-        parent.setChildren(nodes);
+        //parent.setChildren(nodes);
         return this;
     }
 
@@ -207,7 +208,7 @@ public class Node {
 
         List<Node> nodes = new ArrayList<Node>();
         nodes.add(this);
-        parent.setChildren(nodes);
+        //parent.setChildren(nodes);
         return this;
     }
 }

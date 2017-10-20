@@ -45,6 +45,10 @@ public interface NodeService {
     public Integer deleteDescendants(Node n);
 
     public List<Node> findWholeTree() throws Exception;
+    
+    public List<Node> findAllLeafNodes();
+    
+    public List<Node> findLeafNodes(Node n);
 
     public void updateTreeCollection(Node n, boolean children, String direction);
 
@@ -61,4 +65,6 @@ public interface NodeService {
     public Node updateFields(Node currentNode, Node node);
     
     public List<Node> removeRoot(List<Node> nodes);
+    
+    public void removeSubTree(Node n); 
 }

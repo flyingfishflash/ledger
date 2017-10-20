@@ -17,7 +17,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -32,31 +34,51 @@ public class NodeDAOImpl implements NodeDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
-    /**
-     * Finds all leaves of given node
-     *
-     * @param n
-     * @return List<Node>
-     */
-    @Override
-    public List<Node> findAllLeafNodes(Node n) {
-    	
-    	// JPA
-    	Query q = entityManager.createQuery("SELECT z FROM Node z WHERE rgt = lft + 1");
-        List<Node> resultList = q.getResultList();
-        if (resultList.size() > 0) return resultList;
-        logger.info("Leaves found successfully" + n);
-        return null;
 
-        /*
-        // HIBERNATE
-    	Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("FROM Node WHERE rgt = lft + 1");
-        if (query.list().size() > 0) return query.list();
-        */
+    @Override
+    public List<Node> findAllLeafNodes() {
+    	
+    	// Leaf nodes have no children
+    
+    	// select z from node z where rgt = lft + 1
+
+        logger.info("NodeDAO.findAllLeafNodes() begin");
+    	CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Node> cq = cb.createQuery(Node.class);
+        Root<Node> node = cq.from(Node.class);
+        cq.select(node);
+        Predicate condition = cb.equal(node.get(Node_.rgt), cb.sum(node.get(Node_.lft), 1));
+   		cq.where(condition);
+   		TypedQuery<Node> q = entityManager.createQuery(cq);
+        logger.info("NodeDAO.findAllLeafNodes() leaves found: " + q.getResultList().size());
+   		logger.info("NodeDAO.findAllLeafNodes() end");
+        return q.getResultList();         
 
     }
 
+    public List<Node> findLeafNodes(Node n) {
+    	
+    	// Leaf nodes have no children
+    
+    	// select z from node z where lft > n.lft and rgt > n.ngt and rgt = lft + 1
+
+        logger.info("NodeDAO.findLeafNodes(Node n) begin");
+    	CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Node> cq = cb.createQuery(Node.class);
+        Root<Node> node = cq.from(Node.class);
+        cq.select(node);
+        Predicate condition = cb.conjunction();
+        condition = cb.equal(node.get(Node_.rgt), cb.sum(node.get(Node_.lft), 1));
+        condition = cb.and(condition, cb.gt(node.get(Node_.lft), n.getLft()));
+        condition = cb.and(condition, cb.lt(node.get(Node_.rgt), n.getRgt()));
+   		cq.where(condition);
+   		TypedQuery<Node> q = entityManager.createQuery(cq);
+        logger.info("NodeDAO.findLeafNodes(Node n) leaves found: " + q.getResultList().size());
+   		logger.info("NodeDAO.findLeafNodes(Node n) end");
+        return q.getResultList();         
+
+    }
+    
     /**
      * Creates new node in the tree
      *
@@ -124,28 +146,23 @@ public class NodeDAOImpl implements NodeDAO {
     }
 
     
-    /**
-     * Finds root of the tree
-     *
-     * @return Node
-     * 
-     */
     @Override
     public Node findRoot() {
+    	
+    	// TODO catch exception on null q.getSingleResult
+    	
+		// select z from node z where lft = 1
 
-    	// JPA
     	logger.info("NodeDAO.findRoot() begin");
-        Query q = entityManager.createQuery("SELECT z from Node z WHERE lft = 1");
-        Node result = (Node) q.getSingleResult(); // Unlike uniqueResult() this will throw an exception on a null result
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Node> cq = cb.createQuery(Node.class);
+        Root<Node> node = cq.from(Node.class);
+        cq.select(node);
+        Predicate condition = cb.equal(node.get(Node_.lft), 1);
+        cq.where(condition);
+        TypedQuery<Node> q = entityManager.createQuery(cq);
     	logger.info("NodeDAO.findRoot() end");
-        return result;
-
-        /*
-         // HIBERNATE
-         Session session = sessionFactory.getCurrentSession();
-         Query query = session.createQuery("FROM Node WHERE lft = 1");
-         return (Node) query.uniqueResult();
-         */
+    	return q.getSingleResult();
 
     }
 
@@ -722,70 +739,41 @@ public class NodeDAOImpl implements NodeDAO {
     }
 
 
-    /**
-     * Updates tree collection to be valid tree after inserting new children
-     *
-     * @param n
-     * @param children
-     * @param direction
-     */
+    private void updateChildrenAfterNodeAdd(Class<Node> nodeClass, String field, String comp, Integer from) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaUpdate<Node> update = cb.createCriteriaUpdate(Node.class);
+        Root<Node> root = update.from(Node.class);
+        update.set(root.<Integer>get(field), cb.sum(root.<Integer>get(field), 2));
+        Predicate condition;
+        if (comp == "gt") {
+        	condition = cb.gt(root.<Integer>get(field), from);
+        } else {
+        	condition = cb.ge(root.<Integer>get(field), from);
+        }
+        update.where(condition);
+        entityManager.createQuery(update).executeUpdate();
+    }    
+
     @Override
     public void updateChildrenCollection(Node n, boolean children, String direction) {
 
     	logger.info("updateChildrenCollection() begin");
-    	// JPA
-    	int newLft = n.getLft();
-        int newRight = n.getRgt();
-        Query q1;
-        Query q2;
         if (children && direction.equals("first")) {
-            q1 = entityManager.createQuery("update Node set rgt = rgt+2 where rgt > :newRight");
-            q2 = entityManager.createQuery("update Node set lft = lft+2 where lft >= :newRight");
-            q1.setParameter("newRight", newRight - 1);
-            q2.setParameter("newRight", newRight - 1);
+        	updateChildrenAfterNodeAdd(Node.class, "rgt", "gt", n.getRgt() - 1);
+            updateChildrenAfterNodeAdd(Node.class, "lft", "ge", n.getRgt() - 1);
         } else if (children && direction.equals("last")) {
-            q1 = entityManager.createQuery("update Node set rgt = rgt+2 where rgt > :newLft");
-            q2 = entityManager.createQuery("update Node set lft = lft+2 where lft > :newLft");
-            q1.setParameter("newLft", newLft - 1);
-            q2.setParameter("newLft", newLft - 1);
+            updateChildrenAfterNodeAdd(Node.class, "rgt", "gt", n.getLft() - 1);
+            updateChildrenAfterNodeAdd(Node.class, "lft", "gt", n.getLft() - 1);
         } else {
-            q1 = entityManager.createQuery("update Node set rgt = rgt+2 where rgt >= :newLft");
-            q2 = entityManager.createQuery("update Node set lft = lft+2 where lft > :newLft");
-            q1.setParameter("newLft", newLft - 1);
-            q2.setParameter("newLft", newLft - 1);
+            updateChildrenAfterNodeAdd(Node.class, "rgt", "ge", n.getLft() - 1);
+            updateChildrenAfterNodeAdd(Node.class, "lft", "gt", n.getLft() - 1);
         }
-        q1.executeUpdate();
-        q2.executeUpdate();
-    	
-        /*
-        //HIBERNATE
-    	int newLft = n.getLft();
-        int newRight = n.getRgt();
-        Session session = sessionFactory.getCurrentSession();
-        Query query;
-        Query query2;
-        if (children && direction.equals("first")) {
-            query = session.createSQLQuery("update Node set rgt = rgt+2 where rgt > :newRight");
-            query2 = session.createSQLQuery("update Node set lft = lft+2 where lft >= :newRight");
-            query.setParameter("newRight", newRight - 1);
-            query2.setParameter("newRight", newRight - 1);
-        } else if (children && direction.equals("last")) {
-            query = session.createSQLQuery("update Node set rgt = rgt+2 where rgt > :newLft");
-            query2 = session.createSQLQuery("update Node set lft = lft+2 where lft > :newLft");
-            query.setParameter("newLft", newLft - 1);
-            query2.setParameter("newLft", newLft - 1);
-        } else {
-            query = session.createSQLQuery("update Node set rgt = rgt+2 where rgt >= :newLft");
-            query2 = session.createSQLQuery("update Node set lft = lft+2 where lft > :newLft");
-            query.setParameter("newLft", newLft - 1);
-            query2.setParameter("newLft", newLft - 1);
-        }
-        query.executeUpdate();
-        query2.executeUpdate();
-    	*/
         logger.info("updateChildrenCollection() end");
+
     }
 
+  
+    
     /**
      * Deletes node. WARNING: If node has children they would be deleted too.
      * 
@@ -899,6 +887,39 @@ public class NodeDAOImpl implements NodeDAO {
         return index;
         */
     }
+
+    //@Override
+    public void removeSubtree(Node n) {
+    	logger.info("NodeDAO.removeSubtree(Node n) begin");
+        Integer delta = n.getRgt() - n.getLft() + 1;
+        Integer from = n.getRgt();
+        performBatchDeletion(n);
+        updateFieldsAfterSubtreeRemoval(from, delta, Node.class, "rgt");
+        updateFieldsAfterSubtreeRemoval(from, delta, Node.class, "lft");
+    	logger.info("NodeDAO.removeSubtree(Node n) end");
+}
+
+    private void updateFieldsAfterSubtreeRemoval(Integer from, Integer delta, Class<Node> nodeClass, String field) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaUpdate<Node> update = cb.createCriteriaUpdate(nodeClass);
+        Root<Node> root = update.from(nodeClass);
+        update.set(root.<Integer>get(field), cb.diff(root.<Integer>get(field), delta));
+        Predicate condition = cb.greaterThan(root.<Integer>get(field), from);
+        update.where(condition);
+        entityManager.createQuery(update).executeUpdate();
+} 
+    
+    private void performBatchDeletion(Node n) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaDelete<Node> delete = cb.createCriteriaDelete(Node.class);
+        Root<Node> root = delete.from(Node.class);
+        Predicate condition = cb.conjunction();
+        condition = cb.and(condition, cb.greaterThanOrEqualTo(root.<Integer>get(Node_.lft), n.getLft()));
+        condition = cb.and(condition, cb.lessThanOrEqualTo(root.<Integer>get(Node_.rgt), n.getRgt()));
+        delete.where(condition);
+        entityManager.createQuery(delete).executeUpdate();
+}    
+    
 
     
     /**

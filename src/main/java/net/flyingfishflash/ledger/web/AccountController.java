@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import net.flyingfishflash.ledger.domain.nestedset.Node;
-//import net.flyingfishflash.ledger.domain.nestedset.NodeDAOImpl;
 import net.flyingfishflash.ledger.domain.nestedset.NodeService;
 
 
@@ -67,7 +66,8 @@ public class AccountController {
     	logger.info("RequestParam: " + parentAccountId);
     	Node n = service.findOneById(parentAccountId);
     	//service.deleteDescendants(n);
-    	service.deleteNode(n);
+    	//service.deleteNode(n);
+    	service.removeSubTree(n);
         return "redirect:/ledger/accounts";
     }
     
@@ -82,7 +82,7 @@ public class AccountController {
         System.out.println(parent.getName());
         String method = "last";
         if (method.equals("first")) {
-            service.addChildAsFirst(parent, node.getName(), 99/*node.getName(), node.getValue()*/);
+            service.addChildAsFirst(parent, node.getName(), 98/*node.getName(), node.getValue()*/);
         } else {
             service.addChildAsLast(parent, node.getName(), 99 /*node.getName(), node.getValue()*/);
         }
@@ -95,15 +95,17 @@ public class AccountController {
     public String test(@ModelAttribute("node") Node node, @RequestParam("parentAccountId") int parentAccountId/*, @RequestParam("method") String method*/) throws Exception {
     	logger.info("@RequestMapping: /ledger/accounts/test (POST)");
         Node parent = service.findOneById(parentAccountId);
-        List<Node> nodes = service.getSiblings(parent);
+        List<Node> nodes = service.findLeafNodes(parent);
+        Node nodez = service.findRoot();
+	  	System.out.println("Result ID: " + nodez.getId() + " Result Name: " + nodez.getName());
         logger.info("nodes.size: " + nodes.size());
         Iterator<Node> it = nodes.iterator();
 		while (it.hasNext()) {
 		  Node node1 = it.next();
-		  	System.out.println("Sibling ID: " + node1.getId() + " Sibling Name: " + node1.getName());
+		  	System.out.println("Result ID: " + node1.getId() + " Result Name: " + node1.getName());
 		  }
-		Node n = service.getParent(parent);
-	  	System.out.println("Parent ID: " + n.getId() + " Parent Name: " + n.getName());
+		//Node n = service.getParent(parent);
+	  	//System.out.println("Parent ID: " + n.getId() + " Parent Name: " + n.getName());
         /*
         Node n = service.getLastChild(parent);
 	  	System.out.println("Child ID: " + n.getId() + " Child Name: " + n.getName());
