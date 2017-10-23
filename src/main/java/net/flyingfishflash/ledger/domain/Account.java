@@ -1,71 +1,79 @@
 package net.flyingfishflash.ledger.domain;
 
-import com.google.common.base.MoreObjects;
-//import lombok.Getter;
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.MappedSuperclass;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+@MappedSuperclass
+public class Account {
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+    @Column(name = "code")
+    protected String code;
 
-/**
- * Represents an account with entries.
- */
-final public class Account {
-    final private List<AccountingEntry> entries = new ArrayList<>();
+    @Column(name = "description", length = 2048)
+    protected String description;
 
-    //@Getter
-    final private AccountDetails accountDetails;
+    @Column(name = "placeholder")
+    protected Boolean placeholder;
 
-    public Account(AccountDetails accountDetails) {
-        this.accountDetails = checkNotNull(accountDetails);
-    }
+    @Column(name = "hidden")
+    protected Boolean hidden;
 
-    public Account(String accountNumber, String name, AccountSide increaseSide) {
-        this.accountDetails = new AccountDetailsImpl(accountNumber, name, increaseSide);
-    }
+	@Column(name = "account_class")
+	@Enumerated(EnumType.STRING)
+	protected AccountCategory accountCategory;
 
-    /**
-     * Adds an entry to the account.
-     * @param entry A debit or credit entry
-     */
-    public void addEntry(AccountingEntry entry) {
-        checkNotNull(entry);
-        checkArgument(entry.getAccountNumber().equals(accountDetails.getAccountNumber()));
-        entries.add(entry);
-    }
+	@Column(name = "account_type")
+	@Enumerated(EnumType.STRING)
+	protected AccountType accountType;
 
-    /**
-     * Returns the debit/credit balance with consideration of the increase side
-     * @return Balance
-     */
-    public BigDecimal getBalance() {
-        BigDecimal signum = accountDetails.getIncreaseSide() == AccountSide.DEBIT
-                ? BigDecimal.ONE : BigDecimal.ONE.negate();
-        return getRawBalance().multiply(signum);
-    }
+	public AccountCategory getAccountCategory() {
+		return accountCategory;
+	}
 
-    /**
-     * Returns the debit/credit balance without consideration of the increase side
-     * @return Balance
-     */
-    public BigDecimal getRawBalance() {
-        return entries.stream()
-                .map(e -> e.getAccountSide() == AccountSide.DEBIT ? e.getAmount() : e.getAmount().negate())
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
+	public void setAccountCategory(AccountCategory accountCategory) {
+		this.accountCategory = accountCategory;
+	}
 
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("entries", entries)
-                .add("accountDetails", accountDetails)
-                .toString();
-    }
-    
-    public AccountDetails getAccountDetails() {
-    	return accountDetails;
-    }
+	public AccountType getAccountType() {
+		return accountType;
+	}
+
+	public void setAccountType(AccountType accountType) {
+		this.accountType = accountType;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Boolean getPlaceholder() {
+		return placeholder;
+	}
+
+	public void setPlaceholder(Boolean placeholder) {
+		this.placeholder = placeholder;
+	}
+
+	public Boolean getHidden() {
+		return hidden;
+	}
+
+	public void setHidden(Boolean hidden) {
+		this.hidden = hidden;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
 }

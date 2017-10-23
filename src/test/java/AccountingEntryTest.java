@@ -1,13 +1,14 @@
 import com.google.common.collect.Sets;
-import net.flyingfishflash.ledger.domain.AccountingEntry;
-import net.flyingfishflash.ledger.domain.Transaction;
+
+import net.flyingfishflash.ledger.domain.accounting.AccountingEntry;
+import net.flyingfishflash.ledger.domain.accounting.Transaction;
 
 import org.junit.Test;
 
-import java.math.BigDecimal;
+import static net.flyingfishflash.ledger.domain.accounting.AccountSide.CREDIT;
+import static net.flyingfishflash.ledger.domain.accounting.AccountSide.DEBIT;
 
-import static net.flyingfishflash.ledger.domain.AccountSide.CREDIT;
-import static net.flyingfishflash.ledger.domain.AccountSide.DEBIT;
+import java.math.BigDecimal;
 
 public class AccountingEntryTest {
 

@@ -6,17 +6,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.orm.jpa.vendor.HibernateJpaSessionFactoryBean;
 
-//import com.google.common.util.concurrent.Service;
+import net.flyingfishflash.ledger.domain.accounting.ChartOfAccounts;
+import net.flyingfishflash.ledger.domain.accounting.ChartOfAccountsBuilder;
+import net.flyingfishflash.ledger.domain.accounting.Ledger;
+import net.flyingfishflash.ledger.domain.accounting.Transaction;
+import net.flyingfishflash.ledger.domain.accounting.TrialBalanceResult;
 
-import net.flyingfishflash.ledger.domain.ChartOfAccounts;
-import net.flyingfishflash.ledger.domain.ChartOfAccountsBuilder;
-import net.flyingfishflash.ledger.domain.Ledger;
-import net.flyingfishflash.ledger.domain.Transaction;
-import net.flyingfishflash.ledger.domain.TrialBalanceResult;
-
-import static net.flyingfishflash.ledger.domain.AccountSide.DEBIT;
-
-
+import static net.flyingfishflash.ledger.domain.accounting.AccountSide.DEBIT;
 
 import java.math.BigDecimal;
 

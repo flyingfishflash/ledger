@@ -1,7 +1,8 @@
-package net.flyingfishflash.ledger.domain;
+package net.flyingfishflash.ledger.domain.accounting;
 
 import com.google.common.base.MoreObjects;
-import net.flyingfishflash.ledger.domain.Transaction;
+
+import net.flyingfishflash.ledger.domain.accounting.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
