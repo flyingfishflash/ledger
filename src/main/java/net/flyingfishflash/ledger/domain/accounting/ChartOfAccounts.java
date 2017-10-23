@@ -1,7 +1,8 @@
-package net.flyingfishflash.ledger.domain;
+package net.flyingfishflash.ledger.domain.accounting;
 
 import com.google.common.base.MoreObjects;
-import net.flyingfishflash.ledger.domain.AccountDetails;
+
+import net.flyingfishflash.ledger.domain.accounting.AccountDetails;
 
 import java.util.HashMap;
 import java.util.Map;

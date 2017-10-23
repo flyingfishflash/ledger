@@ -6,31 +6,22 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.orm.jpa.vendor.HibernateJpaSessionFactoryBean;
 
-//import com.google.common.util.concurrent.Service;
+import net.flyingfishflash.ledger.domain.accounting.ChartOfAccounts;
+import net.flyingfishflash.ledger.domain.accounting.ChartOfAccountsBuilder;
+import net.flyingfishflash.ledger.domain.accounting.Ledger;
+import net.flyingfishflash.ledger.domain.accounting.Transaction;
+import net.flyingfishflash.ledger.domain.accounting.TrialBalanceResult;
 
-import net.flyingfishflash.ledger.domain.ChartOfAccounts;
-import net.flyingfishflash.ledger.domain.ChartOfAccountsBuilder;
-import net.flyingfishflash.ledger.domain.Ledger;
-import net.flyingfishflash.ledger.domain.Transaction;
-import net.flyingfishflash.ledger.domain.TrialBalanceResult;
-
-import static net.flyingfishflash.ledger.domain.AccountSide.DEBIT;
-
-//import net.flyingfishflash.ledger.domain.treeconcept.Tree;
-//import net.flyingfishflash.ledger.domain.treeconcept.Node;
-//import net.flyingfishflash.ledger.domain.treeconcept.TraversalStrategy;
+import static net.flyingfishflash.ledger.domain.accounting.AccountSide.DEBIT;
 
 import java.math.BigDecimal;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import net.flyingfishflash.ledger.domain.nestedset.Node;
-import net.flyingfishflash.ledger.domain.nestedset.NodeDAO;
-import net.flyingfishflash.ledger.domain.nestedset.NodeDAOImpl;
-import net.flyingfishflash.ledger.domain.nestedset.NodeService;
-import net.flyingfishflash.ledger.domain.nestedset.NodeServiceImpl;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 
 
@@ -41,6 +32,8 @@ public class LedgerApplication {
 	public static void main(String[] args) throws Exception {
 		SpringApplication.run(LedgerApplication.class, args);
 
+	
+		
 		//NodeDAO nDao = new NodeDAOImpl();
 		//List<Node> nodes = new ArrayList<Node>(nDao.findWholeTree());
 		
@@ -61,12 +54,15 @@ public class LedgerApplication {
 
 	}		
 
-	@Bean
-	public HibernateJpaSessionFactoryBean sessionFactory() {
-	    return new HibernateJpaSessionFactoryBean();
-	}
+//	@Bean
+//	public HibernateJpaSessionFactoryBean sessionFactory() {
+//	    return new HibernateJpaSessionFactoryBean();
+//	}
 
-	
+
+    @PersistenceContext
+    EntityManager entityManager;
+    
 	public static void showLedger( ) {
         String cashAccountNumber = "000001";
         String checkingAccountNumber = "000002";
@@ -95,45 +91,5 @@ public class LedgerApplication {
         TrialBalanceResult trialBalanceResult = ledger.computeTrialBalance();
         System.out.println(trialBalanceResult.toString());
 	}
-
-/*	
-	
-public static void tree() {
-
-	Tree tree = new Tree();
-
-    tree.addNode("Root");
-    tree.addNode("Assets", "Root");
-    tree.addNode("Liabilities", "Root");
-    tree.addNode("Current Liabilities", "Liabilities");
-    tree.addNode("Fixed Liabilities", "Liabilities");
-    tree.addNode("Transient Liabilities", "Liabilities");
-    tree.addNode("Income", "Root");
-    tree.addNode("Expense", "Root");
-    tree.addNode("Equity", "Root");
-    tree.addNode("Financial Assets", "Assets");
-    tree.addNode("Fixed Assets", "Assets");
-
-    tree.display("Root");
-
-    System.out.println("n***** DEPTH-FIRST ITERATION *****");
-
-    // Default traversal strategy is 'depth-first'
-    Iterator<Node> depthIterator = tree.iterator("Root");
-
-    while (depthIterator.hasNext()) {
-        Node node = depthIterator.next();
-        System.out.println(node.getIdentifier());
-    }
-
-    System.out.println("n***** BREADTH-FIRST ITERATION *****");
-
-    Iterator<Node> breadthIterator = tree.iterator("Root", TraversalStrategy.BREADTH_FIRST);
-
-    while (breadthIterator.hasNext()) {
-        Node node = breadthIterator.next();
-        System.out.println(node.getIdentifier()); }
-	}
-*/
 
 }

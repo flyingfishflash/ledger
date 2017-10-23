@@ -1,11 +1,11 @@
-package net.flyingfishflash.ledger.domain;
-
-import net.flyingfishflash.ledger.domain.AccountDetails;
-import net.flyingfishflash.ledger.domain.AccountDetailsImpl;
-import net.flyingfishflash.ledger.domain.AccountSide;
+package net.flyingfishflash.ledger.domain.accounting;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import net.flyingfishflash.ledger.domain.accounting.AccountDetails;
+import net.flyingfishflash.ledger.domain.accounting.AccountDetailsImpl;
+import net.flyingfishflash.ledger.domain.accounting.AccountSide;
 
 public class ChartOfAccountsBuilder {
     private Set<AccountDetails> accountDetails = new HashSet<>();

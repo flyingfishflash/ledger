@@ -1,10 +1,10 @@
-package net.flyingfishflash.ledger.domain;
-
-import net.flyingfishflash.ledger.domain.AccountSide;
-import net.flyingfishflash.ledger.domain.AccountingEntry;
-//import lombok.Getter;
+package net.flyingfishflash.ledger.domain.accounting;
 
 import javax.annotation.Nullable;
+
+import net.flyingfishflash.ledger.domain.accounting.AccountSide;
+import net.flyingfishflash.ledger.domain.accounting.AccountingEntry;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.*;

@@ -1,16 +1,17 @@
-import net.flyingfishflash.ledger.domain.Journal;
-import net.flyingfishflash.ledger.domain.Ledger;
-import net.flyingfishflash.ledger.domain.ChartOfAccounts;
-import net.flyingfishflash.ledger.domain.ChartOfAccountsBuilder;
-import net.flyingfishflash.ledger.domain.Transaction;
-import net.flyingfishflash.ledger.domain.TransactionBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.math.BigDecimal;
+import net.flyingfishflash.ledger.domain.accounting.ChartOfAccounts;
+import net.flyingfishflash.ledger.domain.accounting.ChartOfAccountsBuilder;
+import net.flyingfishflash.ledger.domain.accounting.Journal;
+import net.flyingfishflash.ledger.domain.accounting.Ledger;
+import net.flyingfishflash.ledger.domain.accounting.Transaction;
+import net.flyingfishflash.ledger.domain.accounting.TransactionBuilder;
 
-import static net.flyingfishflash.ledger.domain.AccountSide.CREDIT;
-import static net.flyingfishflash.ledger.domain.AccountSide.DEBIT;
+import static net.flyingfishflash.ledger.domain.accounting.AccountSide.CREDIT;
+import static net.flyingfishflash.ledger.domain.accounting.AccountSide.DEBIT;
+
+import java.math.BigDecimal;
 
 public class LedgerTest {
 

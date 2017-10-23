@@ -206,6 +206,11 @@ public class NodeServiceImpl implements NodeService {
         return dao.deleteDescendants(n);
     }
 
+    @Override
+    @Transactional
+    public void removeSubTree(Node n) {
+         dao.removeSubtree(n);
+    }    
 
     /**
      * Find the whole structure of tree
@@ -224,6 +229,19 @@ public class NodeServiceImpl implements NodeService {
             nodes.add(newRoot);
         }
         return nodes;
+    }
+    
+    @Transactional
+    public List<Node> findAllLeafNodes() {
+    	List<Node> nodes = dao.findAllLeafNodes();
+		return nodes;
+    	
+    }
+    
+    @Transactional
+    public List<Node> findLeafNodes(Node n) {
+    	List<Node> nodes = dao.findLeafNodes(n);
+    	return nodes;
     }
 
     /**

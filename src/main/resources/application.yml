@@ -41,11 +41,11 @@ spring:
     hibernate:
       ddl-auto: create
     show-sql: true
-    #properties:
+    properties:
         #hibernate.current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
-
+        hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
   datasource:
-    url: jdbc:postgresql://localhost:5432/ledger
+    url: jdbc:postgresql://seneca:5432/ledger
     username: gregory
     password: 
     platform: POSTGRESQL

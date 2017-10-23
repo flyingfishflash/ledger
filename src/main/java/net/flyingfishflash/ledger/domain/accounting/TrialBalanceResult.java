@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger.domain;
+package net.flyingfishflash.ledger.domain.accounting;
 
 import com.google.common.base.MoreObjects;
 
