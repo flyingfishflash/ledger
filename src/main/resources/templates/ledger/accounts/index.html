@@ -32,8 +32,12 @@
 
     <tr th:each="account : ${accounts}">
         <td th:text="${account.id}"></td>
-        <td th:text="${account.name}"></td>
-        <!--td th:text="${account.value}"></td-->
+        <td>
+            <span
+            th:with="count=${account.level - 1}" 
+            th:text="${#strings.repeat('&nbsp; ',count)} + ${account.name}">
+            </span>
+        </td>
         <td th:text="${account.left}"></td>
         <td th:text="${account.right}"></td>
         <td th:text="${account.parent.id}"></td>
