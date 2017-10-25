@@ -22,7 +22,7 @@
     <tr>
         <th>ID</th>
         <th>Name</th>
-        <th>Value</th>
+        <!--th>Value</th-->
         <th>Left</th>
         <th>Right</th>
         <th>Parent</th>
@@ -30,17 +30,17 @@
         <th>Actions</th>
     </tr>
 
-    <tr th:each="node : ${nodes}">
-        <td th:text="${node.id}"></td>
-        <td th:text="${node.name}"></td>
-        <td th:text="${node.value}"></td>
-        <td th:text="${node.lft}"></td>
-        <td th:text="${node.rgt}"></td>
-        <td th:text="${node.parent.id}"></td>
-        <td th:text="${node.depth}"></td>
-        <td><a th:href="@{'/ledger/accounts/test?parentAccountId=' + ${node.id}}" class="text-muted">Edit</a> |
-            <a th:href="@{'/ledger/accounts/create?parentAccountId=' + ${node.id}}" class="text-muted">Add Child</a> |
-            <a th:href="@{'/ledger/accounts/delete?parentAccountId=' + ${node.id}}" class="text-muted">Remove</a>
+    <tr th:each="account : ${accounts}">
+        <td th:text="${account.id}"></td>
+        <td th:text="${account.name}"></td>
+        <!--td th:text="${account.value}"></td-->
+        <td th:text="${account.left}"></td>
+        <td th:text="${account.right}"></td>
+        <td th:text="${account.parent.id}"></td>
+        <td th:text="${account.level}"></td>
+        <td><a th:href="@{'/ledger/accounts/test?parentAccountId=' + ${account.id}}" class="text-muted">Edit</a> |
+            <a th:href="@{'/ledger/accounts/create?parentAccountId=' + ${account.id}}" class="text-muted">Add Child</a> |
+            <a th:href="@{'/ledger/accounts/delete?parentAccountId=' + ${account.id}}" class="text-muted">Remove</a>
         </td>
         <!--class="btn btn-outline-secondary btn-sm"-->
         <!--button type="button" class="btn btn-sm">Add Child</button></td-->

@@ -7,6 +7,8 @@ import pl.exsio.nestedj.annotation.ParentColumn;
 import pl.exsio.nestedj.annotation.RightColumn;
 import pl.exsio.nestedj.model.NestedNode;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -56,24 +58,22 @@ public class AccountNode extends Account implements NestedNode<AccountNode> {
 
     public AccountNode() {
         super();
+        this.setDiscriminator("account");
+
     }
-
-    public String getLongname() {
-		return longname;
-	}
-
-	public void setLongname(String longname) {
-		this.longname = longname;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	@Override
     public Long getId() {
         return id;
     }
+
+	public String getName() {
+        return name;
+    }
+
+	public String getLongname() {
+		return longname;
+	}
 
     @Override
     public Long getLeft() {
@@ -90,28 +90,22 @@ public class AccountNode extends Account implements NestedNode<AccountNode> {
         return lvl;
     }
 
-    public String getDiscriminator() {
-        return discriminator;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    /*
-    public AccountNode setName(String name) {
-        this.name = name;
-        return this;
-    }
-*/
-    public void setDiscriminator(String discriminator) {
-        this.discriminator = discriminator;
-    }
-
     @Override
     public AccountNode getParent() {
         return parent;
     }
+
+    public String getDiscriminator() {
+        return discriminator;
+    }
+
+    public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setLongname(String longname) {
+		this.longname = longname;
+	}
 
     @Override
     public void setLeft(Long left) {
@@ -133,10 +127,19 @@ public class AccountNode extends Account implements NestedNode<AccountNode> {
         this.parent = parent;
     }
 
+    public void setDiscriminator(String discriminator) {
+        this.discriminator = discriminator;
+    }
+
+    public Boolean isRoot( ) {
+    	return this.getLeft() == 1L;
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("id", id)
+                .add("guid", guid)
                 .add("name", name)
                 .add("lft", lft)
                 .add("rgt", rgt)
@@ -157,6 +160,7 @@ public class AccountNode extends Account implements NestedNode<AccountNode> {
 
     @Override
     public int hashCode() {
-        return this.getId().intValue();
+        return Objects.hash(this.getGuid());
     }
+
 }
