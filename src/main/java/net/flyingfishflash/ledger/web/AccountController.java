@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import net.flyingfishflash.ledger.domain.AccountNode;
 import net.flyingfishflash.ledger.domain.AccountRepository;
-import net.flyingfishflash.ledger.domain.nestedset.Node;
 
 
 @Controller
@@ -91,7 +90,7 @@ public class AccountController {
     
     // sloppy test URL
     @RequestMapping(value = "/ledger/accounts/test", method = RequestMethod.GET)
-    public String test(@ModelAttribute("node") Node node, @RequestParam("parentAccountId") Long parentAccountId/*, @RequestParam("method") String method*/) throws Exception {
+    public String test(@ModelAttribute("node") AccountNode node, @RequestParam("parentAccountId") Long parentAccountId/*, @RequestParam("method") String method*/) throws Exception {
     	logger.info("@RequestMapping: /ledger/accounts/test (POST)");
         AccountNode parent = accountRepository.findOneById(parentAccountId);
         //accountRepository.deriveLongName(parent);

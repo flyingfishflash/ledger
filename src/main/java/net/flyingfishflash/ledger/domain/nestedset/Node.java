@@ -5,33 +5,33 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "Node")
-//@MappedSuperclass
+//@Entity
+//@Table(name = "Node")
+////@MappedSuperclass
 public class Node {
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@Id
+    //@Column(name = "id")
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "name", nullable = false)
+    //@Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "lft", nullable = false)
+    //@Column(name = "lft", nullable = false)
     private int lft;
 
-    @Column(name = "rgt", nullable = false)
+    //@Column(name = "rgt", nullable = false)
     private int rgt;
 
-    @Column(name = "depth", nullable = false)
+    //@Column(name = "depth", nullable = false)
     private int depth;
 
-    @Column(name = "value", nullable = false)
+    //@Column(name = "value", nullable = false)
     private int value;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "parent_id")
+    //@ManyToOne(fetch = FetchType.EAGER)
+    //@JoinColumn(name = "parent_id")
     private Node parent;
     
     //@OneToMany(mappedBy = "parent", /*cascade = {CascadeType.MERGE, CascadeType.REMOVE, CascadeType.REFRESH, CascadeType.DETACH, CascadeType.PERSIST},*/ fetch = FetchType.EAGER)
