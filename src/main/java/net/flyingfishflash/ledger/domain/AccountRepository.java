@@ -74,16 +74,18 @@ public class AccountRepository {
     }
     
 
-    public String deriveLongNameForInsert(AccountNode p, AccountNode n) {
+    public String deriveLongName(AccountNode n, AccountNode p) {
     	
     	List<AccountNode> parents = (List<AccountNode>) ar.getParents(p);
     	StringJoiner sj = new StringJoiner(":");
     	parents.size();
-		for (int i = parents.size()-1; i >= 0; i--) {
+		// build the longname by collecting the ancestor account names in reverse
+    	for (int i = parents.size()-1; i >= 0; i--) {
 			if (parents.get(i).getLeft() > 1)
 				sj.add(parents.get(i).getName());
 			logger.info("array: " + parents.get(i).getName());
 		}
+    	// append the parent/current node
     	sj.add(p.getName());
     	sj.add(n.getName());
 		String longname = sj.toString();
@@ -96,7 +98,7 @@ public class AccountRepository {
     
     public void insertAsLastChildOf(AccountNode n, AccountNode p) {
     	
-    	n.setLongname(this.deriveLongNameForInsert(p, n));
+    	n.setLongname(this.deriveLongName(n, p));
     	ar.insertAsLastChildOf(n, p);
     
     }
@@ -104,7 +106,7 @@ public class AccountRepository {
 
     public void insertAsFirstChildOf(AccountNode n, AccountNode p) {
     	
-    	n.setLongname(this.deriveLongNameForInsert(p, n));
+    	n.setLongname(this.deriveLongName(n, p));
     	ar.insertAsFirstChildOf(n, p);
     
     }
@@ -112,6 +114,7 @@ public class AccountRepository {
 
     public void insertAsPrevSiblingOf(AccountNode n, AccountNode p) {
     	
+    	n.setLongname(this.deriveLongName(n, p));
     	ar.insertAsPrevSiblingOf(n, p);
     
     }
@@ -119,6 +122,7 @@ public class AccountRepository {
     
     public void insertAsNextSiblingOf(AccountNode n, AccountNode p) {
     	
+    	n.setLongname(this.deriveLongName(n, p));
     	ar.insertAsNextSiblingOf(n, p);
     
     }
