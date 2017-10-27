@@ -76,7 +76,7 @@ public class AccountController {
     @RequestMapping(value = "/ledger/accounts/create", method = RequestMethod.POST)
     public String saveNode(@ModelAttribute("node") AccountNode node, @RequestParam("parentAccountId") Long parentAccountId/*, @RequestParam("method") String method*/) throws Exception {
     	logger.info("@RequestMapping: /ledger/accounts/create (POST)");
-        AccountNode parent = accountRepository.findOneById(parentAccountId);
+    	AccountNode parent = accountRepository.findOneById(parentAccountId);
         logger.info("Parent: " + parent.toString());
         String method = "last";
         if (method.equals("first")) {
@@ -97,10 +97,5 @@ public class AccountController {
         return "redirect:/ledger/accounts";
 
     }
-    
-    
-    
-    
-    
 
 }
