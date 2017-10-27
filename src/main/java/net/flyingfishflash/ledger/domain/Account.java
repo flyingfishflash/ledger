@@ -25,6 +25,9 @@ public class Account {
     @Column(name = "hidden")
     protected Boolean hidden = false;
 
+    @Column(name = "tax_related")
+    protected Boolean taxRelated = false;
+
 	@Column(name = "account_class")
 	@Enumerated(EnumType.STRING)
 	protected AccountCategory accountCategory;
@@ -83,6 +86,14 @@ public class Account {
 
 	public void setHidden(Boolean hidden) {
 		this.hidden = hidden;
+	}
+
+	public Boolean getTaxRelated() {
+		return taxRelated;
+	}
+
+	public void setTaxRelated(Boolean taxRelated) {
+		this.taxRelated = taxRelated;
 	}
 
 	public String getCode() {
