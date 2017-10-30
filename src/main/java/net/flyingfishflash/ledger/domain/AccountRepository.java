@@ -1,6 +1,7 @@
 package net.flyingfishflash.ledger.domain;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.StringJoiner;
 
 import javax.persistence.EntityManager;
@@ -51,7 +52,21 @@ public class AccountRepository {
     	
     	// TODO move to nestedj, DAO layer
     	logger.info("AccountRepository.findRoot() begin");
-        CriteriaBuilder cb = em.getCriteriaBuilder();
+    	logger.info("AccountRepository.findRoot() *******8");
+    	Optional<AccountNode> nodeO = this.ar.getRoot(AccountNode.class);
+    	logger.info(nodeO.toString());
+    	//AccountNode node;
+    	if (nodeO.isPresent()) {
+        	logger.info("AccountRepository.findRoot() isPresent end");
+    		return nodeO.get();
+    	} else {
+        	logger.info("AccountRepository.findRoot() end");
+    		return null;
+    	}
+
+    	
+        /*
+    	CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<AccountNode> cq = cb.createQuery(AccountNode.class);
         Root<AccountNode> node = cq.from(AccountNode.class);
         cq.select(node);
@@ -59,8 +74,9 @@ public class AccountRepository {
         cq.where(condition);
         TypedQuery<AccountNode> q = em.createQuery(cq);
         printNode(77L, q.getSingleResult());
-    	logger.info("AccountRepository.findRoot() end");
-    	return q.getSingleResult();    	
+        */
+        
+    	//return q.getSingleResult();    	
     	
     }
     
@@ -69,7 +85,7 @@ public class AccountRepository {
     	
     	logger.info("AccountRepository.findWholeTree() begin");
     	logger.info("AccountRepository.findWholeTree() end");
-    	return this.ar.getTreeAsList(findRoot());
+    	return this.ar.getTreeAsList(this.findRoot());
     
     }
     
