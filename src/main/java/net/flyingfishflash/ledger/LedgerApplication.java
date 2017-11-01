@@ -2,15 +2,15 @@ package net.flyingfishflash.ledger;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
+
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.orm.jpa.vendor.HibernateJpaSessionFactoryBean;
 
 import net.flyingfishflash.ledger.domain.accounting.ChartOfAccounts;
 import net.flyingfishflash.ledger.domain.accounting.ChartOfAccountsBuilder;
 import net.flyingfishflash.ledger.domain.accounting.Ledger;
 import net.flyingfishflash.ledger.domain.accounting.Transaction;
 import net.flyingfishflash.ledger.domain.accounting.TrialBalanceResult;
+
 
 import static net.flyingfishflash.ledger.domain.accounting.AccountSide.DEBIT;
 
@@ -58,11 +58,7 @@ public class LedgerApplication {
 //	public HibernateJpaSessionFactoryBean sessionFactory() {
 //	    return new HibernateJpaSessionFactoryBean();
 //	}
-
-
-    @PersistenceContext
-    EntityManager entityManager;
-    
+        
 	public static void showLedger( ) {
         String cashAccountNumber = "000001";
         String checkingAccountNumber = "000002";

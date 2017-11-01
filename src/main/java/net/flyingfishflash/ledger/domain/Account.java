@@ -5,8 +5,13 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
 
+import net.flyingfishflash.ledger.common.IdentifierFactory;
+
 @MappedSuperclass
 public class Account {
+	
+	@Column(name="guid", unique = true, updatable = false)
+	protected String guid;
 
     @Column(name = "code")
     protected String code;
@@ -15,10 +20,13 @@ public class Account {
     protected String description;
 
     @Column(name = "placeholder")
-    protected Boolean placeholder;
+    protected Boolean placeholder = false;
 
     @Column(name = "hidden")
-    protected Boolean hidden;
+    protected Boolean hidden = false;
+
+    @Column(name = "tax_related")
+    protected Boolean taxRelated = false;
 
 	@Column(name = "account_class")
 	@Enumerated(EnumType.STRING)
@@ -28,6 +36,18 @@ public class Account {
 	@Enumerated(EnumType.STRING)
 	protected AccountType accountType;
 
+	Account() {
+		this.setGuid();
+	}
+	
+	public String getGuid() {
+		return guid;
+	}
+	
+	public void setGuid() {
+		guid = IdentifierFactory.getInstance().generateIdentifier();
+	}
+	
 	public AccountCategory getAccountCategory() {
 		return accountCategory;
 	}
@@ -66,6 +86,14 @@ public class Account {
 
 	public void setHidden(Boolean hidden) {
 		this.hidden = hidden;
+	}
+
+	public Boolean getTaxRelated() {
+		return taxRelated;
+	}
+
+	public void setTaxRelated(Boolean taxRelated) {
+		this.taxRelated = taxRelated;
 	}
 
 	public String getCode() {

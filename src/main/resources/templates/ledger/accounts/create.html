@@ -14,34 +14,65 @@
 <!--p th:unless="${nodes} and ${nodes.size()}">No nodes to display</p-->
 
 <br /><br />
-<p>Creating a child account of: <span style="font-weight: bold;" th:text="${parent.name} + ' (' + ${parent.id} + ')'">Default Parent Account</span></p>
+<p>Creating a child account of:
+<br />
+	<!--span style="font-weight: bold;" th:text="${parent.longname} + ' (' + ${parent.id} + ')'">Default Parent Account</span></p-->
+	<span style="font-weight: bold;" th:text="${parent.longname}">Default Parent Account</span>
+</p>
 <br /><br />
 <form action="#" th:action="@{'/ledger/accounts/create?parentAccountId=' + ${parent.id}}" th:object="${node}" method="post">
-	<div class="form-group">
-	<label for="accountName">Account Name:</label>
-	<input class="form-control" type="text" id="accountName" placeholder="" th:field="*{name}"/>
+	<div class="form-row">
+    	<div class="form-group col-md-3">
+			<label for="accountName">Account Name:</label>
+			<input class="form-control" type="text" id="accountName" placeholder="" th:field="*{name}"/>
+			<!-- autofocus="true"  attribute is slow-->
+		</div>
+    	<div class="form-group col-md-2">
+			<label for="accountCode">Account Code:</label>
+			<input class="form-control" type="text" id="accountCode" placeholder="" th:field="*{code}"/>
+		</div>
 	</div>
-	<div class="form-group">
-	<label for="accountCode">Account Code:</label>
-	<input class="form-control" type="text" id="accountCode" placeholder="" />
+	<div class="form-row">
+		<div class="form-group col-md-5">
+			<label for="accountDescription">Account Description:</label>
+			<input class="form-control" type="text" id="accountDescription" placeholder=""  th:field="*{description}"/>
+		</div>
 	</div>
-	<div class="form-group">
-	<label for="accountDescription">Account Description:</label>
-	<input class="form-control" type="text" id="accountDescription" placeholder="" />
-	</div>
+	<div class="form-row">
+    	<div class="form-group col-md-2">
+		    <label for="accountCategoryControlSelect">Category</label>
+		    <select class="form-control" id="accountCategoryControlSelect" th:field="*{accountCategory}">
+		      <option value="ASSET">Asset</option>
+		      <option value="LIABILITY">Liability</option>
+		      <option value="INCOME">Income</option>
+		      <option value="EXPENSE">Expense</option>
+		      <option value="EQUITY">Equity</option>
+		    </select>
+		</div>
+    	<div class="form-group col-md-2">
+		    <label for="accounTypeControlSelect">Type</label>
+		    <select class="form-control" id="accountTypeControlSelect" th:field="*{accountType}">
+		      <option value="ASSET">Asset</option>
+		      <option value="BANK">Bank</option>
+		      <option value="CASH">Cash</option>
+		      <option value="CREDIT">Credit</option>
+		      <option value="EQUITY">Equity</option>
+		    </select>
+		</div>
+  </div>	
 	<div class="form-check">
   	<label class="form-check-label">
-    <input class="form-check-input" type="checkbox" value="" > Hidden</input>
+    <input class="form-check-input" type="checkbox" value="" th:field="*{hidden}" > Hidden</input>
   	</label>
 	</div>
 	<div class="form-check">
   	<label class="form-check-label">
-    <input class="form-check-input" type="checkbox" value=""> Placeholder</input>
+    <input class="form-check-input" type="checkbox" value="" th:field="*{placeholder}"> Placeholder</input>
   	</label>
 	</div>
-	<div class="form-check disabled">
+	<div class="form-check">
   	<label class="form-check-label">
-    <input class="form-check-input" type="checkbox" value=""> Tax Related</input>
+    <input class="form-check-input" type="checkbox" value="" th:field="*{taxRelated}"> Tax Related</input>
   	</label>
 	</div>
 	<br /><br />
