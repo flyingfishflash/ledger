@@ -6,10 +6,8 @@ import java.util.StringJoiner;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
@@ -32,6 +30,14 @@ public class AccountRepository {
     @PersistenceContext
     protected EntityManager em;
 
+    public AccountNode newAccountNode(AccountNode p) {
+    	AccountNode node = new AccountNode();
+    	node.accountCategory = p.accountCategory;
+    	//logger.info(node.accountCategory.toString());
+    	return node;
+    	
+    }
+    
 
     public AccountNode findOneById(Long id) {
     	
