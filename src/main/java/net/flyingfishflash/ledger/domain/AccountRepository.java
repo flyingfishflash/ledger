@@ -98,6 +98,10 @@ public class AccountRepository {
 
     public String deriveLongName(AccountNode n, AccountNode p) {
     	
+    	if (p.getLeft() <= 1) {
+    		return n.name;
+    	}
+    	
     	List<AccountNode> parents = (List<AccountNode>) ar.getParents(p);
     	StringJoiner sj = new StringJoiner(":");
     	parents.size();
