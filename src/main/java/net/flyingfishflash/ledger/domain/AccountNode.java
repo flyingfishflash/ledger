@@ -59,7 +59,6 @@ public class AccountNode extends Account implements NestedNode<AccountNode> {
     public AccountNode() {
         super();
         this.setDiscriminator("account");
-
     }
 
 	@Override
@@ -146,6 +145,7 @@ public class AccountNode extends Account implements NestedNode<AccountNode> {
                 .add("level", lvl)
                 .add("parent", parent != null ? parent.getId() : "null")
                 .add("discriminator", discriminator)
+                .add("category", accountCategory)
                 .toString();
     }
 

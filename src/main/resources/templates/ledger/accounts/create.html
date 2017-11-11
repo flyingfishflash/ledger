@@ -9,17 +9,20 @@
 
 <div class="container">
 
-<h2 th:text="${title}">Default Title</h2>
-
-<!--p th:unless="${nodes} and ${nodes.size()}">No nodes to display</p-->
+<h2 style="text-align: center" th:text="${title}">Default Title</h2>
 
 <br /><br />
-<p>Creating a child account of:
-<br />
-	<!--span style="font-weight: bold;" th:text="${parent.longname} + ' (' + ${parent.id} + ')'">Default Parent Account</span></p-->
-	<span style="font-weight: bold;" th:text="${parent.longname}">Default Parent Account</span>
-</p>
+
+<div th:switch="${parentIsRoot}">
+	<p th:case="true">Creating a new top level account</p>
+	<p th:case="false">Creating a child account of:
+		<br />
+		<span style="font-weight: bold;" th:text="${parent.longname}">Longname of Parent Account</span>
+	</p>
+</div>
+
 <br /><br />
+
 <form action="#" th:action="@{'/ledger/accounts/create?parentAccountId=' + ${parent.id}}" th:object="${node}" method="post">
 	<div class="form-row">
     	<div class="form-group col-md-3">
@@ -39,51 +42,75 @@
 		</div>
 	</div>
 	<div class="form-row">
-    	<div class="form-group col-md-2">
+		<!-- if the immediate parent account is the root node, allow selection of the account category -->
+    	<div th:if="${parentIsRoot == true}" class="form-group col-md-2">
 		    <label for="accountCategoryControlSelect">Category</label>
-		    <select class="form-control" id="accountCategoryControlSelect" th:field="*{accountCategory}">
-		      <option value="ASSET">Asset</option>
-		      <option value="LIABILITY">Liability</option>
-		      <option value="INCOME">Income</option>
-		      <option value="EXPENSE">Expense</option>
-		      <option value="EQUITY">Equity</option>
-		    </select>
+		    <select class="form-control" id="aCategory" th:field="*{accountCategory}">
+		    <option th:each="category : ${categories}"
+                    th:value="${category}"
+                    th:text="${category}"
+                    th:selected="${category == defaultAccountCategory}">
+            </option>
+        	</select>
 		</div>
+		<!-- if the immediate parent account is not the root node, set a hidden field to the value already assigned to the account -->
+    	<div th:if="${parentIsRoot == false}" >
+		    <input type="hidden" id="aCategory" th:field="*{accountCategory}"/>
+    	</div>
+		<!-- end if -->
     	<div class="form-group col-md-2">
-		    <label for="accounTypeControlSelect">Type</label>
-		    <select class="form-control" id="accountTypeControlSelect" th:field="*{accountType}">
-		      <option value="ASSET">Asset</option>
-		      <option value="BANK">Bank</option>
-		      <option value="CASH">Cash</option>
-		      <option value="CREDIT">Credit</option>
-		      <option value="EQUITY">Equity</option>
+		    <label for="accountTypeControlSelect">Type</label>
+		    <select class="form-control" id="aType" th:field="*{accountType}">
+		    <option th:each="type : ${types}"
+                    th:value="${type}"
+                    th:text="${type}">
+            </option>
 		    </select>
 		</div>
-  </div>	
+	</div>	
 	<div class="form-check">
-  	<label class="form-check-label">
-    <input class="form-check-input" type="checkbox" value="" th:field="*{hidden}" > Hidden</input>
-  	</label>
+	  	<label class="form-check-label">
+	    <input class="form-check-input" type="checkbox" value="" th:field="*{hidden}" > Hidden</input>
+	  	</label>
 	</div>
 	<div class="form-check">
-  	<label class="form-check-label">
-    <input class="form-check-input" type="checkbox" value="" th:field="*{placeholder}"> Placeholder</input>
-  	</label>
+	  	<label class="form-check-label">
+	    <input class="form-check-input" type="checkbox" value="" th:field="*{placeholder}"> Placeholder</input>
+	  	</label>
 	</div>
 	<div class="form-check">
-  	<label class="form-check-label">
-    <input class="form-check-input" type="checkbox" value="" th:field="*{taxRelated}"> Tax Related</input>
-  	</label>
+	  	<label class="form-check-label">
+	    <input class="form-check-input" type="checkbox" value="" th:field="*{taxRelated}"> Tax Related</input>
+	  	</label>
 	</div>
 	<br /><br />
 	<div class="row">
-	<button type="submit" class="btn btn-primary">Submit</button>
+		<button type="submit" class="btn btn-primary">Submit</button>
 	</div>
 </form>
 
 </div>
 
 <div th:replace="fragments :: bootstrapjs"></div>
+
+<script type="text/javascript">
+function sendAjaxRequest() {
+    var category = $("#aCategory").val();
+    $.get( "typesbycategory?category=" + category, function( data ) {
+        $("#aType").empty();
+        data.forEach(function(item, i) {
+            var option = "<option value = " + item + ">" + item +  "</option>";
+            $("#aType").append(option);
+        });
+    });
+};
+
+$(document).ready(function() {
+    $("#aCategory").change(function() {
+        sendAjaxRequest();
+    });
+});	
+</script>
 
 </body>
 </html>
