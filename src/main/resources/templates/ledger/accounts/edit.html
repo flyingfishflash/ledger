@@ -14,19 +14,18 @@
 <br /><br />
 
 <div th:switch="${parentIsRoot}">
-	<p th:case="true">Creating a new top level account</p>
-	<p th:case="false">Creating a child account of:
+	<p th:case="true">Editing a top level account</p>
+	<p th:case="false">Editing account:
 		<br />
-		<span style="font-weight: bold;" th:text="${parent.longname}">Longname of Parent Account</span>
+		<span style="font-weight: bold;" th:text="${account.longname}">Longname of Account</span>
 	</p>
 </div>
 
 <br /><br />
 
-<form action="#" th:action="@{'/ledger/accounts/create?parentAccountId=' + ${parent.id}}" th:object="${account}" method="post">
-<!--form action="#" th:action="@{'/ledger/accounts/create'}" th:object="${account}" method="post"-->
+<form action="#" th:action="@{'/ledger/accounts/edit?id=' + ${account.id}}" th:object="${account}" method="post">
 
-    <input type="hidden" id="guid" th:field="*{guid}"/>
+    <input type="hidden" id="id" th:field="*{id}"/>
 
 	<div class="form-row">
     	<div class="form-group col-md-3">

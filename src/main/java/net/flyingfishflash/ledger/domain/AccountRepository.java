@@ -1,5 +1,6 @@
 package net.flyingfishflash.ledger.domain;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import net.flyingfishflash.ledger.common.IdentifierFactory;
 import pl.exsio.nestedj.repository.NestedNodeRepositoryImpl;
 
 @Component
@@ -30,15 +32,45 @@ public class AccountRepository {
     @PersistenceContext
     protected EntityManager em;
 
+
     public AccountNode newAccountNode(AccountNode p) {
-    	AccountNode node = new AccountNode();
-    	node.accountCategory = p.accountCategory;
-    	//logger.info(node.accountCategory.toString());
-    	return node;
+
+    	AccountNode accountNode = new AccountNode();
     	
+    	accountNode.setGuid(IdentifierFactory.getInstance().generateIdentifier());
+    	
+    	if (p.accountCategory.equals(AccountCategory.Root)) {
+    		accountNode.setAccountCategory(AccountCategory.Asset);
+    		accountNode.setAccountType(AccountType.Asset);
+    	} else {
+    		accountNode.setAccountCategory(p.accountCategory);
+    		accountNode.setAccountType(p.accountType);
+    	}
+    	
+    	return accountNode;
+  	
     }
     
 
+    public void save(AccountNode n) {
+    	em.persist(n);
+    }
+
+
+    public void update(AccountNode n) {
+
+    	// derive and set the longname on all child accounts of the subject account
+    	Iterable<AccountNode> t = this.ar.getTreeAsList(n);
+        Iterator<AccountNode> it = t.iterator();
+		while (it.hasNext()) {
+			AccountNode account = it.next();
+			account.setLongname(this.deriveLongName(account, account.getParent()));
+			}        
+        
+    	em.merge(n);
+    }
+
+    
     public AccountNode findOneById(Long id) {
     	
     	// TODO move to nestedj, DAO layer
@@ -57,16 +89,16 @@ public class AccountRepository {
     public AccountNode findRoot() {
     	
     	// TODO move to nestedj, DAO layer
-    	logger.info("AccountRepository.findRoot() begin");
-    	logger.info("AccountRepository.findRoot() *******8");
+    	logger.debug("AccountRepository.findRoot() begin");
+    	logger.debug("AccountRepository.findRoot() *******8");
     	Optional<AccountNode> nodeO = this.ar.getRoot(AccountNode.class);
-    	logger.info(nodeO.toString());
+    	logger.debug(nodeO.toString());
     	//AccountNode node;
     	if (nodeO.isPresent()) {
-        	logger.info("AccountRepository.findRoot() isPresent end");
+        	logger.debug("AccountRepository.findRoot() isPresent end");
     		return nodeO.get();
     	} else {
-        	logger.info("AccountRepository.findRoot() end");
+        	logger.debug("AccountRepository.findRoot() end");
     		return null;
     	}
 
@@ -89,8 +121,8 @@ public class AccountRepository {
     
     public Iterable<AccountNode> findWholeTree() {
     	
-    	logger.info("AccountRepository.findWholeTree() begin");
-    	logger.info("AccountRepository.findWholeTree() end");
+    	//logger.debug("AccountRepository.findWholeTree() begin");
+    	//logger.debug("AccountRepository.findWholeTree() end");
     	return this.ar.getTreeAsList(this.findRoot());
     
     }
@@ -109,13 +141,13 @@ public class AccountRepository {
     	for (int i = parents.size()-1; i >= 0; i--) {
 			if (parents.get(i).getLeft() > 1)
 				sj.add(parents.get(i).getName());
-			logger.info("array: " + parents.get(i).getName());
+			//logger.debug("array: " + parents.get(i).getName());
 		}
     	// append the parent/current node
     	sj.add(p.getName());
     	sj.add(n.getName());
 		String longname = sj.toString();
-		logger.info(longname);
+		logger.debug(longname);
 		
 		return longname;
 		
