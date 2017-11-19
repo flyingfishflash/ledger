@@ -30,12 +30,6 @@ public class AccountNode extends Account implements NestedNode<AccountNode> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
-    @Column(name = "name")
-    protected String name;
-
-    @Column(name = "longname", length = 4096)
-    protected String longname;
-    
     @LeftColumn
     @Column(name = "tree_left", nullable = false)
     protected Long lft;
@@ -66,14 +60,6 @@ public class AccountNode extends Account implements NestedNode<AccountNode> {
         return id;
     }
 
-	public String getName() {
-        return name;
-    }
-
-	public String getLongname() {
-		return longname;
-	}
-
     @Override
     public Long getLeft() {
         return lft;
@@ -97,14 +83,6 @@ public class AccountNode extends Account implements NestedNode<AccountNode> {
     public String getDiscriminator() {
         return discriminator;
     }
-
-    public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setLongname(String longname) {
-		this.longname = longname;
-	}
 
     @Override
     public void setLeft(Long left) {
@@ -146,6 +124,9 @@ public class AccountNode extends Account implements NestedNode<AccountNode> {
                 .add("parent", parent != null ? parent.getId() : "null")
                 .add("discriminator", discriminator)
                 .add("category", accountCategory)
+                .add("type", accountType)
+                .add("code", code)
+                .add("description", description)
                 .toString();
     }
 

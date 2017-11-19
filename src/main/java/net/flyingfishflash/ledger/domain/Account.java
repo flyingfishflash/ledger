@@ -7,11 +7,18 @@ import javax.persistence.MappedSuperclass;
 
 import net.flyingfishflash.ledger.common.IdentifierFactory;
 
+
 @MappedSuperclass
 public class Account {
 	
 	@Column(name="guid", unique = true, updatable = false)
 	protected String guid;
+
+	@Column(name = "name")
+    protected String name;
+
+    @Column(name = "longname", length = 4096)
+    protected String longname;
 
     @Column(name = "code")
     protected String code;
@@ -36,8 +43,8 @@ public class Account {
 	@Enumerated(EnumType.STRING)
 	protected AccountType accountType;
 
-	Account() {
-		this.setGuid();
+	public Account() {
+		//this.setGuid();
 	}
 	
 	public String getGuid() {
@@ -45,8 +52,29 @@ public class Account {
 	}
 	
 	public void setGuid() {
-		guid = IdentifierFactory.getInstance().generateIdentifier();
+		this.guid = IdentifierFactory.getInstance().generateIdentifier();
 	}
+
+	public void setGuid(String s) {
+		this.guid = s;
+	}
+
+	public String getName() {
+        return name;
+    }
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getLongname() {
+		return longname;
+	}
+
+	public void setLongname(String longname) {
+		this.longname = longname;
+	}
+
 	
 	public AccountCategory getAccountCategory() {
 		return accountCategory;

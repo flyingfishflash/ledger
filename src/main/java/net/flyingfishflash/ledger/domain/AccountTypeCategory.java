@@ -55,7 +55,7 @@ public final class AccountTypeCategory {
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
     	
-		types.forEach(name -> logger.debug("getTypesByCategory: " + name.toString()));
+		//types.forEach(name -> logger.debug("getTypesByCategory: " + name.toString()));
 
 		return types;
     }
@@ -66,7 +66,7 @@ public final class AccountTypeCategory {
     	// natural sort order (as declared in AccountCategory enum)
     	final List<AccountCategory> categories = new LinkedList<AccountCategory>(Arrays.asList(AccountCategory.values()));
     	categories.remove(AccountCategory.Root);
-		categories.forEach(name -> logger.debug("getCategories: " + name.toString()));
+		//categories.forEach(name -> logger.debug("getCategories: " + name.toString()));
 
 		return categories;
     }  
@@ -82,7 +82,7 @@ public final class AccountTypeCategory {
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());    					
     			
-        categories.forEach(name -> logger.debug("getCategoriesByType(): " + name.toString()));
+        //categories.forEach(name -> logger.debug("getCategoriesByType(): " + name.toString()));
 
         return categories;
     }    

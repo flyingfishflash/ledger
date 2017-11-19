@@ -41,7 +41,7 @@
         <td th:text="${account.right}"></td>
         <td th:text="${account.parent.id}"></td>
         <td th:text="${account.level}"></td>
-        <td><a th:href="@{'/ledger/accounts/test?parentAccountId=' + ${account.id}}" class="text-muted">Edit</a> |
+        <td><a th:href="@{'/ledger/accounts/edit?id=' + ${account.id}}" class="text-muted">Edit</a> |
             <a th:href="@{'/ledger/accounts/create?parentAccountId=' + ${account.id}}" class="text-muted">Add Child</a> |
             <a th:href="@{'/ledger/accounts/delete?parentAccountId=' + ${account.id}}" class="text-muted">Remove</a>
         </td>
