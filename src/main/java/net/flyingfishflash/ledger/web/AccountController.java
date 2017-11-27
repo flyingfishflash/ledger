@@ -32,7 +32,6 @@ public class AccountController {
 
 
     // Display table of accounts that includes options for create/update/delete
-    // TODO Reorder an account in the hierarchy, potentially by changing its parent account
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String listNodes(Model model) throws Exception {
     	logger.debug("@RequestMapping: /ledger/accounts");
