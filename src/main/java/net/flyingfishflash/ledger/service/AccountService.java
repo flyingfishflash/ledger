@@ -1,5 +1,6 @@
 package net.flyingfishflash.ledger.service;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,7 +82,34 @@ public class AccountService {
     	
     }
     
+
+	/*
+	* Each account should have one base level parent
+	*
+	* Return that account, or return the account passed as a parameter
+	*
+	* Base level account has a depth of 1.
+	* Root level account has a depth of 0.
+	* 
+	*/
+    public AccountNode getBaseLevelParent(AccountNode account) {
+	
+    	AccountNode r = new AccountNode();
+    	
+    	if (account.getLevel() > 1) {
+			Iterable<AccountNode> parents = accountRepository.getParents(account);
+	        Iterator<AccountNode> it = parents.iterator();
+			while (it.hasNext()) {
+				r = it.next();
+				if (r.getLevel() == 1) break; 
+			}  
+		} else {
+		    r = account;
+		}
+		return r;
     
+    }
+
     public void insertAsFirstChildOf(AccountNode account, AccountNode parent) {
     	
     	accountRepository.insertAsFirstChildOf(account, parent);

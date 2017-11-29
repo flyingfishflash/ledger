@@ -140,7 +140,14 @@ public class AccountRepository {
 		return this.nr.getNextSibling(n);
 		
 	}
-    
+
+
+	public Iterable<AccountNode> getParents(AccountNode n) {
+    	
+    	return nr.getParents(n);
+    	
+    }
+
     
     public void insertAsLastChildOf(AccountNode n, AccountNode p) {
     	
@@ -170,7 +177,7 @@ public class AccountRepository {
     	nr.insertAsNextSiblingOf(n, s);
     
     }
-
+    
     
     public void removeSingle(AccountNode n) {
     	
