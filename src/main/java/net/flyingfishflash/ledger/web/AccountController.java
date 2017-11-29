@@ -125,10 +125,11 @@ public class AccountController {
     
     // Testing placeholder
     @RequestMapping(value = "/test", method = RequestMethod.GET)
-    //@ResponseBody
+    @ResponseBody
     public String test(@RequestParam("id") Long id/*, @RequestParam("method") String method*/) throws Exception {
     	logger.debug("@RequestMapping: /ledger/accounts/test (GET)");
-        return "redirect:/ledger/accounts";
+    	AccountNode account = accountService.findOneById(id);
+        return accountService.getTreeAsList(accountService.getBaseLevelParent(account)).toString();
 
     }
 

@@ -69,6 +69,13 @@ public class AccountService {
     }
     
     
+    public Iterable<AccountNode> getTreeAsList(AccountNode account) {
+    	
+    	return accountRepository.getTreeAsList(account);
+    	
+    }
+    
+    
     public Optional<AccountNode> getPrevSibling(AccountNode account) {
     	
     	return accountRepository.getPrevSibling(account);

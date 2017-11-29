@@ -99,7 +99,13 @@ public class AccountRepository {
     
     }
     
-        
+    
+    public Iterable<AccountNode> getTreeAsList(AccountNode account) {
+    	
+    	return this.nr.getTreeAsList(account);
+    }
+    
+    
     public String deriveLongName(AccountNode n, AccountNode p) {
     	
     	if (p.getLeft() <= 1) {
