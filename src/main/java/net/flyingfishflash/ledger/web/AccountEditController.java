@@ -18,6 +18,7 @@ import net.flyingfishflash.ledger.domain.AccountCategory;
 import net.flyingfishflash.ledger.domain.AccountNode;
 import net.flyingfishflash.ledger.domain.AccountRepository;
 import net.flyingfishflash.ledger.domain.AccountTypeCategory;
+import net.flyingfishflash.ledger.service.AccountService;
 
 /*
  * 	Form for editing an account
@@ -35,6 +36,9 @@ public class AccountEditController {
    
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private AccountService accountService;
 
     // using method rather than method argument due to
     // problems with the the parent account in the POST method
@@ -62,6 +66,9 @@ public class AccountEditController {
         model.addAttribute("title", "Edit Account");
     	model.addAttribute("parentIsRoot", parentIsRoot);
         model.addAttribute("types", atc.getTypesByCategory(account.getAccountCategory().toString()));
+        model.addAttribute("destinationAccounts", accountService.getTreeAsList(accountService.getBaseLevelParent(account)));
+        Long newParent = parent.getId();
+        model.addAttribute("newParent", newParent);
         if (parentIsRoot == true) {
             model.addAttribute("categories", atc.getCategories());
         }

@@ -1,101 +1,119 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
-
+ 
 <head th:replace="fragments :: head"></head>
-
+ 
 <body>
-
+ 
 <nav th:replace="fragments :: navigation_main"></nav>
-
+ 
 <div class="container">
-
+ 
 <h2 style="text-align: center" th:text="${title}">Default Title</h2>
-
+ 
 <br /><br />
-
+ 
 <div th:switch="${parentIsRoot}">
-	<p th:case="true">Editing a top level account</p>
-	<p th:case="false">Editing account:
-		<br />
-		<span style="font-weight: bold;" th:text="${account.longname}">Longname of Account</span>
-	</p>
+       <p th:case="true">Editing a base level account</p>
+       <p th:case="false">Editing account:
+              <br />
+              <span style="font-weight: bold;" th:text="${account.longname}">Longname of Account</span>
+       </p>
 </div>
-
+ 
 <br /><br />
-
+ 
 <form action="#" th:action="@{'/ledger/accounts/edit?id=' + ${account.id}}" th:object="${account}" method="post">
-
+ 
     <input type="hidden" id="id" th:field="*{id}"/>
+ 
+		<div class="form-row">
+	       	<div class="form-group col-md-3">
+				<label for="accountName">Account Name:</label>
+				<input class="form-control" type="text" id="accountName" placeholder="" th:field="*{name}"/>
+				<!-- autofocus="true"  attribute is slow-->
+	        </div>
+			<div class="form-group col-md-2">
+				<label for="accountCode">Account Code:</label>
+				<input class="form-control" type="text" id="accountCode" placeholder="" th:field="*{code}"/>
+			</div>
+		</div>
 
-	<div class="form-row">
-    	<div class="form-group col-md-3">
-			<label for="accountName">Account Name:</label>
-			<input class="form-control" type="text" id="accountName" placeholder="" th:field="*{name}"/>
-			<!-- autofocus="true"  attribute is slow-->
+		<div class="form-row">
+			<div class="form-group col-md-5">
+			     <label for="accountDescription">Account Description:</label>
+			     <input class="form-control" type="text" id="accountDescription" placeholder=""  th:field="*{description}"/>
+			</div>
 		</div>
-    	<div class="form-group col-md-2">
-			<label for="accountCode">Account Code:</label>
-			<input class="form-control" type="text" id="accountCode" placeholder="" th:field="*{code}"/>
+
+		<div class="form-row">
+			<!-- if the immediate parent account is the root node, allow selection of the account category -->
+			<div th:if="${parentIsRoot == true}" class="form-group col-md-2">
+				<label for="accountCategoryControlSelect">Category</label>
+				<select class="form-control" id="aCategory" th:field="*{accountCategory}">
+				<option th:each="category : ${categories}"
+						th:value="${category}"
+						th:text="${category}">
+						<!--th:selected="${category == defaultAccountCategory}"-->
+				</option>
+				</select>
+			</div>
+
+			<!-- if the immediate parent account is not the root node, set a hidden field to the value already assigned to the account -->
+			<div th:if="${parentIsRoot == false}" >
+				<input type="hidden" id="aCategory" th:field="*{accountCategory}"/>
+			</div>
+			<!-- end if -->
+
+			<div class="form-group col-md-2">
+				<label for="accountTypeControlSelect">Type</label>
+				<select class="form-control" id="aType" th:field="*{accountType}">
+				<option th:each="type : ${types}"
+						th:value="${type}"
+						th:text="${type}">
+				</option>
+				</select>
+			</div>
 		</div>
-	</div>
-	<div class="form-row">
-		<div class="form-group col-md-5">
-			<label for="accountDescription">Account Description:</label>
-			<input class="form-control" type="text" id="accountDescription" placeholder=""  th:field="*{description}"/>
+
+		<div class="form-row">
+			<div class="form-group col-md-5">
+				<label for="accountTypeControlSelect">Position</label>
+				<select size="5" class="form-control" id="aPosition" th:field="*{parent}">
+				<option th:each="destinationAccount : ${destinationAccounts}"
+						th:value="${destinationAccount}"
+						th:text="${#strings.repeat('&nbsp; ', destinationAccount.level + 3 )} + ${destinationAccount.name}">
+				</option>
+				</select>
+			</div>
 		</div>
-	</div>
-	<div class="form-row">
-		<!-- if the immediate parent account is the root node, allow selection of the account category -->
-    	<div th:if="${parentIsRoot == true}" class="form-group col-md-2">
-		    <label for="accountCategoryControlSelect">Category</label>
-		    <select class="form-control" id="aCategory" th:field="*{accountCategory}">
-		    <option th:each="category : ${categories}"
-                    th:value="${category}"
-                    th:text="${category}">
-                    <!--th:selected="${category == defaultAccountCategory}"-->
-            </option>
-        	</select>
+      
+		<div class="form-check">
+			<label class="form-check-label">
+			<input class="form-check-input" type="checkbox" value="" th:field="*{hidden}" > Hidden</input>
+			</label>
 		</div>
-		<!-- if the immediate parent account is not the root node, set a hidden field to the value already assigned to the account -->
-    	<div th:if="${parentIsRoot == false}" >
-		    <input type="hidden" id="aCategory" th:field="*{accountCategory}"/>
-    	</div>
-		<!-- end if -->
-    	<div class="form-group col-md-2">
-		    <label for="accountTypeControlSelect">Type</label>
-		    <select class="form-control" id="aType" th:field="*{accountType}">
-		    <option th:each="type : ${types}"
-                    th:value="${type}"
-                    th:text="${type}">
-            </option>
-		    </select>
+		<div class="form-check">
+			<label class="form-check-label">
+			<input class="form-check-input" type="checkbox" value="" th:field="*{placeholder}"> Placeholder</input>
+			</label>
 		</div>
-	</div>	
-	<div class="form-check">
-	  	<label class="form-check-label">
-	    <input class="form-check-input" type="checkbox" value="" th:field="*{hidden}" > Hidden</input>
-	  	</label>
-	</div>
-	<div class="form-check">
-	  	<label class="form-check-label">
-	    <input class="form-check-input" type="checkbox" value="" th:field="*{placeholder}"> Placeholder</input>
-	  	</label>
-	</div>
-	<div class="form-check">
-	  	<label class="form-check-label">
-	    <input class="form-check-input" type="checkbox" value="" th:field="*{taxRelated}"> Tax Related</input>
-	  	</label>
-	</div>
-	<br /><br />
-	<div class="row">
-		<button type="submit" class="btn btn-primary">Submit</button>
-	</div>
+		<div class="form-check">
+			<label class="form-check-label">
+			<input class="form-check-input" type="checkbox" value="" th:field="*{taxRelated}"> Tax Related</input>
+			</label>
+		</div>
+		<br /><br />
+
+		<div class="row">
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</div>
 </form>
-
+ 
 </div>
-
+ 
 <div th:replace="fragments :: bootstrapjs"></div>
-
+ 
 <script type="text/javascript">
 function sendAjaxRequest() {
     var category = $("#aCategory").val();
@@ -107,13 +125,13 @@ function sendAjaxRequest() {
         });
     });
 };
-
+ 
 $(document).ready(function() {
     $("#aCategory").change(function() {
         sendAjaxRequest();
     });
-});	
+});   
 </script>
-
+ 
 </body>
 </html>
