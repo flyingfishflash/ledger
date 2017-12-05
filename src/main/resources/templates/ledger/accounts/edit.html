@@ -78,11 +78,12 @@
 
 		<div class="form-row">
 			<div class="form-group col-md-5">
-				<label for="accountTypeControlSelect">Position</label>
-				<select size="5" class="form-control" id="aPosition" th:field="*{parent}">
+				<label for="accountTypeControlSelect">Parent</label>
+				<select size="5" class="form-control" id="newParent" name="newParent">
 				<option th:each="destinationAccount : ${destinationAccounts}"
-						th:value="${destinationAccount}"
-						th:text="${#strings.repeat('&nbsp; ', destinationAccount.level + 3 )} + ${destinationAccount.name}">
+						th:value="${destinationAccount.id}"
+						th:text="${#strings.repeat('&nbsp; ', destinationAccount.level - 1 )} + ${destinationAccount.name}"
+						th:selected="${destinationAccount.id == account.parent.id}">
 				</option>
 				</select>
 			</div>

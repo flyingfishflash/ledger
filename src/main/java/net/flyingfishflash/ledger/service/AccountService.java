@@ -75,6 +75,25 @@ public class AccountService {
     	
     }
     
+    public Iterable<AccountNode> getElligibleParentAccounts(AccountNode account) {
+    	
+     	Iterable<AccountNode> accounts = this.getTreeAsList(this.getBaseLevelParent(account));
+    	// Remove passed account and its children from list of eligible parent accounts
+    	Iterator<AccountNode> it = accounts.iterator();
+		while (it.hasNext()) {
+		  AccountNode a = it.next();
+		  if (a.getLeft() > account.getLeft() && a.getLeft() < account.getRight()) {
+		    it.remove();
+		  } else
+			  if (a.getId() == account.getId()) {
+				  it.remove();
+			  }
+		}
+		
+		return accounts;
+    	
+    }
+    
     
     public Optional<AccountNode> getPrevSibling(AccountNode account) {
     	

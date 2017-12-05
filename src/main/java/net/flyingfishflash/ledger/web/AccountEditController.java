@@ -66,7 +66,7 @@ public class AccountEditController {
         model.addAttribute("title", "Edit Account");
     	model.addAttribute("parentIsRoot", parentIsRoot);
         model.addAttribute("types", atc.getTypesByCategory(account.getAccountCategory().toString()));
-        model.addAttribute("destinationAccounts", accountService.getTreeAsList(accountService.getBaseLevelParent(account)));
+        model.addAttribute("destinationAccounts", accountService.getElligibleParentAccounts(account));
         Long newParent = parent.getId();
         model.addAttribute("newParent", newParent);
         if (parentIsRoot == true) {
@@ -80,13 +80,18 @@ public class AccountEditController {
     @PostMapping //(value = "", method = RequestMethod.POST)
     public String saveEditedAccount(@RequestParam(name="id") Long id,
     							 @Valid @ModelAttribute("account") AccountNode account,
+    							 @ModelAttribute("newParent") Long newParent,
     							 BindingResult result,
     							 Model model ) throws Exception {
     	logger.debug(result.toString());
         logger.debug(model.toString());
     	logger.debug("@RequestMapping: /ledger/accounts/edit (POST)");
     	logger.debug("node: " + account.toString());
-    	accountRepository.update(account);
+    	if (newParent != account.getParent().getId() && newParent != account.getId()) {
+    		accountService.insertAsLastChildOf(account, accountRepository.findOneById(newParent));
+    	} else {
+        	accountRepository.update(account);
+    	}
     	return "redirect:/ledger/accounts";
 
     }
