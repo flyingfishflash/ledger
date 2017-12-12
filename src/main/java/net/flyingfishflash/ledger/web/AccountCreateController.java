@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import net.flyingfishflash.ledger.domain.AccountCategory;
 import net.flyingfishflash.ledger.domain.AccountNode;
-import net.flyingfishflash.ledger.domain.AccountRepository;
+//import net.flyingfishflash.ledger.domain.AccountRepository;
 import net.flyingfishflash.ledger.domain.AccountTypeCategory;
+import net.flyingfishflash.ledger.service.AccountService;
 
 /*
  * 	Form for creating a new account
@@ -31,16 +32,16 @@ public class AccountCreateController {
 	
     
     @Autowired
-    private AccountRepository accountRepository;
-    
+    private AccountService accountService;
+
     
     @GetMapping//(value = "", method = RequestMethod.GET)
     public String createAccount(@RequestParam(name="parentAccountId", defaultValue="1") Long parentAccountId, Model model) throws Exception {
     	logger.debug("@RequestMapping: /ledger/accounts/create (GET)");
     	logger.debug("RequestParam: " + parentAccountId);
     	// TODO Handle NullPointer Exception if parentId does not exist in nested set
-    	AccountNode parent = accountRepository.findOneById(parentAccountId);
-    	AccountNode account = accountRepository.newAccountNode(parent);
+    	AccountNode parent = accountService.findOneById(parentAccountId);
+    	AccountNode account = accountService.newAccountNode(parent);
     	Boolean parentIsRoot = (parent.getAccountCategory().equals(AccountCategory.Root));
         model.addAttribute("title", "Create Account");
         model.addAttribute("parent", parent);
@@ -60,13 +61,13 @@ public class AccountCreateController {
     					   , BindingResult result
     					   , Model model) throws Exception {
     	logger.debug("@RequestMapping: /ledger/accounts/create (POST)");
-    	AccountNode parent = accountRepository.findOneById(parentAccountId);
+    	AccountNode parent = accountService.findOneById(parentAccountId);
         logger.debug(model.toString());
         String method = "last";
         if (method.equals("first")) {
-            accountRepository.insertAsFirstChildOf(account, parent);
+            accountService.insertAsFirstChildOf(account, parent);
         } else {
-            accountRepository.insertAsLastChildOf(account, parent);
+            accountService.insertAsLastChildOf(account, parent);
         }
         return "redirect:/ledger/accounts";
 

@@ -12,38 +12,58 @@
 <h2 style="text-align: center;" th:text="${title}">Default Title</h2>
 
 <!--nav th:replace="fragments :: navigation"></nav-->
-<p><a th:href="@{'/ledger/accounts/create?parentAccountId=1'}" class="text-muted">Create Top Level Account</a></p>
+<p><a th:href="@{'/ledger/accounts/create?parentAccountId=1'}" class="text-muted"><i class="fa fa-plus-circle" aria-hidden="true" style="font-size: 0.95em"></i>&nbsp;&nbsp;Base Level Account</a></p>
 <br />
 
 <!--p th:unless="${nodes} and ${nodes.size()}">No nodes to display</p-->
 
-<table class="table">
+<table class="table table-sm table-hover">
 
     <tr>
-        <th>ID</th>
+        <!--th>ID</th-->
         <th>Name</th>
-        <th>Left</th>
+        <th>Code</th>
+        <th>Description</th>
+        <!--th>Left</th>
         <th>Right</th>
         <th>Parent</th>
-        <th>Depth</th>
-        <th>Actions</th>
+        <th>Depth</th-->
+        <th style="text-align: center">Action</th>
     </tr>
 
     <tr th:each="account : ${accounts}">
-        <td th:text="${account.id}"></td>
+        <!--td th:text="${account.id}"></td-->
         <td>
             <span
             th:with="count=${account.level - 1}" 
             th:text="${#strings.repeat('&nbsp; ',count)} + ${account.name}">
             </span>
         </td>
-        <td th:text="${account.left}"></td>
+        <td th:text="${account.code}"></td>
+        <td th:text="${account.description}"></td>
+        <!--td th:text="${account.left}"></td>
         <td th:text="${account.right}"></td>
         <td th:text="${account.parent.id}"></td>
-        <td th:text="${account.level}"></td>
-        <td><a th:href="@{'/ledger/accounts/edit?id=' + ${account.id}}" class="text-muted">Edit</a> |
-            <a th:href="@{'/ledger/accounts/create?parentAccountId=' + ${account.id}}" class="text-muted">Add Child</a> |
-            <a th:href="@{'/ledger/accounts/delete?parentAccountId=' + ${account.id}}" class="text-muted">Remove</a>
+        <td th:text="${account.level}"></td-->
+        <td style="text-align: center">
+            <div th:with="icons=${'circle'}">
+                <div th:if="${icons == 'square-o'}" >
+                    <a th:href="@{'/ledger/accounts/edit?id=' +                ${account.id}}" class="text-muted"><i class="fa fa-pencil-square-o" aria-hidden="true" style="font-size: 0.95em"></i></a> &nbsp;
+                    <a th:href="@{'/ledger/accounts/create?parentAccountId=' + ${account.id}}" class="text-muted"><i class="fa fa-plus-square-o" aria-hidden="true" style="font-size: 0.95em"></i></a> &nbsp;
+                    <a th:href="@{'/ledger/accounts/delete?parentAccountId=' + ${account.id}}" class="text-muted"><i class="fa fa-minus-square-o" aria-hidden="true" style="font-size: 0.95em"></i></a> &nbsp;&nbsp;
+                    <a th:href="@{'/ledger/accounts/insertAsPrevSibling?id=' + ${account.id}}" class="text-muted"><i class="fa fa-caret-square-o-up" aria-hidden="true" style="font-size: 0.95em"></i></a> &nbsp;
+                    <a th:href="@{'/ledger/accounts/insertAsNextSibling?id=' + ${account.id}}" class="text-muted"><i class="fa fa-caret-square-o-down" aria-hidden="true" style="font-size: 0.95em"></i></a>
+                    <!--a th:href="@{'/ledger/accounts/test?id=' +                ${account.id}}" class="text-muted"><i class="fa fa-paper-plane-o" aria-hidden="true" style="font-size: 0.75em"></i></a-->
+                </div>
+                <div th:if="${icons == 'circle'}" >
+                    <a th:href="@{'/ledger/accounts/edit?id=' +                ${account.id}}" class="text-muted"><i class="fa fa-pencil-square-o" aria-hidden="true" style="font-size: 0.95em"></i></a> &nbsp;
+                    <a th:href="@{'/ledger/accounts/create?parentAccountId=' + ${account.id}}" class="text-muted"><i class="fa fa-plus-circle" aria-hidden="true" style="font-size: 0.95em"></i></a> &nbsp;
+                    <a th:href="@{'/ledger/accounts/delete?parentAccountId=' + ${account.id}}" class="text-muted"><i class="fa fa-minus-circle" aria-hidden="true" style="font-size: 0.95em"></i></a> &nbsp;&nbsp;
+                    <a th:href="@{'/ledger/accounts/insertAsPrevSibling?id=' + ${account.id}}" class="text-muted"><i class="fa fa-arrow-circle-up" aria-hidden="true" style="font-size: 0.95em"></i></a> &nbsp;
+                    <a th:href="@{'/ledger/accounts/insertAsNextSibling?id=' + ${account.id}}" class="text-muted"><i class="fa fa-arrow-circle-down" aria-hidden="true" style="font-size: 0.95em"></i></a>
+                    <!--a th:href="@{'/ledger/accounts/test?id=' +                ${account.id}}" class="text-muted"><i class="fa fa-paper-plane-o" aria-hidden="true" style="font-size: 0.75em"></i></a-->
+                </div>
+            </div>
         </td>
         <!--class="btn btn-outline-secondary btn-sm"-->
         <!--button type="button" class="btn btn-sm">Add Child</button></td-->
