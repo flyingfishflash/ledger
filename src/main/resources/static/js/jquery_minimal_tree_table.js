@@ -13,32 +13,32 @@ $(function () {
 
         if (children.length) {
             var expander = $columnName.prepend('' +
-                '<span class="treegrid-expander glyphicon glyphicon-chevron-right"></span>' +
+                '<i class="fa fa-angle-right" aria-hidden="true"></i>' +
                 '');
 
             children.hide();
 
             expander.on('click', function (e) {
                 var $target = $(e.target);
-                if ($target.hasClass('glyphicon-chevron-right')) {
+                if ($target.hasClass('fa-angle-right')) {
                     $target
-                        .removeClass('glyphicon-chevron-right')
-                        .addClass('glyphicon-chevron-down');
+                        .removeClass('fa-angle-right')
+                        .addClass('fa-angle-down');
 
                     children.show();
                 } else {
                     $target
-                        .removeClass('glyphicon-chevron-down')
-                        .addClass('glyphicon-chevron-right');
+                        .removeClass('fa-angle-down')
+                        .addClass('fa-angle-right');
 
                     reverseHide($table, $row);
                 }
             });
         }
 
-        $columnName.prepend('' +
-            '<span class="treegrid-indent" style="width:' + 15 * level + 'px"></span>' +
-            '');
+        //$columnName.prepend('' +
+        //    '<span class="treegrid-indent" style="width:' + 15 * level + 'px"></span>' +
+        //    '');
     });
 
     // Reverse hide all elements
@@ -54,9 +54,9 @@ $(function () {
             });
 
             $element
-                .find('.glyphicon-chevron-down')
-                .removeClass('glyphicon-chevron-down')
-                .addClass('glyphicon-chevron-right');
+                .find('.fa-angle-down')
+                .removeClass('fa-angle-down')
+                .addClass('fa-angle-right');
 
             children.hide();
         }
