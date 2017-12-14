@@ -31,7 +31,7 @@
         <th style="text-align: center">Action</th>
     </tr>
 
-    <tr th:each="account : ${accounts}" th:attr="class=treegrid- + ${account.id}"   th:classappend="treegrid-parent- + ${account.parent.id}">
+    <tr th:each="account : ${accounts}" th:attr="class=treegrid- + ${account.id}" th:classappend="${account.level > 1}? treegrid-parent- + ${account.parent.id}">    
         <!--td th:text="${account.id}"></td-->
         <td>
             <span
@@ -77,9 +77,6 @@
 <div th:replace="fragments :: bootstrapjs"></div>
 <div th:replace="fragments :: jquery_treegrid"></div>
 
-<script type="text/javascript">
-        $(document).ready(function() { $('.tree').treegrid(); }
-</script>
 
 </body>
 </html>
