@@ -1,6 +1,9 @@
 # Ledger - Java-based double-entry bookkeeping engine for personal finance management
 
 
+[![pipeline status](https://gitlab.com/rollenwiese/ledger/badges/master/pipeline.svg)](https://gitlab.com/rollenwiese/ledger/commits/master)
+
+
 For the time being this simply allows the creating and modification of a hierarchy of accounts.
 
 

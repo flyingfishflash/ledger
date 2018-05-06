@@ -1,0 +1,17 @@
+before_script:
+  - mkdir -v nestedj
+  - curl -o nestedj/pom.xml 'https://gitlab.com/rollenwiese/nestedj/raw/master/pom.xml'
+  - "curl -f -L -H \"PRIVATE-TOKEN: ${NESTEDJ_APIKEY}\" -o nestedj/NestedJ-2.1.2.RELEASE.jar 'https://gitlab.com/rollenwiese/nestedj/-/jobs/artifacts/master/raw/target/NestedJ-2.1.2.RELEASE.jar?job=maven-build'"
+  - ls -l nestedj
+  - mvn install:install-file -Dfile=nestedj/NestedJ-2.1.2.RELEASE.jar -DpomFile=nestedj/pom.xml
+
+stages:
+  - build
+
+maven-build:
+  image: maven:3-jdk-8
+  stage: build
+  script: "mvn install -B"
+#  artifacts:
+#    paths:
+#      - target/*.jar
