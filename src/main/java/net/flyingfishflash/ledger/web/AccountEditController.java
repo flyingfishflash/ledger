@@ -73,7 +73,7 @@ public class AccountEditController {
             model.addAttribute("categories", atc.getCategories());
         }
         logger.debug(model.toString());
-        return "/ledger/accounts/edit";
+        return "ledger/accounts/edit";
     }    
 
     

@@ -46,7 +46,7 @@ public class AccountController {
 		}
         model.addAttribute("title", "Accounts");
         model.addAttribute("accounts", accounts);
-        return "/ledger/accounts/index";
+        return "ledger/accounts/index";
     }
     
     // Delete account and descendants

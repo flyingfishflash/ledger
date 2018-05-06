@@ -11,7 +11,8 @@ spring:
     active: dev-postgresql
   thymeleaf:
     cache: false #enable in production
-
+    check-template-location: true
+    prefix: classpath:/templates/
 
 ---
 
@@ -40,7 +41,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-    show-sql: true
+    show-sql: false
     properties:
         hibernate.jdbc.lob.non_contextual_creation: true
         #hibernate.current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext

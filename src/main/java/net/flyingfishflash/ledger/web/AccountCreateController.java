@@ -52,7 +52,7 @@ public class AccountCreateController {
             model.addAttribute("categories", atc.getCategories());
         }
         logger.debug(model.toString());
-        return "/ledger/accounts/create";
+        return "ledger/accounts/create";
     }
     
     @PostMapping //(value = "", method = RequestMethod.POST)

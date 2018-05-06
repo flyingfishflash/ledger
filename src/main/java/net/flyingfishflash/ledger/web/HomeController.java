@@ -24,14 +24,14 @@ public class HomeController {
     public String ledger(Model model) throws Exception {
     	logger.info("@RequestMapping: /ledger");
         model.addAttribute("title", "Ledger Dashboard");
-        return "/ledger/index";
+        return "ledger/index";
     }
 
     @RequestMapping(value = "/ledger/notes", method = RequestMethod.GET)
     public String notes(Model model) throws Exception {
     	logger.info("@RequestMapping: /ledger/notes");
         model.addAttribute("title", "Ledger Notes");
-        return "/ledger/notes/index";
+        return "ledger/notes/index";
     }
 
     
