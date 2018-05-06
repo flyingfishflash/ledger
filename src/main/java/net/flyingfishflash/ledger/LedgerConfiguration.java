@@ -18,15 +18,14 @@ import pl.exsio.nestedj.delegate.NestedNodeRemover;
 import pl.exsio.nestedj.delegate.NestedNodeRemoverImpl;
 import pl.exsio.nestedj.delegate.NestedNodeRetriever;
 import pl.exsio.nestedj.delegate.NestedNodeRetrieverImpl;
-import pl.exsio.nestedj.repository.NestedNodeRepository;
 import pl.exsio.nestedj.repository.NestedNodeRepositoryImpl;
 
 @Configuration
 public class LedgerConfiguration {
-	
-	@PersistenceContext
+
+    @PersistenceContext
     EntityManager em;
-	
+
     @Bean
     public NestedNodeRepositoryImpl<AccountNode> repository() {
         NestedNodeRepositoryImpl<AccountNode> repository = new NestedNodeRepositoryImpl<>();
