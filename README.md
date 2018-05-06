@@ -1,30 +1,19 @@
+# Ledger - Java-based double-entry bookkeeping engine for personal finance management
 
 
+For the time being this simply allows the creating and modification of a hierarchy of accounts.
 
 
-Git
+### Build
 
-* http://www.bitsnbites.eu/a-stable-mainline-branching-model-for-git/
-* https://www.atlassian.com/blog/archives/simple-git-workflow-simple
-
-
-Persistence
-* http://www.springboottutorial.com/introduction-to-jpa-with-spring-boot-data-jpa
-
-
-Persisting Hierarchial Data
-
-* http://mikehillyer.com/articles/managing-hierarchical-data-in-mysql/
-* http://www.quesucede.com/page/show/id/java-tree-implementation/
-* https://github.com/deyvid5/nestedset-java-spring
-
-
-Spring - MVC - Request Mapping
-
-* https://reversecoding.net/spring-mvc-requestparam-binding-request-parameters/
-* https://www.journaldev.com/3358/spring-requestmapping-requestparam-pathvariable-example
-* http://www.logicbig.com/tutorials/spring-framework/spring-web-mvc/spring-mvc-request-param/
-
-Thymeleaf
-
-* http://www.mkyong.com/spring-boot/spring-boot-spring-security-thymeleaf-example/
+Clone my modified version of the NestedJ library, build it and add it to your local maven repostory:
+```shell
+git clone https://gitlab.com/rollenwiese/nestedj.git
+cd nestedj
+mvn clean install
+mvn install:install-file -Dfile=target/NestedJ-2.1.2.RELEASE.jar -DpomFile=pom.xml
+cd ..
+git clone https://gitlab.com/rollenwiese/ledger.git
+cd ledger
+mvn clean install
+```
