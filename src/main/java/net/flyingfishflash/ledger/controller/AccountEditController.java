@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger.web;
+package net.flyingfishflash.ledger.controller;
 
 import javax.validation.Valid;
 

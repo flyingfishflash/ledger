@@ -16,7 +16,7 @@ import net.flyingfishflash.ledger.domain.AccountNode;
 import net.flyingfishflash.ledger.domain.AccountRepository;
 import net.flyingfishflash.ledger.domain.AccountType;
 import net.flyingfishflash.ledger.domain.AccountTypeCategory;
-import net.flyingfishflash.ledger.web.AccountController;
+import net.flyingfishflash.ledger.controller.AccountController;
 
 @Service
 @Transactional

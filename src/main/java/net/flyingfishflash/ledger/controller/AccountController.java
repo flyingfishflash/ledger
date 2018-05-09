@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger.web;
+package net.flyingfishflash.ledger.controller;
 
 import java.util.Iterator;
 import java.util.List;
