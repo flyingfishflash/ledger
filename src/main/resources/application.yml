@@ -13,7 +13,7 @@ spring:
     cache: false #enable in production
     check-template-location: true
     prefix: classpath:/templates/
-
+#  jackson.serialization.FAIL_ON_EMPTY_BEANS: false
 ---
 
 spring:
@@ -41,7 +41,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-    show-sql: false
+    show-sql: true
     properties:
         hibernate.jdbc.lob.non_contextual_creation: true
         #hibernate.current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext

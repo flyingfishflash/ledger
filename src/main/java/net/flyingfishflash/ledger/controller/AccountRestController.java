@@ -1,6 +1,7 @@
 package net.flyingfishflash.ledger.controller;
 
 import net.flyingfishflash.ledger.domain.AccountNode;
+import net.flyingfishflash.ledger.domain.AccountNodeDto;
 import net.flyingfishflash.ledger.service.rest.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,7 @@ public class AccountRestController {
 
     // List One Account
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public ResponseEntity<AccountNode> getSingleAccountNodeRespons(@PathVariable Long id) throws Throwable {
+    public ResponseEntity<AccountNodeDto> getSingleAccountNodeRespons(@PathVariable Long id) throws Throwable {
         return accountService.getSingleAccountNodeResponse(id);
 
     }

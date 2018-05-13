@@ -1,6 +1,7 @@
 package net.flyingfishflash.ledger.service.rest;
 
 import net.flyingfishflash.ledger.domain.AccountNode;
+import net.flyingfishflash.ledger.domain.AccountNodeDto;
 import net.flyingfishflash.ledger.domain.AccountRepository;
 import net.flyingfishflash.ledger.domain.AccountTypeCategory;
 import org.slf4j.Logger;
@@ -21,8 +22,15 @@ public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public ResponseEntity<AccountNode> getSingleAccountNodeResponse(Long id) {
-        AccountNode getAccountNode = accountRepository.findOneById(id);
-        return new ResponseEntity<AccountNode>(getAccountNode, HttpStatus.OK);
+    public ResponseEntity<AccountNodeDto> getSingleAccountNodeResponse(Long id) {
+
+        AccountNode accountNode = accountRepository.findOneById(id);
+        AccountNodeDto getAccountNodeDto = new AccountNodeDto(accountNode);
+        logger.debug(getAccountNodeDto.longname);
+
+
+
+        //AccountNode getAccountNode = accountRepository.findOneById(id);
+        return new ResponseEntity<AccountNodeDto>(getAccountNodeDto, HttpStatus.OK);
     }
 }

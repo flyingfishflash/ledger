@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.util.Iterator;
@@ -69,12 +70,14 @@ public class AccountRepository {
     }
   }
 
+  // Note that due to the eager fetch type
   public AccountNode findOneById(Long id) {
 
     // TODO move to nestedj, DAO layer
     CriteriaBuilder cb = em.getCriteriaBuilder();
     CriteriaQuery<AccountNode> select = cb.createQuery(AccountNode.class);
     Root<AccountNode> root = select.from(AccountNode.class);
+    //root.fetch("parent", JoinType.INNER); // to intialize lazy loaded "parent" relation
     select.where(cb.equal(root.get("id"), id));
     AccountNode n = em.createQuery(select).getSingleResult();
     printNode(id, n);

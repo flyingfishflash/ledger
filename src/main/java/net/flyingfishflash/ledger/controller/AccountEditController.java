@@ -68,6 +68,7 @@ public class AccountEditController {
         model.addAttribute("types", atc.getTypesByCategory(account.getAccountCategory().toString()));
         model.addAttribute("destinationAccounts", accountService.getElligibleParentAccounts(account));
         Long newParent = parent.getId();
+        logger.debug("after Long newParent = parent.getId();");
         model.addAttribute("newParent", newParent);
         if (parentIsRoot == true) {
             model.addAttribute("categories", atc.getCategories());

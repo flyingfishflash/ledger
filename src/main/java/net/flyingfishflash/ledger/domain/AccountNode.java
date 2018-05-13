@@ -1,5 +1,6 @@
 package net.flyingfishflash.ledger.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.MoreObjects;
 import pl.exsio.nestedj.annotation.LeftColumn;
 import pl.exsio.nestedj.annotation.LevelColumn;
@@ -9,25 +10,17 @@ import pl.exsio.nestedj.model.NestedNode;
 
 import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "account")
+//@NamedEntityGraph(name = "accountGraph", attributeNodes = { @NamedAttributeNode("id"), @NamedAttributeNode("parent") })
 @Inheritance(strategy = InheritanceType.JOINED)
 public class AccountNode extends Account implements NestedNode<AccountNode> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@Access(AccessType.PROPERTY)
     protected Long id;
 
     @LeftColumn
@@ -42,6 +35,7 @@ public class AccountNode extends Account implements NestedNode<AccountNode> {
     @Column(name = "tree_level", nullable = false)
     protected Long lvl;
 
+    //@JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parent_id", nullable = true)
     @ParentColumn
