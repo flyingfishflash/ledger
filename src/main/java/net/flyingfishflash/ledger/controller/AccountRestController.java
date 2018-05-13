@@ -13,7 +13,7 @@ import java.util.Iterator;
 
 
 @RestController
-@RequestMapping("ledger/api/v1/accounts")
+@RequestMapping("ledger/api/v1/")
 public class AccountRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(AccountRestController.class);
@@ -21,8 +21,13 @@ public class AccountRestController {
     @Autowired
     private AccountService accountService;
 
+    @RequestMapping(value = "accounts", method = RequestMethod.GET)
+    public ResponseEntity<Iterable<AccountNode>> getAllAccounts() throws Throwable {
+        return accountService.getAllAccounts();
+    }
+
     // List One Account
-    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "accounts/{id}", method = RequestMethod.GET)
     public ResponseEntity<AccountNodeDto> getSingleAccountNodeRespons(@PathVariable Long id) throws Throwable {
         return accountService.getSingleAccountNodeResponse(id);
 

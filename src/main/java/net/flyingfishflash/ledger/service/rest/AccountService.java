@@ -27,10 +27,13 @@ public class AccountService {
         AccountNode accountNode = accountRepository.findOneById(id);
         AccountNodeDto getAccountNodeDto = new AccountNodeDto(accountNode);
         logger.debug(getAccountNodeDto.longname);
-
-
-
         //AccountNode getAccountNode = accountRepository.findOneById(id);
         return new ResponseEntity<AccountNodeDto>(getAccountNodeDto, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Iterable<AccountNode>> getAllAccounts() {
+
+        Iterable<AccountNode> allAccounts = accountRepository.findWholeTree();
+        return new ResponseEntity<Iterable<AccountNode>>(allAccounts, HttpStatus.OK);
     }
 }
