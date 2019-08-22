@@ -48,7 +48,7 @@ spring:
         hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
   
   datasource:
-    url: jdbc:postgresql://seneca:5432/ledger
+    url: jdbc:postgresql://nas:5432/ledger
     username: gregory
     password: 
     platform: POSTGRESQL
