@@ -1,22 +1,20 @@
 package net.flyingfishflash.ledger.domain;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import pl.exsio.nestedj.repository.NestedNodeRepositoryImpl;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Root;
-import javax.transaction.Transactional;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import pl.exsio.nestedj.repository.DelegatingNestedNodeRepository;
 
 @Component
 @Transactional
@@ -25,7 +23,7 @@ public class AccountRepository {
   private static final Logger logger = LoggerFactory.getLogger(AccountRepository.class);
 
   @Autowired
-  private NestedNodeRepositoryImpl<AccountNode> nr;
+  protected DelegatingNestedNodeRepository<Long, AccountNode> nr;
 
   @PersistenceContext
   protected EntityManager em;
@@ -48,26 +46,9 @@ public class AccountRepository {
     Iterator<AccountNode> it = t.iterator();
     while (it.hasNext()) {
       AccountNode account = it.next();
-      account.setLongname(this.deriveLongName(account, account.getParent()));
+      account.setLongName(this.deriveLongName(account, this.nr.getParent(account).get()));
     }
-
     em.merge(n);
-  }
-
-  public AccountNode findRoot() {
-
-    logger.debug("AccountRepository.findRoot() begin");
-    logger.debug("AccountRepository.findRoot() *******8");
-    Optional<AccountNode> nodeO = this.nr.getRoot(AccountNode.class);
-    logger.debug(nodeO.toString());
-    // AccountNode node;
-    if (nodeO.isPresent()) {
-      logger.debug("AccountRepository.findRoot() isPresent end");
-      return nodeO.get();
-    } else {
-      logger.debug("AccountRepository.findRoot() end");
-      return null;
-    }
   }
 
   // Note that due to the eager fetch type
@@ -85,11 +66,6 @@ public class AccountRepository {
     return n;
   }
 
-  public Iterable<AccountNode> findWholeTree() {
-
-    return this.nr.getTreeAsList(this.findRoot());
-  }
-
   public Iterable<AccountNode> getTreeAsList(AccountNode account) {
 
     return this.nr.getTreeAsList(account);
@@ -97,7 +73,7 @@ public class AccountRepository {
 
   public String deriveLongName(AccountNode n, AccountNode p) {
 
-    if (p.getLeft() <= 1) {
+    if (p.getTreeLeft() <= 1) {
       return n.name;
     }
 
@@ -106,7 +82,9 @@ public class AccountRepository {
     parents.size();
     // build the longname by collecting the ancestor account names in reverse
     for (int i = parents.size() - 1; i >= 0; i--) {
-      if (parents.get(i).getLeft() > 1) sj.add(parents.get(i).getName());
+      if (parents.get(i).getTreeLeft() > 1) {
+        sj.add(parents.get(i).getName());
+      }
       // logger.debug("array: " + parents.get(i).getName());
     }
     // append the parent/current node
@@ -137,13 +115,13 @@ public class AccountRepository {
 
   public void insertAsLastChildOf(AccountNode n, AccountNode p) {
 
-    n.setLongname(this.deriveLongName(n, p));
+    n.setLongName(this.deriveLongName(n, p));
     nr.insertAsLastChildOf(n, p);
   }
 
   public void insertAsFirstChildOf(AccountNode n, AccountNode p) {
 
-    n.setLongname(this.deriveLongName(n, p));
+    n.setLongName(this.deriveLongName(n, p));
     nr.insertAsFirstChildOf(n, p);
   }
 
@@ -171,7 +149,8 @@ public class AccountRepository {
 
     if (n != null) {
       System.out.println(
-          String.format("Node %s: %d/%d/%d", n.getId(), n.getLeft(), n.getRight(), n.getLevel()));
+          String.format("Node %s: %d/%d/%d", n.getId(), n.getTreeLeft(), n.getTreeRight(),
+              n.getTreeLevel()));
     }
   }
 }

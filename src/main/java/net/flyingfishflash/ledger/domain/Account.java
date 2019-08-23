@@ -4,132 +4,128 @@ import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
-
 import net.flyingfishflash.ledger.common.IdentifierFactory;
-
 
 @MappedSuperclass
 public class Account {
-	
-	@Column(name="guid", unique = true, updatable = false)
-	protected String guid;
 
-	@Column(name = "name")
-    protected String name;
+  @Column(name = "guid", unique = true, updatable = false)
+  protected String guid;
 
-    @Column(name = "longname", length = 4096)
-    protected String longname;
+  @Column(name = "name")
+  protected String name;
 
-    @Column(name = "code")
-    protected String code;
+  @Column(name = "longname", length = 4096)
+  protected String longName;
 
-    @Column(name = "description", length = 2048)
-    protected String description;
+  @Column(name = "code")
+  protected String code;
 
-    @Column(name = "placeholder")
-    protected Boolean placeholder = false;
+  @Column(name = "description", length = 2048)
+  protected String description;
 
-    @Column(name = "hidden")
-    protected Boolean hidden = false;
+  @Column(name = "placeholder")
+  protected Boolean placeholder = false;
 
-    @Column(name = "tax_related")
-    protected Boolean taxRelated = false;
+  @Column(name = "hidden")
+  protected Boolean hidden = false;
 
-	@Column(name = "account_class")
-	@Enumerated(EnumType.STRING)
-	protected AccountCategory accountCategory;
+  @Column(name = "tax_related")
+  protected Boolean taxRelated = false;
 
-	@Column(name = "account_type")
-	@Enumerated(EnumType.STRING)
-	protected AccountType accountType;
+  @Column(name = "account_class")
+  @Enumerated(EnumType.STRING)
+  protected AccountCategory accountCategory;
 
-	public Account() {
-		//this.setGuid();
-	}
-	
-	public String getGuid() {
-		return guid;
-	}
-	
-	public void setGuid() {
-		this.guid = IdentifierFactory.getInstance().generateIdentifier();
-	}
+  @Column(name = "account_type")
+  @Enumerated(EnumType.STRING)
+  protected AccountType accountType;
 
-	public void setGuid(String s) {
-		this.guid = s;
-	}
+  public Account() {
+    // this.setGuid();
+  }
 
-	public String getName() {
-        return name;
-    }
+  public String getGuid() {
+    return guid;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public void setGuid(String s) {
+    this.guid = s;
+  }
 
-	public String getLongname() {
-		return longname;
-	}
+  public void setGuid() {
+    this.guid = IdentifierFactory.getInstance().generateIdentifier();
+  }
 
-	public void setLongname(String longname) {
-		this.longname = longname;
-	}
+  public String getName() {
+    return name;
+  }
 
-	
-	public AccountCategory getAccountCategory() {
-		return accountCategory;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public void setAccountCategory(AccountCategory accountCategory) {
-		this.accountCategory = accountCategory;
-	}
+  public String getLongName() {
+    return longName;
+  }
 
-	public AccountType getAccountType() {
-		return accountType;
-	}
+  public void setLongName(String longName) {
+    this.longName = longName;
+  }
 
-	public void setAccountType(AccountType accountType) {
-		this.accountType = accountType;
-	}
+  public AccountCategory getAccountCategory() {
+    return accountCategory;
+  }
 
-	public String getDescription() {
-		return description;
-	}
+  public void setAccountCategory(AccountCategory accountCategory) {
+    this.accountCategory = accountCategory;
+  }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+  public AccountType getAccountType() {
+    return accountType;
+  }
 
-	public Boolean getPlaceholder() {
-		return placeholder;
-	}
+  public void setAccountType(AccountType accountType) {
+    this.accountType = accountType;
+  }
 
-	public void setPlaceholder(Boolean placeholder) {
-		this.placeholder = placeholder;
-	}
+  public String getDescription() {
+    return description;
+  }
 
-	public Boolean getHidden() {
-		return hidden;
-	}
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-	public void setHidden(Boolean hidden) {
-		this.hidden = hidden;
-	}
+  public Boolean getPlaceholder() {
+    return placeholder;
+  }
 
-	public Boolean getTaxRelated() {
-		return taxRelated;
-	}
+  public void setPlaceholder(Boolean placeholder) {
+    this.placeholder = placeholder;
+  }
 
-	public void setTaxRelated(Boolean taxRelated) {
-		this.taxRelated = taxRelated;
-	}
+  public Boolean getHidden() {
+    return hidden;
+  }
 
-	public String getCode() {
-		return code;
-	}
+  public void setHidden(Boolean hidden) {
+    this.hidden = hidden;
+  }
 
-	public void setCode(String code) {
-		this.code = code;
-	}
+  public Boolean getTaxRelated() {
+    return taxRelated;
+  }
 
+  public void setTaxRelated(Boolean taxRelated) {
+    this.taxRelated = taxRelated;
+  }
+
+  public String getCode() {
+    return code;
+  }
+
+  public void setCode(String code) {
+    this.code = code;
+  }
 }

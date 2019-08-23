@@ -49,13 +49,13 @@
 
 		<!--
 			install this in your local maven repository:
-			1: git clone https://gitlab.com/rollenwiese/nestedj.git
-			2: mvn install:install-file -Dfile=target/NestedJ-2.1.2.RELEASE.jar -DpomFile=pom.xml
+			1: git clone git@github.com:rollenwiese/nestedj.git
+			2: mvn install:install-file -Dfile=target/NestedJ-3.0.0.RELEASE.jar -DpomFile=pom.xml
 		-->
 		<dependency>
 			<groupId>pl.exsio</groupId>
 			<artifactId>NestedJ</artifactId>
-			<version>2.1.2.RELEASE</version>
+			<version>3.0.0.RELEASE</version>
 		</dependency>
 
 		<dependency>

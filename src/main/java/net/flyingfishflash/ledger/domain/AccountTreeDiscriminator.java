@@ -1,23 +1,20 @@
 package net.flyingfishflash.ledger.domain;
 
-import net.flyingfishflash.ledger.domain.AccountNode;
-import pl.exsio.nestedj.discriminator.TreeDiscriminatorImpl;
-
 import java.util.HashMap;
 import java.util.Map;
+import pl.exsio.nestedj.discriminator.MapTreeDiscriminator;
 
-public class AccountTreeDiscriminator extends TreeDiscriminatorImpl<AccountNode> {
+public class AccountTreeDiscriminator extends MapTreeDiscriminator<Long, AccountNode> {
 
-
-    public AccountTreeDiscriminator() {
-        Map<String, ValueProvider> valueProviders = new HashMap<>();
-        valueProviders.put("discriminator", new ValueProvider() {
+  public AccountTreeDiscriminator() {
+    Map<String, ValueProvider> valueProviders = new HashMap<>();
+    valueProviders.put("discriminator", () -> "account");
+        /*{
             @Override
             public Object getDiscriminatorValue() {
                 return "account";
             }
-        });
-
-        setValueProviders(valueProviders);
-    }
+        });*/
+    setValueProviders(valueProviders);
+  }
 }

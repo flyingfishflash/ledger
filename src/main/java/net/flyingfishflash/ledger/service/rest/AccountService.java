@@ -1,5 +1,6 @@
 package net.flyingfishflash.ledger.service.rest;
 
+import java.util.Iterator;
 import net.flyingfishflash.ledger.domain.AccountNode;
 import net.flyingfishflash.ledger.domain.AccountNodeDto;
 import net.flyingfishflash.ledger.domain.AccountRepository;
@@ -16,24 +17,36 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AccountService {
 
-    private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
-    private static final AccountTypeCategory atc = new AccountTypeCategory();
+  private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
+  private static final AccountTypeCategory atc = new AccountTypeCategory();
 
-    @Autowired
-    private AccountRepository accountRepository;
+  @Autowired
+  private AccountRepository accountRepository;
 
-    public ResponseEntity<AccountNodeDto> getSingleAccountNodeResponse(Long id) {
+  public ResponseEntity<AccountNodeDto> getSingleAccountNodeResponse(Long id) {
 
-        AccountNode accountNode = accountRepository.findOneById(id);
-        AccountNodeDto getAccountNodeDto = new AccountNodeDto(accountNode);
-        logger.debug(getAccountNodeDto.longname);
-        //AccountNode getAccountNode = accountRepository.findOneById(id);
-        return new ResponseEntity<AccountNodeDto>(getAccountNodeDto, HttpStatus.OK);
+    AccountNode accountNode = accountRepository.findOneById(id);
+    AccountNodeDto getAccountNodeDto = new AccountNodeDto(accountNode);
+    logger.debug(getAccountNodeDto.longName);
+    return new ResponseEntity<AccountNodeDto>(getAccountNodeDto, HttpStatus.OK);
+  }
+
+  public ResponseEntity<Iterable<AccountNode>> getAllAccounts() {
+
+    Iterable<AccountNode> allAccounts = accountRepository
+        .getTreeAsList(accountRepository.findOneById(1L));
+
+    // remove root account
+    Iterator<AccountNode> i = allAccounts.iterator();
+    AccountNode a;
+    while (i.hasNext()) {
+      a = i.next();
+      if (a.getTreeLeft() == 1) {
+        i.remove();
+        break;
+      }
     }
 
-    public ResponseEntity<Iterable<AccountNode>> getAllAccounts() {
-
-        Iterable<AccountNode> allAccounts = accountRepository.findWholeTree();
-        return new ResponseEntity<Iterable<AccountNode>>(allAccounts, HttpStatus.OK);
-    }
+    return new ResponseEntity<Iterable<AccountNode>>(allAccounts, HttpStatus.OK);
+  }
 }

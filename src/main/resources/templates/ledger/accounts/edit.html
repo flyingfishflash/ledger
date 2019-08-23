@@ -17,7 +17,7 @@
        <p th:case="true">Editing a base level account</p>
        <p th:case="false">Editing account:
               <br />
-              <span style="font-weight: bold;" th:text="${account.longname}">Longname of Account</span>
+              <span style="font-weight: bold;" th:text="${account.longName}">Longname of Account</span>
        </p>
 </div>
  
@@ -79,7 +79,7 @@
 
         <!-- if the immediate parent account is the root node, set a hidden field to the value already assigned as the parent account id -->
         <div th:if="${parentIsRoot == true}" >
-            <input type="hidden" id="newParent" name="newParent" th:value="${account.parent.id}"/>
+            <input type="hidden" id="newParent" name="newParent" th:value="${account.parentId}"/>
         </div>
         <!-- end if -->
 
@@ -90,8 +90,8 @@
 				<select size="5" class="form-control" id="newParent" name="newParent">
 				<option th:each="destinationAccount : ${destinationAccounts}"
 						th:value="${destinationAccount.id}"
-						th:text="${#strings.repeat('&nbsp; ', destinationAccount.level - 1)} + ${destinationAccount.name}"
-						th:selected="${destinationAccount.id == account.parent.id}">
+						th:text="${#strings.repeat('&nbsp; ', destinationAccount.treeLevel - 1)} + ${destinationAccount.name}"
+						th:selected="${destinationAccount.id == account.parentId}">
 				</option>
 				</select>
 			</div>
