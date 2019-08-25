@@ -1,11 +1,11 @@
-package net.flyingfishflash.ledger.controller;
+package net.flyingfishflash.ledger.controller.ui;
 
 import java.util.Iterator;
 import java.util.List;
 import net.flyingfishflash.ledger.domain.AccountCategory;
 import net.flyingfishflash.ledger.domain.AccountNode;
 import net.flyingfishflash.ledger.domain.AccountType;
-import net.flyingfishflash.ledger.service.AccountService;
+import net.flyingfishflash.ledger.service.ui.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +16,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@Controller
+@Controller("AccountControllerUI")
 @RequestMapping("/ledger/accounts")
 public class AccountController {
 
   private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
 
-  @Autowired
-  private AccountService accountService;
+  @Autowired private AccountService accountService;
 
   // Display table of accounts that includes options for create/update/delete
   @RequestMapping(value = "", method = RequestMethod.GET)
@@ -39,12 +38,8 @@ public class AccountController {
         break;
       }
     }
-
     model.addAttribute("title", "Accounts");
     model.addAttribute("accounts", accounts);
-
-    System.out.println(model.asMap().toString());
-
     return "ledger/accounts/index";
   }
 
@@ -56,7 +51,7 @@ public class AccountController {
     logger.debug("RequestParam: " + parentAccountId);
     AccountNode n = accountService.findOneById(parentAccountId);
     accountService.removeSubTree(n);
-    //accountRepository.removeSingle(n);
+    // accountRepository.removeSingle(n);
     return "redirect:/ledger/accounts";
   }
 
@@ -66,7 +61,6 @@ public class AccountController {
   public List<AccountCategory> getCategories() throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts/categories (GET)");
     return accountService.getCategories();
-
   }
 
   // Obtain the List of Account Types associated with an Account Category
@@ -77,7 +71,6 @@ public class AccountController {
     logger.debug("@RequestMapping: /ledger/accounts/typesbycategory (GET)");
     logger.debug("RequestParam: " + category);
     return accountService.getTypesByCategory(category);
-
   }
 
   // Obtain the List of Account Categories associated with an Account Type
@@ -88,7 +81,6 @@ public class AccountController {
     logger.debug("@RequestMapping: /ledger/accounts/categoriesbytype (GET)");
     logger.debug("RequestParam: " + type);
     return accountService.getCategoriesByType(type);
-
   }
 
   // Change the position of an account in the hierarchy within the sibling level (down)
@@ -103,7 +95,6 @@ public class AccountController {
       logger.debug("No Next Sibling");
     }
     return "redirect:/ledger/accounts";
-
   }
 
   // Change the position of an account in the hierarchy within the sibling level (up)
@@ -118,18 +109,15 @@ public class AccountController {
       logger.debug("No Previous Sibling");
     }
     return "redirect:/ledger/accounts";
-
   }
 
   // Testing placeholder
   @RequestMapping(value = "/test", method = RequestMethod.GET)
   @ResponseBody
-  public String test(@RequestParam("id") Long id/*, @RequestParam("method") String method*/)
+  public String test(@RequestParam("id") Long id /*, @RequestParam("method") String method*/)
       throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts/test (GET)");
     AccountNode account = accountService.findOneById(id);
     return accountService.getTreeAsList(accountService.getBaseLevelParent(account)).toString();
-
   }
-
 }

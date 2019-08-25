@@ -1,11 +1,11 @@
-package net.flyingfishflash.ledger.controller;
+package net.flyingfishflash.ledger.controller.ui;
 
 import javax.validation.Valid;
 import net.flyingfishflash.ledger.domain.AccountCategory;
 import net.flyingfishflash.ledger.domain.AccountNode;
 import net.flyingfishflash.ledger.domain.AccountRepository;
 import net.flyingfishflash.ledger.domain.AccountTypeCategory;
-import net.flyingfishflash.ledger.service.AccountService;
+import net.flyingfishflash.ledger.service.ui.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

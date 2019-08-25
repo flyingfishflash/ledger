@@ -1,10 +1,10 @@
-package net.flyingfishflash.ledger.service;
+package net.flyingfishflash.ledger.service.ui;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import net.flyingfishflash.ledger.common.IdentifierFactory;
-import net.flyingfishflash.ledger.controller.AccountController;
+import net.flyingfishflash.ledger.controller.ui.AccountController;
 import net.flyingfishflash.ledger.domain.AccountCategory;
 import net.flyingfishflash.ledger.domain.AccountNode;
 import net.flyingfishflash.ledger.domain.AccountRepository;
@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
+@Service("AccountServiceUI")
 @Transactional
 public class AccountService {
 

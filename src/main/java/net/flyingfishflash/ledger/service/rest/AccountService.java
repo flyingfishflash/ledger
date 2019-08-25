@@ -1,6 +1,8 @@
 package net.flyingfishflash.ledger.service.rest;
 
 import java.util.Iterator;
+import java.util.List;
+import net.flyingfishflash.ledger.domain.AccountCategory;
 import net.flyingfishflash.ledger.domain.AccountNode;
 import net.flyingfishflash.ledger.domain.AccountNodeDto;
 import net.flyingfishflash.ledger.domain.AccountRepository;
@@ -13,17 +15,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service("AccountServiceRest")
+@Service
 @Transactional
 public class AccountService {
 
   private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
   private static final AccountTypeCategory atc = new AccountTypeCategory();
 
-  @Autowired
-  private AccountRepository accountRepository;
+  @Autowired private AccountRepository accountRepository;
 
-  public ResponseEntity<AccountNodeDto> getSingleAccountNodeResponse(Long id) {
+  public ResponseEntity<AccountNodeDto> findAccountById(Long id) {
 
     AccountNode accountNode = accountRepository.findOneById(id);
     AccountNodeDto getAccountNodeDto = new AccountNodeDto(accountNode);
@@ -31,10 +32,10 @@ public class AccountService {
     return new ResponseEntity<AccountNodeDto>(getAccountNodeDto, HttpStatus.OK);
   }
 
-  public ResponseEntity<Iterable<AccountNode>> getAllAccounts() {
+  public ResponseEntity<Iterable<AccountNode>> findAllAccounts() {
 
-    Iterable<AccountNode> allAccounts = accountRepository
-        .getTreeAsList(accountRepository.findOneById(1L));
+    Iterable<AccountNode> allAccounts =
+        accountRepository.getTreeAsList(accountRepository.findOneById(1L));
 
     // remove root account
     Iterator<AccountNode> i = allAccounts.iterator();
@@ -48,5 +49,11 @@ public class AccountService {
     }
 
     return new ResponseEntity<Iterable<AccountNode>>(allAccounts, HttpStatus.OK);
+  }
+
+  public List<AccountCategory> findAccountCategories() {
+
+    return atc.getCategories();
+
   }
 }

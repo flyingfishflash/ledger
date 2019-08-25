@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger.controller;
+package net.flyingfishflash.ledger.controller.ui;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
