@@ -1,12 +1,9 @@
 package net.flyingfishflash.ledger.service.rest;
 
 import java.util.Iterator;
-import java.util.List;
-import net.flyingfishflash.ledger.domain.AccountCategory;
 import net.flyingfishflash.ledger.domain.AccountNode;
 import net.flyingfishflash.ledger.domain.AccountNodeDto;
 import net.flyingfishflash.ledger.domain.AccountRepository;
-import net.flyingfishflash.ledger.domain.AccountTypeCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountService {
 
   private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
-  private static final AccountTypeCategory atc = new AccountTypeCategory();
 
   @Autowired private AccountRepository accountRepository;
 
@@ -49,11 +45,5 @@ public class AccountService {
     }
 
     return new ResponseEntity<Iterable<AccountNode>>(allAccounts, HttpStatus.OK);
-  }
-
-  public List<AccountCategory> findAccountCategories() {
-
-    return atc.getCategories();
-
   }
 }

@@ -41,17 +41,10 @@ public final class AccountTypeCategory {
     return map;
   }
 
-  public List<AccountType> getTypesByCategory(String category) {
-
-    List<AccountType> types = map.entrySet()
-        .stream()
-        .filter(line -> AccountCategory.valueOf(category).equals(line.getValue()))
-        // sorted alphabetically
-        .sorted((e1, e2) -> e1.getKey().compareTo(e2.getKey()))
-        .map(Map.Entry::getKey)
-        .collect(Collectors.toList());
-
-    //types.forEach(name -> logger.debug("getTypesByCategory: " + name.toString()));
+  public List<AccountType> getTypes() {
+    // natural sort order (as declared in AccountCategory enum)
+    final List<AccountType> types =
+        new LinkedList<AccountType>(Arrays.asList(AccountType.values()));
 
     return types;
   }
@@ -59,27 +52,41 @@ public final class AccountTypeCategory {
   public List<AccountCategory> getCategories() {
 
     // natural sort order (as declared in AccountCategory enum)
-    final List<AccountCategory> categories = new LinkedList<AccountCategory>(
-        Arrays.asList(AccountCategory.values()));
+    final List<AccountCategory> categories =
+        new LinkedList<AccountCategory>(Arrays.asList(AccountCategory.values()));
     categories.remove(AccountCategory.Root);
-    //categories.forEach(name -> logger.debug("getCategories: " + name.toString()));
+    // categories.forEach(name -> logger.debug("getCategories: " + name.toString()));
 
     return categories;
+  }
+
+  public List<AccountType> getTypesByCategory(String category) {
+
+    List<AccountType> types =
+        map.entrySet().stream()
+            .filter(line -> AccountCategory.valueOf(category).equals(line.getValue()))
+            // sorted alphabetically
+            .sorted((e1, e2) -> e1.getKey().compareTo(e2.getKey()))
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toList());
+
+    // types.forEach(name -> logger.debug("getTypesByCategory: " + name.toString()));
+
+    return types;
   }
 
   public List<AccountCategory> getCategoriesByType(String type) {
 
-    final List<AccountCategory> categories = map.entrySet()
-        .stream()
-        .filter(line -> AccountType.valueOf(type).equals(line.getKey()))
-        // sorted alphabetically
-        .sorted((e1, e2) -> e1.getValue().compareTo(e2.getValue()))
-        .map(Map.Entry::getValue)
-        .collect(Collectors.toList());
+    final List<AccountCategory> categories =
+        map.entrySet().stream()
+            .filter(line -> AccountType.valueOf(type).equals(line.getKey()))
+            // sorted alphabetically
+            .sorted((e1, e2) -> e1.getValue().compareTo(e2.getValue()))
+            .map(Map.Entry::getValue)
+            .collect(Collectors.toList());
 
-    //categories.forEach(name -> logger.debug("getCategoriesByType(): " + name.toString()));
+    // categories.forEach(name -> logger.debug("getCategoriesByType(): " + name.toString()));
 
     return categories;
   }
-
 }

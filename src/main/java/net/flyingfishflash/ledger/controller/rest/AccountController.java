@@ -1,7 +1,5 @@
 package net.flyingfishflash.ledger.controller.rest;
 
-import java.util.List;
-import net.flyingfishflash.ledger.domain.AccountCategory;
 import net.flyingfishflash.ledger.domain.AccountNode;
 import net.flyingfishflash.ledger.domain.AccountNodeDto;
 import net.flyingfishflash.ledger.service.rest.AccountService;
@@ -31,12 +29,4 @@ public class AccountController {
   public ResponseEntity<AccountNodeDto> findAccountById(@PathVariable Long id) throws Throwable {
     return accountService.findAccountById(id);
   }
-
-  // Obtain the List of Account Categories
-  @RequestMapping(value = "/categories", method = RequestMethod.GET)
-  public List<AccountCategory> findAccountCategories() throws Exception {
-    return accountService.findAccountCategories();
-  }
-
-
 }
