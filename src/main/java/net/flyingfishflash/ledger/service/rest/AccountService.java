@@ -1,10 +1,10 @@
 package net.flyingfishflash.ledger.service.rest;
 
 import java.util.Iterator;
+import net.flyingfishflash.ledger.domain.Account;
 import net.flyingfishflash.ledger.domain.AccountCategory;
 import net.flyingfishflash.ledger.domain.CreateAccountDto;
-import net.flyingfishflash.ledger.domain.AccountNode;
-import net.flyingfishflash.ledger.domain.AccountNodeDto;
+import net.flyingfishflash.ledger.domain.AccountDto;
 import net.flyingfishflash.ledger.domain.AccountRepository;
 import net.flyingfishflash.ledger.domain.AccountType;
 import org.slf4j.Logger;
@@ -21,11 +21,11 @@ public class AccountService {
 
   @Autowired private AccountRepository accountRepository;
 
-  public AccountNode createAccountNode(CreateAccountDto createAccountDto) {
+  public Account createAccountNode(CreateAccountDto createAccountDto) {
 
-    AccountNode accountNode = new AccountNode();
-    AccountNode sibling = new AccountNode();
-    AccountNode parent = accountRepository.findOneById(createAccountDto.parentId);
+    Account account = new Account();
+    Account sibling = new Account();
+    Account parent = accountRepository.findOneById(createAccountDto.parentId);
 
     if (createAccountDto.siblingId != null && createAccountDto.siblingId != 0) {
       sibling = accountRepository.findOneById(createAccountDto.siblingId);
@@ -33,58 +33,58 @@ public class AccountService {
 
     logger.debug(createAccountDto.toString());
 
-    accountNode.setCode(createAccountDto.code);
-    accountNode.setDescription(createAccountDto.description);
-    accountNode.setHidden(createAccountDto.hidden);
-    accountNode.setName(createAccountDto.name);
-    accountNode.setPlaceholder(createAccountDto.placeholder);
-    accountNode.setTaxRelated(createAccountDto.taxRelated);
+    account.setCode(createAccountDto.code);
+    account.setDescription(createAccountDto.description);
+    account.setHidden(createAccountDto.hidden);
+    account.setName(createAccountDto.name);
+    account.setPlaceholder(createAccountDto.placeholder);
+    account.setTaxRelated(createAccountDto.taxRelated);
 
     if (parent.getAccountCategory().equals(AccountCategory.Root)) {
-      accountNode.setAccountCategory(AccountCategory.Asset);
-      accountNode.setAccountType(AccountType.Asset);
+      account.setAccountCategory(AccountCategory.Asset);
+      account.setAccountType(AccountType.Asset);
     } else {
-      accountNode.setAccountCategory(parent.getAccountCategory());
-      accountNode.setAccountType(parent.getAccountType());
+      account.setAccountCategory(parent.getAccountCategory());
+      account.setAccountType(parent.getAccountType());
     }
 
     switch (createAccountDto.mode.toLowerCase()) {
       case "firstchildof":
-        accountRepository.insertAsFirstChildOf(accountNode, parent);
+        accountRepository.insertAsFirstChildOf(account, parent);
         break;
       case "lastchildof":
-        accountRepository.insertAsLastChildOf(accountNode, parent);
+        accountRepository.insertAsLastChildOf(account, parent);
         break;
       case "prevsiblingof":
-        accountRepository.insertAsPrevSiblingOf(accountNode, sibling);
+        accountRepository.insertAsPrevSiblingOf(account, sibling);
         break;
       case "nextsiblingof":
-        accountRepository.insertAsNextSiblingOf(accountNode, sibling);
+        accountRepository.insertAsNextSiblingOf(account, sibling);
         break;
       default:
         System.out.println("missing method");
     }
 
-    return this.findByGuid(accountNode.getGuid());
+    return this.findByGuid(account.getGuid());
   }
 
-  public AccountNode findByGuid(String guid) {
+  public Account findByGuid(String guid) {
     return accountRepository.findOneByGuid(guid);
   }
 
-  public AccountNodeDto findById(Long id) {
-    AccountNode accountNode = accountRepository.findOneById(id);
-    return new AccountNodeDto(accountNode);
+  public AccountDto findById(Long id) {
+    Account account = accountRepository.findOneById(id);
+    return new AccountDto(account);
   }
 
-  public Iterable<AccountNode> findAllAccounts() {
+  public Iterable<Account> findAllAccounts() {
 
-    Iterable<AccountNode> allAccounts =
+    Iterable<Account> allAccounts =
         accountRepository.getTreeAsList(accountRepository.findOneById(1L));
 
     // remove root account
-    Iterator<AccountNode> i = allAccounts.iterator();
-    AccountNode a;
+    Iterator<Account> i = allAccounts.iterator();
+    Account a;
     while (i.hasNext()) {
       a = i.next();
       if (a.getTreeLeft() == 1) {

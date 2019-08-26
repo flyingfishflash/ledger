@@ -1,8 +1,8 @@
 package net.flyingfishflash.ledger.controller.ui;
 
 import javax.validation.Valid;
+import net.flyingfishflash.ledger.domain.Account;
 import net.flyingfishflash.ledger.domain.AccountCategory;
-import net.flyingfishflash.ledger.domain.AccountNode;
 import net.flyingfishflash.ledger.domain.AccountRepository;
 import net.flyingfishflash.ledger.domain.AccountTypeCategory;
 import net.flyingfishflash.ledger.service.ui.AccountService;
@@ -41,23 +41,23 @@ public class AccountEditController {
   // using method rather than method argument due to
   // problems with the the parent account in the POST method
   @ModelAttribute("account")
-  public AccountNode formBackingObject(Long id) {
+  public Account formBackingObject(Long id) {
     if (id != null) {
       logger.debug("-- returning existing AccountNode(): " + id);
       return accountRepository.findOneById(id);
     }
     logger.debug("-- returning new AccountNode()");
-    return new AccountNode();
+    return new Account();
   }
 
   @GetMapping //(value = "", method = RequestMethod.GET)
   public String editAccount(@RequestParam(name = "id") Long id,
-      @ModelAttribute("account") AccountNode account,
+      @ModelAttribute("account") Account account,
       Model model) throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts/edit (GET)");
     logger.debug("RequestParam: " + id);
     //AccountNode parent = account.getParent();
-    AccountNode parent = accountRepository.findOneById(account.getParentId());
+    Account parent = accountRepository.findOneById(account.getParentId());
     Boolean parentIsRoot = (parent.getAccountCategory().equals(AccountCategory.Root));
     logger.debug("parentIsRoot:" + parentIsRoot);
     logger.debug("parent.toString():" + parent.toString());
@@ -79,7 +79,7 @@ public class AccountEditController {
 
   @PostMapping //(value = "", method = RequestMethod.POST)
   public String saveEditedAccount(@RequestParam(name = "id") Long id,
-      @Valid @ModelAttribute("account") AccountNode account,
+      @Valid @ModelAttribute("account") Account account,
       @ModelAttribute("newParent") Long newParent,
       BindingResult result,
       Model model) throws Exception {

@@ -1,13 +1,23 @@
 package net.flyingfishflash.ledger.domain;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import net.flyingfishflash.ledger.common.IdentifierFactory;
+import pl.exsio.nestedj.model.NestedNode;
 
-@MappedSuperclass
-public class Account {
+@Entity
+@Table(name = "account")
+public class Account implements NestedNode<Long> {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  protected Long id;
 
   @Column(name = "guid", unique = true, updatable = false)
   protected String guid;
@@ -41,8 +51,28 @@ public class Account {
   @Enumerated(EnumType.STRING)
   protected AccountType accountType;
 
+  @Column(name = "tree_left", nullable = false)
+  protected Long treeLeft;
+
+  @Column(name = "tree_right", nullable = false)
+  protected Long treeRight;
+
+  @Column(name = "tree_level", nullable = false)
+  protected Long treeLevel;
+
+  @Column(name = "parent_id")
+  protected Long parentId;
+
+  @Column(name = "discriminator", nullable = false)
+  protected String discriminator;
+
   public Account() {
     this.setGuid();
+    this.setDiscriminator("account");
+  }
+
+  public Boolean isRoot() {
+    return this.getTreeLeft() == 1L;
   }
 
   public String getGuid() {
@@ -124,4 +154,80 @@ public class Account {
   public void setCode(String code) {
     this.code = code;
   }
+
+  public String getDiscriminator() {
+    return discriminator;
+  }
+
+  public void setDiscriminator(String discriminator) {
+    this.discriminator = discriminator;
+  }
+
+  @Override
+  public Long getId() {
+    return id;
+  }
+
+  @Override
+  public Long getTreeLeft() {
+    return treeLeft;
+  }
+
+  @Override
+  public void setTreeLeft(Long left) {
+    this.treeLeft = left;
+  }
+
+  @Override
+  public Long getTreeRight() {
+    return treeRight;
+  }
+
+  @Override
+  public void setTreeRight(Long right) {
+    this.treeRight = right;
+  }
+
+  @Override
+  public Long getTreeLevel() {
+    return treeLevel;
+  }
+
+  @Override
+  public void setTreeLevel(Long lvl) {
+    this.treeLevel = lvl;
+  }
+
+  @Override
+  public Long getParentId() {
+    return parentId;
+  }
+
+  @Override
+  public void setParentId(Long parentId) {
+    this.parentId = parentId;
+  }
+
+  @Override
+  public String toString() {
+    return "Account{" +
+        "id=" + id +
+        ", guid='" + guid + '\'' +
+        ", name='" + name + '\'' +
+        ", longName='" + longName + '\'' +
+        ", code='" + code + '\'' +
+        ", description='" + description + '\'' +
+        ", placeholder=" + placeholder +
+        ", hidden=" + hidden +
+        ", taxRelated=" + taxRelated +
+        ", accountCategory=" + accountCategory +
+        ", accountType=" + accountType +
+        ", treeLeft=" + treeLeft +
+        ", treeRight=" + treeRight +
+        ", treeLevel=" + treeLevel +
+        ", parentId=" + parentId +
+        ", discriminator='" + discriminator + '\'' +
+        '}';
+  }
+
 }

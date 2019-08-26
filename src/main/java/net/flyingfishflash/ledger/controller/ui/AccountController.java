@@ -3,7 +3,7 @@ package net.flyingfishflash.ledger.controller.ui;
 import java.util.Iterator;
 import java.util.List;
 import net.flyingfishflash.ledger.domain.AccountCategory;
-import net.flyingfishflash.ledger.domain.AccountNode;
+import net.flyingfishflash.ledger.domain.Account;
 import net.flyingfishflash.ledger.domain.AccountType;
 import net.flyingfishflash.ledger.service.ui.AccountService;
 import org.slf4j.Logger;
@@ -28,11 +28,11 @@ public class AccountController {
   @RequestMapping(value = "", method = RequestMethod.GET)
   public String listNodes(Model model) throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts");
-    Iterable<AccountNode> accounts = accountService.findWholeTree();
+    Iterable<Account> accounts = accountService.findWholeTree();
     // Remove Root node from list of nodes
-    Iterator<AccountNode> it = accounts.iterator();
+    Iterator<Account> it = accounts.iterator();
     while (it.hasNext()) {
-      AccountNode account = it.next();
+      Account account = it.next();
       if (account.isRoot()) {
         it.remove();
         break;
@@ -49,7 +49,7 @@ public class AccountController {
       throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts/delete (GET)");
     logger.debug("RequestParam: " + parentAccountId);
-    AccountNode n = accountService.findOneById(parentAccountId);
+    Account n = accountService.findOneById(parentAccountId);
     accountService.removeSubTree(n);
     // accountRepository.removeSingle(n);
     return "redirect:/ledger/accounts";
@@ -87,9 +87,9 @@ public class AccountController {
   @RequestMapping(value = "/insertAsNextSibling", method = RequestMethod.GET)
   public String insertAsNextSiblingOf(@RequestParam("id") Long id) throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts/insertAsNextSibling (GET)");
-    AccountNode n = accountService.findOneById(id);
+    Account n = accountService.findOneById(id);
     if (accountService.getNextSibling(n).isPresent()) {
-      AccountNode s = accountService.getNextSibling(n).get();
+      Account s = accountService.getNextSibling(n).get();
       accountService.insertAsNextSiblingOf(n, s);
     } else {
       logger.debug("No Next Sibling");
@@ -101,9 +101,9 @@ public class AccountController {
   @RequestMapping(value = "/insertAsPrevSibling", method = RequestMethod.GET)
   public String insertAsPrevSiblingOf(@RequestParam("id") Long id) throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts/insertAsPrevSibling (GET)");
-    AccountNode n = accountService.findOneById(id);
+    Account n = accountService.findOneById(id);
     if (accountService.getPrevSibling(n).isPresent()) {
-      AccountNode s = accountService.getPrevSibling(n).get();
+      Account s = accountService.getPrevSibling(n).get();
       accountService.insertAsPrevSiblingOf(n, s);
     } else {
       logger.debug("No Previous Sibling");
@@ -117,7 +117,7 @@ public class AccountController {
   public String test(@RequestParam("id") Long id /*, @RequestParam("method") String method*/)
       throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts/test (GET)");
-    AccountNode account = accountService.findOneById(id);
+    Account account = accountService.findOneById(id);
     return accountService.getTreeAsList(accountService.getBaseLevelParent(account)).toString();
   }
 }

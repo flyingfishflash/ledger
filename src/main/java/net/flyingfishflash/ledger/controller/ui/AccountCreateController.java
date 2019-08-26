@@ -1,7 +1,7 @@
 package net.flyingfishflash.ledger.controller.ui;
 
+import net.flyingfishflash.ledger.domain.Account;
 import net.flyingfishflash.ledger.domain.AccountCategory;
-import net.flyingfishflash.ledger.domain.AccountNode;
 import net.flyingfishflash.ledger.domain.AccountTypeCategory;
 import net.flyingfishflash.ledger.service.ui.AccountService;
 import org.slf4j.Logger;
@@ -38,8 +38,8 @@ public class AccountCreateController {
     logger.debug("@RequestMapping: /ledger/accounts/create (GET)");
     logger.debug("RequestParam: " + parentAccountId);
     // TODO Handle NullPointer Exception if parentId does not exist in nested set
-    AccountNode parent = accountService.findOneById(parentAccountId);
-    AccountNode account = accountService.newAccountNode(parent);
+    Account parent = accountService.findOneById(parentAccountId);
+    Account account = accountService.newAccountNode(parent);
     Boolean parentIsRoot = (parent.getAccountCategory().equals(AccountCategory.Root));
     model.addAttribute("title", "Create Account");
     model.addAttribute("parent", parent);
@@ -54,12 +54,12 @@ public class AccountCreateController {
   }
 
   @PostMapping //(value = "", method = RequestMethod.POST)
-  public String saveCreatedAccount(AccountNode account
+  public String saveCreatedAccount(Account account
       , @RequestParam("parentAccountId") Long parentAccountId
       , BindingResult result
       , Model model) throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts/create (POST)");
-    AccountNode parent = accountService.findOneById(parentAccountId);
+    Account parent = accountService.findOneById(parentAccountId);
     logger.debug(model.toString());
     String method = "last";
     if (method.equals("first")) {

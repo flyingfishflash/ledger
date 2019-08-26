@@ -1,8 +1,8 @@
 package net.flyingfishflash.ledger.controller.rest;
 
 import java.net.URI;
-import net.flyingfishflash.ledger.domain.AccountNode;
-import net.flyingfishflash.ledger.domain.AccountNodeDto;
+import net.flyingfishflash.ledger.domain.Account;
+import net.flyingfishflash.ledger.domain.AccountDto;
 import net.flyingfishflash.ledger.domain.CreateAccountDto;
 import net.flyingfishflash.ledger.service.rest.AccountService;
 import org.slf4j.Logger;
@@ -29,33 +29,33 @@ public class AccountController {
   @Autowired private AccountService accountService;
 
   @GetMapping
-  public ResponseEntity<Iterable<AccountNode>> findAllAccounts() throws Throwable {
-    Iterable<AccountNode> allAccounts = accountService.findAllAccounts();
+  public ResponseEntity<Iterable<Account>> findAllAccounts() throws Throwable {
+    Iterable<Account> allAccounts = accountService.findAllAccounts();
     return new ResponseEntity<>(allAccounts, HttpStatus.OK);
   }
 
   @GetMapping(value = "{id}")
-  public ResponseEntity<AccountNodeDto> findAccountById(@PathVariable Long id) throws Throwable {
-    AccountNodeDto accountNodeDto = accountService.findById(id);
-    return new ResponseEntity<>(accountNodeDto, HttpStatus.OK);
+  public ResponseEntity<AccountDto> findAccountById(@PathVariable Long id) throws Throwable {
+    AccountDto accountDto = accountService.findById(id);
+    return new ResponseEntity<>(accountDto, HttpStatus.OK);
   }
 
   @PostMapping
-  public ResponseEntity<AccountNode> createAccount(
+  public ResponseEntity<Account> createAccount(
       @RequestHeader(name = "X-COM-LOCATION", required = false) String headerLocation,
       @RequestBody CreateAccountDto createAccountDto) {
 
-    AccountNode accountNode = accountService.createAccountNode(createAccountDto);
+    Account account = accountService.createAccountNode(createAccountDto);
 
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
-            .buildAndExpand(accountNode.getId())
+            .buildAndExpand(account.getId())
             .toUri();
 
     HttpHeaders headers = new HttpHeaders();
     headers.setLocation(location);
 
-    return new ResponseEntity<AccountNode>(accountNode, headers, HttpStatus.CREATED);
+    return new ResponseEntity<Account>(account, headers, HttpStatus.CREATED);
   }
 }

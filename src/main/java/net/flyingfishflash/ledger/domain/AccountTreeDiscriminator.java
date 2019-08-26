@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import pl.exsio.nestedj.discriminator.MapTreeDiscriminator;
 
-public class AccountTreeDiscriminator extends MapTreeDiscriminator<Long, AccountNode> {
+public class AccountTreeDiscriminator extends MapTreeDiscriminator<Long, Account> {
 
   public AccountTreeDiscriminator() {
     Map<String, ValueProvider> valueProviders = new HashMap<>();

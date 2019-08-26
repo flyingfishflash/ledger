@@ -3,7 +3,7 @@ package net.flyingfishflash.ledger.domain;
 /*
 {
     "code": "2",
-    "description": "ddd",
+    "description": "Financial Assets Account Description",
     "hidden": true,
     "mode" : "lastchildof",
     "name": "Financial Assets",

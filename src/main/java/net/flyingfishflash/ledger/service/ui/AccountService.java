@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import net.flyingfishflash.ledger.controller.ui.AccountController;
 import net.flyingfishflash.ledger.domain.AccountCategory;
-import net.flyingfishflash.ledger.domain.AccountNode;
+import net.flyingfishflash.ledger.domain.Account;
 import net.flyingfishflash.ledger.domain.AccountRepository;
 import net.flyingfishflash.ledger.domain.AccountType;
 import net.flyingfishflash.ledger.domain.AccountTypeCategory;
@@ -24,31 +24,31 @@ public class AccountService {
 
   @Autowired private AccountRepository accountRepository;
 
-  public AccountNode newAccountNode(AccountNode p) {
+  public Account newAccountNode(Account p) {
 
-    AccountNode accountNode = accountRepository.newAccountNode();
+    Account account = accountRepository.newAccountNode();
 
     if (p.getAccountCategory().equals(AccountCategory.Root)) {
-      accountNode.setAccountCategory(AccountCategory.Asset);
-      accountNode.setAccountType(AccountType.Asset);
+      account.setAccountCategory(AccountCategory.Asset);
+      account.setAccountType(AccountType.Asset);
     } else {
-      accountNode.setAccountCategory(p.getAccountCategory());
-      accountNode.setAccountType(p.getAccountType());
+      account.setAccountCategory(p.getAccountCategory());
+      account.setAccountType(p.getAccountType());
     }
 
-    return accountNode;
+    return account;
   }
 
-  public AccountNode findOneById(Long id) {
+  public Account findOneById(Long id) {
 
     return accountRepository.findOneById(id);
   }
 
-  public Iterable<AccountNode> findWholeTree() {
+  public Iterable<Account> findWholeTree() {
 
-    Iterator<AccountNode> i =
+    Iterator<Account> i =
         accountRepository.getTreeAsList(accountRepository.findOneById(1L)).iterator();
-    AccountNode a;
+    Account a;
     while (i.hasNext()) {
       a = i.next();
       if (a.getTreeLeft() == 1) {
@@ -64,18 +64,18 @@ public class AccountService {
     return accountRepository.getTreeAsList(accountRepository.findOneById(1L));
   }
 
-  public Iterable<AccountNode> getTreeAsList(AccountNode account) {
+  public Iterable<Account> getTreeAsList(Account account) {
 
     return accountRepository.getTreeAsList(account);
   }
 
-  public Iterable<AccountNode> getElligibleParentAccounts(AccountNode account) {
+  public Iterable<Account> getElligibleParentAccounts(Account account) {
 
-    Iterable<AccountNode> accounts = this.getTreeAsList(this.getBaseLevelParent(account));
+    Iterable<Account> accounts = this.getTreeAsList(this.getBaseLevelParent(account));
     // Remove passed account and its children from list of eligible parent accounts
-    Iterator<AccountNode> it = accounts.iterator();
+    Iterator<Account> it = accounts.iterator();
     while (it.hasNext()) {
-      AccountNode a = it.next();
+      Account a = it.next();
       if (a.getTreeLeft() > account.getTreeLeft() && a.getTreeLeft() < account.getTreeRight()) {
         it.remove();
       } else if (a.getId() == account.getId()) {
@@ -86,12 +86,12 @@ public class AccountService {
     return accounts;
   }
 
-  public Optional<AccountNode> getPrevSibling(AccountNode account) {
+  public Optional<Account> getPrevSibling(Account account) {
 
     return accountRepository.getPrevSibling(account);
   }
 
-  public Optional<AccountNode> getNextSibling(AccountNode account) {
+  public Optional<Account> getNextSibling(Account account) {
 
     return accountRepository.getNextSibling(account);
   }
@@ -105,13 +105,13 @@ public class AccountService {
    * Root level account has a depth of 0.
    *
    */
-  public AccountNode getBaseLevelParent(AccountNode account) {
+  public Account getBaseLevelParent(Account account) {
 
-    AccountNode r = new AccountNode();
+    Account r = new Account();
 
     if (account.getTreeLevel() > 1) {
-      Iterable<AccountNode> parents = accountRepository.getParents(account);
-      Iterator<AccountNode> it = parents.iterator();
+      Iterable<Account> parents = accountRepository.getParents(account);
+      Iterator<Account> it = parents.iterator();
       while (it.hasNext()) {
         r = it.next();
         if (r.getTreeLevel() == 1) {
@@ -124,32 +124,32 @@ public class AccountService {
     return r;
   }
 
-  public void insertAsFirstChildOf(AccountNode account, AccountNode parent) {
+  public void insertAsFirstChildOf(Account account, Account parent) {
 
     accountRepository.insertAsFirstChildOf(account, parent);
   }
 
-  public void insertAsLastChildOf(AccountNode account, AccountNode parent) {
+  public void insertAsLastChildOf(Account account, Account parent) {
 
     accountRepository.insertAsLastChildOf(account, parent);
   }
 
-  public void insertAsNextSiblingOf(AccountNode account, AccountNode parent) {
+  public void insertAsNextSiblingOf(Account account, Account parent) {
 
     accountRepository.insertAsNextSiblingOf(account, parent);
   }
 
-  public void insertAsPrevSiblingOf(AccountNode account, AccountNode parent) {
+  public void insertAsPrevSiblingOf(Account account, Account parent) {
 
     accountRepository.insertAsPrevSiblingOf(account, parent);
   }
 
-  public void removeSingle(AccountNode account) {
+  public void removeSingle(Account account) {
 
     accountRepository.removeSingle(account);
   }
 
-  public void removeSubTree(AccountNode account) {
+  public void removeSubTree(Account account) {
 
     accountRepository.removeSubTree(account);
   }

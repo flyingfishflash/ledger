@@ -22,67 +22,66 @@ public class AccountRepository {
 
   private static final Logger logger = LoggerFactory.getLogger(AccountRepository.class);
 
-  @Autowired protected DelegatingNestedNodeRepository<Long, AccountNode> nr;
+  @Autowired protected DelegatingNestedNodeRepository<Long, Account> nr;
 
   @PersistenceContext protected EntityManager em;
 
-  public AccountNode newAccountNode() {
-    return new AccountNode();
+  public Account newAccountNode() {
+    return new Account();
   }
 
-  public void save(AccountNode n) {
-    em.persist(n);
+  public void save(Account account) {
+    em.persist(account);
   }
 
-  public void update(AccountNode n) {
+  public void update(Account account) {
 
     // derive and set the longname on all child accounts of the subject account
-    Iterable<AccountNode> t = this.nr.getTreeAsList(n);
-    Iterator<AccountNode> it = t.iterator();
+    Iterable<Account> t = this.nr.getTreeAsList(account);
+    Iterator<Account> it = t.iterator();
     while (it.hasNext()) {
-      AccountNode account = it.next();
-      account.setLongName(this.deriveLongName(account, this.nr.getParent(account).get()));
+      Account next = it.next();
+      next.setLongName(this.deriveLongName(next, this.nr.getParent(next).get()));
     }
-    em.merge(n);
+    em.merge(account);
   }
 
-  // Note that due to the eager fetch type
-  public AccountNode findOneById(Long id) {
+  public Account findOneById(Long id) {
 
     // TODO move to nestedj, DAO layer
     CriteriaBuilder cb = em.getCriteriaBuilder();
-    CriteriaQuery<AccountNode> select = cb.createQuery(AccountNode.class);
-    Root<AccountNode> root = select.from(AccountNode.class);
+    CriteriaQuery<Account> select = cb.createQuery(Account.class);
+    Root<Account> root = select.from(Account.class);
     select.where(cb.equal(root.get("id"), id));
-    AccountNode n = em.createQuery(select).getSingleResult();
-    this.em.refresh(n);
-    return n;
+    Account account = em.createQuery(select).getSingleResult();
+    this.em.refresh(account);
+    return account;
   }
 
-  public AccountNode findOneByGuid(String guid) {
+  public Account findOneByGuid(String guid) {
 
     // TODO move to nestedj, DAO layer
     CriteriaBuilder cb = em.getCriteriaBuilder();
-    CriteriaQuery<AccountNode> select = cb.createQuery(AccountNode.class);
-    Root<AccountNode> root = select.from(AccountNode.class);
+    CriteriaQuery<Account> select = cb.createQuery(Account.class);
+    Root<Account> root = select.from(Account.class);
     select.where(cb.equal(root.get("guid"), guid));
-    AccountNode n = em.createQuery(select).getSingleResult();
-    this.em.refresh(n);
-    return n;
+    Account account = em.createQuery(select).getSingleResult();
+    this.em.refresh(account);
+    return account;
   }
 
-  public Iterable<AccountNode> getTreeAsList(AccountNode account) {
+  public Iterable<Account> getTreeAsList(Account account) {
 
     return this.nr.getTreeAsList(account);
   }
 
-  public String deriveLongName(AccountNode n, AccountNode p) {
+  public String deriveLongName(Account account, Account parent) {
 
-    if (p.getTreeLeft() <= 1) {
-      return n.name;
+    if (parent.getTreeLeft() <= 1) {
+      return account.name;
     }
 
-    List<AccountNode> parents = (List<AccountNode>) nr.getParents(p);
+    List<Account> parents = (List<Account>) nr.getParents(parent);
     StringJoiner sj = new StringJoiner(":");
     parents.size();
     // build the longname by collecting the ancestor account names in reverse
@@ -93,69 +92,69 @@ public class AccountRepository {
       // logger.debug("array: " + parents.get(i).getName());
     }
     // append the parent/current node
-    sj.add(p.getName());
-    sj.add(n.getName());
+    sj.add(parent.getName());
+    sj.add(account.getName());
     String longname = sj.toString();
     logger.debug(longname);
 
     return longname;
   }
 
-  public Optional<AccountNode> getPrevSibling(AccountNode n) {
+  public Optional<Account> getPrevSibling(Account account) {
 
     logger.debug("AccountRepository.getPrevSibling() begin");
-    return this.nr.getPrevSibling(n);
+    return this.nr.getPrevSibling(account);
   }
 
-  public Optional<AccountNode> getNextSibling(AccountNode n) {
+  public Optional<Account> getNextSibling(Account account) {
 
     logger.debug("AccountRepository.getNextSibling() begin");
-    return this.nr.getNextSibling(n);
+    return this.nr.getNextSibling(account);
   }
 
-  public Iterable<AccountNode> getParents(AccountNode n) {
+  public Iterable<Account> getParents(Account account) {
 
-    return nr.getParents(n);
+    return nr.getParents(account);
   }
 
-  public void insertAsLastChildOf(AccountNode n, AccountNode p) {
+  public void insertAsLastChildOf(Account account, Account parent) {
 
-    n.setLongName(this.deriveLongName(n, p));
-    nr.insertAsLastChildOf(n, p);
+    account.setLongName(this.deriveLongName(account, parent));
+    nr.insertAsLastChildOf(account, parent);
   }
 
-  public void insertAsFirstChildOf(AccountNode n, AccountNode p) {
+  public void insertAsFirstChildOf(Account account, Account parent) {
 
-    n.setLongName(this.deriveLongName(n, p));
-    nr.insertAsFirstChildOf(n, p);
+    account.setLongName(this.deriveLongName(account, parent));
+    nr.insertAsFirstChildOf(account, parent);
   }
 
-  public void insertAsPrevSiblingOf(AccountNode n, AccountNode s) {
+  public void insertAsPrevSiblingOf(Account account, Account sibling) {
 
-    nr.insertAsPrevSiblingOf(n, s);
+    nr.insertAsPrevSiblingOf(account, sibling);
   }
 
-  public void insertAsNextSiblingOf(AccountNode n, AccountNode s) {
+  public void insertAsNextSiblingOf(Account account, Account sibling) {
 
-    nr.insertAsNextSiblingOf(n, s);
+    nr.insertAsNextSiblingOf(account, sibling);
   }
 
-  public void removeSingle(AccountNode n) {
+  public void removeSingle(Account account) {
 
-    nr.removeSingle(n);
+    nr.removeSingle(account);
   }
 
-  public void removeSubTree(AccountNode n) {
+  public void removeSubTree(Account account) {
 
-    nr.removeSubtree(n);
+    nr.removeSubtree(account);
   }
 
-  protected void printNode(Long id, AccountNode n) {
+  protected void printNode(Long id, Account account) {
 
-    if (n != null) {
+    if (account != null) {
       System.out.println(
           String.format(
-              "Node %s: %d/%d/%d", n.getId(), n.getTreeLeft(), n.getTreeRight(), n.getTreeLevel()));
+              "Node %s: %d/%d/%d", account.getId(), account.getTreeLeft(), account.getTreeRight(), account.getTreeLevel()));
     }
   }
 }
