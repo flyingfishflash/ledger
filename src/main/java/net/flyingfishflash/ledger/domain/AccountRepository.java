@@ -22,17 +22,12 @@ public class AccountRepository {
 
   private static final Logger logger = LoggerFactory.getLogger(AccountRepository.class);
 
-  @Autowired
-  protected DelegatingNestedNodeRepository<Long, AccountNode> nr;
+  @Autowired protected DelegatingNestedNodeRepository<Long, AccountNode> nr;
 
-  @PersistenceContext
-  protected EntityManager em;
+  @PersistenceContext protected EntityManager em;
 
   public AccountNode newAccountNode() {
-
-    AccountNode accountNode = new AccountNode();
-
-    return accountNode;
+    return new AccountNode();
   }
 
   public void save(AccountNode n) {
@@ -58,10 +53,20 @@ public class AccountRepository {
     CriteriaBuilder cb = em.getCriteriaBuilder();
     CriteriaQuery<AccountNode> select = cb.createQuery(AccountNode.class);
     Root<AccountNode> root = select.from(AccountNode.class);
-    //root.fetch("parent", JoinType.INNER); // to intialize lazy loaded "parent" relation
     select.where(cb.equal(root.get("id"), id));
     AccountNode n = em.createQuery(select).getSingleResult();
-    printNode(id, n);
+    this.em.refresh(n);
+    return n;
+  }
+
+  public AccountNode findOneByGuid(String guid) {
+
+    // TODO move to nestedj, DAO layer
+    CriteriaBuilder cb = em.getCriteriaBuilder();
+    CriteriaQuery<AccountNode> select = cb.createQuery(AccountNode.class);
+    Root<AccountNode> root = select.from(AccountNode.class);
+    select.where(cb.equal(root.get("guid"), guid));
+    AccountNode n = em.createQuery(select).getSingleResult();
     this.em.refresh(n);
     return n;
   }
@@ -149,8 +154,8 @@ public class AccountRepository {
 
     if (n != null) {
       System.out.println(
-          String.format("Node %s: %d/%d/%d", n.getId(), n.getTreeLeft(), n.getTreeRight(),
-              n.getTreeLevel()));
+          String.format(
+              "Node %s: %d/%d/%d", n.getId(), n.getTreeLeft(), n.getTreeRight(), n.getTreeLevel()));
     }
   }
 }

@@ -42,7 +42,7 @@ public class Account {
   protected AccountType accountType;
 
   public Account() {
-    // this.setGuid();
+    this.setGuid();
   }
 
   public String getGuid() {

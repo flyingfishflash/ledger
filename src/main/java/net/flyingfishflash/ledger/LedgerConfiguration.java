@@ -12,14 +12,13 @@ import pl.exsio.nestedj.repository.NestedNodeRepository;
 @Configuration
 public class LedgerConfiguration {
 
-  @PersistenceContext
-  EntityManager em;
+  @PersistenceContext EntityManager em;
 
   @Bean
   // why do i have to cast this DelegatingNestedNodeRepository?
   public DelegatingNestedNodeRepository<Long, AccountNode> repository() {
-    return (DelegatingNestedNodeRepository<Long, AccountNode>) NestedNodeRepository
-        .createDiscriminated(Long.class, AccountNode.class, em, new AccountTreeDiscriminator());
+    return (DelegatingNestedNodeRepository<Long, AccountNode>)
+        NestedNodeRepository.createDiscriminated(
+            Long.class, AccountNode.class, em, new AccountTreeDiscriminator());
   }
-
 }
