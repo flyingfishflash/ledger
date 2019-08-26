@@ -3,7 +3,6 @@ package net.flyingfishflash.ledger.service.ui;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import net.flyingfishflash.ledger.common.IdentifierFactory;
 import net.flyingfishflash.ledger.controller.ui.AccountController;
 import net.flyingfishflash.ledger.domain.AccountCategory;
 import net.flyingfishflash.ledger.domain.AccountNode;
@@ -23,15 +22,11 @@ public class AccountService {
   private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
   private static final AccountTypeCategory atc = new AccountTypeCategory();
 
-  @Autowired
-  private AccountRepository accountRepository;
-
+  @Autowired private AccountRepository accountRepository;
 
   public AccountNode newAccountNode(AccountNode p) {
 
     AccountNode accountNode = accountRepository.newAccountNode();
-
-    accountNode.setGuid(IdentifierFactory.getInstance().generateIdentifier());
 
     if (p.getAccountCategory().equals(AccountCategory.Root)) {
       accountNode.setAccountCategory(AccountCategory.Asset);
@@ -42,19 +37,17 @@ public class AccountService {
     }
 
     return accountNode;
-
   }
 
   public AccountNode findOneById(Long id) {
 
     return accountRepository.findOneById(id);
-
   }
 
   public Iterable<AccountNode> findWholeTree() {
 
-    Iterator<AccountNode> i = accountRepository.getTreeAsList(accountRepository.findOneById(1L))
-        .iterator();
+    Iterator<AccountNode> i =
+        accountRepository.getTreeAsList(accountRepository.findOneById(1L)).iterator();
     AccountNode a;
     while (i.hasNext()) {
       a = i.next();
@@ -63,19 +56,17 @@ public class AccountService {
         break;
       }
 
-      //return (Iterable<AccountNode>) () -> i;
+      // return (Iterable<AccountNode>) () -> i;
     }
 
-    //return () -> i;
+    // return () -> i;
 
     return accountRepository.getTreeAsList(accountRepository.findOneById(1L));
-
   }
 
   public Iterable<AccountNode> getTreeAsList(AccountNode account) {
 
     return accountRepository.getTreeAsList(account);
-
   }
 
   public Iterable<AccountNode> getElligibleParentAccounts(AccountNode account) {
@@ -93,21 +84,17 @@ public class AccountService {
     }
 
     return accounts;
-
   }
 
   public Optional<AccountNode> getPrevSibling(AccountNode account) {
 
     return accountRepository.getPrevSibling(account);
-
   }
 
   public Optional<AccountNode> getNextSibling(AccountNode account) {
 
     return accountRepository.getNextSibling(account);
-
   }
-
 
   /*
    * Each account should have one base level parent
@@ -135,62 +122,50 @@ public class AccountService {
       r = account;
     }
     return r;
-
   }
 
   public void insertAsFirstChildOf(AccountNode account, AccountNode parent) {
 
     accountRepository.insertAsFirstChildOf(account, parent);
-
   }
-
 
   public void insertAsLastChildOf(AccountNode account, AccountNode parent) {
 
     accountRepository.insertAsLastChildOf(account, parent);
-
   }
 
   public void insertAsNextSiblingOf(AccountNode account, AccountNode parent) {
 
     accountRepository.insertAsNextSiblingOf(account, parent);
-
   }
 
   public void insertAsPrevSiblingOf(AccountNode account, AccountNode parent) {
 
     accountRepository.insertAsPrevSiblingOf(account, parent);
-
   }
 
   public void removeSingle(AccountNode account) {
 
     accountRepository.removeSingle(account);
-
   }
 
   public void removeSubTree(AccountNode account) {
 
     accountRepository.removeSubTree(account);
-
   }
 
   public List<AccountCategory> getCategories() {
 
     return atc.getCategories();
-
   }
 
   public List<AccountCategory> getCategoriesByType(String type) {
 
     return atc.getCategoriesByType(type);
-
   }
 
   public List<AccountType> getTypesByCategory(String category) {
 
     return atc.getTypesByCategory(category);
-
   }
-
 }

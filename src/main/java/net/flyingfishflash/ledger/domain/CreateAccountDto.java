@@ -5,7 +5,7 @@ package net.flyingfishflash.ledger.domain;
     "code": "2",
     "description": "ddd",
     "hidden": true,
-    "method" : "lastchildof",
+    "mode" : "lastchildof",
     "name": "Financial Assets",
     "parentId": 2,
     "placeholder": true,
@@ -14,7 +14,7 @@ package net.flyingfishflash.ledger.domain;
 }
 */
 
-public class CreateAccountNodeDto {
+public class CreateAccountDto {
 
   public String code;
   public String description;
@@ -26,7 +26,7 @@ public class CreateAccountNodeDto {
   public Long siblingId;
   public Boolean taxRelated;
 
-  public CreateAccountNodeDto() {}
+  public CreateAccountDto() {}
 
   @Override
   public String toString() {

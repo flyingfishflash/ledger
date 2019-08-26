@@ -2,7 +2,7 @@ package net.flyingfishflash.ledger.service.rest;
 
 import java.util.Iterator;
 import net.flyingfishflash.ledger.domain.AccountCategory;
-import net.flyingfishflash.ledger.domain.CreateAccountNodeDto;
+import net.flyingfishflash.ledger.domain.CreateAccountDto;
 import net.flyingfishflash.ledger.domain.AccountNode;
 import net.flyingfishflash.ledger.domain.AccountNodeDto;
 import net.flyingfishflash.ledger.domain.AccountRepository;
@@ -10,8 +10,6 @@ import net.flyingfishflash.ledger.domain.AccountType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,24 +21,24 @@ public class AccountService {
 
   @Autowired private AccountRepository accountRepository;
 
-  public AccountNode createAccountNode(CreateAccountNodeDto createAccountNodeDto) {
+  public AccountNode createAccountNode(CreateAccountDto createAccountDto) {
 
     AccountNode accountNode = new AccountNode();
     AccountNode sibling = new AccountNode();
-    AccountNode parent = accountRepository.findOneById(createAccountNodeDto.parentId);
+    AccountNode parent = accountRepository.findOneById(createAccountDto.parentId);
 
-    if (createAccountNodeDto.siblingId != null && createAccountNodeDto.siblingId != 0) {
-      sibling = accountRepository.findOneById(createAccountNodeDto.siblingId);
+    if (createAccountDto.siblingId != null && createAccountDto.siblingId != 0) {
+      sibling = accountRepository.findOneById(createAccountDto.siblingId);
     }
 
-    logger.debug(createAccountNodeDto.toString());
+    logger.debug(createAccountDto.toString());
 
-    accountNode.setCode(createAccountNodeDto.code);
-    accountNode.setDescription(createAccountNodeDto.description);
-    accountNode.setHidden(createAccountNodeDto.hidden);
-    accountNode.setName(createAccountNodeDto.name);
-    accountNode.setPlaceholder(createAccountNodeDto.placeholder);
-    accountNode.setTaxRelated(createAccountNodeDto.taxRelated);
+    accountNode.setCode(createAccountDto.code);
+    accountNode.setDescription(createAccountDto.description);
+    accountNode.setHidden(createAccountDto.hidden);
+    accountNode.setName(createAccountDto.name);
+    accountNode.setPlaceholder(createAccountDto.placeholder);
+    accountNode.setTaxRelated(createAccountDto.taxRelated);
 
     if (parent.getAccountCategory().equals(AccountCategory.Root)) {
       accountNode.setAccountCategory(AccountCategory.Asset);
@@ -50,7 +48,7 @@ public class AccountService {
       accountNode.setAccountType(parent.getAccountType());
     }
 
-    switch (createAccountNodeDto.mode.toLowerCase()) {
+    switch (createAccountDto.mode.toLowerCase()) {
       case "firstchildof":
         accountRepository.insertAsFirstChildOf(accountNode, parent);
         break;
@@ -67,22 +65,19 @@ public class AccountService {
         System.out.println("missing method");
     }
 
-    return this.findAccountByGuid(accountNode.getGuid());
+    return this.findByGuid(accountNode.getGuid());
   }
 
-  public AccountNode findAccountByGuid(String guid) {
+  public AccountNode findByGuid(String guid) {
     return accountRepository.findOneByGuid(guid);
   }
 
-  public ResponseEntity<AccountNodeDto> findAccountById(Long id) {
-
+  public AccountNodeDto findById(Long id) {
     AccountNode accountNode = accountRepository.findOneById(id);
-    AccountNodeDto getAccountNodeDto = new AccountNodeDto(accountNode);
-    logger.debug(getAccountNodeDto.longName);
-    return new ResponseEntity<AccountNodeDto>(getAccountNodeDto, HttpStatus.OK);
+    return new AccountNodeDto(accountNode);
   }
 
-  public ResponseEntity<Iterable<AccountNode>> findAllAccounts() {
+  public Iterable<AccountNode> findAllAccounts() {
 
     Iterable<AccountNode> allAccounts =
         accountRepository.getTreeAsList(accountRepository.findOneById(1L));
@@ -98,6 +93,6 @@ public class AccountService {
       }
     }
 
-    return new ResponseEntity<Iterable<AccountNode>>(allAccounts, HttpStatus.OK);
+    return allAccounts;
   }
 }

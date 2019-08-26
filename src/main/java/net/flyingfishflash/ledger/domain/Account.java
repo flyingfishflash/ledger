@@ -49,11 +49,7 @@ public class Account {
     return guid;
   }
 
-  public void setGuid(String s) {
-    this.guid = s;
-  }
-
-  public void setGuid() {
+  private void setGuid() {
     this.guid = IdentifierFactory.getInstance().generateIdentifier();
   }
 
