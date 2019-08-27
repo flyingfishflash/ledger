@@ -11,6 +11,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
+import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +38,12 @@ public class AccountRepository {
 
   public void update(Account account) {
 
-    // derive and set the longname on all child accounts of the subject account
+    // derive and set the longName on all child accounts of the subject account
     Iterable<Account> t = this.nr.getTreeAsList(account);
     Iterator<Account> it = t.iterator();
     while (it.hasNext()) {
       Account next = it.next();
-      next.setLongName(this.deriveLongName(next, this.nr.getParent(next).get()));
+      next.setLongName(this.deriveLongName(next));
     }
     em.merge(account);
   }
@@ -50,29 +51,27 @@ public class AccountRepository {
   public Optional<Account> findOneById(Long id) {
 
     try {
-      // TODO move to nestedj, DAO layer
       CriteriaBuilder cb = em.getCriteriaBuilder();
       CriteriaQuery<Account> select = cb.createQuery(Account.class);
       Root<Account> root = select.from(Account.class);
       select.where(cb.equal(root.get("id"), id));
-      Account account = em.createQuery(select).setMaxResults(1).getSingleResult();
-      this.em.refresh(account);
-      return Optional.of(account);
+      return Optional.of(em.createQuery(select).setMaxResults(1).getSingleResult());
     } catch (NoResultException ex) {
       return Optional.empty();
     }
   }
 
-  public Account findOneByGuid(String guid) {
+  public Optional<Account> findOneByGuid(String guid) {
 
-    // TODO move to nestedj, DAO layer
-    CriteriaBuilder cb = em.getCriteriaBuilder();
-    CriteriaQuery<Account> select = cb.createQuery(Account.class);
-    Root<Account> root = select.from(Account.class);
-    select.where(cb.equal(root.get("guid"), guid));
-    Account account = em.createQuery(select).setMaxResults(1).getSingleResult();
-    this.em.refresh(account);
-    return account;
+    try {
+      CriteriaBuilder cb = em.getCriteriaBuilder();
+      CriteriaQuery<Account> select = cb.createQuery(Account.class);
+      Root<Account> root = select.from(Account.class);
+      select.where(cb.equal(root.get("guid"), guid));
+      return Optional.of(em.createQuery(select).setMaxResults(1).getSingleResult());
+    } catch (NoResultException ex) {
+      return Optional.empty();
+    }
   }
 
   public Iterable<Account> getTreeAsList(Account account) {
@@ -80,7 +79,15 @@ public class AccountRepository {
     return this.nr.getTreeAsList(account);
   }
 
-  public String deriveLongName(Account account, Account parent) {
+  public String deriveLongName(Account account) {
+
+    Account parent =
+        this.findOneById(account.getParentId())
+            .orElseThrow(
+                () ->
+                    new AccountNotFoundException(
+                        account.getParentId(),
+                        "Attempt to identify parent account of an account for which we are deriving the long name."));
 
     if (parent.getTreeLeft() <= 1) {
       return account.name;
@@ -107,13 +114,11 @@ public class AccountRepository {
 
   public Optional<Account> getPrevSibling(Account account) {
 
-    logger.debug("AccountRepository.getPrevSibling() begin");
     return this.nr.getPrevSibling(account);
   }
 
   public Optional<Account> getNextSibling(Account account) {
 
-    logger.debug("AccountRepository.getNextSibling() begin");
     return this.nr.getNextSibling(account);
   }
 
@@ -124,27 +129,39 @@ public class AccountRepository {
 
   public void insertAsLastChildOf(Account account, Account parent) {
 
-    account.setLongName(this.deriveLongName(account, parent));
+    account.setLongName(this.deriveLongName(account));
     nr.insertAsLastChildOf(account, parent);
   }
 
   public void insertAsFirstChildOf(Account account, Account parent) {
 
-    account.setLongName(this.deriveLongName(account, parent));
+    account.setLongName(this.deriveLongName(account));
     nr.insertAsFirstChildOf(account, parent);
   }
 
   public void insertAsPrevSiblingOf(Account account, Account sibling) {
 
-    Account parent = this.findOneById(account.parentId).orElseThrow(() -> new IllegalArgumentException("Parent Account Id" + account.parentId + "Not Found"));
-    account.setLongName(this.deriveLongName(account, parent));
+    Account parent =
+        this.findOneById(account.parentId)
+            .orElseThrow(
+                () ->
+                    new AccountNotFoundException(
+                        account.parentId,
+                        "Attempt to identify the parent account of an account to be inserted as a previous sibling."));
+    account.setLongName(this.deriveLongName(account));
     nr.insertAsPrevSiblingOf(account, sibling);
   }
 
   public void insertAsNextSiblingOf(Account account, Account sibling) {
 
-    Account parent = this.findOneById(account.parentId).orElseThrow(() -> new IllegalArgumentException("Parent Account Not Found"));
-    account.setLongName(this.deriveLongName(account, parent));
+    Account parent =
+        this.findOneById(account.parentId)
+            .orElseThrow(
+                () ->
+                    new AccountNotFoundException(
+                        account.parentId,
+                        "Attempt to identify the parent account of an account to be inserted as a next sibling."));
+    account.setLongName(this.deriveLongName(account));
     nr.insertAsNextSiblingOf(account, sibling);
   }
 

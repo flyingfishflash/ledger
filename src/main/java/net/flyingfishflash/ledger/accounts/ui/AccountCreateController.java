@@ -62,6 +62,7 @@ public class AccountCreateController {
       throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts/create (POST)");
     Account parent = accountService.findOneById(parentAccountId);
+    account.setParentId(parentAccountId);
     logger.debug(model.toString());
     String method = "last";
     if (method.equals("first")) {

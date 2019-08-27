@@ -2,6 +2,10 @@ package net.flyingfishflash.ledger.accounts;
 
 import java.util.Iterator;
 import net.flyingfishflash.ledger.accounts.dto.CreateAccountDto;
+import net.flyingfishflash.ledger.accounts.exceptions.AccountCreateException;
+import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
+import net.flyingfishflash.ledger.accounts.exceptions.NextSiblingAccountNotFoundException;
+import net.flyingfishflash.ledger.accounts.exceptions.PrevSiblingAccountNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +28,10 @@ public class AccountService {
         accountRepository
             .findOneById(createAccountDto.parentId)
             .orElseThrow(
-                () -> new IllegalArgumentException("Parent Account Not found (createAccountNode)"));
+                () ->
+                    new AccountNotFoundException(
+                        createAccountDto.parentId,
+                        "Attempt to identify the parent account of an account to be created."));
 
     if (createAccountDto.siblingId != null) {
       sibling =
@@ -32,8 +39,9 @@ public class AccountService {
               .findOneById(createAccountDto.siblingId)
               .orElseThrow(
                   () ->
-                      new IllegalArgumentException(
-                          "Sibling Account Not found (createAccountNode)"));
+                      new AccountNotFoundException(
+                          createAccountDto.siblingId,
+                          "Attempt to identify the sibling account of an account to be created."));
     }
 
     account.setCode(createAccountDto.code);
@@ -69,28 +77,32 @@ public class AccountService {
         System.out.println("missing method");
     }
 
-    return this.findByGuid(account.getGuid());
+    try {
+      return this.findByGuid(account.getGuid());
+    } catch (AccountNotFoundException e) {
+      logger.error(
+          "Failed to verify the requested account '" + account.getName() + "' was persisted.", e);
+      throw new AccountCreateException("Failed to create account: '" + account.getName() + "'.", e);
+    }
   }
 
   public Account findByGuid(String guid) {
 
-    return accountRepository.findOneByGuid(guid);
+    return accountRepository
+        .findOneByGuid(guid)
+        .orElseThrow(() -> new AccountNotFoundException(guid));
   }
 
   public Account findById(Long id) {
 
-    return accountRepository
-        .findOneById(id)
-        .orElseThrow(() -> new IllegalArgumentException("Account Id: " + id + " Not found"));
+    return accountRepository.findOneById(id).orElseThrow(() -> new AccountNotFoundException(id));
   }
 
   public Iterable<Account> findAllAccounts() {
 
     Iterable<Account> allAccounts =
         accountRepository.getTreeAsList(
-            accountRepository
-                .findOneById(1L)
-                .orElseThrow(() -> new IllegalArgumentException("Account Id: 1 Not found")));
+            accountRepository.findOneById(1L).orElseThrow(() -> new AccountNotFoundException(1L)));
 
     // remove root account
     Iterator<Account> i = allAccounts.iterator();
@@ -109,5 +121,44 @@ public class AccountService {
   public void removeSubTree(Account account) {
 
     accountRepository.removeSubTree(account);
+  }
+
+  public Account getPrevSibling(Account account) {
+
+    return accountRepository
+        .getPrevSibling(account)
+        .orElseThrow(() -> new PrevSiblingAccountNotFoundException((account.getLongName())));
+  }
+
+  public Account getNextSibling(Account account) {
+
+    return accountRepository
+        .getNextSibling(account)
+        .orElseThrow(() -> new NextSiblingAccountNotFoundException(account.getLongName()));
+  }
+
+  public void insertAsFirstChildOf(Account account, Account parent) {
+
+    accountRepository.insertAsFirstChildOf(account, parent);
+  }
+
+  public void insertAsLastChildOf(Account account, Account parent) {
+
+    accountRepository.insertAsLastChildOf(account, parent);
+  }
+
+  public void insertAsNextSiblingOf(Account account, Account parent) {
+
+    accountRepository.insertAsNextSiblingOf(account, parent);
+  }
+
+  public void insertAsPrevSiblingOf(Account account, Account parent) {
+
+    accountRepository.insertAsPrevSiblingOf(account, parent);
+  }
+
+  public void removeSingle(Account account) {
+
+    accountRepository.removeSingle(account);
   }
 }

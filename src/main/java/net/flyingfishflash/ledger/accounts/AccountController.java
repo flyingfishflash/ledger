@@ -3,7 +3,6 @@ package net.flyingfishflash.ledger.accounts;
 import java.net.URI;
 import net.flyingfishflash.ledger.accounts.dto.AccountDto;
 import net.flyingfishflash.ledger.accounts.dto.CreateAccountDto;
-import net.flyingfishflash.ledger.utilities.CustomErrorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,7 @@ public class AccountController {
   @Autowired private AccountService accountService;
 
   @GetMapping
-  public ResponseEntity<Iterable<Account>> findAllAccounts() throws Throwable {
+  public ResponseEntity<Iterable<Account>> findAllAccounts() throws Exception {
 
     Iterable<Account> allAccounts = accountService.findAllAccounts();
 
@@ -38,7 +37,7 @@ public class AccountController {
   }
 
   @GetMapping(value = "{id}")
-  public ResponseEntity<AccountDto> findAccountById(@PathVariable Long id) throws Throwable {
+  public ResponseEntity<AccountDto> findAccountById(@PathVariable Long id) throws Exception {
 
     Account account = accountService.findById(id);
     AccountDto accountDto = new AccountDto(account);
@@ -47,11 +46,13 @@ public class AccountController {
   }
 
   @PostMapping
-  public ResponseEntity<Account> createAccount(
+  public ResponseEntity<AccountDto> createAccount(
       @RequestHeader(name = "X-COM-LOCATION", required = false) String headerLocation,
-      @RequestBody CreateAccountDto createAccountDto) throws Throwable{
+      @RequestBody CreateAccountDto createAccountDto)
+      throws Exception {
 
     Account account = accountService.createAccountNode(createAccountDto);
+    AccountDto accountDto = new AccountDto(account);
 
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
@@ -62,24 +63,50 @@ public class AccountController {
     HttpHeaders headers = new HttpHeaders();
     headers.setLocation(location);
 
-    return new ResponseEntity<Account>(account, headers, HttpStatus.CREATED);
+    return new ResponseEntity<>(accountDto, headers, HttpStatus.CREATED);
   }
 
-  // Delete account and descendants
   @DeleteMapping(value = "/delete")
-  public ResponseEntity<?> deleteAccountAndDescendents(@RequestParam(name = "accountId") Long accountId)
-      throws Throwable {
+  public ResponseEntity<?> deleteAccountAndDescendents(
+      @RequestParam(name = "accountId") Long accountId) throws Exception {
 
     Account account = accountService.findById(accountId);
-
-/*    if (account == null) {
-      logger.error("Unable to delete account. Id {} not found.", accountId);
-      return new ResponseEntity<>(
-          new CustomErrorType("Unable to delete account. Id " + accountId + " not found."),
-          HttpStatus.NOT_FOUND);
-    }*/
-
     accountService.removeSubTree(account);
+
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
+
+  // Change the position of an account in the hierarchy within the sibling level (down)
+  @PostMapping(value = "/insert-as-next-sibling")
+  public ResponseEntity<?> insertAsNextSiblingOf(@RequestParam("id") Long id) throws Exception {
+
+    Account account = accountService.findById(id);
+    Account sibling = accountService.getNextSibling(account);
+    accountService.insertAsNextSiblingOf(account, sibling);
+
+    String uriString = ServletUriComponentsBuilder.fromCurrentRequest().toUriString();
+    URI location = new URI(uriString.substring(0, uriString.lastIndexOf("/")) + "/" + id);
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.setLocation(location);
+
+    return new ResponseEntity<>(headers, HttpStatus.CREATED);
+  }
+
+  // Change the position of an account in the hierarchy within the sibling level (up)
+  @PostMapping(value = "/insert-as-prev-sibling")
+  public ResponseEntity<?> insertAsPrevSiblingOf(@RequestParam("id") Long id) throws Exception {
+
+    Account account = accountService.findById(id);
+    Account sibling = accountService.getPrevSibling(account);
+    accountService.insertAsPrevSiblingOf(account, sibling);
+
+    String uriString = ServletUriComponentsBuilder.fromCurrentRequest().toUriString();
+    URI location = new URI(uriString.substring(0, uriString.lastIndexOf("/")) + "/" + id);
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.setLocation(location);
+
+    return new ResponseEntity<>(headers, HttpStatus.CREATED);
   }
 }
