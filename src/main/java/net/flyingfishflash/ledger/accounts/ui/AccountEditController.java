@@ -42,7 +42,7 @@ public class AccountEditController {
   public Account formBackingObject(Long id) {
     if (id != null) {
       logger.debug("-- returning existing AccountNode(): " + id);
-      return accountRepository.findOneById(id);
+      return accountRepository.findOneById(id).orElseThrow(() -> new IllegalArgumentException("Account Id " + id + " Not found"));
     }
     logger.debug("-- returning new AccountNode()");
     return new Account();
@@ -55,7 +55,7 @@ public class AccountEditController {
     logger.debug("@RequestMapping: /ledger/accounts/edit (GET)");
     logger.debug("RequestParam: " + id);
     // AccountNode parent = account.getParent();
-    Account parent = accountRepository.findOneById(account.getParentId());
+    Account parent = accountRepository.findOneById(account.getParentId()).orElseThrow(() -> new IllegalArgumentException("Account Id: " + account.getParentId() + " Not found"));
     Boolean parentIsRoot = (parent.getAccountCategory().equals(AccountCategory.Root));
     logger.debug("parentIsRoot:" + parentIsRoot);
     logger.debug("parent.toString():" + parent.toString());
@@ -87,7 +87,7 @@ public class AccountEditController {
     logger.debug("@RequestMapping: /ledger/accounts/edit (POST)");
     logger.debug("node: " + account.toString());
     if (newParent != account.getParentId() && newParent != account.getId()) {
-      accountService.insertAsLastChildOf(account, accountRepository.findOneById(newParent));
+      accountService.insertAsLastChildOf(account, accountRepository.findOneById(newParent).orElseThrow(() -> new IllegalArgumentException("Account Id " + newParent + " Not found")));
     } else {
       accountRepository.update(account);
     }

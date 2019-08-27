@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -46,16 +47,20 @@ public class AccountRepository {
     em.merge(account);
   }
 
-  public Account findOneById(Long id) {
+  public Optional<Account> findOneById(Long id) {
 
-    // TODO move to nestedj, DAO layer
-    CriteriaBuilder cb = em.getCriteriaBuilder();
-    CriteriaQuery<Account> select = cb.createQuery(Account.class);
-    Root<Account> root = select.from(Account.class);
-    select.where(cb.equal(root.get("id"), id));
-    Account account = em.createQuery(select).getSingleResult();
-    this.em.refresh(account);
-    return account;
+    try {
+      // TODO move to nestedj, DAO layer
+      CriteriaBuilder cb = em.getCriteriaBuilder();
+      CriteriaQuery<Account> select = cb.createQuery(Account.class);
+      Root<Account> root = select.from(Account.class);
+      select.where(cb.equal(root.get("id"), id));
+      Account account = em.createQuery(select).getSingleResult();
+      this.em.refresh(account);
+      return Optional.of(account);
+    } catch (NoResultException ex) {
+      return Optional.empty();
+    }
   }
 
   public Account findOneByGuid(String guid) {
@@ -131,11 +136,15 @@ public class AccountRepository {
 
   public void insertAsPrevSiblingOf(Account account, Account sibling) {
 
+    Account parent = this.findOneById(account.parentId).orElseThrow(() -> new IllegalArgumentException("Parent Account Id" + account.parentId + "Not Found"));
+    account.setLongName(this.deriveLongName(account, parent));
     nr.insertAsPrevSiblingOf(account, sibling);
   }
 
   public void insertAsNextSiblingOf(Account account, Account sibling) {
 
+    Account parent = this.findOneById(account.parentId).orElseThrow(() -> new IllegalArgumentException("Parent Account Not Found"));
+    account.setLongName(this.deriveLongName(account, parent));
     nr.insertAsNextSiblingOf(account, sibling);
   }
 
@@ -154,7 +163,11 @@ public class AccountRepository {
     if (account != null) {
       System.out.println(
           String.format(
-              "Node %s: %d/%d/%d", account.getId(), account.getTreeLeft(), account.getTreeRight(), account.getTreeLevel()));
+              "Node %s: %d/%d/%d",
+              account.getId(),
+              account.getTreeLeft(),
+              account.getTreeRight(),
+              account.getTreeLevel()));
     }
   }
 }

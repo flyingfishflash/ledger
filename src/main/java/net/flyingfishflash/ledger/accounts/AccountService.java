@@ -2,7 +2,6 @@ package net.flyingfishflash.ledger.accounts;
 
 import java.util.Iterator;
 import net.flyingfishflash.ledger.accounts.dto.CreateAccountDto;
-import net.flyingfishflash.ledger.accounts.dto.AccountDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,19 +19,28 @@ public class AccountService {
   public Account createAccountNode(CreateAccountDto createAccountDto) {
 
     Account account = new Account();
-    Account sibling = new Account();
-    Account parent = accountRepository.findOneById(createAccountDto.parentId);
+    Account sibling = null;
+    Account parent =
+        accountRepository
+            .findOneById(createAccountDto.parentId)
+            .orElseThrow(
+                () -> new IllegalArgumentException("Parent Account Not found (createAccountNode)"));
 
-    if (createAccountDto.siblingId != null && createAccountDto.siblingId != 0) {
-      sibling = accountRepository.findOneById(createAccountDto.siblingId);
+    if (createAccountDto.siblingId != null) {
+      sibling =
+          accountRepository
+              .findOneById(createAccountDto.siblingId)
+              .orElseThrow(
+                  () ->
+                      new IllegalArgumentException(
+                          "Sibling Account Not found (createAccountNode)"));
     }
-
-    logger.debug(createAccountDto.toString());
 
     account.setCode(createAccountDto.code);
     account.setDescription(createAccountDto.description);
     account.setHidden(createAccountDto.hidden);
     account.setName(createAccountDto.name);
+    account.setParentId(createAccountDto.parentId);
     account.setPlaceholder(createAccountDto.placeholder);
     account.setTaxRelated(createAccountDto.taxRelated);
 
@@ -65,18 +73,24 @@ public class AccountService {
   }
 
   public Account findByGuid(String guid) {
+
     return accountRepository.findOneByGuid(guid);
   }
 
-  public AccountDto findById(Long id) {
-    Account account = accountRepository.findOneById(id);
-    return new AccountDto(account);
+  public Account findById(Long id) {
+
+    return accountRepository
+        .findOneById(id)
+        .orElseThrow(() -> new IllegalArgumentException("Account Id: " + id + " Not found"));
   }
 
   public Iterable<Account> findAllAccounts() {
 
     Iterable<Account> allAccounts =
-        accountRepository.getTreeAsList(accountRepository.findOneById(1L));
+        accountRepository.getTreeAsList(
+            accountRepository
+                .findOneById(1L)
+                .orElseThrow(() -> new IllegalArgumentException("Account Id: 1 Not found")));
 
     // remove root account
     Iterator<Account> i = allAccounts.iterator();
@@ -90,5 +104,10 @@ public class AccountService {
     }
 
     return allAccounts;
+  }
+
+  public void removeSubTree(Account account) {
+
+    accountRepository.removeSubTree(account);
   }
 }

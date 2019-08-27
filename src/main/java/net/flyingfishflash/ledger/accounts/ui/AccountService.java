@@ -3,7 +3,6 @@ package net.flyingfishflash.ledger.accounts.ui;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import net.flyingfishflash.ledger.accounts.ui.AccountController;
 import net.flyingfishflash.ledger.accounts.AccountCategory;
 import net.flyingfishflash.ledger.accounts.Account;
 import net.flyingfishflash.ledger.accounts.AccountRepository;
@@ -41,13 +40,13 @@ public class AccountService {
 
   public Account findOneById(Long id) {
 
-    return accountRepository.findOneById(id);
+    return accountRepository.findOneById(id).orElseThrow(() -> new IllegalArgumentException("Account Id: " + id + " Not found"));
   }
 
   public Iterable<Account> findWholeTree() {
 
     Iterator<Account> i =
-        accountRepository.getTreeAsList(accountRepository.findOneById(1L)).iterator();
+        accountRepository.getTreeAsList(accountRepository.findOneById(1L).orElseThrow(() -> new IllegalArgumentException("Account Id 1L Not found"))).iterator();
     Account a;
     while (i.hasNext()) {
       a = i.next();
@@ -61,7 +60,7 @@ public class AccountService {
 
     // return () -> i;
 
-    return accountRepository.getTreeAsList(accountRepository.findOneById(1L));
+    return accountRepository.getTreeAsList(accountRepository.findOneById(1L).orElseThrow(() -> new IllegalArgumentException("Account Id 1L Not found")));
   }
 
   public Iterable<Account> getTreeAsList(Account account) {
