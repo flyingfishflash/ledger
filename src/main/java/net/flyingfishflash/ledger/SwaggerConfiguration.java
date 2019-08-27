@@ -18,7 +18,7 @@ public class SwaggerConfiguration {
   public Docket api() {
     return new Docket(DocumentationType.SWAGGER_2)
         .select()
-        .apis(RequestHandlerSelectors.basePackage("net.flyingfishflash.ledger.controller.rest"))
+        .apis(RequestHandlerSelectors.basePackage("net.flyingfishflash.ledger.accounts"))
         .paths(PathSelectors.any())
         .build()
         .apiInfo(apiInfo());

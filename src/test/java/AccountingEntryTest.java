@@ -1,12 +1,12 @@
 import com.google.common.collect.Sets;
 
-import net.flyingfishflash.ledger.domain.accounting.AccountingEntry;
-import net.flyingfishflash.ledger.domain.accounting.Transaction;
+import net.flyingfishflash.ledger.z_not_integrated.accounting.AccountingEntry;
+import net.flyingfishflash.ledger.z_not_integrated.accounting.Transaction;
 
 import org.junit.Test;
 
-import static net.flyingfishflash.ledger.domain.accounting.AccountSide.CREDIT;
-import static net.flyingfishflash.ledger.domain.accounting.AccountSide.DEBIT;
+import static net.flyingfishflash.ledger.z_not_integrated.accounting.AccountSide.CREDIT;
+import static net.flyingfishflash.ledger.z_not_integrated.accounting.AccountSide.DEBIT;
 
 import java.math.BigDecimal;
 
