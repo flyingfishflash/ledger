@@ -55,7 +55,7 @@ public class AccountRepository {
       CriteriaQuery<Account> select = cb.createQuery(Account.class);
       Root<Account> root = select.from(Account.class);
       select.where(cb.equal(root.get("id"), id));
-      Account account = em.createQuery(select).getSingleResult();
+      Account account = em.createQuery(select).setMaxResults(1).getSingleResult();
       this.em.refresh(account);
       return Optional.of(account);
     } catch (NoResultException ex) {
@@ -70,7 +70,7 @@ public class AccountRepository {
     CriteriaQuery<Account> select = cb.createQuery(Account.class);
     Root<Account> root = select.from(Account.class);
     select.where(cb.equal(root.get("guid"), guid));
-    Account account = em.createQuery(select).getSingleResult();
+    Account account = em.createQuery(select).setMaxResults(1).getSingleResult();
     this.em.refresh(account);
     return account;
   }
