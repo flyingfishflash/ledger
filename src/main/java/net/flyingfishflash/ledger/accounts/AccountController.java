@@ -1,6 +1,8 @@
 package net.flyingfishflash.ledger.accounts;
 
 import java.net.URI;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import net.flyingfishflash.ledger.accounts.dto.AccountDto;
 import net.flyingfishflash.ledger.accounts.dto.CreateAccountDto;
 import org.slf4j.Logger;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
+@Validated
 @RequestMapping("ledger/api/v1/accounts")
 public class AccountController {
 
@@ -37,7 +41,7 @@ public class AccountController {
   }
 
   @GetMapping(value = "{id}")
-  public ResponseEntity<AccountDto> findAccountById(@PathVariable Long id) throws Exception {
+  public ResponseEntity<AccountDto> findAccountById(@PathVariable("id") @Min(1) Long id) {
 
     Account account = accountService.findById(id);
     AccountDto accountDto = new AccountDto(account);
@@ -48,7 +52,7 @@ public class AccountController {
   @PostMapping
   public ResponseEntity<AccountDto> createAccount(
       @RequestHeader(name = "X-COM-LOCATION", required = false) String headerLocation,
-      @RequestBody CreateAccountDto createAccountDto)
+      @Valid @RequestBody CreateAccountDto createAccountDto)
       throws Exception {
 
     Account account = accountService.createAccountNode(createAccountDto);

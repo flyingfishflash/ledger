@@ -23,7 +23,7 @@ public class AccountService {
   public Account createAccountNode(CreateAccountDto createAccountDto) {
 
     Account account = new Account();
-    Account sibling = null;
+    Account sibling;
     Account parent =
         accountRepository
             .findOneById(createAccountDto.parentId)
@@ -31,18 +31,7 @@ public class AccountService {
                 () ->
                     new AccountNotFoundException(
                         createAccountDto.parentId,
-                        "Attempt to identify the parent account of an account to be created."));
-
-    if (createAccountDto.siblingId != null) {
-      sibling =
-          accountRepository
-              .findOneById(createAccountDto.siblingId)
-              .orElseThrow(
-                  () ->
-                      new AccountNotFoundException(
-                          createAccountDto.siblingId,
-                          "Attempt to identify the sibling account of an account to be created."));
-    }
+                        "Failed to identify the parent account of an account to be created."));
 
     account.setCode(createAccountDto.code);
     account.setDescription(createAccountDto.description);
@@ -60,29 +49,48 @@ public class AccountService {
       account.setAccountType(parent.getAccountType());
     }
 
-    switch (createAccountDto.mode.toLowerCase()) {
-      case "firstchildof":
+    switch (createAccountDto.mode.toUpperCase()) {
+      case "FIRST_CHILD":
         accountRepository.insertAsFirstChildOf(account, parent);
         break;
-      case "lastchildof":
+      case "LAST_CHILD":
         accountRepository.insertAsLastChildOf(account, parent);
         break;
-      case "prevsiblingof":
+      case "PREV_SIBLING":
+        sibling =
+            accountRepository
+                .findOneById(createAccountDto.siblingId)
+                .orElseThrow(
+                    () ->
+                        new AccountNotFoundException(
+                            createAccountDto.siblingId,
+                            "Failed to identify the sibling account of an account to be created. Was siblingId provided in the request?"));
         accountRepository.insertAsPrevSiblingOf(account, sibling);
         break;
-      case "nextsiblingof":
+      case "NEXT_SIBLING":
+        sibling =
+            accountRepository
+                .findOneById(createAccountDto.siblingId)
+                .orElseThrow(
+                    () ->
+                        new AccountNotFoundException(
+                            createAccountDto.siblingId,
+                            "Failed to identify the sibling account of an account to be created. Was siblingId provided in the request?"));
         accountRepository.insertAsNextSiblingOf(account, sibling);
         break;
       default:
-        System.out.println("missing method");
+        throw new AccountCreateException(
+            "Failed to create account: '"
+                + account.getName()
+                + ". A valid nest node manipulator mode was not specified.");
     }
 
     try {
       return this.findByGuid(account.getGuid());
     } catch (AccountNotFoundException e) {
-      logger.error(
-          "Failed to verify the requested account '" + account.getName() + "' was persisted.", e);
-      throw new AccountCreateException("Failed to create account: '" + account.getName() + "'.", e);
+      // logger.error(
+      //    "Failed to verify the requested account '" + account.getName() + "' was persisted.", e);
+      throw new AccountCreateException("Failed to create account: '" + account.getName(), e);
     }
   }
 

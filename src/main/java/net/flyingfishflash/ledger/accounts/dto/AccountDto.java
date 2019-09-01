@@ -1,42 +1,63 @@
 package net.flyingfishflash.ledger.accounts.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import net.flyingfishflash.ledger.accounts.Account;
 import net.flyingfishflash.ledger.accounts.AccountCategory;
 import net.flyingfishflash.ledger.accounts.AccountType;
 
 public class AccountDto {
 
-  public Long id;
-
-  public Long treeLeft;
-
-  public Long treeRight;
-
-  public Long treeLevel;
-
-  public Long parentId;
-
-  public String discriminator;
-
-  public String guid;
-
-  public String name;
-
-  public String longName;
-
-  public String code;
-
-  public String description;
-
-  public Boolean placeholder;
-
-  public Boolean hidden;
-
-  public Boolean taxRelated;
-
   public AccountCategory accountCategory;
 
   public AccountType accountType;
+
+  @Size(min = 1, max = 2048)
+  @Pattern(
+      regexp = "^(?!\\s*$).+",
+      message = "The account code may be null. It must not be an empty string, or consist only of spaces.")
+  public String code;
+
+  @Size(min = 1, max = 2048)
+  @Pattern(
+      regexp = "^(?!\\s*$).+",
+      message = "The account description may be null. It must not be an empty string, or consist only of spaces.")
+  public String description;
+
+  @Size(min = 1, max = 2048)
+  @NotBlank
+  public String discriminator;
+
+  @Size(min = 1, max = 2048)
+  @NotBlank
+  public String guid;
+
+  @NotNull public Boolean hidden;
+
+  @Positive @NotNull public Long id;
+
+  @Size(min = 1, max = 2048)
+  @NotBlank
+  public String longName;
+
+  @Size(min = 1, max = 2048)
+  @NotBlank
+  public String name;
+
+  @Positive @NotNull public Long parentId;
+
+  @NotNull public Boolean placeholder;
+
+  @NotNull public Boolean taxRelated;
+
+  @Positive public Long treeLeft;
+
+  @Positive public Long treeLevel;
+
+  @Positive public Long treeRight;
 
   public AccountDto(Account account) {
 

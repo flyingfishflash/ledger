@@ -3,34 +3,65 @@ package net.flyingfishflash.ledger.accounts.dto;
 /*
 {
     "code": "2",
-    "description": "Financial Assets Account Description",
+    "description": "Financial Assets Description",
     "hidden": true,
-    "mode" : "lastchildof",
+    "mode" : "last_child",
     "name": "Financial Assets",
     "parentId": 2,
     "placeholder": true,
-    "siblingId" : null,
+    "siblingId" : 0,
     "taxRelated": true
 }
 */
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
+import net.flyingfishflash.ledger.utilities.validators.Enum;
+
 public class CreateAccountDto {
 
+  @Size(min = 1, max = 2048)
+  @Pattern(
+      regexp = "^(?!\\s*$).+",
+      message = "The account code may be null. It must not be an empty string, or consist only of spaces.")
   public String code;
+
+  @Size(min = 1, max = 2048)
+  @Pattern(
+      regexp = "^(?!\\s*$).+",
+      message = "The account description may be null. It must not be an empty string, or consist only of spaces.")
   public String description;
-  public Boolean hidden;
+
+  @NotNull public Boolean hidden;
+
+  @NotEmpty
+  @Enum(
+      enumClass = pl.exsio.nestedj.delegate.NestedNodeHierarchyManipulator.Mode.class,
+      ignoreCase = true)
   public String mode;
+
+  @Size(min = 1, max = 2048)
+  @NotEmpty
   public String name;
-  public Long parentId;
-  public Boolean placeholder;
+
+  @Positive @NotNull public Long parentId;
+
+  @NotNull public Boolean placeholder;
+
+  @Min(2)
   public Long siblingId;
-  public Boolean taxRelated;
+
+  @NotNull public Boolean taxRelated;
 
   public CreateAccountDto() {}
 
   @Override
   public String toString() {
-    return "AccountCreateDto{" +
+    return "CreateAccountDto{" +
         "code='" + code + '\'' +
         ", description='" + description + '\'' +
         ", hidden=" + hidden +
