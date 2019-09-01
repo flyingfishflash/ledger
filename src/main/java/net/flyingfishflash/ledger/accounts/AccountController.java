@@ -1,6 +1,7 @@
 package net.flyingfishflash.ledger.accounts;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import net.flyingfishflash.ledger.accounts.dto.AccountDto;
@@ -33,7 +34,7 @@ public class AccountController {
   @Autowired private AccountService accountService;
 
   @GetMapping
-  public ResponseEntity<Iterable<Account>> findAllAccounts() throws Exception {
+  public ResponseEntity<Iterable<Account>> findAllAccounts() {
 
     Iterable<Account> allAccounts = accountService.findAllAccounts();
 
@@ -53,7 +54,7 @@ public class AccountController {
   public ResponseEntity<AccountDto> createAccount(
       @RequestHeader(name = "X-COM-LOCATION", required = false) String headerLocation,
       @Valid @RequestBody CreateAccountDto createAccountDto)
-      throws Exception {
+      throws URISyntaxException {
 
     Account account = accountService.createAccountNode(createAccountDto);
     AccountDto accountDto = new AccountDto(account);
@@ -72,7 +73,7 @@ public class AccountController {
 
   @DeleteMapping(value = "/delete")
   public ResponseEntity<?> deleteAccountAndDescendents(
-      @RequestParam(name = "accountId") Long accountId) throws Exception {
+      @RequestParam(name = "accountId") Long accountId) {
 
     Account account = accountService.findById(accountId);
     accountService.removeSubTree(account);
@@ -82,7 +83,7 @@ public class AccountController {
 
   // Change the position of an account in the hierarchy within the sibling level (down)
   @PostMapping(value = "/insert-as-next-sibling")
-  public ResponseEntity<?> insertAsNextSiblingOf(@RequestParam("id") Long id) throws Exception {
+  public ResponseEntity<?> insertAsNextSiblingOf(@RequestParam("id") Long id) throws URISyntaxException {
 
     Account account = accountService.findById(id);
     Account sibling = accountService.getNextSibling(account);
@@ -99,7 +100,7 @@ public class AccountController {
 
   // Change the position of an account in the hierarchy within the sibling level (up)
   @PostMapping(value = "/insert-as-prev-sibling")
-  public ResponseEntity<?> insertAsPrevSiblingOf(@RequestParam("id") Long id) throws Exception {
+  public ResponseEntity<?> insertAsPrevSiblingOf(@RequestParam("id") Long id) throws URISyntaxException {
 
     Account account = accountService.findById(id);
     Account sibling = accountService.getPrevSibling(account);
