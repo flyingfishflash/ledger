@@ -36,8 +36,6 @@ public class AccountController {
 
   @Autowired private AccountService accountService;
 
-  @GetMapping
-  @ApiOperation(value = "Retrieve all accounts")
   public ResponseEntity<Iterable<Account>> findAllAccounts() {
 
     Iterable<Account> allAccounts = accountService.findAllAccounts();

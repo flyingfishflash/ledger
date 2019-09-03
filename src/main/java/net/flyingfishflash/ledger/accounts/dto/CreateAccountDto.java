@@ -23,7 +23,6 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import net.flyingfishflash.ledger.utilities.validators.Enum;
 
-
 public class CreateAccountDto {
 
   @Size(max = 2048)
@@ -44,18 +43,26 @@ public class CreateAccountDto {
   @Enum(
       enumClass = pl.exsio.nestedj.delegate.NestedNodeHierarchyManipulator.Mode.class,
       ignoreCase = true)
-  @ApiModelProperty(value = "Mode Manipulator Mode. Values limited to: FIRST_CHILD, LAST_CHILD, PREV_SIBLING, NEXT_SIBLING")
+  @ApiModelProperty(
+      value = "Node manipulator mode.",
+      allowableValues = "FIRST_CHILD, LAST_CHILD, PREV_SIBLING, NEXT_SIBLING",
+      required = true)
   public String mode;
 
   @Size(max = 2048)
   @NotEmpty
+  @ApiModelProperty(required = true)
   public String name;
 
-  @Positive @NotNull public Long parentId;
+  @NotNull
+  @Positive
+  @ApiModelProperty(required = true)
+  public Long parentId;
 
   @NotNull public Boolean placeholder;
 
   @Min(2)
+  @ApiModelProperty(value = "Required if mode is PREV_SIBLING or NEXT_SIBLING. Must be > 1.")
   public Long siblingId;
 
   @NotNull public Boolean taxRelated;
