@@ -3,7 +3,7 @@ package net.flyingfishflash.ledger.accounts.exceptions;
 public class AccountNotFoundException extends RuntimeException {
 
   public AccountNotFoundException(String guid) {
-    super("Account not found for id " + guid);
+    super("Account not found for guid " + guid);
   }
 
   public AccountNotFoundException(Long id) {

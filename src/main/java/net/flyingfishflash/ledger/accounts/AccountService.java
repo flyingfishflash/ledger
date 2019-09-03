@@ -24,14 +24,13 @@ public class AccountService {
 
     Account account = new Account();
     Account sibling;
-    Account parent =
-        accountRepository
-            .findOneById(createAccountDto.parentId)
-            .orElseThrow(
-                () ->
-                    new AccountNotFoundException(
-                        createAccountDto.parentId,
-                        "Failed to identify the parent account of an account to be created."));
+    Account parent;
+    try {
+      parent = this.findById(createAccountDto.parentId);
+    } catch (AccountNotFoundException e) {
+      throw new AccountCreateException(
+          "Failed to identify the parent account of an account to be created", e);
+    }
 
     account.setCode(createAccountDto.code);
     account.setDescription(createAccountDto.description);
@@ -57,25 +56,21 @@ public class AccountService {
         accountRepository.insertAsLastChildOf(account, parent);
         break;
       case "PREV_SIBLING":
-        sibling =
-            accountRepository
-                .findOneById(createAccountDto.siblingId)
-                .orElseThrow(
-                    () ->
-                        new AccountNotFoundException(
-                            createAccountDto.siblingId,
-                            "Failed to identify the sibling account of an account to be created. Was siblingId provided in the request?"));
+        try {
+          sibling = this.findById(createAccountDto.siblingId);
+        } catch (AccountNotFoundException e) {
+          throw new AccountCreateException(
+              "Failed to identify the sibling account of an account to be created.", e);
+        }
         accountRepository.insertAsPrevSiblingOf(account, sibling);
         break;
       case "NEXT_SIBLING":
-        sibling =
-            accountRepository
-                .findOneById(createAccountDto.siblingId)
-                .orElseThrow(
-                    () ->
-                        new AccountNotFoundException(
-                            createAccountDto.siblingId,
-                            "Failed to identify the sibling account of an account to be created. Was siblingId provided in the request?"));
+        try {
+          sibling = this.findById(createAccountDto.siblingId);
+        } catch (AccountNotFoundException e) {
+          throw new AccountCreateException(
+              "Failed to identify the sibling account of an account to be created.", e);
+        }
         accountRepository.insertAsNextSiblingOf(account, sibling);
         break;
       default:
@@ -88,9 +83,7 @@ public class AccountService {
     try {
       return this.findByGuid(account.getGuid());
     } catch (AccountNotFoundException e) {
-      // logger.error(
-      //    "Failed to verify the requested account '" + account.getName() + "' was persisted.", e);
-      throw new AccountCreateException("Failed to create account: '" + account.getName(), e);
+      throw new AccountCreateException("Failed to create account: '" + account.getName() + "'", e);
     }
   }
 
@@ -135,14 +128,14 @@ public class AccountService {
 
     return accountRepository
         .getPrevSibling(account)
-        .orElseThrow(() -> new PrevSiblingAccountNotFoundException((account.getLongName())));
+        .orElseThrow(() -> new PrevSiblingAccountNotFoundException(account.getLongName(),  account.getId()));
   }
 
   public Account getNextSibling(Account account) {
 
     return accountRepository
         .getNextSibling(account)
-        .orElseThrow(() -> new NextSiblingAccountNotFoundException(account.getLongName()));
+        .orElseThrow(() -> new NextSiblingAccountNotFoundException(account.getLongName(), account.getId()));
   }
 
   public void insertAsFirstChildOf(Account account, Account parent) {
