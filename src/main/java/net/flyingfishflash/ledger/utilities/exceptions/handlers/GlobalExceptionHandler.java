@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice(
     assignableTypes = {
-        net.flyingfishflash.ledger.accounts.AccountController.class,
-        net.flyingfishflash.ledger.accounts.AccountCategoryController.class,
-        net.flyingfishflash.ledger.accounts.AccountTypeController.class})
-
+      net.flyingfishflash.ledger.accounts.AccountController.class,
+      net.flyingfishflash.ledger.accounts.AccountCategoryController.class,
+      net.flyingfishflash.ledger.accounts.AccountTypeController.class
+    })
 public class GlobalExceptionHandler {
 
   private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
