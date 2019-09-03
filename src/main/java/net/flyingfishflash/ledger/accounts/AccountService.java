@@ -1,6 +1,9 @@
 package net.flyingfishflash.ledger.accounts;
 
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import net.flyingfishflash.ledger.accounts.dto.CreateAccountDto;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountCreateException;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
@@ -99,7 +102,7 @@ public class AccountService {
     return accountRepository.findOneById(id).orElseThrow(() -> new AccountNotFoundException(id));
   }
 
-  public Iterable<Account> findAllAccounts() {
+  public Collection<Account> findAllAccounts() {
 
     Iterable<Account> allAccounts =
         accountRepository.getTreeAsList(
@@ -116,7 +119,8 @@ public class AccountService {
       }
     }
 
-    return allAccounts;
+        return StreamSupport.stream(allAccounts.spliterator(), false)
+        .collect(Collectors.toList());
   }
 
   public void removeSubTree(Account account) {

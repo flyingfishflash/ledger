@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import net.flyingfishflash.ledger.accounts.dto.AccountDto;
@@ -36,9 +37,11 @@ public class AccountController {
 
   @Autowired private AccountService accountService;
 
-  public ResponseEntity<Iterable<Account>> findAllAccounts() {
+  @GetMapping
+  @ApiOperation(value = "Retrieve all accounts")
+  public ResponseEntity<Collection<Account>> findAllAccounts() {
 
-    Iterable<Account> allAccounts = accountService.findAllAccounts();
+    Collection<Account> allAccounts = accountService.findAllAccounts();
 
     return new ResponseEntity<>(allAccounts, HttpStatus.OK);
   }
