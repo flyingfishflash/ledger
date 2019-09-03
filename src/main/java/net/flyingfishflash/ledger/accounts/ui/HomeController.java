@@ -34,4 +34,9 @@ public class HomeController {
     model.addAttribute("title", "Ledger Notes");
     return "ledger/notes/index";
   }
+
+  @RequestMapping("/swagger")
+  public String home() {
+    return "redirect:/swagger-ui.html";
+  }
 }
