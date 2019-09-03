@@ -17,7 +17,7 @@ import javax.validation.Payload;
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Enum {
-  String message() default "Invalid value. This is not permitted.";
+  String message() default "must be a value defined in the enumerated list";
 
   Class<?>[] groups() default {};
 

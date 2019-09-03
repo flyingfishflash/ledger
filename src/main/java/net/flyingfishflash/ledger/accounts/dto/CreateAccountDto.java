@@ -24,16 +24,16 @@ import net.flyingfishflash.ledger.utilities.validators.Enum;
 
 public class CreateAccountDto {
 
-  @Size(min = 1, max = 2048)
+  @Size(max = 2048)
   @Pattern(
       regexp = "^(?!\\s*$).+",
-      message = "The account code may be null. It must not be an empty string, or consist only of spaces.")
+      message = "may be null, must not be an empty string, must not consist only of spaces")
   public String code;
 
-  @Size(min = 1, max = 2048)
+  @Size(max = 2048)
   @Pattern(
       regexp = "^(?!\\s*$).+",
-      message = "The account description may be null. It must not be an empty string, or consist only of spaces.")
+      message = "may be null, must not be an empty string, must not consist only of spaces")
   public String description;
 
   @NotNull public Boolean hidden;
@@ -44,7 +44,7 @@ public class CreateAccountDto {
       ignoreCase = true)
   public String mode;
 
-  @Size(min = 1, max = 2048)
+  @Size(max = 2048)
   @NotEmpty
   public String name;
 

@@ -15,23 +15,23 @@ public class AccountDto {
 
   public AccountType accountType;
 
-  @Size(min = 1, max = 2048)
+  @Size(max = 2048)
   @Pattern(
       regexp = "^(?!\\s*$).+",
-      message = "The account code may be null. It must not be an empty string, or consist only of spaces.")
+      message = "may be null, must not be an empty string, must not consist only of spaces")
   public String code;
 
-  @Size(min = 1, max = 2048)
+  @Size(max = 2048)
   @Pattern(
       regexp = "^(?!\\s*$).+",
-      message = "The account description may be null. It must not be an empty string, or consist only of spaces.")
+      message = "may be null, must not be an empty string, must not consist only of spaces")
   public String description;
 
-  @Size(min = 1, max = 2048)
+  @Size(max = 2048)
   @NotBlank
   public String discriminator;
 
-  @Size(min = 1, max = 2048)
+  @Size(max = 2048)
   @NotBlank
   public String guid;
 
@@ -39,11 +39,11 @@ public class AccountDto {
 
   @Positive @NotNull public Long id;
 
-  @Size(min = 1, max = 2048)
+  @Size(max = 2048)
   @NotBlank
   public String longName;
 
-  @Size(min = 1, max = 2048)
+  @Size(max = 2048)
   @NotBlank
   public String name;
 
