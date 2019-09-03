@@ -56,7 +56,7 @@ public class AccountController {
       @Valid @RequestBody CreateAccountDto createAccountDto)
       throws URISyntaxException {
 
-    Account account = accountService.createAccountNode(createAccountDto);
+    Account account = accountService.createAccount(createAccountDto);
     AccountDto accountDto = new AccountDto(account);
 
     URI location =

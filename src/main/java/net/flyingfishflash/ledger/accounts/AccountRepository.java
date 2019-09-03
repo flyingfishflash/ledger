@@ -28,7 +28,7 @@ public class AccountRepository {
 
   @PersistenceContext protected EntityManager em;
 
-  public Account newAccountNode() {
+  public Account newAccount() {
     return new Account();
   }
 

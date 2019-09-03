@@ -25,7 +25,7 @@ public class AccountService {
 
   public Account newAccountNode(Account p) {
 
-    Account account = accountRepository.newAccountNode();
+    Account account = accountRepository.newAccount();
 
     if (p.getAccountCategory().equals(AccountCategory.Root)) {
       account.setAccountCategory(AccountCategory.Asset);

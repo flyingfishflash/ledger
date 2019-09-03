@@ -20,7 +20,7 @@ public class AccountService {
 
   @Autowired private AccountRepository accountRepository;
 
-  public Account createAccountNode(CreateAccountDto createAccountDto) {
+  public Account createAccount(CreateAccountDto createAccountDto) {
 
     Account account = new Account();
     Account sibling;
