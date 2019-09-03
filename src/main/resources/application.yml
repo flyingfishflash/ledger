@@ -13,7 +13,26 @@ spring:
     cache: false #enable in production
     check-template-location: true
     prefix: classpath:/templates/
-#  jackson.serialization.FAIL_ON_EMPTY_BEANS: false
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+  output:
+    ansi:
+      enabled: always
+
+  #  jackson.serialization.FAIL_ON_EMPTY_BEANS: false
+
+log4j:
+  logger:
+    org:
+      springframework:
+        web:
+          servlet:
+            mvc:
+              method:
+                annotation:
+                  ExceptionHandlerExceptionResolver: debug
+
 ---
 
 spring:
@@ -41,7 +60,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-    show-sql: true
+    show-sql: false
     properties:
         hibernate.jdbc.lob.non_contextual_creation: true
         #hibernate.current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
