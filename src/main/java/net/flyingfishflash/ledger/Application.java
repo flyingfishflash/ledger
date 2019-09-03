@@ -6,9 +6,9 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @ComponentScan("net.flyingfishflash.ledger")
-public class LedgerApplication {
+public class Application {
 
   public static void main(String[] args) throws Exception {
-    SpringApplication.run(LedgerApplication.class, args);
+    SpringApplication.run(Application.class, args);
   }
 }
