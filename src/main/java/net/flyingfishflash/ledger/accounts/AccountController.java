@@ -1,5 +1,6 @@
 package net.flyingfishflash.ledger.accounts;
 
+import io.swagger.annotations.ApiOperation;
 import java.net.URI;
 import java.net.URISyntaxException;
 import javax.validation.Valid;
@@ -34,6 +35,7 @@ public class AccountController {
   @Autowired private AccountService accountService;
 
   @GetMapping
+  @ApiOperation(value = "Retrieve all accounts")
   public ResponseEntity<Iterable<Account>> findAllAccounts() {
 
     Iterable<Account> allAccounts = accountService.findAllAccounts();
@@ -42,6 +44,7 @@ public class AccountController {
   }
 
   @GetMapping(value = "{id}")
+  @ApiOperation(value = "Retrieve a single account")
   public ResponseEntity<AccountDto> findAccountById(@PathVariable("id") @Min(1) Long id) {
 
     Account account = accountService.findById(id);
@@ -51,6 +54,7 @@ public class AccountController {
   }
 
   @PostMapping
+  @ApiOperation(value = "Create a new account")
   public ResponseEntity<AccountDto> createAccount(
       @RequestHeader(name = "X-COM-LOCATION", required = false) String headerLocation,
       @Valid @RequestBody CreateAccountDto createAccountDto)
@@ -72,6 +76,7 @@ public class AccountController {
   }
 
   @DeleteMapping(value = "/delete")
+  @ApiOperation(value = "Delete an account and all of it's descendants")
   public ResponseEntity<?> deleteAccountAndDescendents(
       @RequestParam(name = "accountId") Long accountId) {
 
@@ -83,7 +88,8 @@ public class AccountController {
 
   // Change the position of an account in the hierarchy within the sibling level (down)
   @PostMapping(value = "/insert-as-next-sibling")
-  public ResponseEntity<?> insertAsNextSiblingOf(@RequestParam("id") Long id) throws URISyntaxException {
+  @ApiOperation(value = "List all accounts")
+    public ResponseEntity<?> insertAsNextSiblingOf(@RequestParam("id") Long id) throws URISyntaxException {
 
     Account account = accountService.findById(id);
     Account sibling = accountService.getNextSibling(account);
