@@ -101,7 +101,16 @@
             <version>3.0.0</version>
         </dependency>
 
-	</dependencies>
+  </dependencies>
+
+  <repositories>
+
+    <repository>
+      <id>my custom repository</id>
+      <url>https://gregory.github.io/mvn-repository</url>
+    </repository>
+
+  </repositories>
 
 	<build>
 
