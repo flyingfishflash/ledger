@@ -14,6 +14,7 @@ package net.flyingfishflash.ledger.accounts.dto;
 }
 */
 
+import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -21,6 +22,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import net.flyingfishflash.ledger.utilities.validators.Enum;
+
 
 public class CreateAccountDto {
 
@@ -42,6 +44,7 @@ public class CreateAccountDto {
   @Enum(
       enumClass = pl.exsio.nestedj.delegate.NestedNodeHierarchyManipulator.Mode.class,
       ignoreCase = true)
+  @ApiModelProperty(value = "Mode Manipulator Mode. Values limited to: FIRST_CHILD, LAST_CHILD, PREV_SIBLING, NEXT_SIBLING")
   public String mode;
 
   @Size(max = 2048)

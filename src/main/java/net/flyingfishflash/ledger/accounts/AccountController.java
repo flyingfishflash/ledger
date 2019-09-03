@@ -1,6 +1,8 @@
 package net.flyingfishflash.ledger.accounts;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.net.URI;
 import java.net.URISyntaxException;
 import javax.validation.Valid;
@@ -55,6 +57,7 @@ public class AccountController {
 
   @PostMapping
   @ApiOperation(value = "Create a new account")
+  @ApiResponses(value = { @ApiResponse(code = 400, message = "Bad Request") })
   public ResponseEntity<AccountDto> createAccount(
       @RequestHeader(name = "X-COM-LOCATION", required = false) String headerLocation,
       @Valid @RequestBody CreateAccountDto createAccountDto)
@@ -88,7 +91,7 @@ public class AccountController {
 
   // Change the position of an account in the hierarchy within the sibling level (down)
   @PostMapping(value = "/insert-as-next-sibling")
-  @ApiOperation(value = "List all accounts")
+  @ApiOperation(value = "Change the position of an account in the hierarchy within the sibling level (move down in a list)")
     public ResponseEntity<?> insertAsNextSiblingOf(@RequestParam("id") Long id) throws URISyntaxException {
 
     Account account = accountService.findById(id);
@@ -106,6 +109,7 @@ public class AccountController {
 
   // Change the position of an account in the hierarchy within the sibling level (up)
   @PostMapping(value = "/insert-as-prev-sibling")
+  @ApiOperation(value = "Change the position of an account in the hierarchy within the sibling level (move up in a list)")
   public ResponseEntity<?> insertAsPrevSiblingOf(@RequestParam("id") Long id) throws URISyntaxException {
 
     Account account = accountService.findById(id);

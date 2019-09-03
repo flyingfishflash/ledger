@@ -1,5 +1,8 @@
 package net.flyingfishflash.ledger.accounts;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.List;
 import javax.validation.Valid;
 import net.flyingfishflash.ledger.utilities.validators.Enum;
@@ -23,12 +26,15 @@ public class AccountTypeController {
 
   // Obtain the List of Account Types
   @GetMapping
+  @ApiOperation(value = "Retrieve all account types")
   public List<AccountType> findAllAccountTypes() {
     return accountTypeService.findAllAccountTypes();
   }
 
   // Obtain the List of Account Types associated with an Account Category
   @GetMapping(value = "by-category")
+  @ApiOperation(value = "Retrieve the account types associated with an account category")
+  @ApiResponses(value = { @ApiResponse(code = 400, message = "Bad Request") })
   public List<AccountType> findAccountTypesByCategory(
       @RequestParam(name = "category")
           @Enum(enumClass = net.flyingfishflash.ledger.accounts.AccountCategory.class)
