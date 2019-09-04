@@ -3,10 +3,10 @@ before_script:
   - cd ..
   - git clone -b custom --single-branch https://github.com/rollenwiese/nestedj.git
   - cd nestedj
-  - mvn -q clean package
+  - mvn -q clean package -DskipTests
   - mvn -q --batch-mode --show-version install:install-file -Dfile=target/NestedJ-3.0.0.RELEASE.jar -DpomFile=pom.xml
   - ls -l target/
-  - cd ledger
+  - cd ../ledger
 
 stages:
   - build
@@ -15,7 +15,7 @@ maven-build:
   image: maven:3-jdk-8
   stage: build
   script: "mvn -q clean package -B"
-  artifacts:
-    paths:
-      - target/*.jar
-    expire_in: 10 minutes
+#  artifacts:
+#    paths:
+#      - target/*.jar
+#    expire_in: 10 minutes
