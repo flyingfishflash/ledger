@@ -1,3 +1,4 @@
+/*
 import com.google.common.collect.Sets;
 
 import net.flyingfishflash.ledger.z_not_integrated.accounting.AccountingEntry;
@@ -22,3 +23,4 @@ public class AccountingEntryTest {
         entry1.setTransaction(transaction);
     }
 }
+*/
