@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+
+  ledger:
+    container_name: ledger
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev-h2
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:ledger;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      - SPRING_JPA_SHOW_SQL=FALSE
+      - SPRING_H2_CONSOLE_SETTINGS_WEB_ALLOW_OTHERS=TRUE
+      # http://localhost:9090/h2-console
+    image: registry.gitlab.com/rollenwiese/ledger:latest
+    ports:
+      - 9090:8080

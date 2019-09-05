@@ -3,20 +3,22 @@
 
 [![pipeline status](https://gitlab.com/rollenwiese/ledger/badges/master/pipeline.svg)](https://gitlab.com/rollenwiese/ledger/commits/master)
 
-
-For the time being this simply allows the creating and modification of a hierarchy of accounts.
-
-
 ### Build
 
-Clone my modified version of the NestedJ library, build it and add it to your local maven repostory:
-```shell
-git clone https://gitlab.com/rollenwiese/nestedj.git
-cd nestedj
-mvn clean install
-mvn install:install-file -Dfile=target/NestedJ-2.1.2.RELEASE.jar -DpomFile=pom.xml
-cd ..
-git clone https://gitlab.com/rollenwiese/ledger.git
-cd ledger
-mvn clean install
-```
+A docker-compose file is supplied which you can use via: ```docker-compose -f docker-compose.yaml up -d```
+
+The application will be available at [http://localhost:9090](http://localhost:9090)
+
+### Notes
+
+For the time being this tool simply allows the creation and modification of a hierarchy of accounts.
+
+There are two interfaces to the account structure:
+
+* Server rendered interface via Thymeleaf templating
+* RESTful API
+
+
+SSR: [http://localhost:9090/ledger/accounts](http://localhost:9090/ledger/accounts)
+
+API: [http://localhost:9090/swagger](http://localhost:9090/swagger)

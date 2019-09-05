@@ -31,11 +31,11 @@
         <th style="text-align: center">Action</th>
     </tr>
 
-    <tr th:each="account : ${accounts}" th:attr="class=treegrid- + ${account.id}"   th:classappend="treegrid-parent- + ${account.parent.id}">
+    <tr th:each="account : ${accounts}" th:attr="class=treegrid- + ${account.id}"   th:classappend="treegrid-parent- + ${account.parentId}">
         <!--td th:text="${account.id}"></td-->
         <td>
             <span
-            th:with="count=${account.level - 1}" 
+            th:with="count=${account.treeLevel - 1}"
             th:text="${#strings.repeat('&nbsp; ',count)} + ${account.name}">
             </span>
         </td>

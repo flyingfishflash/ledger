@@ -17,7 +17,7 @@
 	<p th:case="true">Creating a new top level account</p>
 	<p th:case="false">Creating a child account of:
 		<br />
-		<span style="font-weight: bold;" th:text="${parent.longname}">Longname of Parent Account</span>
+		<span style="font-weight: bold;" th:text="${parent.longName}">Longname of Parent Account</span>
 	</p>
 </div>
 
@@ -27,6 +27,7 @@
 <!--form action="#" th:action="@{'/ledger/accounts/create'}" th:object="${account}" method="post"-->
 
     <input type="hidden" id="guid" th:field="*{guid}"/>
+	  <input type="hidden" id="parentId" value="${parent.id}" th:field="*{parentId}"/>
 
 	<div class="form-row">
     	<div class="form-group col-md-3">

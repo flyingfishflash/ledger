@@ -1,8 +1,8 @@
 import org.junit.Test;
 
-import net.flyingfishflash.ledger.domain.accounting.AccountSide;
-import net.flyingfishflash.ledger.domain.accounting.AccountingEntry;
-import net.flyingfishflash.ledger.domain.accounting.Transaction;
+import net.flyingfishflash.ledger.z_not_integrated.accounting.AccountSide;
+import net.flyingfishflash.ledger.z_not_integrated.accounting.AccountingEntry;
+import net.flyingfishflash.ledger.z_not_integrated.accounting.Transaction;
 
 import java.math.BigDecimal;
 import java.util.HashSet;

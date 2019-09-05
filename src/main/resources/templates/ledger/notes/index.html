@@ -9,71 +9,70 @@
 
 <div class="container">
 
-<h2 th:text="${title}">Default Title</h2>
+  <h2 th:text="${title}">Default Title</h2>
 
-	<p>
-	<h4>Entities:</h4>
-	<ul>
-		<li>Account</li>
-		<li>Transaction</li>
-		<li>Split</li>
-		<li>Commodity / Currency</li>
-		<li>Price</li>
-		<li>Institution</li>
-	</ul>
-	</p>
-	<p>
-	<h4>Account</h4>
-	<ul>
-		<li>Persisted as a Nested Set (Pre Order Tree Traversal)</li>
-	</ul>
-	</p>
-	<p>
-	<h4>Transaction</h4>
-	<ul>
-		<li>Collection of Splits</li>
-		<li>Minimum of two Splits  </li>
-	</ul>
-	</p>
-	<p>
-	<h4>Split</h4>
-	<ul>
-		<li>Each Split is an amount credited or debited to an Account  </li>
-		<li>The sum of the amounts of all splits associated with a transaction should be zero  </li>
-	</ul>
-	</p>
-	<p>
-	<h4>Commodity</h4>
-	<ul>
-		<li>To store information about a commodity/security (stock)</li>
-	</ul>
-	</p>
-	<p>
-	<h4>Price</h4>
-	<ul>
-		<li>Price of a commodity or security at a given time</li>
-		<li>Updated via Yahoo Finance API</li>
-		<li>Updated manually</li>
-	</ul>
-	</p>
-	<p>
-	<h4>Institution</h4>
-	<ul>
-		<li>Institutions may be associated with one or more Accounts</li>
-	</ul>
-	</p>
-	<p>
-	<h4>Links</h4>
-	<ul>
-		<li><a href="http://mikehillyer.com/articles/managing-hierarchical-data-in-mysql/" 
-       		   target="_blank">http://mikehillyer.com/articles/managing-hierarchical-data-in-mysql/</a></li>
-       	<li><a href="http://www.quesucede.com/page/show/id/java-tree-implementation" 
-               target="_blank">http://www.quesucede.com/page/show/id/java-tree-implementation/</a></li>
-    </ul>
-	</p>
+  <p>
+  <h4>Entities:</h4>
+  <ul>
+    <li>Account</li>
+    <li>Transaction</li>
+    <li>Split</li>
+    <li>Commodity / Currency</li>
+    <li>Price</li>
+    <li>Institution</li>
+  </ul>
+  </p>
+  <p>
+  <h4>Account</h4>
+  <ul>
+    <li>Persisted as a Nested Set (Pre Order Tree Traversal)</li>
+  </ul>
+  </p>
+  <p>
+  <h4>Transaction</h4>
+  <ul>
+    <li>Collection of Splits</li>
+    <li>Minimum of two Splits</li>
+  </ul>
+  </p>
+  <p>
+  <h4>Split</h4>
+  <ul>
+    <li>Each Split is an amount credited or debited to an Account</li>
+    <li>The sum of the amounts of all splits associated with a transaction should be zero</li>
+  </ul>
+  </p>
+  <p>
+  <h4>Commodity</h4>
+  <ul>
+    <li>To store information about a commodity/security (stock)</li>
+  </ul>
+  </p>
+  <p>
+  <h4>Price</h4>
+  <ul>
+    <li>Price of a commodity or security at a given time</li>
+    <li>Updated via Yahoo Finance API</li>
+    <li>Updated manually</li>
+  </ul>
+  </p>
+  <p>
+  <h4>Institution</h4>
+  <ul>
+    <li>Institutions may be associated with one or more Accounts</li>
+  </ul>
+  </p>
+  <p>
+  <h4>Links</h4>
+  <ul>
+    <li><a href="http://mikehillyer.com/articles/managing-hierarchical-data-in-mysql/"
+           target="_blank">http://mikehillyer.com/articles/managing-hierarchical-data-in-mysql/</a>
+    </li>
+  </ul>
+  </p>
 </div>
 
-<div th:replace="fragments :: bootstrapjs"></div>	
+<div th:replace="fragments :: bootstrapjs"></div>
 
 </body>
 </html>

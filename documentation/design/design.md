@@ -24,4 +24,3 @@ Notes:
 
 Nested Sets  
 - http://mikehillyer.com/articles/managing-hierarchical-data-in-mysql/  
-- http://www.quesucede.com/page/show/id/java-tree-implementation  
