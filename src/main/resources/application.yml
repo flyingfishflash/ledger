@@ -8,7 +8,7 @@ logging:
 
 spring:
   profiles:
-    active: dev-postgresql
+    active: dev-h2
   thymeleaf:
     cache: false #enable in production
     check-template-location: true
@@ -41,11 +41,13 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
-    show-sql: true
+    show-sql: false
 
   h2:
     console:
-      enabled: true 
+      enabled: true
+      settings:
+        web-allow-others: true
 
   datasource:
     url: jdbc:h2:mem:ledger;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
