@@ -5,7 +5,10 @@
 
 ### Build
 
-A docker-compose file is supplied which you can use via: ```docker-compose -f docker-compose.yaml up -d```
+A docker-compose file is supplied which you can use via: 
+```shell
+docker-compose -f docker-compose.yaml up -d
+```
 
 The application will be available at [http://localhost:9090](http://localhost:9090)
 
