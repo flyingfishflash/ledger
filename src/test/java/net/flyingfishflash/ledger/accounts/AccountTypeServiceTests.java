@@ -1,12 +1,9 @@
-package net.flyingfishflash.ledger;
+package net.flyingfishflash.ledger.accounts;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Comparator;
 import java.util.List;
-import net.flyingfishflash.ledger.accounts.AccountCategory;
-import net.flyingfishflash.ledger.accounts.AccountType;
-import net.flyingfishflash.ledger.accounts.AccountTypeService;
 import org.junit.jupiter.api.Test;
 
 public class AccountTypeServiceTests {

@@ -1,8 +1,9 @@
-package net.flyingfishflash.ledger;
+package net.flyingfishflash.ledger.accounts;
 
 import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import net.flyingfishflash.ledger.Application;
 import net.flyingfishflash.ledger.accounts.Account;
 import net.flyingfishflash.ledger.accounts.AccountRepository;
 import net.flyingfishflash.ledger.accounts.AccountService;
