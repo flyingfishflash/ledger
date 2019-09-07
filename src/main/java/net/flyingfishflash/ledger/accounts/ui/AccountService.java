@@ -158,9 +158,9 @@ public class AccountService {
     return atc.getCategories();
   }
 
-  public List<AccountCategory> getCategoriesByType(String type) {
+  public AccountCategory getCategoriesByType(String type) {
 
-    return atc.getCategoriesByType(type);
+    return atc.getCategoryByType(type);
   }
 
   public List<AccountType> getTypesByCategory(String category) {

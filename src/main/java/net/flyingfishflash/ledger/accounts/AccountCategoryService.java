@@ -15,7 +15,7 @@ public class AccountCategoryService {
     return accountTypeCategory.getCategories();
   }
 
-  public List<AccountCategory> findAccountCategoriesByType(String type) {
-    return accountTypeCategory.getCategoriesByType(type);
+  public AccountCategory findAccountCategoryByType(String type) {
+    return accountTypeCategory.getCategoryByType(type);
   }
 }

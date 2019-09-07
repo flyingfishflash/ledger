@@ -34,11 +34,11 @@ public class AccountCategoryController {
   @GetMapping(value = "by-type")
   @ApiOperation(value = "Retrieve the account category associated with an account type")
   @ApiResponses(value = { @ApiResponse(code = 400, message = "Bad Request") })
-  public List<AccountCategory> findAccountCategoriesByType(
+  public AccountCategory findAccountCategoriesByType(
       @RequestParam(name = "type")
           @Enum(enumClass = net.flyingfishflash.ledger.accounts.AccountType.class)
           String type) {
     // String z = type.toString();
-    return accountCategoryService.findAccountCategoriesByType(type);
+    return accountCategoryService.findAccountCategoryByType(type);
   }
 }

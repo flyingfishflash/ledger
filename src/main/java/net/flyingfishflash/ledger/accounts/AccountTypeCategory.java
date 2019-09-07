@@ -14,10 +14,10 @@ public final class AccountTypeCategory {
 
   private static final Logger logger = LoggerFactory.getLogger(AccountTypeCategory.class);
 
-  private static final Map<AccountType, AccountCategory> map = createMap();
+  private static final HashMap<AccountType, AccountCategory> map = createMap();
 
-  private static Map<AccountType, AccountCategory> createMap() {
-    Map<AccountType, AccountCategory> map = new HashMap<AccountType, AccountCategory>();
+  private static HashMap<AccountType, AccountCategory> createMap() {
+    HashMap<AccountType, AccountCategory> map = new HashMap<AccountType, AccountCategory>();
     map.put(AccountType.Asset, AccountCategory.Asset);
     map.put(AccountType.Bank, AccountCategory.Asset);
     map.put(AccountType.Cash, AccountCategory.Asset);
@@ -75,18 +75,8 @@ public final class AccountTypeCategory {
     return types;
   }
 
-  public List<AccountCategory> getCategoriesByType(String type) {
+  public AccountCategory getCategoryByType(String type) {
 
-    final List<AccountCategory> categories =
-        map.entrySet().stream()
-            .filter(line -> AccountType.valueOf(type).equals(line.getKey()))
-            // sorted alphabetically
-            .sorted((e1, e2) -> e1.getValue().compareTo(e2.getValue()))
-            .map(Map.Entry::getValue)
-            .collect(Collectors.toList());
-
-    // categories.forEach(name -> logger.debug("getCategoriesByType(): " + name.toString()));
-
-    return categories;
+    return map.get(AccountType.valueOf(type));
   }
 }
