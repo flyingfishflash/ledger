@@ -12,7 +12,6 @@ import net.flyingfishflash.ledger.accounts.dto.AccountDto;
 import net.flyingfishflash.ledger.accounts.dto.CreateAccountDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +34,11 @@ public class AccountController {
 
   private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
 
-  @Autowired private AccountService accountService;
+  private final AccountService accountService;
+
+  public AccountController(AccountService accountService) {
+    this.accountService = accountService;
+  }
 
   @GetMapping
   @ApiOperation(value = "Retrieve all accounts")
@@ -58,7 +61,7 @@ public class AccountController {
 
   @PostMapping
   @ApiOperation(value = "Create a new account")
-  @ApiResponses(value = { @ApiResponse(code = 400, message = "Bad Request") })
+  @ApiResponses(value = {@ApiResponse(code = 400, message = "Bad Request")})
   public ResponseEntity<AccountDto> createAccount(
       @RequestHeader(name = "X-COM-LOCATION", required = false) String headerLocation,
       @Valid @RequestBody CreateAccountDto createAccountDto)
@@ -92,8 +95,11 @@ public class AccountController {
 
   // Change the position of an account in the hierarchy within the sibling level (down)
   @PostMapping(value = "/insert-as-next-sibling")
-  @ApiOperation(value = "Change the position of an account in the hierarchy within the sibling level (move down in a list)")
-    public ResponseEntity<?> insertAsNextSiblingOf(@RequestParam("id") Long id) throws URISyntaxException {
+  @ApiOperation(
+      value =
+          "Change the position of an account in the hierarchy within the sibling level (move down in a list)")
+  public ResponseEntity<?> insertAsNextSiblingOf(@RequestParam("id") Long id)
+      throws URISyntaxException {
 
     Account account = accountService.findById(id);
     Account sibling = accountService.getNextSibling(account);
@@ -110,8 +116,11 @@ public class AccountController {
 
   // Change the position of an account in the hierarchy within the sibling level (up)
   @PostMapping(value = "/insert-as-prev-sibling")
-  @ApiOperation(value = "Change the position of an account in the hierarchy within the sibling level (move up in a list)")
-  public ResponseEntity<?> insertAsPrevSiblingOf(@RequestParam("id") Long id) throws URISyntaxException {
+  @ApiOperation(
+      value =
+          "Change the position of an account in the hierarchy within the sibling level (move up in a list)")
+  public ResponseEntity<?> insertAsPrevSiblingOf(@RequestParam("id") Long id)
+      throws URISyntaxException {
 
     Account account = accountService.findById(id);
     Account sibling = accountService.getPrevSibling(account);

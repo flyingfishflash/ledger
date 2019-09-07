@@ -11,7 +11,6 @@ import net.flyingfishflash.ledger.accounts.exceptions.NextSiblingAccountNotFound
 import net.flyingfishflash.ledger.accounts.exceptions.PrevSiblingAccountNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +20,11 @@ public class AccountService {
 
   private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
 
-  @Autowired private AccountRepository accountRepository;
+  private final AccountRepository accountRepository;
+
+  public AccountService(AccountRepository accountRepository) {
+    this.accountRepository = accountRepository;
+  }
 
   public Account createAccount(CreateAccountDto createAccountDto) {
 
@@ -119,8 +122,7 @@ public class AccountService {
       }
     }
 
-        return StreamSupport.stream(allAccounts.spliterator(), false)
-        .collect(Collectors.toList());
+    return StreamSupport.stream(allAccounts.spliterator(), false).collect(Collectors.toList());
   }
 
   public void removeSubTree(Account account) {
@@ -132,14 +134,16 @@ public class AccountService {
 
     return accountRepository
         .getPrevSibling(account)
-        .orElseThrow(() -> new PrevSiblingAccountNotFoundException(account.getLongName(),  account.getId()));
+        .orElseThrow(
+            () -> new PrevSiblingAccountNotFoundException(account.getLongName(), account.getId()));
   }
 
   public Account getNextSibling(Account account) {
 
     return accountRepository
         .getNextSibling(account)
-        .orElseThrow(() -> new NextSiblingAccountNotFoundException(account.getLongName(), account.getId()));
+        .orElseThrow(
+            () -> new NextSiblingAccountNotFoundException(account.getLongName(), account.getId()));
   }
 
   public void insertAsFirstChildOf(Account account, Account parent) {
