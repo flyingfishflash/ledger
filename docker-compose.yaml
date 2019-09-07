@@ -5,7 +5,7 @@ services:
   ledger:
     container_name: ledger
     environment:
-      - SPRING_PROFILES_ACTIVE=dev-h2
+      - SPRING_PROFILES_ACTIVE=h2
       - SPRING_DATASOURCE_URL=jdbc:h2:mem:ledger;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
       - SPRING_JPA_SHOW_SQL=FALSE
       - SPRING_H2_CONSOLE_SETTINGS_WEB_ALLOW_OTHERS=TRUE
