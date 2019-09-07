@@ -2,11 +2,11 @@
 import org.junit.Assert;
 import org.junit.Test;
 
-import net.flyingfishflash.ledger.z_not_integrated.accounting.Account;
-import net.flyingfishflash.ledger.z_not_integrated.accounting.AccountingEntry;
+import Account;
+import AccountingEntry;
 
-import static net.flyingfishflash.ledger.z_not_integrated.accounting.AccountSide.CREDIT;
-import static net.flyingfishflash.ledger.z_not_integrated.accounting.AccountSide.DEBIT;
+import static AccountSide.CREDIT;
+import static AccountSide.DEBIT;
 
 import java.math.BigDecimal;
 

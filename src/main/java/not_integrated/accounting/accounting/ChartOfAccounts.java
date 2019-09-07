@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger.z_not_integrated.accounting;
+package not_integrated.accounting.accounting;
 
 import com.google.common.base.MoreObjects;
 

@@ -2,9 +2,9 @@
 import org.junit.Assert;
 import org.junit.Test;
 
-import net.flyingfishflash.ledger.z_not_integrated.accounting.AccountingEntry;
-import net.flyingfishflash.ledger.z_not_integrated.accounting.Transaction;
-import net.flyingfishflash.ledger.z_not_integrated.accounting.TransactionBuilder;
+import AccountingEntry;
+import Transaction;
+import TransactionBuilder;
 
 import java.math.BigDecimal;
 import java.util.Objects;
