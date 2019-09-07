@@ -15,10 +15,10 @@ import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import pl.exsio.nestedj.repository.DelegatingNestedNodeRepository;
 
-@Component
+@Repository
 @Transactional
 public class AccountRepository {
 
@@ -27,6 +27,10 @@ public class AccountRepository {
   @Autowired protected DelegatingNestedNodeRepository<Long, Account> nr;
 
   @PersistenceContext protected EntityManager em;
+
+  /*  public AccountRepository(DelegatingNestedNodeRepository<Long, Account> nr) {
+    this.nr = nr;
+  }*/
 
   public Account newAccount() {
     return new Account();
