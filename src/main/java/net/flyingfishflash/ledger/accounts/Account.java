@@ -17,57 +17,57 @@ public class Account implements NestedNode<Long> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  protected Long id;
+  private Long id;
 
   @Column(name = "guid", unique = true, updatable = false)
-  protected String guid;
+  private String guid;
 
   @Column(name = "name")
-  protected String name;
+  private String name;
 
   @Column(name = "longname", length = 4096)
-  protected String longName;
+  private String longName;
 
   @Column(name = "code")
-  protected String code;
+  private String code;
 
   @Column(name = "description", length = 2048)
-  protected String description;
+  private String description;
 
   @Column(name = "placeholder")
-  protected Boolean placeholder = false;
+  private Boolean placeholder = false;
 
   @Column(name = "hidden")
-  protected Boolean hidden = false;
+  private Boolean hidden = false;
 
   @Column(name = "tax_related")
-  protected Boolean taxRelated = false;
+  private Boolean taxRelated = false;
 
   @Column(name = "account_class")
   @Enumerated(EnumType.STRING)
-  protected AccountCategory accountCategory;
+  private AccountCategory accountCategory;
 
   @Column(name = "account_type")
   @Enumerated(EnumType.STRING)
-  protected AccountType accountType;
+  private AccountType accountType;
 
   @Column(name = "commodity_id")
-  protected Long commodityId;
+  private Long commodityId;
 
   @Column(name = "tree_left", nullable = false)
-  protected Long treeLeft;
+  private Long treeLeft;
 
   @Column(name = "tree_right", nullable = false)
-  protected Long treeRight;
+  private Long treeRight;
 
   @Column(name = "tree_level", nullable = false)
-  protected Long treeLevel;
+  private Long treeLevel;
 
   @Column(name = "parent_id")
-  protected Long parentId;
+  private Long parentId;
 
   @Column(name = "discriminator", nullable = false)
-  protected String discriminator;
+  private String discriminator;
 
   public Account() {
     this.setGuid();

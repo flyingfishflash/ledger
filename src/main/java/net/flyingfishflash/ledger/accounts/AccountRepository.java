@@ -94,7 +94,7 @@ public class AccountRepository {
                         "Attempt to identify parent account of an account for which we are deriving the long name."));
 
     if (parent.getTreeLeft() <= 1) {
-      return account.name;
+      return account.getName();
     }
 
     List<Account> parents = (List<Account>) nr.getParents(parent);
@@ -146,11 +146,11 @@ public class AccountRepository {
   public void insertAsPrevSiblingOf(Account account, Account sibling) {
 
     Account parent =
-        this.findOneById(account.parentId)
+        this.findOneById(account.getParentId())
             .orElseThrow(
                 () ->
                     new AccountNotFoundException(
-                        account.parentId,
+                        account.getParentId(),
                         "Attempt to identify the parent account of an account to be inserted as a previous sibling."));
     account.setLongName(this.deriveLongName(account));
     nr.insertAsPrevSiblingOf(account, sibling);
@@ -159,11 +159,11 @@ public class AccountRepository {
   public void insertAsNextSiblingOf(Account account, Account sibling) {
 
     Account parent =
-        this.findOneById(account.parentId)
+        this.findOneById(account.getParentId())
             .orElseThrow(
                 () ->
                     new AccountNotFoundException(
-                        account.parentId,
+                        account.getParentId(),
                         "Attempt to identify the parent account of an account to be inserted as a next sibling."));
     account.setLongName(this.deriveLongName(account));
     nr.insertAsNextSiblingOf(account, sibling);
