@@ -1,10 +1,11 @@
-package net.flyingfishflash.ledger.accounts;
+package net.flyingfishflash.ledger.accounts.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import net.flyingfishflash.ledger.accounts.data.AccountCategory;
 import org.junit.jupiter.api.Test;
 
 public class AccountCategoryTests {
