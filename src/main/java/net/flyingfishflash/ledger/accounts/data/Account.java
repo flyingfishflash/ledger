@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger.accounts;
+package net.flyingfishflash.ledger.accounts.data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

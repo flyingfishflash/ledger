@@ -7,6 +7,9 @@ import net.flyingfishflash.ledger.accounts.exceptions.AccountCreateException;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
 import net.flyingfishflash.ledger.accounts.exceptions.NextSiblingAccountNotFoundException;
 import net.flyingfishflash.ledger.accounts.exceptions.PrevSiblingAccountNotFoundException;
+import net.flyingfishflash.ledger.accounts.web.AccountCategoryController;
+import net.flyingfishflash.ledger.accounts.web.AccountController;
+import net.flyingfishflash.ledger.accounts.web.AccountTypeController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -15,9 +18,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice(
     assignableTypes = {
-      net.flyingfishflash.ledger.accounts.AccountController.class,
-      net.flyingfishflash.ledger.accounts.AccountCategoryController.class,
-      net.flyingfishflash.ledger.accounts.AccountTypeController.class
+      AccountController.class,
+      AccountCategoryController.class,
+      AccountTypeController.class
     })
 public class GlobalExceptionHandler {
 

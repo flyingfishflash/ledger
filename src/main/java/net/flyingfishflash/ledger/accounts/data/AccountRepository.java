@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger.accounts;
+package net.flyingfishflash.ledger.accounts.data;
 
 import java.util.Iterator;
 import java.util.List;

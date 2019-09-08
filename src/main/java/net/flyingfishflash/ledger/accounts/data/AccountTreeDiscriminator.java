@@ -1,7 +1,8 @@
-package net.flyingfishflash.ledger.accounts;
+package net.flyingfishflash.ledger.accounts.data;
 
 import java.util.HashMap;
 import java.util.Map;
+import net.flyingfishflash.ledger.accounts.data.Account;
 import pl.exsio.nestedj.discriminator.MapTreeDiscriminator;
 
 public class AccountTreeDiscriminator extends MapTreeDiscriminator<Long, Account> {

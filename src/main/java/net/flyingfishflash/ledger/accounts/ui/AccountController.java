@@ -2,9 +2,9 @@ package net.flyingfishflash.ledger.accounts.ui;
 
 import java.util.Iterator;
 import java.util.List;
-import net.flyingfishflash.ledger.accounts.Account;
-import net.flyingfishflash.ledger.accounts.AccountCategory;
-import net.flyingfishflash.ledger.accounts.AccountType;
+import net.flyingfishflash.ledger.accounts.data.Account;
+import net.flyingfishflash.ledger.accounts.data.AccountCategory;
+import net.flyingfishflash.ledger.accounts.data.AccountType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

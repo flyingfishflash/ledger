@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger.accounts;
+package net.flyingfishflash.ledger.accounts.data;
 
 public enum AccountCategory {
 	Root

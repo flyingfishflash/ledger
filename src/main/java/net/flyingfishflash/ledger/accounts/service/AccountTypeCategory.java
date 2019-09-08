@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger.accounts;
+package net.flyingfishflash.ledger.accounts.service;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import net.flyingfishflash.ledger.accounts.data.AccountCategory;
+import net.flyingfishflash.ledger.accounts.data.AccountType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +52,6 @@ public final class AccountTypeCategory {
   }
 
   public List<AccountCategory> getCategories() {
-
     // natural sort order (as declared in AccountCategory enum)
     final List<AccountCategory> categories =
         new LinkedList<AccountCategory>(Arrays.asList(AccountCategory.values()));

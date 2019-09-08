@@ -1,10 +1,12 @@
-package net.flyingfishflash.ledger.accounts;
+package net.flyingfishflash.ledger.accounts.web;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.util.List;
-import javax.validation.Valid;
+import net.flyingfishflash.ledger.accounts.data.AccountType;
+import net.flyingfishflash.ledger.accounts.data.AccountCategory;
+import net.flyingfishflash.ledger.accounts.service.AccountTypeService;
 import net.flyingfishflash.ledger.utilities.validators.Enum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +39,7 @@ public class AccountTypeController {
   @ApiResponses(value = { @ApiResponse(code = 400, message = "Bad Request") })
   public List<AccountType> findAccountTypesByCategory(
       @RequestParam(name = "category")
-          @Enum(enumClass = net.flyingfishflash.ledger.accounts.AccountCategory.class)
+          @Enum(enumClass = AccountCategory.class)
           String category) {
     return accountTypeService.findAccountTypesByCategory(category);
   }

@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger.accounts.dto;
+package net.flyingfishflash.ledger.accounts.data.dto;
 
 /*
 {

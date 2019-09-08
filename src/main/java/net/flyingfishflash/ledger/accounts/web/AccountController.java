@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger.accounts;
+package net.flyingfishflash.ledger.accounts.web;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -8,8 +8,10 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import net.flyingfishflash.ledger.accounts.dto.AccountDto;
-import net.flyingfishflash.ledger.accounts.dto.CreateAccountDto;
+import net.flyingfishflash.ledger.accounts.data.Account;
+import net.flyingfishflash.ledger.accounts.service.AccountService;
+import net.flyingfishflash.ledger.accounts.data.dto.AccountDto;
+import net.flyingfishflash.ledger.accounts.data.dto.CreateAccountDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;

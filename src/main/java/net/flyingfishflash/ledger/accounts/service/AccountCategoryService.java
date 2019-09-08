@@ -1,6 +1,7 @@
-package net.flyingfishflash.ledger.accounts;
+package net.flyingfishflash.ledger.accounts.service;
 
 import java.util.List;
+import net.flyingfishflash.ledger.accounts.data.AccountCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

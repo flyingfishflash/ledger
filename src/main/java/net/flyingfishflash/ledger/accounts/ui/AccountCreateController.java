@@ -1,8 +1,8 @@
 package net.flyingfishflash.ledger.accounts.ui;
 
-import net.flyingfishflash.ledger.accounts.Account;
-import net.flyingfishflash.ledger.accounts.AccountCategory;
-import net.flyingfishflash.ledger.accounts.AccountTypeCategory;
+import net.flyingfishflash.ledger.accounts.data.Account;
+import net.flyingfishflash.ledger.accounts.data.AccountCategory;
+import net.flyingfishflash.ledger.accounts.service.AccountTypeCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

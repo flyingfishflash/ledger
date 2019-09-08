@@ -1,10 +1,14 @@
-package net.flyingfishflash.ledger.accounts;
+package net.flyingfishflash.ledger.accounts.service;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import net.flyingfishflash.ledger.accounts.dto.CreateAccountDto;
+import net.flyingfishflash.ledger.accounts.data.Account;
+import net.flyingfishflash.ledger.accounts.data.AccountCategory;
+import net.flyingfishflash.ledger.accounts.data.AccountRepository;
+import net.flyingfishflash.ledger.accounts.data.AccountType;
+import net.flyingfishflash.ledger.accounts.data.dto.CreateAccountDto;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountCreateException;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
 import net.flyingfishflash.ledger.accounts.exceptions.NextSiblingAccountNotFoundException;

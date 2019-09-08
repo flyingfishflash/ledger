@@ -1,13 +1,13 @@
-package net.flyingfishflash.ledger.accounts.dto;
+package net.flyingfishflash.ledger.accounts.data.dto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
-import net.flyingfishflash.ledger.accounts.Account;
-import net.flyingfishflash.ledger.accounts.AccountCategory;
-import net.flyingfishflash.ledger.accounts.AccountType;
+import net.flyingfishflash.ledger.accounts.data.AccountCategory;
+import net.flyingfishflash.ledger.accounts.data.AccountType;
+import net.flyingfishflash.ledger.accounts.data.Account;
 
 public class AccountDto {
 
