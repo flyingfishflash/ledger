@@ -7,7 +7,7 @@ import net.flyingfishflash.ledger.accounts.data.AccountCategory;
 import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.AccountRepository;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
-import net.flyingfishflash.ledger.accounts.service.AccountTypeCategory;
+import net.flyingfishflash.ledger.accounts.data.MapAccountTypeToAccountCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountService {
 
   private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
-  private static final AccountTypeCategory atc = new AccountTypeCategory();
+  private static final MapAccountTypeToAccountCategory atc = new MapAccountTypeToAccountCategory();
 
   @Autowired private AccountRepository accountRepository;
 
@@ -155,7 +155,7 @@ public class AccountService {
 
   public List<AccountCategory> getCategories() {
 
-    return atc.getCategories();
+    return getCategories();
   }
 
   public AccountCategory getCategoriesByType(String type) {

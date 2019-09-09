@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger.accounts.service;
+package net.flyingfishflash.ledger.accounts.data;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -7,14 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import net.flyingfishflash.ledger.accounts.data.AccountCategory;
-import net.flyingfishflash.ledger.accounts.data.AccountType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class AccountTypeCategory {
+public final class MapAccountTypeToAccountCategory {
 
-  private static final Logger logger = LoggerFactory.getLogger(AccountTypeCategory.class);
+  private static final Logger logger = LoggerFactory.getLogger(MapAccountTypeToAccountCategory.class);
 
   private static final HashMap<AccountType, AccountCategory> map = createMap();
 

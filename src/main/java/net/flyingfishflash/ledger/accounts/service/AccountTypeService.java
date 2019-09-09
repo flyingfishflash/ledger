@@ -2,21 +2,19 @@ package net.flyingfishflash.ledger.accounts.service;
 
 import java.util.List;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.flyingfishflash.ledger.accounts.data.MapAccountTypeToAccountCategory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AccountTypeService {
 
-  private static final Logger logger = LoggerFactory.getLogger(AccountTypeService.class);
-  private static final AccountTypeCategory accountTypeCategory = new AccountTypeCategory();
+  private final static MapAccountTypeToAccountCategory mapAccountTypeToAccountCategory = new MapAccountTypeToAccountCategory();
 
   public List<AccountType> findAllAccountTypes() {
-    return accountTypeCategory.getTypes();
+    return mapAccountTypeToAccountCategory.getTypes();
   }
 
   public List<AccountType> findAccountTypesByCategory(String category) {
-    return accountTypeCategory.getTypesByCategory(category);
+    return mapAccountTypeToAccountCategory.getTypesByCategory(category);
   }
 }
