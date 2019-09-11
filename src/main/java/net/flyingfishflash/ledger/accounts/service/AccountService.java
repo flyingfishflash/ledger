@@ -111,9 +111,9 @@ public class AccountService {
 
   public Collection<Account> findAllAccounts() {
 
-    Iterable<Account> allAccounts =
-        accountRepository.getTreeAsList(
-            accountRepository.findOneById(1L).orElseThrow(() -> new AccountNotFoundException(1L)));
+    Account rootAccount =
+        accountRepository.findOneById(1L).orElseThrow(() -> new AccountNotFoundException(1L));
+    Iterable<Account> allAccounts = accountRepository.getTreeAsList(rootAccount);
 
     // remove root account
     Iterator<Account> i = allAccounts.iterator();
@@ -173,5 +173,32 @@ public class AccountService {
   public void removeSingle(Account account) {
 
     accountRepository.removeSingle(account);
+  }
+  /*
+   * Each account should have one base level parent
+   *
+   * Return that account, or return the account passed as a parameter
+   *
+   * Base level account has a depth of 1.
+   * Root level account has a depth of 0.
+   *
+   */
+  public Account getBaseLevelParent(Account account) {
+
+    Account r = new Account();
+
+    if (account.getTreeLevel() > 1) {
+      Iterable<Account> parents = accountRepository.getParents(account);
+      Iterator<Account> it = parents.iterator();
+      while (it.hasNext()) {
+        r = it.next();
+        if (r.getTreeLevel() == 1) {
+          break;
+        }
+      }
+    } else {
+      r = account;
+    }
+    return r;
   }
 }
