@@ -3,11 +3,11 @@ package net.flyingfishflash.ledger.accounts.ui;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import net.flyingfishflash.ledger.accounts.AccountCategory;
-import net.flyingfishflash.ledger.accounts.Account;
-import net.flyingfishflash.ledger.accounts.AccountRepository;
-import net.flyingfishflash.ledger.accounts.AccountType;
-import net.flyingfishflash.ledger.accounts.AccountTypeCategory;
+import net.flyingfishflash.ledger.accounts.data.AccountCategory;
+import net.flyingfishflash.ledger.accounts.data.Account;
+import net.flyingfishflash.ledger.accounts.data.AccountRepository;
+import net.flyingfishflash.ledger.accounts.data.AccountType;
+import net.flyingfishflash.ledger.accounts.data.MapAccountTypeToAccountCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountService {
 
   private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
-  private static final AccountTypeCategory atc = new AccountTypeCategory();
+  private static final MapAccountTypeToAccountCategory atc = new MapAccountTypeToAccountCategory();
 
   @Autowired private AccountRepository accountRepository;
 
@@ -155,12 +155,12 @@ public class AccountService {
 
   public List<AccountCategory> getCategories() {
 
-    return atc.getCategories();
+    return getCategories();
   }
 
-  public List<AccountCategory> getCategoriesByType(String type) {
+  public AccountCategory getCategoriesByType(String type) {
 
-    return atc.getCategoriesByType(type);
+    return atc.getCategoryByType(type);
   }
 
   public List<AccountType> getTypesByCategory(String category) {

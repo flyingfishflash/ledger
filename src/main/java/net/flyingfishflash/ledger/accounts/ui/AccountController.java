@@ -2,9 +2,9 @@ package net.flyingfishflash.ledger.accounts.ui;
 
 import java.util.Iterator;
 import java.util.List;
-import net.flyingfishflash.ledger.accounts.Account;
-import net.flyingfishflash.ledger.accounts.AccountCategory;
-import net.flyingfishflash.ledger.accounts.AccountType;
+import net.flyingfishflash.ledger.accounts.data.Account;
+import net.flyingfishflash.ledger.accounts.data.AccountCategory;
+import net.flyingfishflash.ledger.accounts.data.AccountType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +77,7 @@ public class AccountController {
   // Obtain the List of Account Categories associated with an Account Type
   @RequestMapping(value = "/categoriesbytype", method = RequestMethod.GET)
   @ResponseBody
-  public List<AccountCategory> getCategoriesByType(@RequestParam(name = "type") String type)
+  public AccountCategory getCategoriesByType(@RequestParam(name = "type") String type)
       throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts/categoriesbytype (GET)");
     logger.debug("RequestParam: " + type);

@@ -1,8 +1,8 @@
 package net.flyingfishflash.ledger.accounts.ui;
 
-import net.flyingfishflash.ledger.accounts.Account;
-import net.flyingfishflash.ledger.accounts.AccountCategory;
-import net.flyingfishflash.ledger.accounts.AccountTypeCategory;
+import net.flyingfishflash.ledger.accounts.data.Account;
+import net.flyingfishflash.ledger.accounts.data.AccountCategory;
+import net.flyingfishflash.ledger.accounts.data.MapAccountTypeToAccountCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ import springfox.documentation.annotations.ApiIgnore;
 public class AccountCreateController {
 
   private static final Logger logger = LoggerFactory.getLogger(AccountCreateController.class);
-  private static final AccountTypeCategory atc = new AccountTypeCategory();
+  private static final MapAccountTypeToAccountCategory atc = new MapAccountTypeToAccountCategory();
 
   @Autowired private AccountService accountService;
 
