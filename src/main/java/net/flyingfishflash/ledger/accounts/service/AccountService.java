@@ -201,4 +201,23 @@ public class AccountService {
     }
     return r;
   }
+
+  public Iterable<Account> getElligibleParentAccounts(Account account) {
+
+    Account baseLevelParent = this.getBaseLevelParent(account);
+
+    Iterable<Account> accounts = accountRepository.getTreeAsList(baseLevelParent);
+    // Remove passed account and its children from list of eligible parent accounts
+    Iterator<Account> it = accounts.iterator();
+    while (it.hasNext()) {
+      Account a = it.next();
+      if (a.getTreeLeft() > account.getTreeLeft() && a.getTreeLeft() < account.getTreeRight()) {
+        it.remove();
+      } else if (a.getId() == account.getId()) {
+        it.remove();
+      }
+    }
+
+    return accounts;
+  }
 }

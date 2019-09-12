@@ -97,7 +97,6 @@ public class AccountServiceTests {
     boolean containsRoot =
         StreamSupport.stream(findAllAccounts.spliterator(), false)
             .anyMatch(z -> z.getTreeLeft() == 1L && z.getParentId() == null);
-
     // expect the Iterable returned by the service has removed one account from Iterable returned
     // from the repository (the Root account)
     assertTrue(findAllAccountsSize == allAccountsSize - 1);
@@ -117,6 +116,28 @@ public class AccountServiceTests {
     assertEquals(1L, baseLevelParent.getParentId().longValue());
     System.out.println(baseLevelParent.toString());
     // System.out.println(mockingDetails(accountRepository).printInvocations());
+  }
+
+  @Test
+  public void testGetElligibleParentAccounts() {
+
+    when(accountRepository.getTreeAsList(any(Account.class))).thenReturn(treeAsList());
+    Iterable<Account> elligbleParents = accountService.getElligibleParentAccounts(accountId7());
+    verify(accountRepository).getTreeAsList(any(Account.class));
+    System.out.println(elligbleParents.toString());
+    // based on our mocked account structure
+    // expect this to return an Iterable with 2 items: account id 2, and account id 8
+    long elligibleParentsSize = StreamSupport.stream(elligbleParents.spliterator(), false).count();
+    boolean containsId2 =
+        StreamSupport.stream(elligbleParents.spliterator(), false).anyMatch(z -> z.getId() == 2L);
+    boolean containsId8 =
+        StreamSupport.stream(elligbleParents.spliterator(), false).anyMatch(z -> z.getId() == 8L);
+    assertNotNull(elligbleParents);
+    assertEquals(2, elligibleParentsSize);
+    assertTrue(containsId2);
+    assertTrue(containsId8);
+    // System.out.println(mockingDetails(accountRepository).printInvocations());
+
   }
 
   @Test
@@ -282,6 +303,17 @@ public class AccountServiceTests {
         });
 
     // System.out.println(mockingDetails(accountRepository).printInvocations());
+  }
+
+  private Iterable<Account> treeAsList() {
+
+    List<Account> treeAsList = new ArrayList<>();
+
+    treeAsList.add(accountId2());
+    treeAsList.add(accountId7());
+    treeAsList.add(accountId8());
+
+    return treeAsList;
   }
 
   private Iterable<Account> allAccounts() {
