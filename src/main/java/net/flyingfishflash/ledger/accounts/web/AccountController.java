@@ -136,4 +136,16 @@ public class AccountController {
 
     return new ResponseEntity<>(headers, HttpStatus.CREATED);
   }
+
+  // Retrieve a list of accounts that may be made a direct parent of a given account
+  @GetMapping(value = "/get-elligible-parent-accounts")
+  @ApiOperation(
+      value =
+          "Retrieve a list of accounts that may be made a direct parent of a given account")
+  public ResponseEntity<Iterable<Account>> getElligibleParentAccountsOf(@RequestParam("id") Long id)
+      throws URISyntaxException {
+
+    Account account = accountService.findById(id);
+    return new ResponseEntity<>(accountService.getElligibleParentAccounts(account), HttpStatus.OK);
+  }
 }
