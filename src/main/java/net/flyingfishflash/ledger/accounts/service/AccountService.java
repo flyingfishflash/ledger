@@ -11,6 +11,7 @@ import net.flyingfishflash.ledger.accounts.data.AccountType;
 import net.flyingfishflash.ledger.accounts.data.dto.CreateAccountDto;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountCreateException;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
+import net.flyingfishflash.ledger.accounts.exceptions.ElligibleParentAccountNotFoundException;
 import net.flyingfishflash.ledger.accounts.exceptions.NextSiblingAccountNotFoundException;
 import net.flyingfishflash.ledger.accounts.exceptions.PrevSiblingAccountNotFoundException;
 import org.slf4j.Logger;
@@ -206,9 +207,11 @@ public class AccountService {
 
     Account baseLevelParent = this.getBaseLevelParent(account);
 
-    Iterable<Account> accounts = accountRepository.getTreeAsList(baseLevelParent);
-    // Remove passed account and its children from list of eligible parent accounts
-    Iterator<Account> it = accounts.iterator();
+    // Limit the pool of elligible accounts to those with the same base level parent,
+    // so an Asset account can't become a child of a Liability Account, etc.
+    Iterable<Account> elligibleParentAccounts = accountRepository.getTreeAsList(baseLevelParent);
+    // Remove passed account and its children from list of eligible parent elligibleParentAccounts
+    Iterator<Account> it = elligibleParentAccounts.iterator();
     while (it.hasNext()) {
       Account a = it.next();
       if (a.getTreeLeft() > account.getTreeLeft() && a.getTreeLeft() < account.getTreeRight()) {
@@ -218,6 +221,13 @@ public class AccountService {
       }
     }
 
-    return accounts;
+    long elligibleParentsCount =
+        StreamSupport.stream(elligibleParentAccounts.spliterator(), false).count();
+
+    if (elligibleParentsCount > 0) {
+      return elligibleParentAccounts;
+    } else {
+      throw new ElligibleParentAccountNotFoundException(account.getId());
+    }
   }
 }

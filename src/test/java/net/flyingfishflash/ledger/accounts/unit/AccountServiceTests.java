@@ -20,6 +20,7 @@ import net.flyingfishflash.ledger.accounts.data.AccountRepository;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
 import net.flyingfishflash.ledger.accounts.data.dto.CreateAccountDto;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountCreateException;
+import net.flyingfishflash.ledger.accounts.exceptions.ElligibleParentAccountNotFoundException;
 import net.flyingfishflash.ledger.accounts.service.AccountService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -114,7 +115,6 @@ public class AccountServiceTests {
     assertNotNull(baseLevelParent);
     assertEquals(2L, baseLevelParent.getId().longValue());
     assertEquals(1L, baseLevelParent.getParentId().longValue());
-    System.out.println(baseLevelParent.toString());
     // System.out.println(mockingDetails(accountRepository).printInvocations());
   }
 
@@ -124,7 +124,6 @@ public class AccountServiceTests {
     when(accountRepository.getTreeAsList(any(Account.class))).thenReturn(treeAsList());
     Iterable<Account> elligbleParents = accountService.getElligibleParentAccounts(accountId7());
     verify(accountRepository).getTreeAsList(any(Account.class));
-    System.out.println(elligbleParents.toString());
     // based on our mocked account structure
     // expect this to return an Iterable with 2 items: account id 2, and account id 8
     long elligibleParentsSize = StreamSupport.stream(elligbleParents.spliterator(), false).count();
@@ -136,6 +135,20 @@ public class AccountServiceTests {
     assertEquals(2, elligibleParentsSize);
     assertTrue(containsId2);
     assertTrue(containsId8);
+    // System.out.println(mockingDetails(accountRepository).printInvocations());
+
+  }
+
+  @Test
+  public void testGetElligibleParentAccounts_ElligibleParentAccountNotFoundException() {
+
+    when(accountRepository.getTreeAsList(any(Account.class))).thenReturn(treeAsList());
+    assertThrows(
+        ElligibleParentAccountNotFoundException.class,
+        () -> {
+          Iterable<Account> elligbleParents =
+              accountService.getElligibleParentAccounts(accountId2());
+        });
     // System.out.println(mockingDetails(accountRepository).printInvocations());
 
   }
