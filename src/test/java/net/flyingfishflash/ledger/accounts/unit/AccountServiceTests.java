@@ -20,7 +20,7 @@ import net.flyingfishflash.ledger.accounts.data.AccountRepository;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
 import net.flyingfishflash.ledger.accounts.data.dto.CreateAccountDto;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountCreateException;
-import net.flyingfishflash.ledger.accounts.exceptions.ElligibleParentAccountNotFoundException;
+import net.flyingfishflash.ledger.accounts.exceptions.EligibleParentAccountNotFoundException;
 import net.flyingfishflash.ledger.accounts.service.AccountService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -119,19 +119,19 @@ public class AccountServiceTests {
   }
 
   @Test
-  public void testGetElligibleParentAccounts() {
+  public void testGetEligibleParentAccounts() {
 
     when(accountRepository.getTreeAsList(any(Account.class))).thenReturn(treeAsList());
-    Iterable<Account> elligbleParents = accountService.getElligibleParentAccounts(accountId7());
+    Iterable<Account> eligbleParents = accountService.getEligibleParentAccounts(accountId7());
     verify(accountRepository).getTreeAsList(any(Account.class));
     // based on our mocked account structure
     // expect this to return an Iterable with 2 items: account id 2, and account id 8
-    long elligibleParentsSize = StreamSupport.stream(elligbleParents.spliterator(), false).count();
+    long elligibleParentsSize = StreamSupport.stream(eligbleParents.spliterator(), false).count();
     boolean containsId2 =
-        StreamSupport.stream(elligbleParents.spliterator(), false).anyMatch(z -> z.getId() == 2L);
+        StreamSupport.stream(eligbleParents.spliterator(), false).anyMatch(z -> z.getId() == 2L);
     boolean containsId8 =
-        StreamSupport.stream(elligbleParents.spliterator(), false).anyMatch(z -> z.getId() == 8L);
-    assertNotNull(elligbleParents);
+        StreamSupport.stream(eligbleParents.spliterator(), false).anyMatch(z -> z.getId() == 8L);
+    assertNotNull(eligbleParents);
     assertEquals(2, elligibleParentsSize);
     assertTrue(containsId2);
     assertTrue(containsId8);
@@ -140,14 +140,14 @@ public class AccountServiceTests {
   }
 
   @Test
-  public void testGetElligibleParentAccounts_ElligibleParentAccountNotFoundException() {
+  public void testGetEligibleParentAccounts_EligibleParentAccountNotFoundException() {
 
     when(accountRepository.getTreeAsList(any(Account.class))).thenReturn(treeAsList());
     assertThrows(
-        ElligibleParentAccountNotFoundException.class,
+        EligibleParentAccountNotFoundException.class,
         () -> {
-          Iterable<Account> elligbleParents =
-              accountService.getElligibleParentAccounts(accountId2());
+          Iterable<Account> eligbleParents =
+              accountService.getEligibleParentAccounts(accountId2());
         });
     // System.out.println(mockingDetails(accountRepository).printInvocations());
 

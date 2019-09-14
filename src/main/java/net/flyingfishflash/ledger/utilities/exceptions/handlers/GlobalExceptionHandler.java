@@ -10,7 +10,7 @@ import net.flyingfishflash.ledger.accounts.exceptions.PrevSiblingAccountNotFound
 import net.flyingfishflash.ledger.accounts.web.AccountCategoryController;
 import net.flyingfishflash.ledger.accounts.web.AccountController;
 import net.flyingfishflash.ledger.accounts.web.AccountTypeController;
-import net.flyingfishflash.ledger.accounts.exceptions.ElligibleParentAccountNotFoundException;
+import net.flyingfishflash.ledger.accounts.exceptions.EligibleParentAccountNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -62,9 +62,9 @@ public class GlobalExceptionHandler {
     response.sendError(HttpStatus.NOT_FOUND.value());
   }
 
-  @ExceptionHandler(ElligibleParentAccountNotFoundException.class)
+  @ExceptionHandler(EligibleParentAccountNotFoundException.class)
   public void handleResourceNotFoundException(
-      HttpServletResponse response, ElligibleParentAccountNotFoundException e) throws IOException {
+      HttpServletResponse response, EligibleParentAccountNotFoundException e) throws IOException {
     logger.debug(e.getClass().getSimpleName() + ": " + e.getLocalizedMessage());
     response.sendError(HttpStatus.NOT_FOUND.value());
   }

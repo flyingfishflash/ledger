@@ -9,9 +9,9 @@ import java.util.Collection;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import net.flyingfishflash.ledger.accounts.data.Account;
-import net.flyingfishflash.ledger.accounts.service.AccountService;
 import net.flyingfishflash.ledger.accounts.data.dto.AccountDto;
 import net.flyingfishflash.ledger.accounts.data.dto.CreateAccountDto;
+import net.flyingfishflash.ledger.accounts.service.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -138,14 +138,13 @@ public class AccountController {
   }
 
   // Retrieve a list of accounts that may be made a direct parent of a given account
-  @GetMapping(value = "/get-elligible-parent-accounts")
+  @GetMapping(value = "{id}/eligible-parent-accounts")
   @ApiOperation(
-      value =
-          "Retrieve a list of accounts that may be made a direct parent of a given account")
-  public ResponseEntity<Iterable<Account>> getElligibleParentAccountsOf(@RequestParam("id") Long id)
-      throws URISyntaxException {
+      value = "Retrieve a list of accounts that may be made a direct parent of a given account")
+  public ResponseEntity<Collection<Account>> getEligibleParentAccountsOf(
+      @PathVariable("id") Long id) throws URISyntaxException {
 
     Account account = accountService.findById(id);
-    return new ResponseEntity<>(accountService.getElligibleParentAccounts(account), HttpStatus.OK);
+    return new ResponseEntity<>(accountService.getEligibleParentAccounts(account), HttpStatus.OK);
   }
 }

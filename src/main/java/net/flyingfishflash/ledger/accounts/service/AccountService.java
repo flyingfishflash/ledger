@@ -11,7 +11,7 @@ import net.flyingfishflash.ledger.accounts.data.AccountType;
 import net.flyingfishflash.ledger.accounts.data.dto.CreateAccountDto;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountCreateException;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
-import net.flyingfishflash.ledger.accounts.exceptions.ElligibleParentAccountNotFoundException;
+import net.flyingfishflash.ledger.accounts.exceptions.EligibleParentAccountNotFoundException;
 import net.flyingfishflash.ledger.accounts.exceptions.NextSiblingAccountNotFoundException;
 import net.flyingfishflash.ledger.accounts.exceptions.PrevSiblingAccountNotFoundException;
 import org.slf4j.Logger;
@@ -203,31 +203,33 @@ public class AccountService {
     return r;
   }
 
-  public Iterable<Account> getElligibleParentAccounts(Account account) {
+  public Collection<Account> getEligibleParentAccounts(Account account) {
 
     Account baseLevelParent = this.getBaseLevelParent(account);
 
     // Limit the pool of elligible accounts to those with the same base level parent,
     // so an Asset account can't become a child of a Liability Account, etc.
-    Iterable<Account> elligibleParentAccounts = accountRepository.getTreeAsList(baseLevelParent);
-    // Remove passed account and its children from list of eligible parent elligibleParentAccounts
-    Iterator<Account> it = elligibleParentAccounts.iterator();
+    Iterable<Account> eligibleParentAccounts = accountRepository.getTreeAsList(baseLevelParent);
+    // Remove passed account and its children from list of eligible parent eligibleParentAccounts
+    Iterator<Account> it = eligibleParentAccounts.iterator();
     while (it.hasNext()) {
       Account a = it.next();
       if (a.getTreeLeft() > account.getTreeLeft() && a.getTreeLeft() < account.getTreeRight()) {
         it.remove();
-      } else if (a.getId() == account.getId()) {
+      } else if (a.getId().equals(account.getId())) {
         it.remove();
       }
     }
 
-    long elligibleParentsCount =
-        StreamSupport.stream(elligibleParentAccounts.spliterator(), false).count();
+    long eligibleParentsCount =
+        StreamSupport.stream(eligibleParentAccounts.spliterator(), false).count();
 
-    if (elligibleParentsCount > 0) {
-      return elligibleParentAccounts;
+    if (eligibleParentsCount > 0) {
+      //return eligibleParentAccounts;
+      return StreamSupport.stream(eligibleParentAccounts.spliterator(), false)
+          .collect(Collectors.toList());
     } else {
-      throw new ElligibleParentAccountNotFoundException(account.getId());
+      throw new EligibleParentAccountNotFoundException(account.getId());
     }
   }
 }
