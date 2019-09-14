@@ -7,8 +7,9 @@ import net.flyingfishflash.ledger.accounts.data.AccountTreeDiscriminator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import pl.exsio.nestedj.repository.DelegatingNestedNodeRepository;
-import pl.exsio.nestedj.repository.NestedNodeRepository;
+import pl.exsio.nestedj.NestedNodeRepository;
+import pl.exsio.nestedj.config.jpa.JpaNestedNodeRepositoryConfiguration;
+import pl.exsio.nestedj.jpa.repository.factory.JpaNestedNodeRepositoryFactory;
 
 @Configuration
 @ComponentScan
@@ -17,10 +18,12 @@ public class AccountConfiguration {
   @PersistenceContext EntityManager entityManager;
 
   @Bean
-  // Why do I have to cast this DelegatingNestedNodeRepository?
-  public DelegatingNestedNodeRepository<Long, Account> nestedNodeRepository() {
-    return (DelegatingNestedNodeRepository<Long, Account>)
-        NestedNodeRepository.createDiscriminated(
-            Long.class, Account.class, entityManager, new AccountTreeDiscriminator());
+  public NestedNodeRepository<Long, Account> jpaRepository() {
+
+    JpaNestedNodeRepositoryConfiguration<Long, Account> configuration =
+        new JpaNestedNodeRepositoryConfiguration<>(
+            entityManager, Account.class, Long.class, new AccountTreeDiscriminator());
+
+    return JpaNestedNodeRepositoryFactory.create(configuration);
   }
 }

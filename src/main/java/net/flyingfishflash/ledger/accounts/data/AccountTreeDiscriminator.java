@@ -1,21 +1,11 @@
 package net.flyingfishflash.ledger.accounts.data;
 
-import java.util.HashMap;
-import java.util.Map;
-import net.flyingfishflash.ledger.accounts.data.Account;
-import pl.exsio.nestedj.discriminator.MapTreeDiscriminator;
+import java.util.Collections;
+import pl.exsio.nestedj.jpa.discriminator.MapJpaTreeDiscriminator;
 
-public class AccountTreeDiscriminator extends MapTreeDiscriminator<Long, Account> {
+public class AccountTreeDiscriminator extends MapJpaTreeDiscriminator<Long, Account> {
 
   public AccountTreeDiscriminator() {
-    Map<String, ValueProvider> valueProviders = new HashMap<>();
-    valueProviders.put("discriminator", () -> "account");
-        /*{
-            @Override
-            public Object getDiscriminatorValue() {
-                return "account";
-            }
-        });*/
-    setValueProviders(valueProviders);
+    super(Collections.singletonMap("discriminator", () -> "account"));
   }
 }

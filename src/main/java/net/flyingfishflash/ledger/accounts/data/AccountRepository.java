@@ -15,7 +15,7 @@ import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import pl.exsio.nestedj.repository.DelegatingNestedNodeRepository;
+import pl.exsio.nestedj.NestedNodeRepository;
 
 @Repository
 @Transactional
@@ -25,9 +25,9 @@ public class AccountRepository {
 
   @PersistenceContext protected EntityManager entityManager;
 
-  private DelegatingNestedNodeRepository<Long, Account> nodeRepository;
+  private NestedNodeRepository<Long, Account> nodeRepository;
 
-  public AccountRepository(DelegatingNestedNodeRepository<Long, Account> nodeRepository) {
+  public AccountRepository(NestedNodeRepository<Long, Account> nodeRepository) {
     this.nodeRepository = nodeRepository;
   }
 
