@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import pl.exsio.nestedj.NestedNodeRepository;
 import pl.exsio.nestedj.config.jpa.JpaNestedNodeRepositoryConfiguration;
-import pl.exsio.nestedj.jpa.repository.factory.JpaNestedNodeRepositoryFactory;
+import pl.exsio.nestedj.config.jpa.factory.JpaNestedNodeRepositoryFactory;
 
 @Configuration
 @ComponentScan
