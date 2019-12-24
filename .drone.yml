@@ -1,0 +1,26 @@
+kind: pipeline
+name: default
+
+steps:
+
+  - name: build-container
+    image: plugins/docker
+    settings:
+      auto_tag: false
+      repo: registry.flyingfishflash.net/flyingfishflash/ledger
+      tags:
+        - "${DRONE_COMMIT_BRANCH}"
+    trigger:
+      branch:
+        exclude:
+          - master
+      event:
+        - push
+
+  - name: build-container-version-tagged
+    image: plugins/docker
+    settings:
+      auto_tag: true
+      repo: registry.flyingfishflash.net/flyingfishflash/ledger
+
+
