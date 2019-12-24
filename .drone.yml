@@ -3,24 +3,29 @@ name: default
 
 steps:
 
-  - name: build-container
+  - name: publish feature branch
     image: plugins/docker
     settings:
       auto_tag: false
       repo: registry.flyingfishflash.net/flyingfishflash/ledger
       tags:
         - "${DRONE_COMMIT_BRANCH}"
-    trigger:
+    when:
       branch:
         exclude:
           - master
       event:
-        - push
+        exclude:
+          - tag
 
-  - name: build-container-version-tagged
+  - name: publish master branch
     image: plugins/docker
     settings:
       auto_tag: true
       repo: registry.flyingfishflash.net/flyingfishflash/ledger
 
+trigger:
+  event:
+    - push
+    - tag
 
