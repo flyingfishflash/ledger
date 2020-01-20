@@ -30,7 +30,6 @@ import springfox.documentation.annotations.ApiIgnore;
 public class AccountEditController {
 
   private static final Logger logger = LoggerFactory.getLogger(AccountEditController.class);
-  private static final MapAccountTypeToAccountCategory atc = new MapAccountTypeToAccountCategory();
 
   @Autowired private AccountRepository accountRepository;
 
@@ -62,13 +61,13 @@ public class AccountEditController {
     logger.debug("node.toString():" + account.toString());
     model.addAttribute("title", "Edit Account");
     model.addAttribute("parentIsRoot", parentIsRoot);
-    model.addAttribute("types", atc.getTypesByCategory(account.getAccountCategory().toString()));
+    model.addAttribute("types", MapAccountTypeToAccountCategory.getTypesByCategory(account.getAccountCategory().toString()));
     model.addAttribute("destinationAccounts", accountService.getElligibleParentAccounts(account));
     Long newParent = parent.getId();
     logger.debug("after Long newParent = parent.getId();");
     model.addAttribute("newParent", newParent);
     if (parentIsRoot == true) {
-      model.addAttribute("categories", atc.getCategories());
+      model.addAttribute("categories", MapAccountTypeToAccountCategory.getCategories());
     }
     logger.debug(model.toString());
     return "ledger/accounts/edit";

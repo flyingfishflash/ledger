@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountService {
 
   private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
-  private static final MapAccountTypeToAccountCategory atc = new MapAccountTypeToAccountCategory();
 
   @Autowired private AccountRepository accountRepository;
 
@@ -160,11 +159,11 @@ public class AccountService {
 
   public AccountCategory getCategoriesByType(String type) {
 
-    return atc.getCategoryByType(type);
+    return MapAccountTypeToAccountCategory.getCategoryByType(type);
   }
 
   public List<AccountType> getTypesByCategory(String category) {
 
-    return atc.getTypesByCategory(category);
+    return MapAccountTypeToAccountCategory.getTypesByCategory(category);
   }
 }
