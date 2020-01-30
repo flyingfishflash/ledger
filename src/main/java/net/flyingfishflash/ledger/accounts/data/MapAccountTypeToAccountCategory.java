@@ -32,7 +32,7 @@ public final class MapAccountTypeToAccountCategory {
     return map;
   }
 
-  public Map<AccountType, AccountCategory> get() {
+  public static Map<AccountType, AccountCategory> get() {
 
     for (Entry<AccountType, AccountCategory> entry : map.entrySet()) {
       logger.info(entry.toString());
@@ -41,7 +41,7 @@ public final class MapAccountTypeToAccountCategory {
     return map;
   }
 
-  public List<AccountType> getTypes() {
+  public static List<AccountType> getTypes() {
     // natural sort order (as declared in AccountCategory enum)
     final List<AccountType> types =
         new LinkedList<AccountType>(Arrays.asList(AccountType.values()));
@@ -49,7 +49,7 @@ public final class MapAccountTypeToAccountCategory {
     return types;
   }
 
-  public List<AccountCategory> getCategories() {
+  public static List<AccountCategory> getCategories() {
     // natural sort order (as declared in AccountCategory enum)
     final List<AccountCategory> categories =
         new LinkedList<AccountCategory>(Arrays.asList(AccountCategory.values()));
@@ -59,7 +59,7 @@ public final class MapAccountTypeToAccountCategory {
     return categories;
   }
 
-  public List<AccountType> getTypesByCategory(String category) {
+  public static List<AccountType> getTypesByCategory(String category) {
 
     List<AccountType> types =
         map.entrySet().stream()
@@ -74,7 +74,7 @@ public final class MapAccountTypeToAccountCategory {
     return types;
   }
 
-  public AccountCategory getCategoryByType(String type) {
+  public static AccountCategory getCategoryByType(String type) {
 
     return map.get(AccountType.valueOf(type));
   }

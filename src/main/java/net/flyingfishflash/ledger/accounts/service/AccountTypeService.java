@@ -8,13 +8,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class AccountTypeService {
 
-  private final static MapAccountTypeToAccountCategory mapAccountTypeToAccountCategory = new MapAccountTypeToAccountCategory();
-
   public List<AccountType> findAllAccountTypes() {
-    return mapAccountTypeToAccountCategory.getTypes();
+    return MapAccountTypeToAccountCategory.getTypes();
   }
 
   public List<AccountType> findAccountTypesByCategory(String category) {
-    return mapAccountTypeToAccountCategory.getTypesByCategory(category);
+    return MapAccountTypeToAccountCategory.getTypesByCategory(category);
   }
 }

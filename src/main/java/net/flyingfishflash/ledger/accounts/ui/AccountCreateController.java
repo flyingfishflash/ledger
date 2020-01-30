@@ -27,7 +27,6 @@ import springfox.documentation.annotations.ApiIgnore;
 public class AccountCreateController {
 
   private static final Logger logger = LoggerFactory.getLogger(AccountCreateController.class);
-  private static final MapAccountTypeToAccountCategory atc = new MapAccountTypeToAccountCategory();
 
   @Autowired private AccountService accountService;
 
@@ -44,10 +43,10 @@ public class AccountCreateController {
     model.addAttribute("title", "Create Account");
     model.addAttribute("parent", parent);
     model.addAttribute("parentIsRoot", parentIsRoot);
-    model.addAttribute("types", atc.getTypesByCategory(account.getAccountCategory().toString()));
+    model.addAttribute("types", MapAccountTypeToAccountCategory.getTypesByCategory(account.getAccountCategory().toString()));
     model.addAttribute("account", account);
     if (parentIsRoot == true) {
-      model.addAttribute("categories", atc.getCategories());
+      model.addAttribute("categories", MapAccountTypeToAccountCategory.getCategories());
     }
     logger.debug(model.toString());
     return "ledger/accounts/create";
