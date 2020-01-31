@@ -32,10 +32,11 @@ public class AccountCreateController {
 
   @GetMapping // (value = "", method = RequestMethod.GET)
   public String createAccount(
-      @RequestParam(name = "parentAccountId", defaultValue = "1") Long parentAccountId, Model model)
+      @RequestParam(name = "parentAccountId") Long parentAccountId, Model model)
       throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts/create (GET)");
     logger.debug("RequestParam: " + parentAccountId);
+    if (parentAccountId == null) { parentAccountId = accountService.findRoot().getId(); }
     // TODO Handle NullPointer Exception if parentId does not exist in nested set
     Account parent = accountService.findOneById(parentAccountId);
     Account account = accountService.newAccountNode(parent);

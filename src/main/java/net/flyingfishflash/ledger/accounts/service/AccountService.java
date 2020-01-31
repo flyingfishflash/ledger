@@ -113,7 +113,7 @@ public class AccountService {
   public Collection<Account> findAllAccounts() {
 
     Account rootAccount =
-        accountRepository.findOneById(1L).orElseThrow(() -> new AccountNotFoundException(1L));
+        accountRepository.findRoot().orElseThrow(() -> new AccountNotFoundException("Root Account Not Found."));
     Iterable<Account> allAccounts = accountRepository.getTreeAsList(rootAccount);
 
     // remove root account
@@ -149,6 +149,16 @@ public class AccountService {
         .getNextSibling(account)
         .orElseThrow(
             () -> new NextSiblingAccountNotFoundException(account.getLongName(), account.getId()));
+  }
+
+  public void insertAsFirstRoot(Account account) {
+
+    accountRepository.insertAsFirstRoot(account);
+  }
+
+  public void insertAsLastRoot(Account account) {
+
+    accountRepository.insertAsLastRoot(account);
   }
 
   public void insertAsFirstChildOf(Account account, Account parent) {

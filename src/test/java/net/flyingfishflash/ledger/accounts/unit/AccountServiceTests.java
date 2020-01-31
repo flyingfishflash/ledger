@@ -87,11 +87,8 @@ public class AccountServiceTests {
   @Test
   public void testFindAllAccounts() {
 
-    when(accountRepository.findOneById(1L)).thenReturn(Optional.of(accountId1()));
-    Account rootAccount = accountService.findById(1L);
-    verify(accountRepository).findOneById(1L);
-
-    when(accountRepository.getTreeAsList(rootAccount)).thenReturn(allAccounts());
+    when(accountRepository.findRoot()).thenReturn(Optional.of(accountId1()));
+    when(accountRepository.getTreeAsList(any(Account.class))).thenReturn(allAccounts());
     Iterable<Account> findAllAccounts = accountService.findAllAccounts();
     long findAllAccountsSize = StreamSupport.stream(findAllAccounts.spliterator(), false).count();
     long allAccountsSize = StreamSupport.stream(allAccounts().spliterator(), false).count();
@@ -102,7 +99,7 @@ public class AccountServiceTests {
     // from the repository (the Root account)
     assertTrue(findAllAccountsSize == allAccountsSize - 1);
     assertFalse(containsRoot);
-    verify(accountRepository).getTreeAsList(rootAccount);
+    verify(accountRepository).getTreeAsList(any(Account.class));
     // System.out.println(mockingDetails(accountRepository).printInvocations());
   }
 

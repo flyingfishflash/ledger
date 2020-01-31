@@ -12,7 +12,7 @@
 <h2 style="text-align: center;" th:text="${title}">Default Title</h2>
 
 <!--nav th:replace="fragments :: navigation"></nav-->
-<p><a th:href="@{'/ledger/accounts/create?parentAccountId=1'}" class="text-muted"><i class="fa fa-plus-circle" aria-hidden="true" style="font-size: 0.95em"></i>&nbsp;&nbsp;Base Level Account</a></p>
+<p><a th:href="@{'/ledger/accounts/create?parentAccountId'}" class="text-muted"><i class="fa fa-plus-circle" aria-hidden="true" style="font-size: 0.95em"></i>&nbsp;&nbsp;Base Level Account</a></p>
 <br />
 
 <!--p th:unless="${nodes} and ${nodes.size()}">No nodes to display</p-->

@@ -8,6 +8,7 @@ import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.AccountRepository;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
 import net.flyingfishflash.ledger.accounts.data.MapAccountTypeToAccountCategory;
+import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +43,14 @@ public class AccountService {
     return accountRepository.findOneById(id).orElseThrow(() -> new IllegalArgumentException("Account Id: " + id + " Not found"));
   }
 
+  public Account findRoot() {
+    return accountRepository.findRoot().orElseThrow(() -> new AccountNotFoundException("Root account could not be found."));
+  }
+
   public Iterable<Account> findWholeTree() {
 
     Iterator<Account> i =
-        accountRepository.getTreeAsList(accountRepository.findOneById(1L).orElseThrow(() -> new IllegalArgumentException("Account Id 1L Not found"))).iterator();
+        accountRepository.getTreeAsList(accountRepository.findRoot().orElseThrow(() -> new IllegalArgumentException("Root Account Not found"))).iterator();
     Account a;
     while (i.hasNext()) {
       a = i.next();
@@ -59,7 +64,7 @@ public class AccountService {
 
     // return () -> i;
 
-    return accountRepository.getTreeAsList(accountRepository.findOneById(1L).orElseThrow(() -> new IllegalArgumentException("Account Id 1L Not found")));
+    return accountRepository.getTreeAsList(accountRepository.findRoot().orElseThrow(() -> new IllegalArgumentException("Root Account Not found")));
   }
 
   public Iterable<Account> getTreeAsList(Account account) {
