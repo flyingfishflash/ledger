@@ -74,6 +74,11 @@ public class Account implements NestedNode<Long> {
     this.setDiscriminator("account");
   }
 
+  public Account(String guid) {
+    this.guid = guid;
+    this.setDiscriminator("account");
+  }
+
   public Boolean isRoot() {
     return this.getTreeLeft() == 1L;
   }
