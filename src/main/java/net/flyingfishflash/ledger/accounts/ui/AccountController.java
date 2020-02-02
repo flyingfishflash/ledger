@@ -34,7 +34,7 @@ public class AccountController {
     Iterator<Account> it = accounts.iterator();
     while (it.hasNext()) {
       Account account = it.next();
-      if (account.isRoot()) {
+      if (account.isRootNode()) {
         it.remove();
         break;
       }

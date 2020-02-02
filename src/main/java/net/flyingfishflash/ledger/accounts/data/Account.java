@@ -79,9 +79,7 @@ public class Account implements NestedNode<Long> {
     this.setDiscriminator("account");
   }
 
-  public Boolean isRoot() {
-    return this.getTreeLeft() == 1L;
-  }
+  public Boolean isRootNode() { return this.getParentId() == null; }
 
   public String getGuid() {
     return guid;
@@ -179,14 +177,10 @@ public class Account implements NestedNode<Long> {
     this.discriminator = discriminator;
   }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+  public void setId(Long id) { this.id = id; }
 
   @Override
-  public Long getId() {
-    return id;
-  }
+  public Long getId() { return id; }
 
   @Override
   public Long getTreeLeft() {
@@ -194,39 +188,25 @@ public class Account implements NestedNode<Long> {
   }
 
   @Override
-  public void setTreeLeft(Long left) {
-    this.treeLeft = left;
-  }
+  public void setTreeLeft(Long left) { this.treeLeft = left; }
 
   @Override
-  public Long getTreeRight() {
-    return treeRight;
-  }
+  public Long getTreeRight() { return treeRight; }
 
   @Override
-  public void setTreeRight(Long right) {
-    this.treeRight = right;
-  }
+  public void setTreeRight(Long right) { this.treeRight = right; }
 
   @Override
-  public Long getTreeLevel() {
-    return treeLevel;
-  }
+  public Long getTreeLevel() { return treeLevel;  }
 
   @Override
-  public void setTreeLevel(Long lvl) {
-    this.treeLevel = lvl;
-  }
+  public void setTreeLevel(Long lvl) { this.treeLevel = lvl; }
 
   @Override
-  public Long getParentId() {
-    return parentId;
-  }
+  public Long getParentId() { return parentId; }
 
   @Override
-  public void setParentId(Long parentId) {
-    this.parentId = parentId;
-  }
+  public void setParentId(Long parentId) { this.parentId = parentId; }
 
   @Override
   public String toString() {
