@@ -101,6 +101,20 @@
       <version>3.0.2</version>
     </dependency>
 
+    <!-- required for javadocs to generate properly -->
+    <dependency>
+      <groupId>javax.interceptor</groupId>
+      <artifactId>javax.interceptor-api</artifactId>
+      <version>1.2.2</version>
+    </dependency>
+
+    <!-- importer.utils.TimestampHelper -->
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>2.10.5</version>
+    </dependency>
+
   </dependencies>
 
   <repositories>
