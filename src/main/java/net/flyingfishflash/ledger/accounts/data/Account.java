@@ -34,6 +34,9 @@ public class Account implements NestedNode<Long> {
   @Column(name = "description", length = 2048)
   private String description;
 
+  @Column(name = "note", length = 4096)
+  private String note;
+
   @Column(name = "placeholder")
   private Boolean placeholder = false;
 
@@ -127,6 +130,14 @@ public class Account implements NestedNode<Long> {
 
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public String getNote() {
+    return note;
+  }
+
+  public void setNote(String note) {
+    this.note = note;
   }
 
   public Boolean getPlaceholder() {

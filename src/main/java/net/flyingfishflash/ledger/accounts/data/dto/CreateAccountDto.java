@@ -54,6 +54,12 @@ public class CreateAccountDto {
   @ApiModelProperty(required = true)
   public String name;
 
+  @Size(max = 4096)
+  @Pattern(
+      regexp = "^(?!\\s*$).+",
+      message = "may be null, must not be an empty string, must not consist only of spaces")
+  public String note;
+
   @NotNull
   @Positive
   @ApiModelProperty(required = true)
@@ -77,6 +83,7 @@ public class CreateAccountDto {
         ", hidden=" + hidden +
         ", mode='" + mode + '\'' +
         ", name='" + name + '\'' +
+        ", note='" + note + '\'' +
         ", parentId=" + parentId +
         ", placeholder=" + placeholder +
         ", siblingId=" + siblingId +
