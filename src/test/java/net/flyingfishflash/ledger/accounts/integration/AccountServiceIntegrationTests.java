@@ -22,7 +22,7 @@ AccountService accountService;
 
   @Test
   public void test() {
-    System.out.println(accountRepository.findOneById(1L));
+    System.out.println(accountRepository.findById(1L));
     System.out.println(accountService.findById(1L));
     //System.out.println(accountService.findById(7L));
   }

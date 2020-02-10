@@ -43,9 +43,9 @@ public class AccountServiceTests {
   @Test
   public void testFindAccountById() {
 
-    when(accountRepository.findOneById(1L)).thenReturn(Optional.of(accountId1()));
+    when(accountRepository.findById(1L)).thenReturn(Optional.of(accountId1()));
     Account account = accountService.findById(1L);
-    verify(accountRepository).findOneById(1L);
+    verify(accountRepository).findById(1L);
     assertEquals(accountId1().getId(), account.getId());
     assertEquals(accountId1().getAccountCategory(), account.getAccountCategory());
     assertEquals(accountId1().getAccountType(), account.getAccountType());
@@ -65,9 +65,9 @@ public class AccountServiceTests {
   @Test
   public void testFindAccountByGuid() {
 
-    when(accountRepository.findOneByGuid(anyString())).thenReturn(Optional.of(accountId1()));
+    when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(accountId1()));
     Account account = accountService.findByGuid(anyString());
-    verify(accountRepository).findOneByGuid(anyString());
+    verify(accountRepository).findByGuid(anyString());
     assertNotNull(accountId1().getGuid(), account.getGuid());
     assertEquals(accountId1().getId(), account.getId());
     assertEquals(accountId1().getAccountCategory(), account.getAccountCategory());
@@ -162,14 +162,14 @@ public class AccountServiceTests {
     createAccountDto.siblingId = 8L;
     createAccountDto.taxRelated = false;
 
-    when(accountRepository.findOneById(2L)).thenReturn(Optional.of(accountId2()));
-    when(accountRepository.findOneById(8L)).thenReturn(Optional.of(accountId8()));
-    when(accountRepository.findOneByGuid(anyString())).thenReturn(Optional.of(accountId8()));
+    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
+    when(accountRepository.findById(8L)).thenReturn(Optional.of(accountId8()));
+    when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(accountId8()));
     Account newAccount = accountService.createAccount(createAccountDto);
 
-    verify(accountRepository).findOneById(2L);
-    verify(accountRepository).findOneById(8L);
-    verify(accountRepository).findOneByGuid(anyString());
+    verify(accountRepository).findById(2L);
+    verify(accountRepository).findById(8L);
+    verify(accountRepository).findByGuid(anyString());
     verify(accountRepository).insertAsPrevSiblingOf(any(Account.class), any(Account.class));
     // System.out.println(mockingDetails(accountRepository).printInvocations());
   }
@@ -186,9 +186,9 @@ public class AccountServiceTests {
     createAccountDto.siblingId = 8L; // invalid value
     createAccountDto.taxRelated = false;
 
-    when(accountRepository.findOneById(2L)).thenReturn(Optional.of(accountId2()));
+    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
     // simulate failure to identify the previous sibling of the subject account
-    when(accountRepository.findOneById(8L)).thenReturn(Optional.empty());
+    when(accountRepository.findById(8L)).thenReturn(Optional.empty());
     assertThrows(
         AccountCreateException.class,
         () -> {
@@ -210,14 +210,14 @@ public class AccountServiceTests {
     createAccountDto.siblingId = 7L;
     createAccountDto.taxRelated = false;
 
-    when(accountRepository.findOneById(2L)).thenReturn(Optional.of(accountId2()));
-    when(accountRepository.findOneById(7L)).thenReturn(Optional.of(accountId7()));
-    when(accountRepository.findOneByGuid(anyString())).thenReturn(Optional.of(accountId8()));
+    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
+    when(accountRepository.findById(7L)).thenReturn(Optional.of(accountId7()));
+    when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(accountId8()));
     Account newAccount = accountService.createAccount(createAccountDto);
 
-    verify(accountRepository).findOneById(2L);
-    verify(accountRepository).findOneById(7L);
-    verify(accountRepository).findOneByGuid(anyString());
+    verify(accountRepository).findById(2L);
+    verify(accountRepository).findById(7L);
+    verify(accountRepository).findByGuid(anyString());
     verify(accountRepository).insertAsNextSiblingOf(any(Account.class), any(Account.class));
     // System.out.println(mockingDetails(accountRepository).printInvocations());
   }
@@ -234,9 +234,9 @@ public class AccountServiceTests {
     createAccountDto.siblingId = 9L; // invalid value
     createAccountDto.taxRelated = false;
 
-    when(accountRepository.findOneById(2L)).thenReturn(Optional.of(accountId2()));
+    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
     // simulate failure to identify the next sibling of the subject account
-    when(accountRepository.findOneById(9L)).thenReturn(Optional.empty());
+    when(accountRepository.findById(9L)).thenReturn(Optional.empty());
     assertThrows(
         AccountCreateException.class,
         () -> {
@@ -258,12 +258,12 @@ public class AccountServiceTests {
     createAccountDto.siblingId = 2L;
     createAccountDto.taxRelated = false;
 
-    when(accountRepository.findOneById(2L)).thenReturn(Optional.of(accountId2()));
-    when(accountRepository.findOneByGuid(anyString())).thenReturn(Optional.of(accountId7()));
+    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
+    when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(accountId7()));
     Account newAccount = accountService.createAccount(createAccountDto);
 
-    verify(accountRepository).findOneById(2L);
-    verify(accountRepository).findOneByGuid(anyString());
+    verify(accountRepository).findById(2L);
+    verify(accountRepository).findByGuid(anyString());
     verify(accountRepository).insertAsFirstChildOf(any(Account.class), any(Account.class));
     // System.out.println(mockingDetails(accountRepository).printInvocations());
   }
@@ -280,12 +280,12 @@ public class AccountServiceTests {
     createAccountDto.siblingId = 2L;
     createAccountDto.taxRelated = false;
 
-    when(accountRepository.findOneById(2L)).thenReturn(Optional.of(accountId2()));
-    when(accountRepository.findOneByGuid(anyString())).thenReturn(Optional.of(accountId7()));
+    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
+    when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(accountId7()));
     Account newAccount = accountService.createAccount(createAccountDto);
 
-    verify(accountRepository).findOneById(2L);
-    verify(accountRepository).findOneByGuid(anyString());
+    verify(accountRepository).findById(2L);
+    verify(accountRepository).findByGuid(anyString());
     verify(accountRepository).insertAsLastChildOf(any(Account.class), any(Account.class));
     // System.out.println(mockingDetails(accountRepository).printInvocations());
   }
@@ -302,10 +302,10 @@ public class AccountServiceTests {
     createAccountDto.siblingId = 2L;
     createAccountDto.taxRelated = false;
 
-    when(accountRepository.findOneById(2L)).thenReturn(Optional.of(accountId2()));
-    when(accountRepository.findOneById(2L)).thenReturn(Optional.of(accountId8()));
+    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
+    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId8()));
     // simulate failure to confirm the newly created account has been persisted to the database
-    when(accountRepository.findOneByGuid(anyString())).thenReturn(Optional.empty());
+    when(accountRepository.findByGuid(anyString())).thenReturn(Optional.empty());
     assertThrows(
         AccountCreateException.class,
         () -> {

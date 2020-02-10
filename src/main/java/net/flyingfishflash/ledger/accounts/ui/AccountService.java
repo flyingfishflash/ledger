@@ -40,7 +40,7 @@ public class AccountService {
 
   public Account findOneById(Long id) {
 
-    return accountRepository.findOneById(id).orElseThrow(() -> new IllegalArgumentException("Account Id: " + id + " Not found"));
+    return accountRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Account Id: " + id + " Not found"));
   }
 
   public Account findRoot() {

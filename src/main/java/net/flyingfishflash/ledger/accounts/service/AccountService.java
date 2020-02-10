@@ -101,13 +101,13 @@ public class AccountService {
   public Account findByGuid(String guid) {
 
     return accountRepository
-        .findOneByGuid(guid)
+        .findByGuid(guid)
         .orElseThrow(() -> new AccountNotFoundException(guid));
   }
 
   public Account findById(Long id) {
 
-    return accountRepository.findOneById(id).orElseThrow(() -> new AccountNotFoundException(id));
+    return accountRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(id));
   }
 
   public Collection<Account> findAllAccounts() {

@@ -73,7 +73,7 @@ public class AccountRepository {
     }
   }
 
-  public Optional<Account> findOneById(Long id) {
+  public Optional<Account> findById(Long id) {
 
     try {
       CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -86,7 +86,7 @@ public class AccountRepository {
     }
   }
 
-  public Optional<Account> findOneByGuid(String guid) {
+  public Optional<Account> findByGuid(String guid) {
 
     try {
       CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -107,7 +107,7 @@ public class AccountRepository {
   public String deriveLongName(Account account) {
 
     Account parent =
-        this.findOneById(account.getParentId())
+        this.findById(account.getParentId())
             .orElseThrow(
                 () ->
                     new AccountNotFoundException(
@@ -179,7 +179,7 @@ public class AccountRepository {
   public void insertAsPrevSiblingOf(Account account, Account sibling) {
 
     Account parent =
-        this.findOneById(account.getParentId())
+        this.findById(account.getParentId())
             .orElseThrow(
                 () ->
                     new AccountNotFoundException(
@@ -192,7 +192,7 @@ public class AccountRepository {
   public void insertAsNextSiblingOf(Account account, Account sibling) {
 
     Account parent =
-        this.findOneById(account.getParentId())
+        this.findById(account.getParentId())
             .orElseThrow(
                 () ->
                     new AccountNotFoundException(
