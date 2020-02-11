@@ -9,6 +9,7 @@ import net.flyingfishflash.ledger.accounts.data.AccountRepository;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
 import net.flyingfishflash.ledger.accounts.data.MapAccountTypeToAccountCategory;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
+import net.flyingfishflash.ledger.utilities.IdentifierFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class AccountService {
 
   public Account newAccountNode(Account p) {
 
-    Account account = accountRepository.newAccount();
+    Account account = accountRepository.newAccount(IdentifierFactory.getInstance().generateIdentifier());
 
     if (p.getAccountCategory().equals(AccountCategory.Root)) {
       account.setAccountCategory(AccountCategory.Asset);

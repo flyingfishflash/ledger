@@ -32,9 +32,9 @@ public class AccountRepository {
     this.nodeRepository = nodeRepository;
   }
 
-  public Account newAccount() {
+/*  public Account newAccount() {
     return new Account();
-  }
+  }*/
 
   public Account newAccount(String guid) {
     return new Account(guid);
