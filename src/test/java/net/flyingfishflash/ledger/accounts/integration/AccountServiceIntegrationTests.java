@@ -2,28 +2,25 @@ package net.flyingfishflash.ledger.accounts.integration;
 
 import net.flyingfishflash.ledger.accounts.data.AccountRepository;
 import net.flyingfishflash.ledger.accounts.service.AccountService;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class AccountServiceIntegrationTests {
 
+  // @Mock
+  // private AccountRepository accountRepository;
 
-  //@Mock
-  //private AccountRepository accountRepository;
-  //private AccountRepository accountRepository;
+  @Autowired private AccountService accountService;
+  @Autowired private AccountRepository accountRepository;
 
-@Autowired
-private AccountRepository accountRepository;
+  /*
+    Disable this integratino test stub since seeding of the database via src/main/java/resources/data.sql is not guaranteed
 
-@Autowired
-AccountService accountService;
-
-  @Test
-  public void test() {
-    System.out.println(accountRepository.findById(1L));
-    System.out.println(accountService.findById(1L));
-    //System.out.println(accountService.findById(7L));
-  }
+    @Test
+    public void test() {
+      System.out.println(accountRepository.findById(1L));
+      System.out.println(accountService.findById(1L));
+    }
+  */
 }
