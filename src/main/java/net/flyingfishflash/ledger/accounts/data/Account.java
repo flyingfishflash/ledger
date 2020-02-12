@@ -91,8 +91,8 @@ public class Account implements NestedNode<Long> {
     return guid;
   }
 
-  private void setGuid() {
-    this.guid = IdentifierFactory.getInstance().generateIdentifier();
+  public void setGuid(String guid) {
+    this.guid = guid;
   }
 
   public String getName() {
@@ -232,7 +232,6 @@ public class Account implements NestedNode<Long> {
         ", taxRelated=" + taxRelated +
         ", accountCategory=" + accountCategory +
         ", accountType=" + accountType +
-        ", commodity=" + commodity +
         ", commodity=" + commodity +
         ", treeLeft=" + treeLeft +
         ", treeRight=" + treeRight +
