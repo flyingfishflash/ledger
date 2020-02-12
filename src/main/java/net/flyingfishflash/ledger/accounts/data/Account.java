@@ -7,7 +7,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import net.flyingfishflash.ledger.commodities.data.Commodity;
 import net.flyingfishflash.ledger.utilities.IdentifierFactory;
 import pl.exsio.nestedj.model.NestedNode;
 
@@ -54,8 +57,9 @@ public class Account implements NestedNode<Long> {
   @Enumerated(EnumType.STRING)
   private AccountType accountType;
 
-  @Column(name = "commodity_id")
-  private Long commodityId;
+  @ManyToOne
+  @JoinColumn(name = "commodity_id")
+  private Commodity commodity;
 
   @Column(name = "tree_left", nullable = false)
   private Long treeLeft;
@@ -73,7 +77,6 @@ public class Account implements NestedNode<Long> {
   private String discriminator;
 
   public Account() {
-    this.setGuid();
     this.setDiscriminator("account");
   }
 
@@ -172,13 +175,9 @@ public class Account implements NestedNode<Long> {
     this.code = code;
   }
 
-  public Long getCommodityId() {
-    return commodityId;
-  }
+  public Commodity getCommodity() { return commodity; }
 
-  public void setCommodityId(Long commodityId) {
-    this.commodityId = commodityId;
-  }
+  public void setCommodity(Commodity commodity) { this.commodity = commodity; }
 
   public String getDiscriminator() {
     return discriminator;
@@ -233,7 +232,8 @@ public class Account implements NestedNode<Long> {
         ", taxRelated=" + taxRelated +
         ", accountCategory=" + accountCategory +
         ", accountType=" + accountType +
-        ", commodityId=" + commodityId +
+        ", commodity=" + commodity +
+        ", commodity=" + commodity +
         ", treeLeft=" + treeLeft +
         ", treeRight=" + treeRight +
         ", treeLevel=" + treeLevel +

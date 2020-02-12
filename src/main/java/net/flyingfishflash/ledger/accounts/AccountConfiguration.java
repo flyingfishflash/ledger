@@ -4,6 +4,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.AccountTreeDiscriminator;
+import net.flyingfishflash.ledger.commodities.data.Commodity;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +15,8 @@ import pl.exsio.nestedj.config.jpa.factory.JpaNestedNodeRepositoryFactory;
 
 @Configuration
 @ComponentScan
+// JPA entity scan specification necessary for testing since commodity class is outside this package
+@EntityScan(basePackageClasses = {Account.class, Commodity.class})
 public class AccountConfiguration {
 
   @PersistenceContext EntityManager entityManager;
