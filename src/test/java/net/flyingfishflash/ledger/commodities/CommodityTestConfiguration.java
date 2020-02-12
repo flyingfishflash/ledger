@@ -1,0 +1,8 @@
+package net.flyingfishflash.ledger.commodities;
+
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+
+@SpringBootConfiguration
+@EnableAutoConfiguration
+public class CommodityTestConfiguration extends CommodityConfiguration {}
