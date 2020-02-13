@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Validated
-@RequestMapping("ledger/api/v1/accounts")
+@RequestMapping("ledger/api/v1/commodities")
 public class CommodityController {
 
   private static final Logger logger = LoggerFactory.getLogger(CommodityController.class);
