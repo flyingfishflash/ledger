@@ -11,7 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import net.flyingfishflash.ledger.commodities.data.Commodity;
-import net.flyingfishflash.ledger.utilities.IdentifierFactory;
 import pl.exsio.nestedj.model.NestedNode;
 
 @Entity
@@ -85,7 +84,9 @@ public class Account implements NestedNode<Long> {
     this.setDiscriminator("account");
   }
 
-  public Boolean isRootNode() { return this.getParentId() == null; }
+  public Boolean isRootNode() {
+    return this.getParentId() == null;
+  }
 
   public String getGuid() {
     return guid;
@@ -175,9 +176,13 @@ public class Account implements NestedNode<Long> {
     this.code = code;
   }
 
-  public Commodity getCommodity() { return commodity; }
+  public Commodity getCommodity() {
+    return commodity;
+  }
 
-  public void setCommodity(Commodity commodity) { this.commodity = commodity; }
+  public void setCommodity(Commodity commodity) {
+    this.commodity = commodity;
+  }
 
   public String getDiscriminator() {
     return discriminator;
@@ -187,10 +192,14 @@ public class Account implements NestedNode<Long> {
     this.discriminator = discriminator;
   }
 
-  public void setId(Long id) { this.id = id; }
-
   @Override
-  public Long getId() { return id; }
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
 
   @Override
   public Long getTreeLeft() {
@@ -198,47 +207,83 @@ public class Account implements NestedNode<Long> {
   }
 
   @Override
-  public void setTreeLeft(Long left) { this.treeLeft = left; }
+  public void setTreeLeft(Long left) {
+    this.treeLeft = left;
+  }
 
   @Override
-  public Long getTreeRight() { return treeRight; }
+  public Long getTreeRight() {
+    return treeRight;
+  }
 
   @Override
-  public void setTreeRight(Long right) { this.treeRight = right; }
+  public void setTreeRight(Long right) {
+    this.treeRight = right;
+  }
 
   @Override
-  public Long getTreeLevel() { return treeLevel;  }
+  public Long getTreeLevel() {
+    return treeLevel;
+  }
 
   @Override
-  public void setTreeLevel(Long lvl) { this.treeLevel = lvl; }
+  public void setTreeLevel(Long lvl) {
+    this.treeLevel = lvl;
+  }
 
   @Override
-  public Long getParentId() { return parentId; }
+  public Long getParentId() {
+    return parentId;
+  }
 
   @Override
-  public void setParentId(Long parentId) { this.parentId = parentId; }
+  public void setParentId(Long parentId) {
+    this.parentId = parentId;
+  }
 
   @Override
   public String toString() {
-    return "Account{" +
-        "id=" + id +
-        ", guid='" + guid + '\'' +
-        ", name='" + name + '\'' +
-        ", longName='" + longName + '\'' +
-        ", code='" + code + '\'' +
-        ", description='" + description + '\'' +
-        ", placeholder=" + placeholder +
-        ", hidden=" + hidden +
-        ", taxRelated=" + taxRelated +
-        ", accountCategory=" + accountCategory +
-        ", accountType=" + accountType +
-        ", commodity=" + commodity +
-        ", treeLeft=" + treeLeft +
-        ", treeRight=" + treeRight +
-        ", treeLevel=" + treeLevel +
-        ", parentId=" + parentId +
-        ", discriminator='" + discriminator + '\'' +
-        '}';
+    return "Account{"
+        + "id="
+        + id
+        + ", guid='"
+        + guid
+        + '\''
+        + ", name='"
+        + name
+        + '\''
+        + ", longName='"
+        + longName
+        + '\''
+        + ", code='"
+        + code
+        + '\''
+        + ", description='"
+        + description
+        + '\''
+        + ", placeholder="
+        + placeholder
+        + ", hidden="
+        + hidden
+        + ", taxRelated="
+        + taxRelated
+        + ", accountCategory="
+        + accountCategory
+        + ", accountType="
+        + accountType
+        + ", commodity="
+        + commodity
+        + ", treeLeft="
+        + treeLeft
+        + ", treeRight="
+        + treeRight
+        + ", treeLevel="
+        + treeLevel
+        + ", parentId="
+        + parentId
+        + ", discriminator='"
+        + discriminator
+        + '\''
+        + '}';
   }
-
 }
