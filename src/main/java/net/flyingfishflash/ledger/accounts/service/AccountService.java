@@ -99,6 +99,23 @@ public class AccountService {
     }
   }
 
+  public void deleteAllAccounts() {
+
+    if (accountRepository.findRoot().isPresent()) {
+      accountRepository.removeSubTree(accountRepository.findRoot().get());
+    }
+  }
+
+  public void removeSingle(Account account) {
+
+    accountRepository.removeSingle(account);
+  }
+
+  public void removeSubTree(Account account) {
+
+    accountRepository.removeSubTree(account);
+  }
+
   public Account findByGuid(String guid) {
 
     return accountRepository
@@ -129,11 +146,6 @@ public class AccountService {
     }
 
     return StreamSupport.stream(allAccounts.spliterator(), false).collect(Collectors.toList());
-  }
-
-  public void removeSubTree(Account account) {
-
-    accountRepository.removeSubTree(account);
   }
 
   public Account getPrevSibling(Account account) {
@@ -182,10 +194,6 @@ public class AccountService {
     accountRepository.insertAsPrevSiblingOf(account, parent);
   }
 
-  public void removeSingle(Account account) {
-
-    accountRepository.removeSingle(account);
-  }
   /*
    * Each account should have one base level parent
    *
