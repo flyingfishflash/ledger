@@ -41,6 +41,11 @@ public class CommodityService {
     commodityRepository.deleteById(commodityId);
   }
 
+  public void deleteAllCommodities() {
+
+    commodityRepository.deleteAll();
+  }
+
   public List<Commodity> findAllCommodities() {
 
     return (List<Commodity>) commodityRepository.findAll();
