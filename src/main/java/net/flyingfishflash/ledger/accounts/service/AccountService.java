@@ -34,7 +34,7 @@ public class AccountService {
 
   public Account createAccount(CreateAccountDto createAccountDto) {
 
-    Account account = new Account(IdentifierFactory.getInstance().generateIdentifier().toString());
+    Account account = new Account(IdentifierFactory.getInstance().generateIdentifier());
     Account sibling;
     Account parent;
     try {
@@ -99,6 +99,34 @@ public class AccountService {
     }
   }
 
+  /**
+   * Create a new bare account with only the guid, category, and type set.
+   *
+   * <p>Category and Type are set based on the parents values. If the parent account is the Root,
+   * then the new account Category and Type will be Asset. otherwise these values are set to match
+   * the parent.
+   *
+   * <p>Currently only used by the SSR UI.
+   *
+   * @param p Parent account
+   * @return
+   */
+  public Account createAccount(Account p) {
+
+    Account account =
+        accountRepository.newAccount(IdentifierFactory.getInstance().generateIdentifier());
+
+    if (p.getAccountCategory().equals(AccountCategory.Root)) {
+      account.setAccountCategory(AccountCategory.Asset);
+      account.setAccountType(AccountType.Asset);
+    } else {
+      account.setAccountCategory(p.getAccountCategory());
+      account.setAccountType(p.getAccountType());
+    }
+
+    return account;
+  }
+
   public void deleteAllAccounts() {
 
     if (accountRepository.findRoot().isPresent()) {
@@ -118,9 +146,7 @@ public class AccountService {
 
   public Account findByGuid(String guid) {
 
-    return accountRepository
-        .findByGuid(guid)
-        .orElseThrow(() -> new AccountNotFoundException(guid));
+    return accountRepository.findByGuid(guid).orElseThrow(() -> new AccountNotFoundException(guid));
   }
 
   public Account findById(Long id) {
@@ -131,7 +157,9 @@ public class AccountService {
   public Collection<Account> findAllAccounts() {
 
     Account rootAccount =
-        accountRepository.findRoot().orElseThrow(() -> new AccountNotFoundException("Root Account Not Found."));
+        accountRepository
+            .findRoot()
+            .orElseThrow(() -> new AccountNotFoundException("Root Account Not Found."));
     Iterable<Account> allAccounts = accountRepository.getTreeAsList(rootAccount);
 
     // remove root account
@@ -146,6 +174,13 @@ public class AccountService {
     }
 
     return StreamSupport.stream(allAccounts.spliterator(), false).collect(Collectors.toList());
+  }
+
+  public Account findRoot() {
+
+    return accountRepository
+        .findRoot()
+        .orElseThrow(() -> new AccountNotFoundException("Root account could not be found."));
   }
 
   public Account getPrevSibling(Account account) {
@@ -226,7 +261,7 @@ public class AccountService {
 
     Account baseLevelParent = this.getBaseLevelParent(account);
 
-    // Limit the pool of elligible accounts to those with the same base level parent,
+    // Limit the pool of eligible accounts to those with the same base level parent,
     // so an Asset account can't become a child of a Liability Account, etc.
     Iterable<Account> eligibleParentAccounts = accountRepository.getTreeAsList(baseLevelParent);
     // Remove passed account and its children from list of eligible parent eligibleParentAccounts
@@ -244,7 +279,7 @@ public class AccountService {
         StreamSupport.stream(eligibleParentAccounts.spliterator(), false).count();
 
     if (eligibleParentsCount > 0) {
-      //return eligibleParentAccounts;
+      // return eligibleParentAccounts;
       return StreamSupport.stream(eligibleParentAccounts.spliterator(), false)
           .collect(Collectors.toList());
     } else {

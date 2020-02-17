@@ -6,7 +6,6 @@ import net.flyingfishflash.ledger.accounts.service.AccountCategoryService;
 import net.flyingfishflash.ledger.accounts.service.AccountTypeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,9 +28,18 @@ public class AccountCreateController {
 
   private static final Logger logger = LoggerFactory.getLogger(AccountCreateController.class);
 
-  @Autowired private AccountService accountService;
-  @Autowired private AccountTypeService accountTypeService;
-  @Autowired private AccountCategoryService accountCategoryService;
+  private net.flyingfishflash.ledger.accounts.service.AccountService accountService;
+  private AccountTypeService accountTypeService;
+  private AccountCategoryService accountCategoryService;
+
+  public AccountCreateController(
+      net.flyingfishflash.ledger.accounts.service.AccountService accountService,
+      AccountTypeService accountTypeService,
+      AccountCategoryService accountCategoryService) {
+    this.accountService = accountService;
+    this.accountTypeService = accountTypeService;
+    this.accountCategoryService = accountCategoryService;
+  }
 
   @GetMapping // (value = "", method = RequestMethod.GET)
   public String createAccount(
@@ -42,8 +50,8 @@ public class AccountCreateController {
       parentAccountId = accountService.findRoot().getId();
     }
     // TODO Handle NullPointer Exception if parentId does not exist in nested set
-    Account parent = accountService.findOneById(parentAccountId);
-    Account account = accountService.newAccountNode(parent);
+    Account parent = accountService.findById(parentAccountId);
+    Account account = accountService.createAccount(parent);
     Boolean parentIsRoot = (parent.getAccountCategory().equals(AccountCategory.Root));
     model.addAttribute("title", "Create Account");
     model.addAttribute("parent", parent);
@@ -67,7 +75,7 @@ public class AccountCreateController {
       Model model)
       throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts/create (POST)");
-    Account parent = accountService.findOneById(parentAccountId);
+    Account parent = accountService.findById(parentAccountId);
     account.setParentId(parentAccountId);
     logger.debug(model.toString());
     String method = "last";

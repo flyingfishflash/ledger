@@ -8,7 +8,6 @@ import net.flyingfishflash.ledger.accounts.service.AccountCategoryService;
 import net.flyingfishflash.ledger.accounts.service.AccountTypeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,13 +31,21 @@ public class AccountEditController {
 
   private static final Logger logger = LoggerFactory.getLogger(AccountEditController.class);
 
-  @Autowired private AccountRepository accountRepository;
+  private AccountRepository accountRepository;
+  private net.flyingfishflash.ledger.accounts.service.AccountService accountService;
+  private AccountTypeService accountTypeService;
+  private AccountCategoryService accountCategoryService;
 
-  @Autowired private AccountService accountService;
-
-  @Autowired private AccountTypeService accountTypeService;
-
-  @Autowired private AccountCategoryService accountCategoryService;
+  public AccountEditController(
+      AccountRepository accountRepository,
+      net.flyingfishflash.ledger.accounts.service.AccountService accountService,
+      AccountTypeService accountTypeService,
+      AccountCategoryService accountCategoryService) {
+    this.accountRepository = accountRepository;
+    this.accountService = accountService;
+    this.accountTypeService = accountTypeService;
+    this.accountCategoryService = accountCategoryService;
+  }
 
   // using method rather than method argument due to
   // problems with the the parent account in the POST method
@@ -46,7 +53,9 @@ public class AccountEditController {
   public Account formBackingObject(Long id) {
     if (id != null) {
       logger.debug("-- returning existing AccountNode(): " + id);
-      return accountRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Account Id " + id + " Not found"));
+      return accountRepository
+          .findById(id)
+          .orElseThrow(() -> new IllegalArgumentException("Account Id " + id + " Not found"));
     }
     logger.debug("-- returning new AccountNode()");
     return new Account();
@@ -59,15 +68,23 @@ public class AccountEditController {
     logger.debug("@RequestMapping: /ledger/accounts/edit (GET)");
     logger.debug("RequestParam: " + id);
     // AccountNode parent = account.getParent();
-    Account parent = accountRepository.findById(account.getParentId()).orElseThrow(() -> new IllegalArgumentException("Account Id: " + account.getParentId() + " Not found"));
+    Account parent =
+        accountRepository
+            .findById(account.getParentId())
+            .orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        "Account Id: " + account.getParentId() + " Not found"));
     Boolean parentIsRoot = (parent.getAccountCategory().equals(AccountCategory.Root));
     logger.debug("parentIsRoot:" + parentIsRoot);
     logger.debug("parent.toString():" + parent.toString());
     logger.debug("node.toString():" + account.toString());
     model.addAttribute("title", "Edit Account");
     model.addAttribute("parentIsRoot", parentIsRoot);
-    model.addAttribute("types", accountTypeService.findAccountTypesByCategory(account.getAccountCategory().toString()));
-    model.addAttribute("destinationAccounts", accountService.getElligibleParentAccounts(account));
+    model.addAttribute(
+        "types",
+        accountTypeService.findAccountTypesByCategory(account.getAccountCategory().toString()));
+    model.addAttribute("destinationAccounts", accountService.getEligibleParentAccounts(account));
     Long newParent = parent.getId();
     logger.debug("after Long newParent = parent.getId();");
     model.addAttribute("newParent", newParent);
@@ -91,7 +108,12 @@ public class AccountEditController {
     logger.debug("@RequestMapping: /ledger/accounts/edit (POST)");
     logger.debug("node: " + account.toString());
     if (newParent != account.getParentId() && newParent != account.getId()) {
-      accountService.insertAsLastChildOf(account, accountRepository.findById(newParent).orElseThrow(() -> new IllegalArgumentException("Account Id " + newParent + " Not found")));
+      accountService.insertAsLastChildOf(
+          account,
+          accountRepository
+              .findById(newParent)
+              .orElseThrow(
+                  () -> new IllegalArgumentException("Account Id " + newParent + " Not found")));
     } else {
       accountRepository.update(account);
     }

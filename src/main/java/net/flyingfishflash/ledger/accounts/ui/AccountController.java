@@ -1,6 +1,5 @@
 package net.flyingfishflash.ledger.accounts.ui;
 
-import java.util.Iterator;
 import java.util.List;
 import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.AccountCategory;
@@ -9,7 +8,6 @@ import net.flyingfishflash.ledger.accounts.service.AccountCategoryService;
 import net.flyingfishflash.ledger.accounts.service.AccountTypeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,25 +23,24 @@ public class AccountController {
 
   private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
 
-  @Autowired private AccountService accountService;
-  @Autowired private AccountTypeService accountTypeService;
-  @Autowired private AccountCategoryService accountCategoryService;
+  private net.flyingfishflash.ledger.accounts.service.AccountService accountService;
+  private AccountTypeService accountTypeService;
+  private AccountCategoryService accountCategoryService;
 
+  public AccountController(
+      net.flyingfishflash.ledger.accounts.service.AccountService accountService,
+      AccountTypeService accountTypeService,
+      AccountCategoryService accountCategoryService) {
+    this.accountService = accountService;
+    this.accountTypeService = accountTypeService;
+    this.accountCategoryService = accountCategoryService;
+  }
 
   // Display table of accounts that includes options for create/update/delete
   @RequestMapping(value = "", method = RequestMethod.GET)
   public String listNodes(Model model) throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts");
-    Iterable<Account> accounts = accountService.findWholeTree();
-    // Remove Root node from list of nodes
-    Iterator<Account> it = accounts.iterator();
-    while (it.hasNext()) {
-      Account account = it.next();
-      if (account.isRootNode()) {
-        it.remove();
-        break;
-      }
-    }
+    Iterable<Account> accounts = accountService.findAllAccounts();
     model.addAttribute("title", "Accounts");
     model.addAttribute("accounts", accounts);
     return "ledger/accounts/index";
@@ -55,7 +52,7 @@ public class AccountController {
       throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts/delete (GET)");
     logger.debug("RequestParam: " + parentAccountId);
-    Account n = accountService.findOneById(parentAccountId);
+    Account n = accountService.findById(parentAccountId);
     accountService.removeSubTree(n);
     // accountRepository.removeSingle(n);
     return "redirect:/ledger/accounts";
@@ -66,7 +63,7 @@ public class AccountController {
   @ResponseBody
   public List<AccountCategory> getCategories() throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts/categories (GET)");
-    return accountService.getCategories();
+    return accountCategoryService.findAllAccountCategories();
   }
 
   // Obtain the List of Account Types associated with an Account Category
@@ -93,13 +90,21 @@ public class AccountController {
   @RequestMapping(value = "/insertAsNextSibling", method = RequestMethod.GET)
   public String insertAsNextSiblingOf(@RequestParam("id") Long id) throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts/insertAsNextSibling (GET)");
-    Account n = accountService.findOneById(id);
-    if (accountService.getNextSibling(n).isPresent()) {
-      Account s = accountService.getNextSibling(n).get();
-      accountService.insertAsNextSiblingOf(n, s);
-    } else {
-      logger.debug("No Next Sibling");
-    }
+    Account n = accountService.findById(id);
+    Account s = accountService.getNextSibling(n);
+    /*
+     * TODO: getNextSibling method exception handling should function properly for both rest
+     *  and SSR interfaces
+     */
+    accountService.insertAsNextSiblingOf(n, s);
+    /*
+        if (accountService.getNextSibling(n).isPresent()) {
+          Account s = accountService.getNextSibling(n).get();
+          accountService.insertAsNextSiblingOf(n, s);
+        } else {
+          logger.debug("No Next Sibling");
+        }
+    */
     return "redirect:/ledger/accounts";
   }
 
@@ -107,13 +112,21 @@ public class AccountController {
   @RequestMapping(value = "/insertAsPrevSibling", method = RequestMethod.GET)
   public String insertAsPrevSiblingOf(@RequestParam("id") Long id) throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts/insertAsPrevSibling (GET)");
-    Account n = accountService.findOneById(id);
-    if (accountService.getPrevSibling(n).isPresent()) {
-      Account s = accountService.getPrevSibling(n).get();
-      accountService.insertAsPrevSiblingOf(n, s);
-    } else {
-      logger.debug("No Previous Sibling");
-    }
+    Account n = accountService.findById(id);
+    Account s = accountService.getPrevSibling(n);
+    /*
+     * TODO: getPrevSibling method exception handling should function properly for both rest
+     *  and SSR interfaces
+     */
+    accountService.insertAsPrevSiblingOf(n, s);
+    /*
+        if (accountService.getPrevSibling(n).isPresent()) {
+          Account s = accountService.getPrevSibling(n).get();
+          accountService.insertAsPrevSiblingOf(n, s);
+        } else {
+          logger.debug("No Previous Sibling");
+        }
+    */
     return "redirect:/ledger/accounts";
   }
 
@@ -123,7 +136,8 @@ public class AccountController {
   public String test(@RequestParam("id") Long id /*, @RequestParam("method") String method*/)
       throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts/test (GET)");
-    Account account = accountService.findOneById(id);
-    return accountService.getTreeAsList(accountService.getBaseLevelParent(account)).toString();
+    Account account = accountService.findById(id);
+    return "Not Implemented!";
+    // return accountService.getTreeAsList(accountService.getBaseLevelParent(account)).toString();
   }
 }
