@@ -31,6 +31,11 @@ public class CommodityService {
     return commodityRepository.save(commodity);
   }
 
+  public void saveAllCommodities(List<Commodity> commodities) {
+
+    commodityRepository.saveAll(commodities);
+  }
+
   public Commodity updateCommodity(Commodity commodity) {
 
     return commodityRepository.save(commodity);
