@@ -19,7 +19,7 @@ import pl.exsio.nestedj.config.jpa.factory.JpaNestedNodeRepositoryFactory;
 @EntityScan(basePackageClasses = {Account.class, Commodity.class})
 public class AccountConfiguration {
 
-  @PersistenceContext EntityManager entityManager;
+  @PersistenceContext private EntityManager entityManager;
 
   @Bean
   public NestedNodeRepository<Long, Account> jpaRepository() {
