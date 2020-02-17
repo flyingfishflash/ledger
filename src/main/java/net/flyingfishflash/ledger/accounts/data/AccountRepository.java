@@ -24,17 +24,13 @@ public class AccountRepository {
 
   private static final Logger logger = LoggerFactory.getLogger(AccountRepository.class);
 
-  @PersistenceContext protected EntityManager entityManager;
+  @PersistenceContext private EntityManager entityManager;
 
   private NestedNodeRepository<Long, Account> nodeRepository;
 
   public AccountRepository(NestedNodeRepository<Long, Account> nodeRepository) {
     this.nodeRepository = nodeRepository;
   }
-
-/*  public Account newAccount() {
-    return new Account();
-  }*/
 
   public Account newAccount(String guid) {
     return new Account(guid);
@@ -118,7 +114,7 @@ public class AccountRepository {
       return account.getName();
     }
 
-    List<Account> parents = nodeRepository.getParents(parent);
+    List<Account> parents = this.nodeRepository.getParents(parent);
     StringJoiner sj = new StringJoiner(":");
     parents.size();
     // build the longname by collecting the ancestor account names in reverse
@@ -149,31 +145,31 @@ public class AccountRepository {
 
   public Iterable<Account> getParents(Account account) {
 
-    return nodeRepository.getParents(account);
+    return this.nodeRepository.getParents(account);
   }
 
   public void insertAsFirstRoot(Account account) {
 
     isRootNodeInsertable(account);
-    nodeRepository.insertAsFirstRoot(account);
+    this.nodeRepository.insertAsFirstRoot(account);
   }
 
   public void insertAsLastRoot(Account account) {
 
     isRootNodeInsertable(account);
-    nodeRepository.insertAsLastRoot(account);
+    this.nodeRepository.insertAsLastRoot(account);
   }
 
   public void insertAsLastChildOf(Account account, Account parent) {
 
     account.setLongName(this.deriveLongName(account));
-    nodeRepository.insertAsLastChildOf(account, parent);
+    this.nodeRepository.insertAsLastChildOf(account, parent);
   }
 
   public void insertAsFirstChildOf(Account account, Account parent) {
 
     account.setLongName(this.deriveLongName(account));
-    nodeRepository.insertAsFirstChildOf(account, parent);
+    this.nodeRepository.insertAsFirstChildOf(account, parent);
   }
 
   public void insertAsPrevSiblingOf(Account account, Account sibling) {
@@ -186,7 +182,7 @@ public class AccountRepository {
                         account.getParentId(),
                         "Attempt to identify the parent account of an account to be inserted as a previous sibling."));
     account.setLongName(this.deriveLongName(account));
-    nodeRepository.insertAsPrevSiblingOf(account, sibling);
+    this.nodeRepository.insertAsPrevSiblingOf(account, sibling);
   }
 
   public void insertAsNextSiblingOf(Account account, Account sibling) {
@@ -199,17 +195,17 @@ public class AccountRepository {
                         account.getParentId(),
                         "Attempt to identify the parent account of an account to be inserted as a next sibling."));
     account.setLongName(this.deriveLongName(account));
-    nodeRepository.insertAsNextSiblingOf(account, sibling);
+    this.nodeRepository.insertAsNextSiblingOf(account, sibling);
   }
 
   public void removeSingle(Account account) {
 
-    nodeRepository.removeSingle(account);
+    this.nodeRepository.removeSingle(account);
   }
 
   public void removeSubTree(Account account) {
 
-    nodeRepository.removeSubtree(account);
+    this.nodeRepository.removeSubtree(account);
   }
 
   /**
