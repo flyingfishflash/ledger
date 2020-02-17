@@ -4,7 +4,8 @@ import javax.validation.Valid;
 import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.AccountCategory;
 import net.flyingfishflash.ledger.accounts.data.AccountRepository;
-import net.flyingfishflash.ledger.accounts.data.MapAccountTypeToAccountCategory;
+import net.flyingfishflash.ledger.accounts.service.AccountCategoryService;
+import net.flyingfishflash.ledger.accounts.service.AccountTypeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,10 @@ public class AccountEditController {
 
   @Autowired private AccountService accountService;
 
+  @Autowired private AccountTypeService accountTypeService;
+
+  @Autowired private AccountCategoryService accountCategoryService;
+
   // using method rather than method argument due to
   // problems with the the parent account in the POST method
   @ModelAttribute("account")
@@ -61,13 +66,13 @@ public class AccountEditController {
     logger.debug("node.toString():" + account.toString());
     model.addAttribute("title", "Edit Account");
     model.addAttribute("parentIsRoot", parentIsRoot);
-    model.addAttribute("types", MapAccountTypeToAccountCategory.getTypesByCategory(account.getAccountCategory().toString()));
+    model.addAttribute("types", accountTypeService.findAccountTypesByCategory(account.getAccountCategory().toString()));
     model.addAttribute("destinationAccounts", accountService.getElligibleParentAccounts(account));
     Long newParent = parent.getId();
     logger.debug("after Long newParent = parent.getId();");
     model.addAttribute("newParent", newParent);
     if (parentIsRoot == true) {
-      model.addAttribute("categories", MapAccountTypeToAccountCategory.getCategories());
+      model.addAttribute("categories", accountCategoryService.findAllAccountCategories());
     }
     logger.debug(model.toString());
     return "ledger/accounts/edit";

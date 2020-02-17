@@ -5,6 +5,8 @@ import java.util.List;
 import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.AccountCategory;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
+import net.flyingfishflash.ledger.accounts.service.AccountCategoryService;
+import net.flyingfishflash.ledger.accounts.service.AccountTypeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class AccountController {
   private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
 
   @Autowired private AccountService accountService;
+  @Autowired private AccountTypeService accountTypeService;
+  @Autowired private AccountCategoryService accountCategoryService;
+
 
   // Display table of accounts that includes options for create/update/delete
   @RequestMapping(value = "", method = RequestMethod.GET)
@@ -71,7 +76,7 @@ public class AccountController {
       throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts/typesbycategory (GET)");
     logger.debug("RequestParam: " + category);
-    return accountService.getTypesByCategory(category);
+    return accountTypeService.findAccountTypesByCategory(category);
   }
 
   // Obtain the List of Account Categories associated with an Account Type
@@ -81,7 +86,7 @@ public class AccountController {
       throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts/categoriesbytype (GET)");
     logger.debug("RequestParam: " + type);
-    return accountService.getCategoriesByType(type);
+    return accountCategoryService.findAccountCategoryByType(type);
   }
 
   // Change the position of an account in the hierarchy within the sibling level (down)

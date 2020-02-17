@@ -2,7 +2,8 @@ package net.flyingfishflash.ledger.accounts.ui;
 
 import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.AccountCategory;
-import net.flyingfishflash.ledger.accounts.data.MapAccountTypeToAccountCategory;
+import net.flyingfishflash.ledger.accounts.service.AccountCategoryService;
+import net.flyingfishflash.ledger.accounts.service.AccountTypeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +30,17 @@ public class AccountCreateController {
   private static final Logger logger = LoggerFactory.getLogger(AccountCreateController.class);
 
   @Autowired private AccountService accountService;
+  @Autowired private AccountTypeService accountTypeService;
+  @Autowired private AccountCategoryService accountCategoryService;
 
   @GetMapping // (value = "", method = RequestMethod.GET)
   public String createAccount(
-      @RequestParam(name = "parentAccountId") Long parentAccountId, Model model)
-      throws Exception {
+      @RequestParam(name = "parentAccountId") Long parentAccountId, Model model) throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts/create (GET)");
     logger.debug("RequestParam: " + parentAccountId);
-    if (parentAccountId == null) { parentAccountId = accountService.findRoot().getId(); }
+    if (parentAccountId == null) {
+      parentAccountId = accountService.findRoot().getId();
+    }
     // TODO Handle NullPointer Exception if parentId does not exist in nested set
     Account parent = accountService.findOneById(parentAccountId);
     Account account = accountService.newAccountNode(parent);
@@ -44,10 +48,12 @@ public class AccountCreateController {
     model.addAttribute("title", "Create Account");
     model.addAttribute("parent", parent);
     model.addAttribute("parentIsRoot", parentIsRoot);
-    model.addAttribute("types", MapAccountTypeToAccountCategory.getTypesByCategory(account.getAccountCategory().toString()));
+    model.addAttribute(
+        "types",
+        accountTypeService.findAccountTypesByCategory(account.getAccountCategory().toString()));
     model.addAttribute("account", account);
     if (parentIsRoot == true) {
-      model.addAttribute("categories", MapAccountTypeToAccountCategory.getCategories());
+      model.addAttribute("categories", accountCategoryService.findAllAccountCategories());
     }
     logger.debug(model.toString());
     return "ledger/accounts/create";

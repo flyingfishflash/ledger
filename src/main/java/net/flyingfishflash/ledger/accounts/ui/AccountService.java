@@ -7,7 +7,6 @@ import net.flyingfishflash.ledger.accounts.data.AccountCategory;
 import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.AccountRepository;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
-import net.flyingfishflash.ledger.accounts.data.MapAccountTypeToAccountCategory;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
 import net.flyingfishflash.ledger.utilities.IdentifierFactory;
 import org.slf4j.Logger;
@@ -163,13 +162,13 @@ public class AccountService {
     return getCategories();
   }
 
-  public AccountCategory getCategoriesByType(String type) {
+/*  public AccountCategory getCategoriesByType(String type) {
 
     return MapAccountTypeToAccountCategory.getCategoryByType(type);
-  }
+  }*/
 
-  public List<AccountType> getTypesByCategory(String category) {
+/*  public List<AccountType> getTypesByCategory(String category) {
 
     return MapAccountTypeToAccountCategory.getTypesByCategory(category);
-  }
+  }*/
 }
