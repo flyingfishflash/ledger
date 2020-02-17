@@ -18,7 +18,7 @@ import pl.exsio.nestedj.model.NestedNode;
 public class Account implements NestedNode<Long> {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private Long id;
 
   @Column(name = "guid", unique = true, updatable = false)
