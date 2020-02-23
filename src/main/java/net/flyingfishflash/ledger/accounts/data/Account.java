@@ -56,6 +56,10 @@ public class Account implements NestedNode<Long> {
   @Enumerated(EnumType.STRING)
   private AccountType accountType;
 
+  @Column(name = "normal_balance")
+  @Enumerated(EnumType.STRING)
+  private NormalBalance normalBalance;
+
   @ManyToOne
   @JoinColumn(name = "commodity_id")
   private Commodity commodity;
@@ -80,8 +84,8 @@ public class Account implements NestedNode<Long> {
   }
 
   public Account(String guid) {
+    this();
     this.guid = guid;
-    this.setDiscriminator("account");
   }
 
   public Boolean isRootNode() {
@@ -116,16 +120,18 @@ public class Account implements NestedNode<Long> {
     return accountCategory;
   }
 
-  public void setAccountCategory(AccountCategory accountCategory) {
-    this.accountCategory = accountCategory;
-  }
-
   public AccountType getAccountType() {
     return accountType;
   }
 
   public void setAccountType(AccountType accountType) {
     this.accountType = accountType;
+    this.accountCategory = this.accountType.getAccountCategory();
+    this.normalBalance = this.accountCategory.getNormalBalance();
+  }
+
+  public NormalBalance getNormalBalance() {
+    return normalBalance;
   }
 
   public String getDescription() {
@@ -197,6 +203,7 @@ public class Account implements NestedNode<Long> {
     return id;
   }
 
+  @Override
   public void setId(Long id) {
     this.id = id;
   }
@@ -261,6 +268,9 @@ public class Account implements NestedNode<Long> {
         + ", description='"
         + description
         + '\''
+        + ", note='"
+        + note
+        + '\''
         + ", placeholder="
         + placeholder
         + ", hidden="
@@ -271,6 +281,8 @@ public class Account implements NestedNode<Long> {
         + accountCategory
         + ", accountType="
         + accountType
+        + ", normalBalance="
+        + normalBalance
         + ", commodity="
         + commodity
         + ", treeLeft="

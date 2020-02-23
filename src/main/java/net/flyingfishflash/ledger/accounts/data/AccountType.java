@@ -15,8 +15,6 @@ public enum AccountType {
 
   private AccountCategory accountCategory;
 
-  AccountType() {}
-
   AccountType(AccountCategory accountCategory) {
     this.accountCategory = accountCategory;
   }

@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 import net.flyingfishflash.ledger.accounts.data.Account;
-import net.flyingfishflash.ledger.accounts.data.AccountCategory;
 import net.flyingfishflash.ledger.accounts.data.AccountRepository;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
 import net.flyingfishflash.ledger.accounts.data.dto.CreateAccountDto;
@@ -49,6 +48,7 @@ public class AccountServiceTests {
     assertEquals(accountId1().getId(), account.getId());
     assertEquals(accountId1().getAccountCategory(), account.getAccountCategory());
     assertEquals(accountId1().getAccountType(), account.getAccountType());
+    assertEquals(accountId1().getNormalBalance(), account.getNormalBalance());
     assertEquals(accountId1().getCode(), account.getCode());
     assertNotNull(accountId1().getGuid(), account.getGuid());
     assertEquals(accountId1().getHidden(), account.getHidden());
@@ -143,8 +143,7 @@ public class AccountServiceTests {
     assertThrows(
         EligibleParentAccountNotFoundException.class,
         () -> {
-          Iterable<Account> eligbleParents =
-              accountService.getEligibleParentAccounts(accountId2());
+          Iterable<Account> eligbleParents = accountService.getEligibleParentAccounts(accountId2());
         });
     // System.out.println(mockingDetails(accountRepository).printInvocations());
 
@@ -347,7 +346,6 @@ public class AccountServiceTests {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("96333e3dc3c6492e830333366fd5aa05");
     account.setId(1L);
-    account.setAccountCategory(AccountCategory.Root);
     account.setAccountType(AccountType.Root);
     account.setCode("account_id_1");
     account.setHidden(false);
@@ -366,7 +364,6 @@ public class AccountServiceTests {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("595023e2aca5410291b76ce3dc88c0fc");
     account.setId(2L);
-    account.setAccountCategory(AccountCategory.Asset);
     account.setAccountType(AccountType.Asset);
     account.setCode("account_id_2");
     account.setHidden(false);
@@ -386,7 +383,6 @@ public class AccountServiceTests {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("27a81f756013451682b5645c5164fca9");
     account.setId(3L);
-    account.setAccountCategory(AccountCategory.Liability);
     account.setAccountType(AccountType.Liability);
     account.setCode("account_id_3");
     account.setHidden(false);
@@ -406,7 +402,6 @@ public class AccountServiceTests {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("f7b53c40dab043b398faca7b5a397f84");
     account.setId(4L);
-    account.setAccountCategory(AccountCategory.Income);
     account.setAccountType(AccountType.Income);
     account.setCode("account_id_4");
     account.setHidden(false);
@@ -426,7 +421,6 @@ public class AccountServiceTests {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("707004c44ba44b22b3a0868b747767bb");
     account.setId(5L);
-    account.setAccountCategory(AccountCategory.Expense);
     account.setAccountType(AccountType.Expense);
     account.setCode("account_id_5");
     account.setHidden(false);
@@ -446,7 +440,6 @@ public class AccountServiceTests {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("2a6bd9b7521a4458a77d757fb1734c39");
     account.setId(6L);
-    account.setAccountCategory(AccountCategory.Equity);
     account.setAccountType(AccountType.Equity);
     account.setCode("account_id_6");
     account.setHidden(false);
@@ -466,7 +459,6 @@ public class AccountServiceTests {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("8a142619411849b59e09edde53f1757b");
     account.setId(7L);
-    account.setAccountCategory(AccountCategory.Asset);
     account.setAccountType(AccountType.Asset);
     account.setCode("account_id_7");
     account.setHidden(false);
@@ -486,7 +478,6 @@ public class AccountServiceTests {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("bed4273d24bf4824ba75b7e32c55f30e");
     account.setId(8L);
-    account.setAccountCategory(AccountCategory.Asset);
     account.setAccountType(AccountType.Asset);
     account.setCode("account_id_8");
     account.setHidden(false);

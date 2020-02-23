@@ -52,11 +52,9 @@ public class AccountService {
     account.setPlaceholder(createAccountDto.placeholder);
     account.setTaxRelated(createAccountDto.taxRelated);
 
-    if (parent.getAccountCategory().equals(AccountCategory.Root)) {
-      account.setAccountCategory(AccountCategory.Asset);
+    if (parent.getAccountType().equals(AccountType.Root)) {
       account.setAccountType(AccountType.Asset);
     } else {
-      account.setAccountCategory(parent.getAccountCategory());
       account.setAccountType(parent.getAccountType());
     }
 
@@ -116,11 +114,9 @@ public class AccountService {
     Account account =
         accountRepository.newAccount(IdentifierFactory.getInstance().generateIdentifier());
 
-    if (p.getAccountCategory().equals(AccountCategory.Root)) {
-      account.setAccountCategory(AccountCategory.Asset);
+    if (p.getAccountType().equals(AccountType.Root)) {
       account.setAccountType(AccountType.Asset);
     } else {
-      account.setAccountCategory(p.getAccountCategory());
       account.setAccountType(p.getAccountType());
     }
 
