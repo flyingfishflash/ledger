@@ -14,7 +14,7 @@ public interface CommodityRepository extends PagingAndSortingRepository<Commodit
 
   public Optional<List<Commodity>> findByMnemonic(String mnemonic);
 
-  public Optional<List<Commodity>> findByNameSpace(String nameSpace);
+  public Optional<List<Commodity>> findByNamespace(String namespace);
 
-  public Optional<Commodity> findByNameSpaceAndMnemonic(String nameSpace, String mnemonic);
+  public Optional<Commodity> findByNamespaceAndMnemonic(String namespace, String mnemonic);
 }

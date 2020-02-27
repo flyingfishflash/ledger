@@ -73,11 +73,11 @@ public class CommodityService {
 
   public List<Commodity> findByNameSpace(String nameSpace) {
 
-    return commodityRepository.findByNameSpace(nameSpace).orElseThrow(RuntimeException::new);
+    return commodityRepository.findByNamespace(nameSpace).orElseThrow(RuntimeException::new);
   }
 
   public Commodity findByNameSpaceAndMnemonic(String nameSpace, String mnemonic) {
 
-    return commodityRepository.findByNameSpaceAndMnemonic(nameSpace, mnemonic).orElseThrow(RuntimeException::new);
+    return commodityRepository.findByNamespaceAndMnemonic(nameSpace, mnemonic).orElseThrow(RuntimeException::new);
   }
 }
