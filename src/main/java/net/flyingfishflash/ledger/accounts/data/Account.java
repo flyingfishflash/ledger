@@ -60,6 +60,9 @@ public class Account implements NestedNode<Long> {
   @Enumerated(EnumType.STRING)
   private NormalBalance normalBalance;
 
+  @Column(name = "currency")
+  private String currency;
+
   @ManyToOne
   @JoinColumn(name = "commodity_id")
   private Commodity commodity;
@@ -180,6 +183,14 @@ public class Account implements NestedNode<Long> {
 
   public void setCode(String code) {
     this.code = code;
+  }
+
+  public String getCurrency() {
+    return currency;
+  }
+
+  public void setCurrency(String currency) {
+    this.currency = currency;
   }
 
   public Commodity getCommodity() {
