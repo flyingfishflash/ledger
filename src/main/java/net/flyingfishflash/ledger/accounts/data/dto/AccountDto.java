@@ -82,8 +82,8 @@ public class AccountDto {
     this.placeholder = account.getPlaceholder();
     this.hidden = account.getHidden();
     this.taxRelated = account.getTaxRelated();
-    this.accountCategory = account.getAccountCategory();
-    this.accountType = account.getAccountType();
+    this.accountCategory = account.getCategory();
+    this.accountType = account.getType();
   }
 
   @Override

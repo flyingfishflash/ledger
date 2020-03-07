@@ -9,77 +9,66 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import net.flyingfishflash.ledger.commodities.data.Commodity;
 import pl.exsio.nestedj.model.NestedNode;
 
 @Entity
-@Table(name = "account")
 public class Account implements NestedNode<Long> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private Long id;
 
-  @Column(name = "guid", unique = true, updatable = false)
+  @Column(unique = true, updatable = false)
   private String guid;
 
-  @Column(name = "name")
   private String name;
 
-  @Column(name = "longname", length = 4096)
+  @Column(length = 4096)
   private String longName;
 
-  @Column(name = "code")
   private String code;
 
-  @Column(name = "description", length = 2048)
+  @Column(length = 2048)
   private String description;
 
-  @Column(name = "note", length = 4096)
+  @Column(length = 4096)
   private String note;
 
-  @Column(name = "placeholder")
   private Boolean placeholder = false;
 
-  @Column(name = "hidden")
   private Boolean hidden = false;
 
-  @Column(name = "tax_related")
   private Boolean taxRelated = false;
 
-  @Column(name = "account_class")
   @Enumerated(EnumType.STRING)
-  private AccountCategory accountCategory;
+  private AccountCategory category;
 
-  @Column(name = "account_type")
   @Enumerated(EnumType.STRING)
-  private AccountType accountType;
+  private AccountType type;
 
-  @Column(name = "normal_balance")
   @Enumerated(EnumType.STRING)
   private NormalBalance normalBalance;
 
-  @Column(name = "currency")
   private String currency;
 
   @ManyToOne
   @JoinColumn(name = "commodity_id")
   private Commodity commodity;
 
-  @Column(name = "tree_left", nullable = false)
+  @Column(nullable = false)
   private Long treeLeft;
 
-  @Column(name = "tree_right", nullable = false)
+  @Column(nullable = false)
   private Long treeRight;
 
-  @Column(name = "tree_level", nullable = false)
+  @Column(nullable = false)
   private Long treeLevel;
 
-  @Column(name = "parent_id")
+  //  @Column(name = "parent_id")
   private Long parentId;
 
-  @Column(name = "discriminator", nullable = false)
+  @Column(nullable = false)
   private String discriminator;
 
   public Account() {
@@ -119,18 +108,18 @@ public class Account implements NestedNode<Long> {
     this.longName = longName;
   }
 
-  public AccountCategory getAccountCategory() {
-    return accountCategory;
+  public AccountCategory getCategory() {
+    return category;
   }
 
-  public AccountType getAccountType() {
-    return accountType;
+  public AccountType getType() {
+    return type;
   }
 
-  public void setAccountType(AccountType accountType) {
-    this.accountType = accountType;
-    this.accountCategory = this.accountType.getAccountCategory();
-    this.normalBalance = this.accountCategory.getNormalBalance();
+  public void setType(AccountType accountType) {
+    this.type = accountType;
+    this.category = this.type.getAccountCategory();
+    this.normalBalance = this.category.getNormalBalance();
   }
 
   public NormalBalance getNormalBalance() {
@@ -288,10 +277,10 @@ public class Account implements NestedNode<Long> {
         + hidden
         + ", taxRelated="
         + taxRelated
-        + ", accountCategory="
-        + accountCategory
-        + ", accountType="
-        + accountType
+        + ", category="
+        + category
+        + ", type="
+        + type
         + ", normalBalance="
         + normalBalance
         + ", commodity="

@@ -52,13 +52,13 @@ public class AccountCreateController {
     // TODO Handle NullPointer Exception if parentId does not exist in nested set
     Account parent = accountService.findById(parentAccountId);
     Account account = accountService.createAccount(parent);
-    Boolean parentIsRoot = (parent.getAccountCategory().equals(AccountCategory.Root));
+    Boolean parentIsRoot = (parent.getCategory().equals(AccountCategory.Root));
     model.addAttribute("title", "Create Account");
     model.addAttribute("parent", parent);
     model.addAttribute("parentIsRoot", parentIsRoot);
     model.addAttribute(
         "types",
-        accountTypeService.findAccountTypesByCategory(account.getAccountCategory().toString()));
+        accountTypeService.findAccountTypesByCategory(account.getCategory().toString()));
     model.addAttribute("account", account);
     if (parentIsRoot == true) {
       model.addAttribute("categories", accountCategoryService.findAllAccountCategories());

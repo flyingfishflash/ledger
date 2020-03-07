@@ -75,7 +75,7 @@ public class AccountEditController {
                 () ->
                     new IllegalArgumentException(
                         "Account Id: " + account.getParentId() + " Not found"));
-    Boolean parentIsRoot = (parent.getAccountCategory().equals(AccountCategory.Root));
+    Boolean parentIsRoot = (parent.getCategory().equals(AccountCategory.Root));
     logger.debug("parentIsRoot:" + parentIsRoot);
     logger.debug("parent.toString():" + parent.toString());
     logger.debug("node.toString():" + account.toString());
@@ -83,7 +83,7 @@ public class AccountEditController {
     model.addAttribute("parentIsRoot", parentIsRoot);
     model.addAttribute(
         "types",
-        accountTypeService.findAccountTypesByCategory(account.getAccountCategory().toString()));
+        accountTypeService.findAccountTypesByCategory(account.getCategory().toString()));
     model.addAttribute("destinationAccounts", accountService.getEligibleParentAccounts(account));
     Long newParent = parent.getId();
     logger.debug("after Long newParent = parent.getId();");
