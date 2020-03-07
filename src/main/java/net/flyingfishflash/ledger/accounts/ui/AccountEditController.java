@@ -4,6 +4,7 @@ import javax.validation.Valid;
 import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.AccountCategory;
 import net.flyingfishflash.ledger.accounts.data.AccountRepository;
+import net.flyingfishflash.ledger.accounts.exceptions.EligibleParentAccountNotFoundException;
 import net.flyingfishflash.ledger.accounts.service.AccountCategoryService;
 import net.flyingfishflash.ledger.accounts.service.AccountTypeService;
 import org.slf4j.Logger;
@@ -75,16 +76,19 @@ public class AccountEditController {
                 () ->
                     new IllegalArgumentException(
                         "Account Id: " + account.getParentId() + " Not found"));
-    Boolean parentIsRoot = (parent.getCategory().equals(AccountCategory.Root));
+    boolean parentIsRoot = (parent.getCategory().equals(AccountCategory.Root));
     logger.debug("parentIsRoot:" + parentIsRoot);
     logger.debug("parent.toString():" + parent.toString());
     logger.debug("node.toString():" + account.toString());
     model.addAttribute("title", "Edit Account");
     model.addAttribute("parentIsRoot", parentIsRoot);
     model.addAttribute(
-        "types",
-        accountTypeService.findAccountTypesByCategory(account.getCategory().toString()));
-    model.addAttribute("destinationAccounts", accountService.getEligibleParentAccounts(account));
+        "types", accountTypeService.findAccountTypesByCategory(account.getCategory().toString()));
+    try {
+      model.addAttribute("destinationAccounts", accountService.getEligibleParentAccounts(account));
+    } catch (EligibleParentAccountNotFoundException e) {
+      model.addAttribute("destinationAccounts", "eligible parent account not found");
+    }
     Long newParent = parent.getId();
     logger.debug("after Long newParent = parent.getId();");
     model.addAttribute("newParent", newParent);
