@@ -1,6 +1,9 @@
 package net.flyingfishflash.ledger.importer;
 
+import static java.util.Comparator.comparing;
+
 import java.util.ArrayList;
+import java.util.Comparator;
 import net.flyingfishflash.ledger.importer.adapter.AccountAdapter;
 import net.flyingfishflash.ledger.importer.dto.GncAccount;
 import org.slf4j.Logger;
@@ -189,6 +192,21 @@ public class GncXmlAccountHandler extends DefaultHandler {
 
     logger.info(nodeCountDataAccountCount + " indicated by gnc:count-data cd:type=\"account\"");
     logger.info(gncAccounts.size() + " sent to the adapter");
+
+    /*
+     * Sort the GncAccount list by account code, nulls sorted to the top.
+     * There should only ever be one null, the root account
+     *
+     * The order that GnuCash saves accounts by default is OK.
+     *
+     * TODO: Make sorting by account code on import optional
+     */
+
+    Comparator<GncAccount> gncAccountComparator =
+        (comparing(GncAccount::getAccountCode, Comparator.nullsFirst(Comparator.naturalOrder())));
+    gncAccounts.sort(gncAccountComparator);
+
+
     accountAdapter.addRecords(gncAccounts);
     gncAccounts = null;
   }

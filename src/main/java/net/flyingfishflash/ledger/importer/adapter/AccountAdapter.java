@@ -43,20 +43,6 @@ public class AccountAdapter {
     Account account;
     int persistedCount = 0;
 
-    /*
-     * Sort the GncAccount list by account code, nulls sorted to the top.
-     * There should only ever be one null, the root account
-     *
-     * TODO: Evaluate if this sort is necessary, or if the order that GnuCash saves accounts is OK
-     *   It seems to be OK, but not confirmed
-     */
-
-    /*
-      Comparator<GncAccount> gncAccountComparator =
-          (comparing(GncAccount::getAccountCode, Comparator.nullsFirst(Comparator.naturalOrder())));
-      gncAccounts.sort(gncAccountComparator);
-    */
-
     /* Check that the first account in the list is a Root type account */
     if (!gncAccounts.get(0).getGncAccountType().equalsIgnoreCase("root")) {
       throw new IllegalStateException(
