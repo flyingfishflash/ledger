@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
 
 @RestController
-@RequestMapping("ledger/api/v1/import")
+@RequestMapping("api/v1/ledger/import")
 public class GnucashFileImportController {
 
   private static final Logger logger = LoggerFactory.getLogger(GnucashFileImportController.class);

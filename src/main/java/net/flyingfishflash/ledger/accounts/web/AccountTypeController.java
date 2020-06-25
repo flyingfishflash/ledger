@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Validated
-@RequestMapping("ledger/api/v1/account-types")
+@RequestMapping("api/v1/ledger/account-types")
 public class AccountTypeController {
 
   private static final Logger logger = LoggerFactory.getLogger(AccountTypeController.class);

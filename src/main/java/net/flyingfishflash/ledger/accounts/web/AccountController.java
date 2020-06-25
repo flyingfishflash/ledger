@@ -31,7 +31,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @Validated
-@RequestMapping("ledger/api/v1/accounts")
+@RequestMapping("api/v1/ledger/accounts")
 public class AccountController {
 
   private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
