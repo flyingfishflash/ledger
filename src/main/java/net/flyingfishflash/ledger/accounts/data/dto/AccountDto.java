@@ -47,6 +47,12 @@ public class AccountDto {
   @NotBlank
   public String name;
 
+  @Size(max = 4096)
+  @Pattern(
+      regexp = "^(?!\\s*$).+",
+      message = "may be null, must not be an empty string, must not consist only of spaces")
+  public String note;
+
   @Positive @NotNull public Long parentId;
 
   @NotNull public Boolean placeholder;
@@ -72,10 +78,34 @@ public class AccountDto {
     this.longName = account.getLongName();
     this.code = account.getCode();
     this.description = account.getDescription();
+    this.note = account.getNote();
     this.placeholder = account.getPlaceholder();
     this.hidden = account.getHidden();
     this.taxRelated = account.getTaxRelated();
-    this.accountCategory = account.getAccountCategory();
-    this.accountType = account.getAccountType();
+    this.accountCategory = account.getCategory();
+    this.accountType = account.getType();
+  }
+
+  @Override
+  public String toString() {
+    return "AccountDto{" +
+        "accountCategory=" + accountCategory +
+        ", accountType=" + accountType +
+        ", code='" + code + '\'' +
+        ", description='" + description + '\'' +
+        ", discriminator='" + discriminator + '\'' +
+        ", guid='" + guid + '\'' +
+        ", hidden=" + hidden +
+        ", id=" + id +
+        ", longName='" + longName + '\'' +
+        ", name='" + name + '\'' +
+        ", note='" + note + '\'' +
+        ", parentId=" + parentId +
+        ", placeholder=" + placeholder +
+        ", taxRelated=" + taxRelated +
+        ", treeLeft=" + treeLeft +
+        ", treeLevel=" + treeLevel +
+        ", treeRight=" + treeRight +
+        '}';
   }
 }

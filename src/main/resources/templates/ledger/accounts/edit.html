@@ -50,7 +50,7 @@
 			<!-- if the immediate parent account is the root node, allow selection of the account category -->
 			<div th:if="${parentIsRoot == true}" class="form-group col-md-2">
 				<label for="accountCategoryControlSelect">Category</label>
-				<select class="form-control" id="aCategory" th:field="*{accountCategory}">
+				<select class="form-control" id="aCategory" th:field="*{category}">
 				<option th:each="category : ${categories}"
 						th:value="${category}"
 						th:text="${category}">
@@ -62,13 +62,13 @@
 
 			<!-- if the immediate parent account is not the root node, set a hidden field to the value already assigned to the account -->
 			<div th:if="${parentIsRoot == false}" >
-				<input type="hidden" id="aCategory" th:field="*{accountCategory}"/>
+				<input type="hidden" id="aCategory" th:field="*{category}"/>
 			</div>
 			<!-- end if -->
 
             <div class="form-group col-md-2">
 				<label for="accountTypeControlSelect">Type</label>
-				<select class="form-control" id="aType" th:field="*{accountType}">
+				<select class="form-control" id="aType" th:field="*{type}">
 				<option th:each="type : ${types}"
 						th:value="${type}"
 						th:text="${type}">

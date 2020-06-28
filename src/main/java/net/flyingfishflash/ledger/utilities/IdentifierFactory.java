@@ -53,6 +53,6 @@ public class IdentifierFactory {
    * @return a String representation of a unique identifier.
    */
   public String generateIdentifier() {
-    return UUID.randomUUID().toString();
+    return UUID.randomUUID().toString().replace("-", "");
   }
 }

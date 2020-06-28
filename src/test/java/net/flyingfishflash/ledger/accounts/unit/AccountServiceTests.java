@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 import net.flyingfishflash.ledger.accounts.data.Account;
-import net.flyingfishflash.ledger.accounts.data.AccountCategory;
 import net.flyingfishflash.ledger.accounts.data.AccountRepository;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
 import net.flyingfishflash.ledger.accounts.data.dto.CreateAccountDto;
@@ -43,12 +42,13 @@ public class AccountServiceTests {
   @Test
   public void testFindAccountById() {
 
-    when(accountRepository.findOneById(1L)).thenReturn(Optional.of(accountId1()));
+    when(accountRepository.findById(1L)).thenReturn(Optional.of(accountId1()));
     Account account = accountService.findById(1L);
-    verify(accountRepository).findOneById(1L);
+    verify(accountRepository).findById(1L);
     assertEquals(accountId1().getId(), account.getId());
-    assertEquals(accountId1().getAccountCategory(), account.getAccountCategory());
-    assertEquals(accountId1().getAccountType(), account.getAccountType());
+    assertEquals(accountId1().getCategory(), account.getCategory());
+    assertEquals(accountId1().getType(), account.getType());
+    assertEquals(accountId1().getNormalBalance(), account.getNormalBalance());
     assertEquals(accountId1().getCode(), account.getCode());
     assertNotNull(accountId1().getGuid(), account.getGuid());
     assertEquals(accountId1().getHidden(), account.getHidden());
@@ -65,13 +65,13 @@ public class AccountServiceTests {
   @Test
   public void testFindAccountByGuid() {
 
-    when(accountRepository.findOneByGuid(anyString())).thenReturn(Optional.of(accountId1()));
+    when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(accountId1()));
     Account account = accountService.findByGuid(anyString());
-    verify(accountRepository).findOneByGuid(anyString());
+    verify(accountRepository).findByGuid(anyString());
     assertNotNull(accountId1().getGuid(), account.getGuid());
     assertEquals(accountId1().getId(), account.getId());
-    assertEquals(accountId1().getAccountCategory(), account.getAccountCategory());
-    assertEquals(accountId1().getAccountType(), account.getAccountType());
+    assertEquals(accountId1().getCategory(), account.getCategory());
+    assertEquals(accountId1().getType(), account.getType());
     assertEquals(accountId1().getCode(), account.getCode());
     assertEquals(accountId1().getHidden(), account.getHidden());
     assertEquals(accountId1().getName(), account.getName());
@@ -87,11 +87,8 @@ public class AccountServiceTests {
   @Test
   public void testFindAllAccounts() {
 
-    when(accountRepository.findOneById(1L)).thenReturn(Optional.of(accountId1()));
-    Account rootAccount = accountService.findById(1L);
-    verify(accountRepository).findOneById(1L);
-
-    when(accountRepository.getTreeAsList(rootAccount)).thenReturn(allAccounts());
+    when(accountRepository.findRoot()).thenReturn(Optional.of(accountId1()));
+    when(accountRepository.getTreeAsList(any(Account.class))).thenReturn(allAccounts());
     Iterable<Account> findAllAccounts = accountService.findAllAccounts();
     long findAllAccountsSize = StreamSupport.stream(findAllAccounts.spliterator(), false).count();
     long allAccountsSize = StreamSupport.stream(allAccounts().spliterator(), false).count();
@@ -102,7 +99,7 @@ public class AccountServiceTests {
     // from the repository (the Root account)
     assertTrue(findAllAccountsSize == allAccountsSize - 1);
     assertFalse(containsRoot);
-    verify(accountRepository).getTreeAsList(rootAccount);
+    verify(accountRepository).getTreeAsList(any(Account.class));
     // System.out.println(mockingDetails(accountRepository).printInvocations());
   }
 
@@ -146,8 +143,7 @@ public class AccountServiceTests {
     assertThrows(
         EligibleParentAccountNotFoundException.class,
         () -> {
-          Iterable<Account> eligbleParents =
-              accountService.getEligibleParentAccounts(accountId2());
+          Iterable<Account> eligbleParents = accountService.getEligibleParentAccounts(accountId2());
         });
     // System.out.println(mockingDetails(accountRepository).printInvocations());
 
@@ -165,14 +161,14 @@ public class AccountServiceTests {
     createAccountDto.siblingId = 8L;
     createAccountDto.taxRelated = false;
 
-    when(accountRepository.findOneById(2L)).thenReturn(Optional.of(accountId2()));
-    when(accountRepository.findOneById(8L)).thenReturn(Optional.of(accountId8()));
-    when(accountRepository.findOneByGuid(anyString())).thenReturn(Optional.of(accountId8()));
+    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
+    when(accountRepository.findById(8L)).thenReturn(Optional.of(accountId8()));
+    when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(accountId8()));
     Account newAccount = accountService.createAccount(createAccountDto);
 
-    verify(accountRepository).findOneById(2L);
-    verify(accountRepository).findOneById(8L);
-    verify(accountRepository).findOneByGuid(anyString());
+    verify(accountRepository).findById(2L);
+    verify(accountRepository).findById(8L);
+    verify(accountRepository).findByGuid(anyString());
     verify(accountRepository).insertAsPrevSiblingOf(any(Account.class), any(Account.class));
     // System.out.println(mockingDetails(accountRepository).printInvocations());
   }
@@ -189,9 +185,9 @@ public class AccountServiceTests {
     createAccountDto.siblingId = 8L; // invalid value
     createAccountDto.taxRelated = false;
 
-    when(accountRepository.findOneById(2L)).thenReturn(Optional.of(accountId2()));
+    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
     // simulate failure to identify the previous sibling of the subject account
-    when(accountRepository.findOneById(8L)).thenReturn(Optional.empty());
+    when(accountRepository.findById(8L)).thenReturn(Optional.empty());
     assertThrows(
         AccountCreateException.class,
         () -> {
@@ -213,14 +209,14 @@ public class AccountServiceTests {
     createAccountDto.siblingId = 7L;
     createAccountDto.taxRelated = false;
 
-    when(accountRepository.findOneById(2L)).thenReturn(Optional.of(accountId2()));
-    when(accountRepository.findOneById(7L)).thenReturn(Optional.of(accountId7()));
-    when(accountRepository.findOneByGuid(anyString())).thenReturn(Optional.of(accountId8()));
+    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
+    when(accountRepository.findById(7L)).thenReturn(Optional.of(accountId7()));
+    when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(accountId8()));
     Account newAccount = accountService.createAccount(createAccountDto);
 
-    verify(accountRepository).findOneById(2L);
-    verify(accountRepository).findOneById(7L);
-    verify(accountRepository).findOneByGuid(anyString());
+    verify(accountRepository).findById(2L);
+    verify(accountRepository).findById(7L);
+    verify(accountRepository).findByGuid(anyString());
     verify(accountRepository).insertAsNextSiblingOf(any(Account.class), any(Account.class));
     // System.out.println(mockingDetails(accountRepository).printInvocations());
   }
@@ -237,9 +233,9 @@ public class AccountServiceTests {
     createAccountDto.siblingId = 9L; // invalid value
     createAccountDto.taxRelated = false;
 
-    when(accountRepository.findOneById(2L)).thenReturn(Optional.of(accountId2()));
+    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
     // simulate failure to identify the next sibling of the subject account
-    when(accountRepository.findOneById(9L)).thenReturn(Optional.empty());
+    when(accountRepository.findById(9L)).thenReturn(Optional.empty());
     assertThrows(
         AccountCreateException.class,
         () -> {
@@ -261,12 +257,12 @@ public class AccountServiceTests {
     createAccountDto.siblingId = 2L;
     createAccountDto.taxRelated = false;
 
-    when(accountRepository.findOneById(2L)).thenReturn(Optional.of(accountId2()));
-    when(accountRepository.findOneByGuid(anyString())).thenReturn(Optional.of(accountId7()));
+    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
+    when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(accountId7()));
     Account newAccount = accountService.createAccount(createAccountDto);
 
-    verify(accountRepository).findOneById(2L);
-    verify(accountRepository).findOneByGuid(anyString());
+    verify(accountRepository).findById(2L);
+    verify(accountRepository).findByGuid(anyString());
     verify(accountRepository).insertAsFirstChildOf(any(Account.class), any(Account.class));
     // System.out.println(mockingDetails(accountRepository).printInvocations());
   }
@@ -283,12 +279,12 @@ public class AccountServiceTests {
     createAccountDto.siblingId = 2L;
     createAccountDto.taxRelated = false;
 
-    when(accountRepository.findOneById(2L)).thenReturn(Optional.of(accountId2()));
-    when(accountRepository.findOneByGuid(anyString())).thenReturn(Optional.of(accountId7()));
+    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
+    when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(accountId7()));
     Account newAccount = accountService.createAccount(createAccountDto);
 
-    verify(accountRepository).findOneById(2L);
-    verify(accountRepository).findOneByGuid(anyString());
+    verify(accountRepository).findById(2L);
+    verify(accountRepository).findByGuid(anyString());
     verify(accountRepository).insertAsLastChildOf(any(Account.class), any(Account.class));
     // System.out.println(mockingDetails(accountRepository).printInvocations());
   }
@@ -305,10 +301,10 @@ public class AccountServiceTests {
     createAccountDto.siblingId = 2L;
     createAccountDto.taxRelated = false;
 
-    when(accountRepository.findOneById(2L)).thenReturn(Optional.of(accountId2()));
-    when(accountRepository.findOneById(2L)).thenReturn(Optional.of(accountId8()));
+    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
+    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId8()));
     // simulate failure to confirm the newly created account has been persisted to the database
-    when(accountRepository.findOneByGuid(anyString())).thenReturn(Optional.empty());
+    when(accountRepository.findByGuid(anyString())).thenReturn(Optional.empty());
     assertThrows(
         AccountCreateException.class,
         () -> {
@@ -348,10 +344,9 @@ public class AccountServiceTests {
   private Account accountId1() {
 
     // account guid is set on instantiation and will be different for each assertion
-    Account account = new Account();
+    Account account = new Account("96333e3dc3c6492e830333366fd5aa05");
     account.setId(1L);
-    account.setAccountCategory(AccountCategory.Root);
-    account.setAccountType(AccountType.Root);
+    account.setType(AccountType.Root);
     account.setCode("account_id_1");
     account.setHidden(false);
     account.setName("Root");
@@ -367,10 +362,9 @@ public class AccountServiceTests {
   private Account accountId2() {
 
     // account guid is set on instantiation and will be different for each assertion
-    Account account = new Account();
+    Account account = new Account("595023e2aca5410291b76ce3dc88c0fc");
     account.setId(2L);
-    account.setAccountCategory(AccountCategory.Asset);
-    account.setAccountType(AccountType.Asset);
+    account.setType(AccountType.Asset);
     account.setCode("account_id_2");
     account.setHidden(false);
     account.setName("Assets");
@@ -387,10 +381,9 @@ public class AccountServiceTests {
   private Account accountId3() {
 
     // account guid is set on instantiation and will be different for each assertion
-    Account account = new Account();
+    Account account = new Account("27a81f756013451682b5645c5164fca9");
     account.setId(3L);
-    account.setAccountCategory(AccountCategory.Liability);
-    account.setAccountType(AccountType.Liability);
+    account.setType(AccountType.Liability);
     account.setCode("account_id_3");
     account.setHidden(false);
     account.setName("Liabilities");
@@ -407,10 +400,9 @@ public class AccountServiceTests {
   private Account accountId4() {
 
     // account guid is set on instantiation and will be different for each assertion
-    Account account = new Account();
+    Account account = new Account("f7b53c40dab043b398faca7b5a397f84");
     account.setId(4L);
-    account.setAccountCategory(AccountCategory.Income);
-    account.setAccountType(AccountType.Income);
+    account.setType(AccountType.Income);
     account.setCode("account_id_4");
     account.setHidden(false);
     account.setName("Income");
@@ -427,10 +419,9 @@ public class AccountServiceTests {
   private Account accountId5() {
 
     // account guid is set on instantiation and will be different for each assertion
-    Account account = new Account();
+    Account account = new Account("707004c44ba44b22b3a0868b747767bb");
     account.setId(5L);
-    account.setAccountCategory(AccountCategory.Expense);
-    account.setAccountType(AccountType.Expense);
+    account.setType(AccountType.Expense);
     account.setCode("account_id_5");
     account.setHidden(false);
     account.setName("Expense");
@@ -447,10 +438,9 @@ public class AccountServiceTests {
   private Account accountId6() {
 
     // account guid is set on instantiation and will be different for each assertion
-    Account account = new Account();
+    Account account = new Account("2a6bd9b7521a4458a77d757fb1734c39");
     account.setId(6L);
-    account.setAccountCategory(AccountCategory.Equity);
-    account.setAccountType(AccountType.Equity);
+    account.setType(AccountType.Equity);
     account.setCode("account_id_6");
     account.setHidden(false);
     account.setName("Equity");
@@ -467,10 +457,9 @@ public class AccountServiceTests {
   private Account accountId7() {
 
     // account guid is set on instantiation and will be different for each assertion
-    Account account = new Account();
+    Account account = new Account("8a142619411849b59e09edde53f1757b");
     account.setId(7L);
-    account.setAccountCategory(AccountCategory.Asset);
-    account.setAccountType(AccountType.Asset);
+    account.setType(AccountType.Asset);
     account.setCode("account_id_7");
     account.setHidden(false);
     account.setName("Financial Assets");
@@ -487,10 +476,9 @@ public class AccountServiceTests {
   private Account accountId8() {
 
     // account guid is set on instantiation and will be different for each assertion
-    Account account = new Account();
+    Account account = new Account("bed4273d24bf4824ba75b7e32c55f30e");
     account.setId(8L);
-    account.setAccountCategory(AccountCategory.Asset);
-    account.setAccountType(AccountType.Asset);
+    account.setType(AccountType.Asset);
     account.setCode("account_id_8");
     account.setHidden(false);
     account.setName("Fixed Assets");

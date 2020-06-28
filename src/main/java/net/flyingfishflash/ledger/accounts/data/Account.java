@@ -7,83 +7,89 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
-import net.flyingfishflash.ledger.utilities.IdentifierFactory;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import net.flyingfishflash.ledger.commodities.data.Commodity;
 import pl.exsio.nestedj.model.NestedNode;
 
 @Entity
-@Table(name = "account")
 public class Account implements NestedNode<Long> {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private Long id;
 
-  @Column(name = "guid", unique = true, updatable = false)
+  @Column(unique = true, updatable = false)
   private String guid;
 
-  @Column(name = "name")
   private String name;
 
-  @Column(name = "longname", length = 4096)
+  @Column(length = 4096)
   private String longName;
 
-  @Column(name = "code")
   private String code;
 
-  @Column(name = "description", length = 2048)
+  @Column(length = 2048)
   private String description;
 
-  @Column(name = "placeholder")
+  @Column(length = 4096)
+  private String note;
+
   private Boolean placeholder = false;
 
-  @Column(name = "hidden")
   private Boolean hidden = false;
 
-  @Column(name = "tax_related")
   private Boolean taxRelated = false;
 
-  @Column(name = "account_class")
   @Enumerated(EnumType.STRING)
-  private AccountCategory accountCategory;
+  private AccountCategory category;
 
-  @Column(name = "account_type")
   @Enumerated(EnumType.STRING)
-  private AccountType accountType;
+  private AccountType type;
 
-  @Column(name = "commodity_id")
-  private Long commodityId;
+  @Enumerated(EnumType.STRING)
+  private NormalBalance normalBalance;
 
-  @Column(name = "tree_left", nullable = false)
+  private String currency;
+
+  @ManyToOne
+  @JoinColumn(name = "commodity_id")
+  private Commodity commodity;
+
+  @Column(nullable = false)
   private Long treeLeft;
 
-  @Column(name = "tree_right", nullable = false)
+  @Column(nullable = false)
   private Long treeRight;
 
-  @Column(name = "tree_level", nullable = false)
+  @Column(nullable = false)
   private Long treeLevel;
 
-  @Column(name = "parent_id")
+  //  @Column(name = "parent_id")
   private Long parentId;
 
-  @Column(name = "discriminator", nullable = false)
+  @Column(nullable = false)
   private String discriminator;
 
   public Account() {
-    this.setGuid();
     this.setDiscriminator("account");
   }
 
-  public Boolean isRoot() {
-    return this.getTreeLeft() == 1L;
+  public Account(String guid) {
+    this();
+    this.guid = guid;
+  }
+
+  public Boolean isRootNode() {
+    return this.getParentId() == null;
   }
 
   public String getGuid() {
     return guid;
   }
 
-  private void setGuid() {
-    this.guid = IdentifierFactory.getInstance().generateIdentifier();
+  public void setGuid(String guid) {
+    this.guid = guid;
   }
 
   public String getName() {
@@ -102,20 +108,22 @@ public class Account implements NestedNode<Long> {
     this.longName = longName;
   }
 
-  public AccountCategory getAccountCategory() {
-    return accountCategory;
+  public AccountCategory getCategory() {
+    return category;
   }
 
-  public void setAccountCategory(AccountCategory accountCategory) {
-    this.accountCategory = accountCategory;
+  public AccountType getType() {
+    return type;
   }
 
-  public AccountType getAccountType() {
-    return accountType;
+  public void setType(AccountType accountType) {
+    this.type = accountType;
+    this.category = this.type.getAccountCategory();
+    this.normalBalance = this.category.getNormalBalance();
   }
 
-  public void setAccountType(AccountType accountType) {
-    this.accountType = accountType;
+  public NormalBalance getNormalBalance() {
+    return normalBalance;
   }
 
   public String getDescription() {
@@ -124,6 +132,14 @@ public class Account implements NestedNode<Long> {
 
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public String getNote() {
+    return note;
+  }
+
+  public void setNote(String note) {
+    this.note = note;
   }
 
   public Boolean getPlaceholder() {
@@ -158,12 +174,20 @@ public class Account implements NestedNode<Long> {
     this.code = code;
   }
 
-  public Long getCommodityId() {
-    return commodityId;
+  public String getCurrency() {
+    return currency;
   }
 
-  public void setCommodityId(Long commodityId) {
-    this.commodityId = commodityId;
+  public void setCurrency(String currency) {
+    this.currency = currency;
+  }
+
+  public Commodity getCommodity() {
+    return commodity;
+  }
+
+  public void setCommodity(Commodity commodity) {
+    this.commodity = commodity;
   }
 
   public String getDiscriminator() {
@@ -174,13 +198,14 @@ public class Account implements NestedNode<Long> {
     this.discriminator = discriminator;
   }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
-
   @Override
   public Long getId() {
     return id;
+  }
+
+  @Override
+  public void setId(Long id) {
+    this.id = id;
   }
 
   @Override
@@ -225,25 +250,52 @@ public class Account implements NestedNode<Long> {
 
   @Override
   public String toString() {
-    return "Account{" +
-        "id=" + id +
-        ", guid='" + guid + '\'' +
-        ", name='" + name + '\'' +
-        ", longName='" + longName + '\'' +
-        ", code='" + code + '\'' +
-        ", description='" + description + '\'' +
-        ", placeholder=" + placeholder +
-        ", hidden=" + hidden +
-        ", taxRelated=" + taxRelated +
-        ", accountCategory=" + accountCategory +
-        ", accountType=" + accountType +
-        ", commodityId=" + commodityId +
-        ", treeLeft=" + treeLeft +
-        ", treeRight=" + treeRight +
-        ", treeLevel=" + treeLevel +
-        ", parentId=" + parentId +
-        ", discriminator='" + discriminator + '\'' +
-        '}';
+    return "Account{"
+        + "id="
+        + id
+        + ", guid='"
+        + guid
+        + '\''
+        + ", name='"
+        + name
+        + '\''
+        + ", longName='"
+        + longName
+        + '\''
+        + ", code='"
+        + code
+        + '\''
+        + ", description='"
+        + description
+        + '\''
+        + ", note='"
+        + note
+        + '\''
+        + ", placeholder="
+        + placeholder
+        + ", hidden="
+        + hidden
+        + ", taxRelated="
+        + taxRelated
+        + ", category="
+        + category
+        + ", type="
+        + type
+        + ", normalBalance="
+        + normalBalance
+        + ", commodity="
+        + commodity
+        + ", treeLeft="
+        + treeLeft
+        + ", treeRight="
+        + treeRight
+        + ", treeLevel="
+        + treeLevel
+        + ", parentId="
+        + parentId
+        + ", discriminator='"
+        + discriminator
+        + '\''
+        + '}';
   }
-
 }

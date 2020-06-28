@@ -1,18 +1,25 @@
 package net.flyingfishflash.ledger.accounts.service;
 
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import net.flyingfishflash.ledger.accounts.data.AccountCategory;
-import net.flyingfishflash.ledger.accounts.data.MapAccountTypeToAccountCategory;
+import net.flyingfishflash.ledger.accounts.data.AccountType;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AccountCategoryService {
 
   public List<AccountCategory> findAllAccountCategories() {
-    return MapAccountTypeToAccountCategory.getCategories();
+
+    List<AccountCategory> categories = new LinkedList<>(Arrays.asList(AccountCategory.values()));
+    categories.remove(AccountCategory.Root);
+
+    return categories;
   }
 
   public AccountCategory findAccountCategoryByType(String type) {
-    return MapAccountTypeToAccountCategory.getCategoryByType(type);
+
+    return AccountType.valueOf(type).getAccountCategory();
   }
 }

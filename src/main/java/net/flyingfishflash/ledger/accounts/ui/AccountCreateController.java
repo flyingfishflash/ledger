@@ -2,10 +2,10 @@ package net.flyingfishflash.ledger.accounts.ui;
 
 import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.AccountCategory;
-import net.flyingfishflash.ledger.accounts.data.MapAccountTypeToAccountCategory;
+import net.flyingfishflash.ledger.accounts.service.AccountCategoryService;
+import net.flyingfishflash.ledger.accounts.service.AccountTypeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,25 +28,40 @@ public class AccountCreateController {
 
   private static final Logger logger = LoggerFactory.getLogger(AccountCreateController.class);
 
-  @Autowired private AccountService accountService;
+  private net.flyingfishflash.ledger.accounts.service.AccountService accountService;
+  private AccountTypeService accountTypeService;
+  private AccountCategoryService accountCategoryService;
+
+  public AccountCreateController(
+      net.flyingfishflash.ledger.accounts.service.AccountService accountService,
+      AccountTypeService accountTypeService,
+      AccountCategoryService accountCategoryService) {
+    this.accountService = accountService;
+    this.accountTypeService = accountTypeService;
+    this.accountCategoryService = accountCategoryService;
+  }
 
   @GetMapping // (value = "", method = RequestMethod.GET)
   public String createAccount(
-      @RequestParam(name = "parentAccountId", defaultValue = "1") Long parentAccountId, Model model)
-      throws Exception {
+      @RequestParam(name = "parentAccountId") Long parentAccountId, Model model) throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts/create (GET)");
     logger.debug("RequestParam: " + parentAccountId);
+    if (parentAccountId == null) {
+      parentAccountId = accountService.findRoot().getId();
+    }
     // TODO Handle NullPointer Exception if parentId does not exist in nested set
-    Account parent = accountService.findOneById(parentAccountId);
-    Account account = accountService.newAccountNode(parent);
-    Boolean parentIsRoot = (parent.getAccountCategory().equals(AccountCategory.Root));
+    Account parent = accountService.findById(parentAccountId);
+    Account account = accountService.createAccount(parent);
+    Boolean parentIsRoot = (parent.getCategory().equals(AccountCategory.Root));
     model.addAttribute("title", "Create Account");
     model.addAttribute("parent", parent);
     model.addAttribute("parentIsRoot", parentIsRoot);
-    model.addAttribute("types", MapAccountTypeToAccountCategory.getTypesByCategory(account.getAccountCategory().toString()));
+    model.addAttribute(
+        "types",
+        accountTypeService.findAccountTypesByCategory(account.getCategory().toString()));
     model.addAttribute("account", account);
     if (parentIsRoot == true) {
-      model.addAttribute("categories", MapAccountTypeToAccountCategory.getCategories());
+      model.addAttribute("categories", accountCategoryService.findAllAccountCategories());
     }
     logger.debug(model.toString());
     return "ledger/accounts/create";
@@ -60,7 +75,7 @@ public class AccountCreateController {
       Model model)
       throws Exception {
     logger.debug("@RequestMapping: /ledger/accounts/create (POST)");
-    Account parent = accountService.findOneById(parentAccountId);
+    Account parent = accountService.findById(parentAccountId);
     account.setParentId(parentAccountId);
     logger.debug(model.toString());
     String method = "last";
