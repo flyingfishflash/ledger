@@ -22,6 +22,7 @@ import net.flyingfishflash.ledger.prices.service.PriceService;
 import net.flyingfishflash.ledger.transactions.service.TransactionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -35,6 +36,8 @@ public class GnucashFileImportService {
 
   @PersistenceContext EntityManager entityManager;
 
+  private SimpMessagingTemplate simpMessagingTemplate;
+
   private GncXmlAccountHandler gncXmlAccountHandler;
   private GncXmlCommodityHandler gncXmlCommodityHandler;
   private GncXmlPriceHandler gncXmlPriceHandler;
@@ -45,6 +48,7 @@ public class GnucashFileImportService {
   private TransactionService transactionService;
 
   public GnucashFileImportService(
+      SimpMessagingTemplate simpMessagingTemplate,
       GncXmlAccountHandler gncXmlAccountHandler,
       GncXmlCommodityHandler gncXmlCommodityHandler,
       GncXmlPriceHandler gncXmlPriceHandler,
@@ -53,6 +57,7 @@ public class GnucashFileImportService {
       CommodityService commodityService,
       PriceService priceService,
       TransactionService transactionService) {
+    this.simpMessagingTemplate = simpMessagingTemplate;
     this.gncXmlAccountHandler = gncXmlAccountHandler;
     this.gncXmlCommodityHandler = gncXmlCommodityHandler;
     this.gncXmlPriceHandler = gncXmlPriceHandler;
@@ -68,6 +73,9 @@ public class GnucashFileImportService {
    */
   public void process(InputStream gncFileInputStream)
       throws ParserConfigurationException, SAXException, IOException {
+
+
+    simpMessagingTemplate.convertAndSend("/import/", "Processing Gnucash XML file...");
 
     BufferedInputStream bufferedInputStream;
 
@@ -102,30 +110,45 @@ public class GnucashFileImportService {
      *  2) Investigate resetting the ORM sequence generators
      *
      */
-    logger.info("deleting existing prices...");
     priceService.deleteAllPrices();
+    logger.info("deleting existing prices...");
+    simpMessagingTemplate.convertAndSend("/import/", "Deleted all prices");
+
     transactionService.deleteAllTransactions();
     logger.info("deleting existing transactions...");
+    simpMessagingTemplate.convertAndSend("/import/", "Deleted all transactions");
+
     accountService.deleteAllAccounts();
     logger.info("deleting existing accounts...");
+    simpMessagingTemplate.convertAndSend("/import/", "Deleted all accounts");
+
     commodityService.deleteAllCommodities();
     logger.info("deleting existing commodities...");
+    simpMessagingTemplate.convertAndSend("/import/", "Deleted all commodities");
 
     /*
      * TODO: For some reason it's necessary to clear the persistence context after the accounts
      *  have been imported or else performance degrades significantly. Research this.
      */
     parse(gncXmlByteArray, gncXmlCommodityHandler);
+    simpMessagingTemplate.convertAndSend("/import/", "Imported commodities");
     parse(gncXmlByteArray, gncXmlAccountHandler);
+    simpMessagingTemplate.convertAndSend("/import/", "Imported accounts");
     entityManager.clear();
     parse(gncXmlByteArray, gncXmlTransactionHandler);
+    simpMessagingTemplate.convertAndSend("/import/", "Imported transactions");
     entityManager.clear();
     parse(gncXmlByteArray, gncXmlPriceHandler);
+    simpMessagingTemplate.convertAndSend("/import/", "Imported prices");
     entityManager.clear();
 
     long endTime = System.currentTimeMillis();
     logger.info(String.format("total import time elapsed: %d s", (endTime - startTime) / 1000));
     gncXmlByteArray = null;
+
+    simpMessagingTemplate.convertAndSend("/import/", "Finished");
+
+
   }
 
   private void parse(byte[] gncXmlByteArray, DefaultHandler handler)

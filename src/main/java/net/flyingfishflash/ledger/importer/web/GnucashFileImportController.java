@@ -3,6 +3,7 @@ package net.flyingfishflash.ledger.importer.web;
 import io.swagger.annotations.ApiOperation;
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
+import net.flyingfishflash.ledger.importer.dto.GnucashFileImportResponse;
 import net.flyingfishflash.ledger.importer.service.GnucashFileImportService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,12 +30,17 @@ public class GnucashFileImportController {
 
   @PostMapping(value = "/gnucash")
   @ApiOperation(value = "Import Gnucash file")
-  public ResponseEntity<String> gnucash(@RequestParam("file") MultipartFile file)
+  public ResponseEntity<GnucashFileImportResponse> gnucashFileImport(@RequestParam("file") MultipartFile file)
       throws ParserConfigurationException, SAXException, IOException {
+
+    GnucashFileImportResponse gnucashFileImportResponse = new GnucashFileImportResponse();
+    logger.info(file.getOriginalFilename());
 
     gnucashFileImportService.process(file.getInputStream());
 
+    gnucashFileImportResponse.setMessage("Imported " + file.getOriginalFilename());
+
     return new ResponseEntity<>(
-        "imported gnucash file " + file.getOriginalFilename(), HttpStatus.OK);
+        gnucashFileImportResponse, HttpStatus.OK);
   }
 }
