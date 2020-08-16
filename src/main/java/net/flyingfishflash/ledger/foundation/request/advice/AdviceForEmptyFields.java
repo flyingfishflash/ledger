@@ -1,10 +1,4 @@
-package net.flyingfishflash.ledger;
-
-import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.InitBinder;
+package net.flyingfishflash.ledger.foundation.request.advice;
 
 /*
  *  Ensures form fields are converted to null
@@ -14,9 +8,13 @@ import org.springframework.web.bind.annotation.InitBinder;
  *
  */
 
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.InitBinder;
+
 @ControllerAdvice
-@Controller
-public class BindingInitializer {
+public class AdviceForEmptyFields {
 
   @InitBinder
   public void initBinder(WebDataBinder binder) {
