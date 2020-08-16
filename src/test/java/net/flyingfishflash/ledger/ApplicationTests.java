@@ -6,12 +6,9 @@ import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration(classes = {Application.class})
 @SpringBootTest(
-    properties = {
-      "spring.main.allow-bean-definition-overriding=true",
-      /*"spring.jpa.hibernate.ddl-auto=create-drop",
-          "spring.liquibase.enabled=false",
-          "spring.flyway.enabled=false"
-      */ })
+    properties = {"spring.main.allow-bean-definition-overriding=true", "spring.flyway.enabled=false"
+      // "spring.jpa.hibernate.ddl-auto=create-drop",
+    })
 class ApplicationTests {
 
   @Test
