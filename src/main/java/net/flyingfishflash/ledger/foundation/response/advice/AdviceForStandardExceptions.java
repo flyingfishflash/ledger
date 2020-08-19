@@ -6,6 +6,8 @@ import net.flyingfishflash.ledger.foundation.response.structure.errors.ErrorResp
 import net.flyingfishflash.ledger.foundation.response.structure.errors.ErrorResponseBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+@Order(value = Ordered.LOWEST_PRECEDENCE)
 @RestControllerAdvice
 public class AdviceForStandardExceptions {
 

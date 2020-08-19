@@ -155,7 +155,7 @@ public class AccountService {
     Account rootAccount =
         accountRepository
             .findRoot()
-            .orElseThrow(() -> new AccountNotFoundException("Root Account Not Found."));
+            .orElseThrow(() -> new AccountNotFoundException("(Root Account Not Found)"));
     Iterable<Account> allAccounts = accountRepository.getTreeAsList(rootAccount);
 
     // remove root account

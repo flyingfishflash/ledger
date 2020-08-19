@@ -1,11 +1,14 @@
 package net.flyingfishflash.ledger.importer.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.zip.GZIPInputStream;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -18,7 +21,9 @@ import net.flyingfishflash.ledger.importer.GncXmlAccountHandler;
 import net.flyingfishflash.ledger.importer.GncXmlCommodityHandler;
 import net.flyingfishflash.ledger.importer.GncXmlPriceHandler;
 import net.flyingfishflash.ledger.importer.GncXmlTransactionHandler;
+import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
 import net.flyingfishflash.ledger.prices.service.PriceService;
+import net.flyingfishflash.ledger.foundation.WebSocketSessionId;
 import net.flyingfishflash.ledger.transactions.service.TransactionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +41,9 @@ public class GnucashFileImportService {
 
   @PersistenceContext EntityManager entityManager;
 
+  private WebSocketSessionId webSocketSessionId;
   private SimpMessagingTemplate simpMessagingTemplate;
-
+  private GnucashFileImportStatus gnucashFileImportStatus;
   private GncXmlAccountHandler gncXmlAccountHandler;
   private GncXmlCommodityHandler gncXmlCommodityHandler;
   private GncXmlPriceHandler gncXmlPriceHandler;
@@ -48,7 +54,9 @@ public class GnucashFileImportService {
   private TransactionService transactionService;
 
   public GnucashFileImportService(
+      WebSocketSessionId webSocketSessionId,
       SimpMessagingTemplate simpMessagingTemplate,
+      GnucashFileImportStatus gnucashFileImportStatus,
       GncXmlAccountHandler gncXmlAccountHandler,
       GncXmlCommodityHandler gncXmlCommodityHandler,
       GncXmlPriceHandler gncXmlPriceHandler,
@@ -57,7 +65,9 @@ public class GnucashFileImportService {
       CommodityService commodityService,
       PriceService priceService,
       TransactionService transactionService) {
+    this.webSocketSessionId = webSocketSessionId;
     this.simpMessagingTemplate = simpMessagingTemplate;
+    this.gnucashFileImportStatus = gnucashFileImportStatus;
     this.gncXmlAccountHandler = gncXmlAccountHandler;
     this.gncXmlCommodityHandler = gncXmlCommodityHandler;
     this.gncXmlPriceHandler = gncXmlPriceHandler;
@@ -68,14 +78,11 @@ public class GnucashFileImportService {
     this.transactionService = transactionService;
   }
 
-  /**
-   * Parse GnuCash XML
-   */
+  /** Parse GnuCash XML */
   public void process(InputStream gncFileInputStream)
       throws ParserConfigurationException, SAXException, IOException {
 
-
-    simpMessagingTemplate.convertAndSend("/import/", "Processing Gnucash XML file...");
+    sendImportStatusMessage("Begin Processing Gnucash XML file");
 
     BufferedInputStream bufferedInputStream;
 
@@ -110,45 +117,50 @@ public class GnucashFileImportService {
      *  2) Investigate resetting the ORM sequence generators
      *
      */
+
+    entityManager.clear();
+
     priceService.deleteAllPrices();
     logger.info("deleting existing prices...");
-    simpMessagingTemplate.convertAndSend("/import/", "Deleted all prices");
+    sendImportStatusMessage("Deleting existing prices");
 
     transactionService.deleteAllTransactions();
     logger.info("deleting existing transactions...");
-    simpMessagingTemplate.convertAndSend("/import/", "Deleted all transactions");
+    sendImportStatusMessage("Deleting existing transactions");
 
     accountService.deleteAllAccounts();
     logger.info("deleting existing accounts...");
-    simpMessagingTemplate.convertAndSend("/import/", "Deleted all accounts");
+    sendImportStatusMessage("Deleting existing accounts");
 
     commodityService.deleteAllCommodities();
     logger.info("deleting existing commodities...");
-    simpMessagingTemplate.convertAndSend("/import/", "Deleted all commodities");
+    sendImportStatusMessage("Deleting existing commodities");
 
     /*
      * TODO: For some reason it's necessary to clear the persistence context after the accounts
      *  have been imported or else performance degrades significantly. Research this.
      */
     parse(gncXmlByteArray, gncXmlCommodityHandler);
-    simpMessagingTemplate.convertAndSend("/import/", "Imported commodities");
+    sendImportStatusMessage("Imported commodities");
+
     parse(gncXmlByteArray, gncXmlAccountHandler);
-    simpMessagingTemplate.convertAndSend("/import/", "Imported accounts");
+    sendImportStatusMessage("Imported accounts");
     entityManager.clear();
+
     parse(gncXmlByteArray, gncXmlTransactionHandler);
-    simpMessagingTemplate.convertAndSend("/import/", "Imported transactions");
+    sendImportStatusMessage("Imported transactions");
     entityManager.clear();
+
     parse(gncXmlByteArray, gncXmlPriceHandler);
-    simpMessagingTemplate.convertAndSend("/import/", "Imported prices");
+    sendImportStatusMessage("Imported prices");
     entityManager.clear();
 
     long endTime = System.currentTimeMillis();
     logger.info(String.format("total import time elapsed: %d s", (endTime - startTime) / 1000));
     gncXmlByteArray = null;
 
-    simpMessagingTemplate.convertAndSend("/import/", "Finished");
-
-
+    gnucashFileImportStatus.setStatusComplete();
+    sendImportStatusMessage("Finished");
   }
 
   private void parse(byte[] gncXmlByteArray, DefaultHandler handler)
@@ -163,5 +175,28 @@ public class GnucashFileImportService {
     long stopTime = System.currentTimeMillis();
     logger.info(
         String.format(handler + " import time elapsed: %d s", (stopTime - startTime) / 1000));
+  }
+
+  private void sendImportStatusMessage(String message) throws JsonProcessingException {
+
+    // DateTimeFormatter inBuiltFormatter1 = DateTimeFormatter.ISO_DATE_TIME;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS z");
+
+    simpMessagingTemplate.convertAndSend(
+        "/import/status/messages-user" + webSocketSessionId.getSessionId(),
+        formatter.format(ZonedDateTime.now()) + " -- " + message);
+    this.sendImportStatusCounts();
+  }
+
+  private void sendImportStatusCounts() throws JsonProcessingException {
+    simpMessagingTemplate.convertAndSend(
+        "/import/status/counts-user" + webSocketSessionId.getSessionId(),
+        "{ \"message\" : \"new counts available\" }");
+
+    //ObjectMapper mapper = new ObjectMapper();
+    //String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(gnucashFileImportStatus);
+
+    //simpMessagingTemplate.convertAndSend(
+    //    "/import/status/counts-user" + webSocketSessionId.getSessionId(), json);
   }
 }

@@ -5,10 +5,10 @@ import org.springframework.http.HttpStatus;
 public class AccountCreateException extends AccountException {
 
   public AccountCreateException(String message) {
-    super(HttpStatus.NOT_FOUND, message);
+    super(HttpStatus.BAD_REQUEST, message);
   }
 
   public AccountCreateException(String message, RuntimeException cause) {
-    super(HttpStatus.NOT_FOUND, message, cause);
+    super(HttpStatus.BAD_REQUEST, message, cause);
   }
 }

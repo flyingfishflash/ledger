@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.flyingfishflash.ledger.importer.adapter.PriceAdapter;
 import net.flyingfishflash.ledger.importer.dto.GncPrice;
+import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,8 @@ public class GncXmlPriceHandler extends DefaultHandler {
 
   /** Translates GncPrice objects into Price objects and persists the results */
   private final PriceAdapter priceAdapter;
+
+  private GnucashFileImportStatus gnucashFileImportStatus;
 
   /** Accumulates characters between XML tags */
   StringBuilder stringBuilder = new StringBuilder();
@@ -47,10 +50,13 @@ public class GncXmlPriceHandler extends DefaultHandler {
    * Creates a handler for handling XML stream events when parsing the XML file
    *
    * @param priceAdapter Translates GncPrice objects into Price objects and persists the results.
+   * @param gnucashFileImportStatus
    */
-  public GncXmlPriceHandler(PriceAdapter priceAdapter) {
+  public GncXmlPriceHandler(PriceAdapter priceAdapter,
+      GnucashFileImportStatus gnucashFileImportStatus) {
 
     this.priceAdapter = priceAdapter;
+    this.gnucashFileImportStatus = gnucashFileImportStatus;
   }
 
   @Override
@@ -199,6 +205,8 @@ public class GncXmlPriceHandler extends DefaultHandler {
 
     logger.info(nodeCountDataPriceCount + " indicated by gnc:count-data cd:type=\"price\"");
     logger.info(gncPrices.size() + " sent to the adapter");
+    gnucashFileImportStatus.setPricesGncCount(gncPrices.size());
+    gnucashFileImportStatus.setPricesSentToAdapter(nodeCountDataPriceCount);
     priceAdapter.addRecords(gncPrices);
     gncPrices = null;
   }

@@ -10,6 +10,7 @@ import java.util.Map;
 import net.flyingfishflash.ledger.importer.adapter.TransactionAdapter;
 import net.flyingfishflash.ledger.importer.dto.GncSplit;
 import net.flyingfishflash.ledger.importer.dto.GncTransaction;
+import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -29,6 +30,10 @@ public class GncXmlTransactionHandler extends DefaultHandler {
 
   /** ISO 4217 currency code for "No Currency" */
   private static final String NO_CURRENCY_CODE = "XXX";
+
+  private TransactionAdapter transactionAdapter;
+
+  private GnucashFileImportStatus gnucashFileImportStatus;
 
   /** StringBuilder for accumulating characters between XML tags */
   StringBuilder content = new StringBuilder();
@@ -55,15 +60,17 @@ public class GncXmlTransactionHandler extends DefaultHandler {
   /** Saves the attribute of the slot tag Used for determining where we are in the budget amounts */
   String slotTagAttribute = null;
 
-  private TransactionAdapter transactionAdapter;
 
   /**
    * Creates a handler for handling XML stream events when parsing the XML backup file
    *
    * @param transactionAdapter
+   * @param gnucashFileImportStatus
    */
-  public GncXmlTransactionHandler(TransactionAdapter transactionAdapter) {
+  public GncXmlTransactionHandler(TransactionAdapter transactionAdapter,
+      GnucashFileImportStatus gnucashFileImportStatus) {
     this.transactionAdapter = transactionAdapter;
+    this.gnucashFileImportStatus = gnucashFileImportStatus;
   }
 
   @Override
@@ -243,6 +250,9 @@ public class GncXmlTransactionHandler extends DefaultHandler {
         nodeCountDataTransactionCount + " indicated by gnc:count-data cd:type=\"transaction\"");
     logger.info(templateTransactions.size() + " template transactions");
     logger.info(gncTransactions.size() + " sent to the adapter");
+    gnucashFileImportStatus.setTransactionsGncCount(nodeCountDataTransactionCount);
+    gnucashFileImportStatus.setTransactionsTemplates(templateTransactions.size());
+    gnucashFileImportStatus.setTransactionsSentToAdapter(gncTransactions.size());
     transactionAdapter.addRecords(gncTransactions);
     gncTransactions = null;
   }

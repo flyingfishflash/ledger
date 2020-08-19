@@ -11,7 +11,7 @@ public abstract class AccountException extends RuntimeException {
     this.httpStatus = httpStatus;
   }
 
-  public AccountException(HttpStatus httpStatus, String message, RuntimeException cause) {
+  public AccountException(HttpStatus httpStatus, String message, Exception cause) {
     super(message, cause);
     this.httpStatus = httpStatus;
   }

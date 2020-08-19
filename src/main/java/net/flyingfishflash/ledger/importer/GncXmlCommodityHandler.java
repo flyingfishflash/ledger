@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.flyingfishflash.ledger.importer.adapter.CommodityAdapter;
 import net.flyingfishflash.ledger.importer.dto.GncCommodity;
+import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,8 @@ public class GncXmlCommodityHandler extends DefaultHandler {
 
   /** Translates GncCommodity objects -> Commodity objects and persists the results */
   private final CommodityAdapter commodityAdapter;
+
+  private GnucashFileImportStatus gnucashFileImportStatus;
 
   /** Accumulates characters between XML tags */
   StringBuilder stringBuilder = new StringBuilder();
@@ -46,10 +49,13 @@ public class GncXmlCommodityHandler extends DefaultHandler {
    *
    * @param commodityAdapter translates GncCommodity objects -> Commodity objects and persists the
    *     results.
+   * @param gnucashFileImportStatus
    */
-  public GncXmlCommodityHandler(CommodityAdapter commodityAdapter) {
+  public GncXmlCommodityHandler(CommodityAdapter commodityAdapter,
+      GnucashFileImportStatus gnucashFileImportStatus) {
 
     this.commodityAdapter = commodityAdapter;
+    this.gnucashFileImportStatus = gnucashFileImportStatus;
   }
 
   @Override
@@ -92,6 +98,7 @@ public class GncXmlCommodityHandler extends DefaultHandler {
       case GncXmlHelper.TAG_COUNT_DATA:
         if (inNodeCountDataCommodity) {
           nodeCountDataCommodityCount = Integer.parseInt(characterString);
+          gnucashFileImportStatus.setCommoditiesGncCount(nodeCountDataCommodityCount);
           logger.info(
               nodeCountDataCommodityCount
                   + " indicated by gnc:count-data cd:type=\"commodity\" (does not include templates)");
@@ -179,6 +186,7 @@ public class GncXmlCommodityHandler extends DefaultHandler {
 
   private void sendToAdapter() {
 
+    gnucashFileImportStatus.setCommoditiesSentToAdapter(gncCommodities.size());
     logger.info(gncCommodities.size() + " sent to the adapter");
     commodityAdapter.addRecords(gncCommodities);
     gncCommodities = new ArrayList<>();

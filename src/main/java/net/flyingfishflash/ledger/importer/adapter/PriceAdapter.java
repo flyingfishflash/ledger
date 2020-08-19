@@ -9,6 +9,7 @@ import javax.money.Monetary;
 import javax.money.UnknownCurrencyException;
 import net.flyingfishflash.ledger.commodities.service.CommodityService;
 import net.flyingfishflash.ledger.importer.dto.GncPrice;
+import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
 import net.flyingfishflash.ledger.prices.data.Price;
 import net.flyingfishflash.ledger.prices.service.PriceService;
 import org.slf4j.Logger;
@@ -26,20 +27,24 @@ public class PriceAdapter {
   /** Service class for interacting with commodities */
   private final CommodityService commodityService;
 
+  private GnucashFileImportStatus gnucashFileImportStatus;
+
   private List<Price> prices;
 
   /**
    * Class constructor.
    *
    * <p>Translates GncPrice objects to Price objects and persists the results.
-   *
-   * @param priceService Service class for interacting with prices
+   *  @param priceService Service class for interacting with prices
    * @param commodityService Service class for interacting with commodities
+   * @param gnucashFileImportStatus
    */
-  public PriceAdapter(PriceService priceService, CommodityService commodityService) {
+  public PriceAdapter(PriceService priceService, CommodityService commodityService,
+      GnucashFileImportStatus gnucashFileImportStatus) {
 
     this.priceService = priceService;
     this.commodityService = commodityService;
+    this.gnucashFileImportStatus = gnucashFileImportStatus;
   }
 
   /**
@@ -92,6 +97,7 @@ public class PriceAdapter {
 
     priceService.saveAllPrices(prices);
     logger.info(prices.size() + " persisted");
+    gnucashFileImportStatus.setPricesPersisted(prices.size());
     prices = null;
   }
 }

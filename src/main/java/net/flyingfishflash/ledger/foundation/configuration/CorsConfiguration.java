@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger;
+package net.flyingfishflash.ledger.foundation.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -11,8 +11,10 @@ public class CorsConfiguration implements WebMvcConfigurer {
   public void addCorsMappings(CorsRegistry registry) {
     registry
         .addMapping("/api/v1/**")
-        .allowedOrigins("*")
+        .allowedOrigins("http://localhost:4201", "http://")
         .allowedMethods("*")
-        .allowedHeaders("*");
+        .allowedHeaders("*")
+        .allowCredentials(true)
+        .exposedHeaders("X-Auth-Token");
   }
 }

@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger;
+package net.flyingfishflash.ledger.foundation.configuration;
 
 import java.util.Arrays;
 import org.springframework.context.annotation.Bean;
