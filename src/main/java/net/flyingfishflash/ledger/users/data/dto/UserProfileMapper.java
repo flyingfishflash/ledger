@@ -34,7 +34,6 @@ public class UserProfileMapper {
     user.setFirstName(userProfileRequest.getFirstName());
     user.setLastName(userProfileRequest.getLastName());
     user.setPassword(userProfileRequest.getPassword());
-    logger.info("mapRequestModelToEntityModel");
     // return user;
   }
 
