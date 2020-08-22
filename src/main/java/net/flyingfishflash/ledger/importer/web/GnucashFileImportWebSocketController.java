@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger.foundation.authentication.web;
+package net.flyingfishflash.ledger.importer.web;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,14 +13,14 @@ import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class WebSocketController {
+public class GnucashFileImportWebSocketController {
 
-  private static final Logger logger = LoggerFactory.getLogger(WebSocketController.class);
+  private static final Logger logger = LoggerFactory.getLogger(GnucashFileImportWebSocketController.class);
 
   private GnucashFileImportStatus gnucashFileImportStatus;
   // @Autowired private WebSocketSessionId webSocketSessionId;
 
-  public WebSocketController(
+  public GnucashFileImportWebSocketController(
       /*GnucashFileImportStatus gnucashFileImportStatus&*/
       GnucashFileImportStatus gnucashFileImportStatus) {
     /*this.gnucashFileImportStatus = gnucashFileImportStatus;*/
