@@ -8,7 +8,7 @@ public class AccountCreateException extends AccountException {
     super(HttpStatus.BAD_REQUEST, message);
   }
 
-  public AccountCreateException(String message, RuntimeException cause) {
+  public AccountCreateException(String message, Exception cause) {
     super(HttpStatus.BAD_REQUEST, message, cause);
   }
 }
