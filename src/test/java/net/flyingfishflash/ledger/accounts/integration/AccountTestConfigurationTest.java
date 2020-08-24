@@ -1,20 +1,22 @@
-package net.flyingfishflash.ledger.prices;
+/*
+package net.flyingfishflash.ledger.accounts.integration;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
 
 @SpringBootTest(
-    classes = PriceTestConfiguration.class,
-    properties = {"spring.main.allow-bean-definition-overriding=true", "spring.flyway.enabled=false"
+    classes = AccountTestConfiguration.class,
+    properties = {
+      "spring.main.allow-bean-definition-overriding=true",
+      // "spring.flyway.enabled=false",
       // "spring.jpa.hibernate.ddl-auto=create-drop",
     })
-public class PriceTestConfigurationTest {
+public class AccountTestConfigurationTest {
 
+  */
+/*
   @Autowired private ApplicationContext applicationContext;
 
-  /*
   @BeforeEach
   void printApplicationContext() {
     Arrays.stream(applicationContext.getBeanDefinitionNames())
@@ -22,8 +24,12 @@ public class PriceTestConfigurationTest {
         .sorted()
         .forEach(System.out::println);
   }
-  */
+  *//*
+
 
   @Test
-  void priceConfigurationLoads() {}
+  void accountConfigurationLoads() {
+    System.out.println("\nAccount Integration Test\n");
+  }
 }
+*/
