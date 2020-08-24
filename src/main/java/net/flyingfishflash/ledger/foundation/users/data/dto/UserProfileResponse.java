@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger.users.data.dto;
+package net.flyingfishflash.ledger.foundation.users.data.dto;
 
 public class UserProfileResponse {
 

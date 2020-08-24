@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger.users.data.dto;
+package net.flyingfishflash.ledger.foundation.users.data.dto;
 
 import java.util.Set;
 import javax.validation.constraints.Email;

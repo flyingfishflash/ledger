@@ -1,6 +1,6 @@
-package net.flyingfishflash.ledger.users.data.dto;
+package net.flyingfishflash.ledger.foundation.users.data.dto;
 
-import net.flyingfishflash.ledger.users.data.User;
+import net.flyingfishflash.ledger.foundation.users.data.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

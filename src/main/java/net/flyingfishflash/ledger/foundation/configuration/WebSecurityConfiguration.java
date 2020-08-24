@@ -1,7 +1,7 @@
 package net.flyingfishflash.ledger.foundation.configuration;
 
 import net.flyingfishflash.ledger.foundation.authentication.CustomAuthenticationEntryPoint;
-import net.flyingfishflash.ledger.users.service.UserService;
+import net.flyingfishflash.ledger.foundation.users.service.UserService;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

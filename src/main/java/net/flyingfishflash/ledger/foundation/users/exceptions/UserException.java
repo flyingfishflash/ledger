@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger.users.exceptions;
+package net.flyingfishflash.ledger.foundation.users.exceptions;
 
 import org.springframework.http.HttpStatus;
 

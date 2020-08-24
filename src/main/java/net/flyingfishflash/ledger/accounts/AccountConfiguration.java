@@ -14,7 +14,11 @@ import pl.exsio.nestedj.config.jpa.JpaNestedNodeRepositoryConfiguration;
 import pl.exsio.nestedj.config.jpa.factory.JpaNestedNodeRepositoryFactory;
 
 @Configuration
-@ComponentScan
+@ComponentScan(
+    basePackages = {
+        "net.flyingfishflash.ledger.foundation",
+        "net.flyingfishflash.ledger.accounts",
+    })
 // JPA entity scan specification necessary for testing since commodity class is outside this package
 @EntityScan(basePackageClasses = {Account.class, Commodity.class})
 public class AccountConfiguration {

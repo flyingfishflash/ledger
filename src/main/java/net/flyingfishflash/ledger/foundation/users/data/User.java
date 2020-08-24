@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger.users.data;
+package net.flyingfishflash.ledger.foundation.users.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;

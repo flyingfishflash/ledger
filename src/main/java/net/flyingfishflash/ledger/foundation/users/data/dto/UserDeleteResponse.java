@@ -1,9 +1,9 @@
-package net.flyingfishflash.ledger.users.data.dto;
+package net.flyingfishflash.ledger.foundation.users.data.dto;
 
-public class UserCreateResponse {
+public class UserDeleteResponse {
   private String message;
 
-  public UserCreateResponse(String message) {
+  public UserDeleteResponse(String message) {
     this.message = message;
   }
 

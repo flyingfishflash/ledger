@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger.users.unit;
+package net.flyingfishflash.ledger.foundation.users.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -18,14 +18,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.flyingfishflash.ledger.users.data.Role;
-import net.flyingfishflash.ledger.users.data.User;
-import net.flyingfishflash.ledger.users.data.dto.UserCreateRequest;
-import net.flyingfishflash.ledger.users.data.dto.UserCreateResponse;
-import net.flyingfishflash.ledger.users.data.dto.UserDeleteResponse;
-import net.flyingfishflash.ledger.users.data.dto.UserProfileResponse;
-import net.flyingfishflash.ledger.users.service.UserService;
-import net.flyingfishflash.ledger.users.web.UserController;
+import net.flyingfishflash.ledger.foundation.users.data.Role;
+import net.flyingfishflash.ledger.foundation.users.data.User;
+import net.flyingfishflash.ledger.foundation.users.data.dto.UserCreateRequest;
+import net.flyingfishflash.ledger.foundation.users.data.dto.UserCreateResponse;
+import net.flyingfishflash.ledger.foundation.users.data.dto.UserDeleteResponse;
+import net.flyingfishflash.ledger.foundation.users.data.dto.UserProfileResponse;
+import net.flyingfishflash.ledger.foundation.users.service.UserService;
+import net.flyingfishflash.ledger.foundation.users.web.UserController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -197,17 +197,12 @@ public class UserControllerTests {
 
     String requestParameter = "1";
 
-    UserDeleteResponse expectedUserDeleteResponse =
-        new UserDeleteResponse("Deleted user: " + requestParameter);
-
     MockHttpServletResponse response =
-        mvc.perform(delete("/api/v1/ledger/users/delete?id=1").accept(MediaType.APPLICATION_JSON))
+        mvc.perform(delete("/api/v1/ledger/users/delete?id=" + requestParameter))
             .andReturn()
             .getResponse();
 
     verify(userService, times(1)).deleteById(anyLong());
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(response.getContentAsString())
-        .isEqualTo(jsonUserDeleteResponse.write(expectedUserDeleteResponse).getJson());
+    assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
   }
 }

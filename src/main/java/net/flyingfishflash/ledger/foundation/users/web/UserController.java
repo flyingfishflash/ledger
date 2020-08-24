@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger.users.web;
+package net.flyingfishflash.ledger.foundation.users.web;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -7,12 +7,11 @@ import java.security.Principal;
 import java.util.Collection;
 import java.util.Map;
 import javax.validation.Valid;
-import net.flyingfishflash.ledger.users.data.User;
-import net.flyingfishflash.ledger.users.data.dto.UserCreateRequest;
-import net.flyingfishflash.ledger.users.data.dto.UserCreateResponse;
-import net.flyingfishflash.ledger.users.data.dto.UserDeleteResponse;
-import net.flyingfishflash.ledger.users.data.dto.UserProfileResponse;
-import net.flyingfishflash.ledger.users.service.UserService;
+import net.flyingfishflash.ledger.foundation.users.data.User;
+import net.flyingfishflash.ledger.foundation.users.data.dto.UserCreateRequest;
+import net.flyingfishflash.ledger.foundation.users.data.dto.UserCreateResponse;
+import net.flyingfishflash.ledger.foundation.users.data.dto.UserProfileResponse;
+import net.flyingfishflash.ledger.foundation.users.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -27,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -97,10 +97,11 @@ public class UserController {
   @DeleteMapping(value = "/delete")
   @ApiOperation(value = "Delete a user")
   @ApiResponses(value = {@ApiResponse(code = 400, message = "Bad Request")})
-  public ResponseEntity<UserDeleteResponse> deleteById(@RequestParam Long id) {
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public ResponseEntity<?> deleteById(@RequestParam Long id) {
 
     userService.deleteById(id);
 
-    return ResponseEntity.ok(new UserDeleteResponse("Deleted user: " + id));
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 }

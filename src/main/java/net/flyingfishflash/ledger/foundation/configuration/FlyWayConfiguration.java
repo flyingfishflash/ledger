@@ -2,7 +2,7 @@ package net.flyingfishflash.ledger.foundation.configuration;
 
 import javax.sql.DataSource;
 import net.flyingfishflash.ledger.foundation.multitenancy.TenantIdentifierResolver;
-import net.flyingfishflash.ledger.users.data.UserRepository;
+import net.flyingfishflash.ledger.foundation.users.data.UserRepository;
 import org.flywaydb.core.Flyway;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;

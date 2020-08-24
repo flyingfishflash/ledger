@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger.users.data;
+package net.flyingfishflash.ledger.foundation.users.data;
 
 import java.util.Optional;
 import org.springframework.data.repository.PagingAndSortingRepository;
