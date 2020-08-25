@@ -1,10 +1,10 @@
-FROM maven:3.6-jdk-13-alpine AS build
+FROM maven:3.6-openjdk-14-slim AS build
 COPY . /ledger/
-RUN apk update && apk upgrade
+#RUN apk update && apk upgrade
 WORKDIR /ledger/
 RUN mvn --batch-mode --show-version clean package && ls -l target/
 
-FROM openjdk:13-jdk-alpine
+FROM openjdk:14-slim
 VOLUME /tmp
 COPY --from=build /ledger/target/ledger-0.0.1-SNAPSHOT.jar /
 ENV JAVA_OPTS=""
