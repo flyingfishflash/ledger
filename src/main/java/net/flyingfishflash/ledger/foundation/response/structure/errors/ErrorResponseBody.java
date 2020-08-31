@@ -1,40 +1,67 @@
 package net.flyingfishflash.ledger.foundation.response.structure.errors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class ErrorResponseBody {
 
   @JsonIgnore private final UUID uniqueId;
-  private final String code;
+  // class name of the exception
+  private final String exception;
+  // message provided by the exception
   private final String message;
-  private final List<Error> errors;
+  // either binding errors on individual fields, or other root cause for the provided exception
+  private final List<ErrorResponseBodyItem> causes;
 
-  public ErrorResponseBody(
-      final String code,
-      final String message,
-      final String domain,
-      final String reason,
-      final String errorMessage) {
-
-    this.code = code;
-    this.message = message;
+  public ErrorResponseBody(Throwable exception) {
+    this.exception = exception.getClass().getSimpleName();
+    this.message = exception.getLocalizedMessage();
     this.uniqueId = UUID.randomUUID();
-    this.errors = List.of(new Error(domain, reason, errorMessage));
+    this.causes = extractCauses(exception);
   }
 
-  public static ErrorResponseBody fromDefaultAttributeMap(
-      final Map<String, Object> defaultErrorAttributes) {
-    // original attribute values are documented in
-    // org.springframework.boot.web.servlet.error.DefaultErrorAttributes
-    return new ErrorResponseBody(
-        ((Integer) defaultErrorAttributes.get("status")).toString(),
-        (String) defaultErrorAttributes.getOrDefault("message", "no message available"),
-        (String) defaultErrorAttributes.getOrDefault("path", "no domain available"),
-        (String) defaultErrorAttributes.getOrDefault("error", "no reason available"),
-        (String) defaultErrorAttributes.get("message"));
+  public ErrorResponseBody(Throwable exception, String message) {
+    this.exception = exception.getClass().getSimpleName();
+    this.message = message;
+    this.uniqueId = UUID.randomUUID();
+    this.causes = extractCauses(exception);
+  }
+
+  public ErrorResponseBody(
+      Throwable exception, String message, List<ErrorResponseBodyItem> errorResponseBodyItems) {
+    this.exception = exception.getClass().getSimpleName();
+    this.message = message;
+    this.uniqueId = UUID.randomUUID();
+    this.causes = errorResponseBodyItems;
+  }
+
+  private List<ErrorResponseBodyItem> extractCauses(Throwable exception) {
+
+    ErrorResponseBodyItem errorResponseBodyItem;
+    List<ErrorResponseBodyItem> errorResponseBodyItems = new ArrayList<ErrorResponseBodyItem>();
+
+    if (exception.getCause() != null) {
+      Throwable rootCause = exceptionCause(exception);
+      errorResponseBodyItem =
+          new ErrorResponseBodyItem(
+              rootCause.getClass().getSimpleName(), rootCause.getLocalizedMessage());
+      errorResponseBodyItems.add(errorResponseBodyItem);
+    }
+
+    return errorResponseBodyItems;
+  }
+
+  private static Throwable exceptionCause(Throwable throwable) {
+    Objects.requireNonNull(throwable);
+    Throwable rootCause = throwable;
+    while (rootCause.getCause() != null && rootCause.getCause() != rootCause) {
+      rootCause = rootCause.getCause();
+    }
+    return rootCause;
   }
 
   public Map<String, Object> toAttributeMap() {
@@ -45,16 +72,16 @@ public class ErrorResponseBody {
     return uniqueId;
   }
 
-  public String getCode() {
-    return code;
+  public String getException() {
+    return exception;
   }
 
   public String getMessage() {
     return message;
   }
 
-  public List<Error> getErrors() {
-    return errors;
+  public List<ErrorResponseBodyItem> getCauses() {
+    return causes;
   }
 
   @Override
@@ -63,52 +90,13 @@ public class ErrorResponseBody {
         + "uniqueId="
         + uniqueId
         + ", code='"
-        + code
+        + exception
         + '\''
         + ", message='"
         + message
         + '\''
-        + ", errors="
-        + errors
+        + ", causes="
+        + causes
         + '}';
-  }
-
-  private static final class Error {
-    private final String domain;
-    private final String reason;
-    private final String message;
-
-    public Error(final String domain, final String reason, final String message) {
-      this.domain = domain;
-      this.reason = reason;
-      this.message = message;
-    }
-
-    public String getDomain() {
-      return domain;
-    }
-
-    public String getReason() {
-      return reason;
-    }
-
-    public String getMessage() {
-      return message;
-    }
-
-    @Override
-    public String toString() {
-      return "Error{"
-          + "domain='"
-          + domain
-          + '\''
-          + ", reason='"
-          + reason
-          + '\''
-          + ", message='"
-          + message
-          + '\''
-          + '}';
-    }
   }
 }

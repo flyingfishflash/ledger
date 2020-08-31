@@ -9,13 +9,12 @@ import net.flyingfishflash.ledger.foundation.response.structure.errors.ErrorResp
 import net.flyingfishflash.ledger.foundation.response.structure.errors.ErrorResponseBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@Order(value = Ordered.HIGHEST_PRECEDENCE)
+@Order(value = 10)
 @RestControllerAdvice(
     assignableTypes = {
       AccountController.class,
@@ -30,32 +29,8 @@ public class AdviceForAccountExceptions {
   public ResponseEntity<ErrorResponse<ErrorResponseBody>> handleAccountException(
       AccountException exception) {
 
-    return new ResponseEntity<>(buildErrorResponse(exception), exception.getHttpStatus());
-  }
-
-  private ErrorResponse<ErrorResponseBody> buildErrorResponse(AccountException exception) {
-
-    //String cause = (exception.getCause() != null) ? exception.getCause().toString() : null;
-
-    ErrorResponseBody errorResponseBody =
-        new ErrorResponseBody(
-            exception.getClass().getSimpleName(),
-            exception.getLocalizedMessage(),
-            exception.getErrorDomain(),
-            (exception.getCause() != null) ? exception.getCause().getClass().getSimpleName() : null,
-            (exception.getCause() != null) ? exception.getCause().getLocalizedMessage() : null);
-
-    logger.warn(
-        exception.getClass().getSimpleName()
-            + ": "
-            + exception.getLocalizedMessage()
-            + " (uniqueId: "
-            + errorResponseBody.getUniqueId()
-            + ")");
-
-    logger.warn(errorResponseBody.toString());
-
-    return new ErrorResponse<>(
-        errorResponseBody, exception.getLocalizedMessage(), ResponseApiStatusCode.Fail);
+    return new ResponseEntity<>(
+        new ErrorResponse<>(new ErrorResponseBody(exception), ResponseApiStatusCode.Fail),
+        exception.getHttpStatus());
   }
 }

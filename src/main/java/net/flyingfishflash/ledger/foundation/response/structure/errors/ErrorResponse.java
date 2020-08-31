@@ -7,24 +7,24 @@ import net.flyingfishflash.ledger.foundation.response.structure.ResponseApiStatu
 public class ErrorResponse<T> {
 
   private final String status;
-  private final String message;
+  // private final String message;
   private ErrorResponseStructure<T> response;
 
-  public ErrorResponse(T object, String message, ResponseApiStatusCode responseApiStatusCode) {
+  public ErrorResponse(T object /*, String message*/, ResponseApiStatusCode responseApiStatusCode) {
     response = new ErrorResponseStructure<T>(object);
     this.status = responseApiStatusCode.name().toLowerCase();
-    this.message = message;
+    // this.message = message;
   }
 
-  public ErrorResponse(T object, String message) {
+  public ErrorResponse(T object /*, String message*/) {
     response = new ErrorResponseStructure<T>(object);
     this.status = ResponseApiStatusCode.Error.name().toLowerCase();
-    this.message = message;
+    // this.message = message;
   }
 
-  public String getMessage() {
-    return message;
-  }
+  // public String getMessage() {
+  // return message;
+  // }
 
   public ErrorResponseStructure<T> getResponse() {
     return response;
