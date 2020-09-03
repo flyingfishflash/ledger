@@ -1,0 +1,35 @@
+/*
+package net.flyingfishflash.ledger.prices.integration;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest(
+    classes = PriceTestConfiguration.class,
+    properties = {
+      "spring.main.allow-bean-definition-overriding=true",
+      // "spring.flyway.enabled=false",
+      // "spring.jpa.hibernate.ddl-auto=create-drop",
+    })
+public class PriceTestConfigurationTest {
+
+  */
+/*
+  @Autowired private ApplicationContext applicationContext;
+
+  @BeforeEach
+  void printApplicationContext() {
+    Arrays.stream(applicationContext.getBeanDefinitionNames())
+        .map(name -> applicationContext.getBean(name).getClass().getName())
+        .sorted()
+        .forEach(System.out::println);
+  }
+  *//*
+
+
+  @Test
+  void priceConfigurationLoads() {
+    System.out.println("\nPrice Integration Test\n");
+  }
+}
+*/

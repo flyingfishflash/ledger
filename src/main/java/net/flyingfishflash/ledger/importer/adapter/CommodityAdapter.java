@@ -5,6 +5,7 @@ import java.util.List;
 import net.flyingfishflash.ledger.commodities.data.Commodity;
 import net.flyingfishflash.ledger.commodities.service.CommodityService;
 import net.flyingfishflash.ledger.importer.dto.GncCommodity;
+import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -17,16 +18,21 @@ public class CommodityAdapter {
   /** Service class for interacting with commodities */
   private final CommodityService commodityService;
 
+  private GnucashFileImportStatus gnucashFileImportStatus;
+
   /**
    * Class constructor.
    *
    * <p>Translates GncCommodity objects to Commodity objects and persists the results.
    *
    * @param commodityService Service class for interacting with commodities
+   * @param gnucashFileImportStatus
    */
-  public CommodityAdapter(CommodityService commodityService) {
+  public CommodityAdapter(CommodityService commodityService,
+      GnucashFileImportStatus gnucashFileImportStatus) {
 
     this.commodityService = commodityService;
+    this.gnucashFileImportStatus = gnucashFileImportStatus;
   }
 
   /**
@@ -61,7 +67,10 @@ public class CommodityAdapter {
     }
     commodityService.saveAllCommodities(commodities);
     logger.info(templateCount + " ignored templates");
+    gnucashFileImportStatus.setCommoditiesIgnoredTemplates(templateCount);
     logger.info(currencyCount + " ignored currencies");
+    gnucashFileImportStatus.setCommoditiesIgnoredCurrencies(currencyCount);
     logger.info(commodities.size() + " persisted");
+    gnucashFileImportStatus.setCommoditiesPersisted(commodities.size());
   }
 }

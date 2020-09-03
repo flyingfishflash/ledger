@@ -1,11 +1,14 @@
 package net.flyingfishflash.ledger.accounts.exceptions;
 
-public class AccountCreateException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class AccountCreateException extends AccountException {
 
   public AccountCreateException(String message) {
-    super(message);
+    super(HttpStatus.BAD_REQUEST, message);
   }
-  public AccountCreateException(String message, RuntimeException cause) {
-    super(message, cause);
+
+  public AccountCreateException(String message, Exception cause) {
+    super(HttpStatus.BAD_REQUEST, message, cause);
   }
 }

@@ -75,6 +75,86 @@ public class CreateAccountDto {
 
   public CreateAccountDto() {}
 
+  public String getCode() {
+    return code;
+  }
+
+  public void setCode(String code) {
+    this.code = code;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public Boolean getHidden() {
+    return hidden;
+  }
+
+  public void setHidden(Boolean hidden) {
+    this.hidden = hidden;
+  }
+
+  public String getMode() {
+    return mode;
+  }
+
+  public void setMode(String mode) {
+    this.mode = mode;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getNote() {
+    return note;
+  }
+
+  public void setNote(String note) {
+    this.note = note;
+  }
+
+  public Long getParentId() {
+    return parentId;
+  }
+
+  public void setParentId(Long parentId) {
+    this.parentId = parentId;
+  }
+
+  public Boolean getPlaceholder() {
+    return placeholder;
+  }
+
+  public void setPlaceholder(Boolean placeholder) {
+    this.placeholder = placeholder;
+  }
+
+  public Long getSiblingId() {
+    return siblingId;
+  }
+
+  public void setSiblingId(Long siblingId) {
+    this.siblingId = siblingId;
+  }
+
+  public Boolean getTaxRelated() {
+    return taxRelated;
+  }
+
+  public void setTaxRelated(Boolean taxRelated) {
+    this.taxRelated = taxRelated;
+  }
+
   @Override
   public String toString() {
     return "CreateAccountDto{" +

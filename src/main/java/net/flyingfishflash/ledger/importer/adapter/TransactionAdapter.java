@@ -10,6 +10,7 @@ import net.flyingfishflash.ledger.accounts.service.AccountService;
 import net.flyingfishflash.ledger.importer.GncXmlHelper;
 import net.flyingfishflash.ledger.importer.dto.GncSplit;
 import net.flyingfishflash.ledger.importer.dto.GncTransaction;
+import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
 import net.flyingfishflash.ledger.transactions.data.Entry;
 import net.flyingfishflash.ledger.transactions.data.EntryType;
 import net.flyingfishflash.ledger.transactions.data.Transaction;
@@ -26,12 +27,15 @@ public class TransactionAdapter {
 
   private final TransactionService transactionService;
   private final AccountService accountService;
+  private GnucashFileImportStatus gnucashFileImportStatus;
 
   private List<Transaction> transactions;
 
-  public TransactionAdapter(TransactionService transactionService, AccountService accountService) {
+  public TransactionAdapter(TransactionService transactionService, AccountService accountService,
+      GnucashFileImportStatus gnucashFileImportStatus) {
     this.transactionService = transactionService;
     this.accountService = accountService;
+    this.gnucashFileImportStatus = gnucashFileImportStatus;
   }
 
   public void addRecords(List<GncTransaction> gncTransactions) {
@@ -113,5 +117,6 @@ public class TransactionAdapter {
 
     transactionService.saveAllTransactions(transactions);
     logger.info(transactions.size() + " persisted");
+    gnucashFileImportStatus.setTransactionsPersisted(transactions.size());
   }
 }

@@ -6,7 +6,6 @@ import org.springframework.context.annotation.ComponentScan;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 @SpringBootApplication
-@EnableSwagger2WebMvc
 @ComponentScan("net.flyingfishflash.ledger")
 public class Application {
 

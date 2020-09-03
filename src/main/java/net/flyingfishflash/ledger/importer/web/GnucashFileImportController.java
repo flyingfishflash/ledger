@@ -1,14 +1,19 @@
 package net.flyingfishflash.ledger.importer.web;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiOperation;
 import java.io.IOException;
+import java.security.Principal;
 import javax.xml.parsers.ParserConfigurationException;
 import net.flyingfishflash.ledger.importer.dto.GnucashFileImportResponse;
+import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
 import net.flyingfishflash.ledger.importer.service.GnucashFileImportService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,23 +29,42 @@ public class GnucashFileImportController {
 
   private final GnucashFileImportService gnucashFileImportService;
 
-  public GnucashFileImportController(GnucashFileImportService gnucashFileImportService) {
+  private GnucashFileImportStatus gnucashFileImportStatus;
+
+  public GnucashFileImportController(
+      GnucashFileImportService gnucashFileImportService,
+      GnucashFileImportStatus gnucashFileImportStatus) {
     this.gnucashFileImportService = gnucashFileImportService;
+    this.gnucashFileImportStatus = gnucashFileImportStatus;
   }
 
   @PostMapping(value = "/gnucash")
   @ApiOperation(value = "Import Gnucash file")
-  public ResponseEntity<GnucashFileImportResponse> gnucashFileImport(@RequestParam("file") MultipartFile file)
+  public ResponseEntity<GnucashFileImportStatus> gnucashFileImport(
+      @RequestParam("file") MultipartFile file, Principal principal)
       throws ParserConfigurationException, SAXException, IOException {
 
     GnucashFileImportResponse gnucashFileImportResponse = new GnucashFileImportResponse();
     logger.info(file.getOriginalFilename());
+    logger.info(String.valueOf(principal.getName()));
 
     gnucashFileImportService.process(file.getInputStream());
 
-    gnucashFileImportResponse.setMessage("Imported " + file.getOriginalFilename());
+    // gnucashFileImportResponse.setMessage("Imported " + file.getOriginalFilename());
 
-    return new ResponseEntity<>(
-        gnucashFileImportResponse, HttpStatus.OK);
+    return new ResponseEntity<>(gnucashFileImportStatus, HttpStatus.OK);
+  }
+
+  @GetMapping(value = "/gnucashFileImportStatus")
+  @ApiOperation(value = "Status of Gnucash file import")
+  public ResponseEntity<GnucashFileImportStatus> gnucashFileImportStatus()
+      throws JsonProcessingException {
+
+    ObjectMapper mapper = new ObjectMapper();
+
+    String json =
+        mapper.writerWithDefaultPrettyPrinter().writeValueAsString(gnucashFileImportStatus);
+
+    return new ResponseEntity<>(this.gnucashFileImportStatus, HttpStatus.OK);
   }
 }

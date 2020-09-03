@@ -1,20 +1,26 @@
 package net.flyingfishflash.ledger.accounts.exceptions;
 
-public class AccountNotFoundException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class AccountNotFoundException extends AccountException {
 
   public AccountNotFoundException(String guid) {
-    super("Account not found for guid " + guid);
+    super(HttpStatus.NOT_FOUND, "Account not found for guid " + guid);
   }
 
   public AccountNotFoundException(Long id) {
-    super("Account not found for id " + id);
+    super(HttpStatus.NOT_FOUND, "Account not found for id " + id);
   }
 
   public AccountNotFoundException(Long id, String context) {
-    super("Account not found for id " + id + ". " + context);
+    super(
+        HttpStatus.NOT_FOUND,
+        "Account not found for id " + id + ". Context if available: " + context);
   }
 
   public AccountNotFoundException(String guid, String context) {
-    super("Account not found for guid " + guid + ". " + context);
+    super(
+        HttpStatus.NOT_FOUND,
+        "Account not found for guid " + guid + ". Context if available: " + context);
   }
 }

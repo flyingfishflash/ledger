@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import net.flyingfishflash.ledger.accounts.data.Account;
-import net.flyingfishflash.ledger.accounts.data.AccountCategory;
 import net.flyingfishflash.ledger.accounts.data.AccountRepository;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
 import net.flyingfishflash.ledger.accounts.data.dto.CreateAccountDto;
@@ -87,7 +86,7 @@ public class AccountService {
         throw new AccountCreateException(
             "Failed to create account: '"
                 + account.getName()
-                + ". A valid nest node manipulator mode was not specified.");
+                + "'. A valid nest node manipulator mode was not specified.");
     }
 
     try {
@@ -155,7 +154,7 @@ public class AccountService {
     Account rootAccount =
         accountRepository
             .findRoot()
-            .orElseThrow(() -> new AccountNotFoundException("Root Account Not Found."));
+            .orElseThrow(() -> new AccountNotFoundException("(Root Account Not Found)"));
     Iterable<Account> allAccounts = accountRepository.getTreeAsList(rootAccount);
 
     // remove root account

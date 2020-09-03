@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import net.flyingfishflash.ledger.importer.adapter.AccountAdapter;
 import net.flyingfishflash.ledger.importer.dto.GncAccount;
+import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,8 @@ public class GncXmlAccountHandler extends DefaultHandler {
 
   /** Translates GncAccount objects into Account objects and persists the results */
   private final AccountAdapter accountAdapter;
+
+  private GnucashFileImportStatus gnucashFileImportStatus;
 
   /** Accumulates characters between XML tags */
   StringBuilder content = new StringBuilder();
@@ -47,9 +50,11 @@ public class GncXmlAccountHandler extends DefaultHandler {
   String slotTagAttribute = null;
 
   /** Creates a handler for handling XML stream events when parsing the XML backup file */
-  public GncXmlAccountHandler(AccountAdapter accountAdapter) {
+  public GncXmlAccountHandler(AccountAdapter accountAdapter,
+      GnucashFileImportStatus gnucashFileImportStatus) {
 
     this.accountAdapter = accountAdapter;
+    this.gnucashFileImportStatus = gnucashFileImportStatus;
   }
 
   @Override
@@ -192,6 +197,8 @@ public class GncXmlAccountHandler extends DefaultHandler {
 
     logger.info(nodeCountDataAccountCount + " indicated by gnc:count-data cd:type=\"account\"");
     logger.info(gncAccounts.size() + " sent to the adapter");
+    gnucashFileImportStatus.setAccountsGncCount(gncAccounts.size());
+    gnucashFileImportStatus.setAccountsSentToAdapter(nodeCountDataAccountCount);
 
     /*
      * Sort the GncAccount list by account code, nulls sorted to the top.

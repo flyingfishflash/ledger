@@ -3,12 +3,13 @@ package net.flyingfishflash.ledger.importer.adapter;
 import java.util.List;
 import javax.money.Monetary;
 import javax.money.UnknownCurrencyException;
-import net.flyingfishflash.ledger.LedgerConfiguration;
+import net.flyingfishflash.ledger.ApplicationConfiguration;
 import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
 import net.flyingfishflash.ledger.accounts.service.AccountService;
 import net.flyingfishflash.ledger.commodities.service.CommodityService;
 import net.flyingfishflash.ledger.importer.dto.GncAccount;
+import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -24,18 +25,22 @@ public class AccountAdapter {
   /** Service class for interacting with Commodities */
   private final CommodityService commodityService;
 
+  private GnucashFileImportStatus gnucashFileImportStatus;
+
   /**
    * Class constructor.
    *
    * <p>Translates GncAccount objects to Account objects and persists the results.
-   *
-   * @param accountService Service class for interacting with accounts
+   *  @param accountService Service class for interacting with accounts
    * @param commodityService Service class for interacting with commodities
+   * @param gnucashFileImportStatus
    */
-  public AccountAdapter(AccountService accountService, CommodityService commodityService) {
+  public AccountAdapter(AccountService accountService, CommodityService commodityService,
+      GnucashFileImportStatus gnucashFileImportStatus) {
 
     this.accountService = accountService;
     this.commodityService = commodityService;
+    this.gnucashFileImportStatus = gnucashFileImportStatus;
   }
 
   public void addRecords(List<GncAccount> gncAccounts) {
@@ -121,7 +126,7 @@ public class AccountAdapter {
               commodityService.findByNameSpaceAndMnemonic(
                   gncAccount.getGncCommodityNamespace(), gncAccount.getGncCommodity()));
           /* Set the currency to the default currency */
-          account.setCurrency(LedgerConfiguration.defaultCurrency.getCurrencyCode());
+          account.setCurrency(ApplicationConfiguration.defaultCurrency.getCurrencyCode());
         }
         accountService.insertAsLastChildOf(
             account, accountService.findByGuid(gncAccount.getParentGuid()));
@@ -129,6 +134,8 @@ public class AccountAdapter {
       } // if gncAccountType == ROOT
     }
     logger.info(persistedCount + " persisted");
+    gnucashFileImportStatus.setAccountsPersisted(persistedCount);
+
   }
 
   /** Capitalize the first letter of the account type string */
