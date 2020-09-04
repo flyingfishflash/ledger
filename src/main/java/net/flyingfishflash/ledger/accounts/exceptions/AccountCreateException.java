@@ -4,11 +4,15 @@ import org.springframework.http.HttpStatus;
 
 public class AccountCreateException extends AccountException {
 
+  private final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+
   public AccountCreateException(String message) {
-    super(HttpStatus.BAD_REQUEST, message);
+    super(message);
+    super.setHttpStatus(httpStatus);
   }
 
   public AccountCreateException(String message, Exception cause) {
-    super(HttpStatus.BAD_REQUEST, message, cause);
+    super(message, cause);
+    super.setHttpStatus(httpStatus);
   }
 }

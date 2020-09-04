@@ -26,7 +26,7 @@ public class AccountRepository {
 
   @PersistenceContext private EntityManager entityManager;
 
-  private NestedNodeRepository<Long, Account> nodeRepository;
+  private final NestedNodeRepository<Long, Account> nodeRepository;
 
   public AccountRepository(NestedNodeRepository<Long, Account> nodeRepository) {
     this.nodeRepository = nodeRepository;
@@ -116,7 +116,6 @@ public class AccountRepository {
 
     List<Account> parents = this.nodeRepository.getParents(parent);
     StringJoiner sj = new StringJoiner(":");
-    parents.size();
     // build the longname by collecting the ancestor account names in reverse
     for (int i = parents.size() - 1; i >= 0; i--) {
       if (parents.get(i).getTreeLeft() > 1) {
@@ -224,7 +223,7 @@ public class AccountRepository {
   }
 
   /** @return count of root level nodes in the account hierarchy */
-  private Long rootLevelNodeCount() {
+  public Long rootLevelNodeCount() {
 
     try {
       CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -257,19 +256,6 @@ public class AccountRepository {
       throw new AccountCreateException(
           "A new root level account can't be created. Only one root level account may be present. Current root level node count: "
               + rootLevelNodeCount());
-    }
-  }
-
-  protected void printNode(Long id, Account account) {
-
-    if (account != null) {
-      System.out.println(
-          String.format(
-              "Node %s: %d/%d/%d",
-              account.getId(),
-              account.getTreeLeft(),
-              account.getTreeRight(),
-              account.getTreeLevel()));
     }
   }
 }

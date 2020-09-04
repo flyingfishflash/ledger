@@ -22,11 +22,13 @@ public class Account implements NestedNode<Long> {
   @Column(unique = true, updatable = false)
   private String guid;
 
+  @Column(length = 128)
   private String name;
 
   @Column(length = 4096)
   private String longName;
 
+  @Column(length = 128)
   private String code;
 
   @Column(length = 2048)
@@ -50,6 +52,7 @@ public class Account implements NestedNode<Long> {
   @Enumerated(EnumType.STRING)
   private NormalBalance normalBalance;
 
+  @Column(length = 10)
   private String currency;
 
   @ManyToOne
