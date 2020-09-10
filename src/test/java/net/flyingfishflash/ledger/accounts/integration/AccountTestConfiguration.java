@@ -1,10 +1,14 @@
 package net.flyingfishflash.ledger.accounts.integration;
 
 import net.flyingfishflash.ledger.accounts.AccountConfiguration;
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-// @SpringBootConfiguration
-// @EnableAutoConfiguration
+// Integration Test Configuration
+
+@SpringBootConfiguration
+@EnableAutoConfiguration
 @EnableJpaRepositories(
     basePackages = {
       "net.flyingfishflash.ledger.accounts",

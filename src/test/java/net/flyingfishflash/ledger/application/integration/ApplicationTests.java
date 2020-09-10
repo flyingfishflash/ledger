@@ -20,7 +20,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 // @EnableAutoConfiguration
 class ApplicationTests {
 
-  // @WithMockUser(value = "admin")
   @Test
   void applicationContextLoads() {
     System.out.println("\nApplication Integration Test\n");
