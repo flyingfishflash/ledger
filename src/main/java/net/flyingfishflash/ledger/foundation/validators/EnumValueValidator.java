@@ -2,7 +2,7 @@
  https://funofprograming.wordpress.com/2016/09/29/java-enum-validator/
 */
 
-package net.flyingfishflash.ledger.utilities.validators;
+package net.flyingfishflash.ledger.foundation.validators;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
