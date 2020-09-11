@@ -4,7 +4,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 import net.flyingfishflash.ledger.commodities.data.Commodity;
 import net.flyingfishflash.ledger.commodities.data.CommodityRepository;
-import net.flyingfishflash.ledger.utilities.IdentifierFactory;
+import net.flyingfishflash.ledger.foundation.IdentifierFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
