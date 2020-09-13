@@ -111,14 +111,9 @@ public class UserService implements UserDetailsService {
     strRoles.forEach(
         role -> {
           switch (role) {
-            case "ROLE_ADMIN":
-              user.grantAuthority(Role.ROLE_ADMIN);
-              break;
-            case "ROLE_EDITOR":
-              user.grantAuthority(Role.ROLE_EDITOR);
-              break;
-            default:
-              user.grantAuthority(Role.ROLE_VIEWER);
+            case "ROLE_ADMIN" -> user.grantAuthority(Role.ROLE_ADMIN);
+            case "ROLE_EDITOR" -> user.grantAuthority(Role.ROLE_EDITOR);
+            default -> user.grantAuthority(Role.ROLE_VIEWER);
           }
         });
 
@@ -184,18 +179,10 @@ public class UserService implements UserDetailsService {
         String change = entry.getKey();
         Object value = entry.getValue();
         switch (change) {
-          case "email":
-            userProfileRequest.setEmail((String) value);
-            break;
-          case "firstName":
-            userProfileRequest.setFirstName((String) value);
-            break;
-          case "lastName":
-            userProfileRequest.setLastName((String) value);
-            break;
-          case "password":
-            userProfileRequest.setPassword(encoder.encode((String) value));
-            break;
+          case "email" -> userProfileRequest.setEmail((String) value);
+          case "firstName" -> userProfileRequest.setFirstName((String) value);
+          case "lastName" -> userProfileRequest.setLastName((String) value);
+          case "password" -> userProfileRequest.setPassword(encoder.encode((String) value));
         }
       }
     }
