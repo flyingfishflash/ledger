@@ -4,6 +4,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 import net.flyingfishflash.ledger.commodities.data.Commodity;
 import net.flyingfishflash.ledger.commodities.data.CommodityRepository;
+import net.flyingfishflash.ledger.commodities.exceptions.CommodityNotFoundException;
 import net.flyingfishflash.ledger.foundation.IdentifierFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,26 +59,36 @@ public class CommodityService {
 
   public Commodity findById(Long commodityId) {
 
-    return commodityRepository.findById(commodityId).orElseThrow(RuntimeException::new);
+    return commodityRepository
+        .findById(commodityId)
+        .orElseThrow(() -> new CommodityNotFoundException(commodityId));
   }
 
   public Commodity findByGuid(String guid) {
 
-    return commodityRepository.findByGuid(guid).orElseThrow(RuntimeException::new);
+    return commodityRepository
+        .findByGuid(guid)
+        .orElseThrow(() -> new CommodityNotFoundException(guid));
   }
 
   public List<Commodity> findByMnemonic(String mnemonic) {
 
-    return commodityRepository.findByMnemonic(mnemonic).orElseThrow(RuntimeException::new);
+    return commodityRepository
+        .findByMnemonic(mnemonic)
+        .orElseThrow(() -> new CommodityNotFoundException(mnemonic));
   }
 
   public List<Commodity> findByNameSpace(String nameSpace) {
 
-    return commodityRepository.findByNamespace(nameSpace).orElseThrow(RuntimeException::new);
+    return commodityRepository
+        .findByNamespace(nameSpace)
+        .orElseThrow(() -> new CommodityNotFoundException(nameSpace));
   }
 
   public Commodity findByNameSpaceAndMnemonic(String nameSpace, String mnemonic) {
 
-    return commodityRepository.findByNamespaceAndMnemonic(nameSpace, mnemonic).orElseThrow(RuntimeException::new);
+    return commodityRepository
+        .findByNamespaceAndMnemonic(nameSpace, mnemonic)
+        .orElseThrow(() -> new CommodityNotFoundException(mnemonic));
   }
 }
