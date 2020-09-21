@@ -1,9 +1,10 @@
 package net.flyingfishflash.ledger.prices.service;
 
 import java.util.List;
+import net.flyingfishflash.ledger.foundation.IdentifierFactory;
 import net.flyingfishflash.ledger.prices.data.Price;
 import net.flyingfishflash.ledger.prices.data.PriceRepository;
-import net.flyingfishflash.ledger.foundation.IdentifierFactory;
+import net.flyingfishflash.ledger.prices.exceptions.PriceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -41,9 +42,9 @@ public class PriceService {
     return priceRepository.save(price);
   }
 
-  public void deletePrice(Price price) {
+  public void deletePrice(Long priceId) {
 
-    priceRepository.delete(price);
+    priceRepository.deleteById(priceId);
   }
 
   public void deleteAllPrices() {
@@ -53,11 +54,11 @@ public class PriceService {
 
   public Price findById(Long id) {
 
-    return priceRepository.findById(id).orElseThrow(RuntimeException::new);
+    return priceRepository.findById(id).orElseThrow(() -> new PriceNotFoundException(id));
   }
 
   public Price findByGuid(String guid) {
 
-    return priceRepository.findByGuid(guid).orElseThrow(RuntimeException::new);
+    return priceRepository.findByGuid(guid).orElseThrow(() -> new PriceNotFoundException(guid));
   }
 }
