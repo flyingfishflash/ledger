@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'org.springframework.boot' version '2.3.4.RELEASE'
+    id 'fr.brouillard.oss.gradle.jgitver' version '0.10.0-rc03'
 }
 
 repositories {
@@ -17,6 +18,7 @@ repositories {
 }
 
 dependencies {
+    // implementation 'org.springframework.boot:spring-boot-starter-actuator:2.3.4.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.3.4.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-websocket:2.3.4.RELEASE'
@@ -75,12 +77,25 @@ task allTests(type: Test, dependsOn: test) {
     }
 }
 
+task finalize {
+    doLast {
+        println('Version: ' + version)
+    }
+}
+
+springBoot {
+    buildInfo()
+}
+
 check.dependsOn integrationTests
 
 integrationTests.mustRunAfter test
 
+build.finalizedBy(finalize)
+
+bootJar.archiveFileName = "ledger.jar"
+
 group = 'net.flyingfishflash'
-version = '0.0.1-SNAPSHOT'
 description = 'Ledger'
 sourceCompatibility = '14'
 
