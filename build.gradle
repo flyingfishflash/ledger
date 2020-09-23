@@ -79,7 +79,7 @@ task allTests(type: Test, dependsOn: test) {
 
 task finalize {
     doLast {
-        println('Version: ' + version)
+        println(version)
     }
 }
 
