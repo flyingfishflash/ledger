@@ -1,9 +1,9 @@
 package net.flyingfishflash.ledger.foundation.users.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,9 +47,9 @@ public class UserControllerTests {
 
   @InjectMocks UserController userController;
 
-  @Mock UserService userService;
+  @Mock private UserService userService;
 
-  // @Mock AuthenticationFacade authenticationFacade;
+  @Mock private Principal mockPrincipal;
 
   private JacksonTester<UserProfileResponse> jsonUserProfileResponse;
   private JacksonTester<UserCreateRequest> jsonUserCreateRequest;
@@ -91,29 +92,25 @@ public class UserControllerTests {
 
   @Test
   public void profileByUsername() throws Exception {
-    assertTrue(true);
 
-    /*
-        TODO: understand how to mock the authenticated username
-        given(userService.profileByUsername(anyString()))
-            .willReturn(new UserProfileResponse(2L, "Email", "First Name", "Last Name"));
+    UserProfileResponse userProfileResponse =
+        new UserProfileResponse(2L, "Email", "First Name", "Last Name");
 
-        MockHttpServletResponse response =
-            mvc.perform(get("/api/v1/ledger/users/profile").accept(MediaType.APPLICATION_JSON))
-                .andReturn()
-                .getResponse();
+    given(mockPrincipal.getName()).willReturn("Any Principal");
 
-        System.out.println(response.getContentAsString());
+    given(userService.profileByUsername(anyString())).willReturn(userProfileResponse);
 
-        verify(userService, times(1)).profileByUsername(anyString());
+    MockHttpServletResponse response =
+        mvc.perform(get("/api/v1/ledger/users/profile").principal(mockPrincipal))
+            .andReturn()
+            .getResponse();
 
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString())
-            .isEqualTo(
-                jsonUserProfile
-                    .write(new UserProfileResponse(2L, "Email", "First Name", "Last Name"))
-                    .getJson());
-    */
+    verify(userService, times(1)).profileByUsername(anyString());
+
+    assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+
+    assertThat(response.getContentAsString())
+        .isEqualTo(jsonUserProfileResponse.write(userProfileResponse).getJson());
   }
 
   @Test

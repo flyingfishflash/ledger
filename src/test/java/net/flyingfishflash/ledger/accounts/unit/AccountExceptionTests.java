@@ -1,73 +1,94 @@
 package net.flyingfishflash.ledger.accounts.unit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import net.flyingfishflash.ledger.accounts.exceptions.AccountException;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
 import net.flyingfishflash.ledger.accounts.exceptions.EligibleParentAccountNotFoundException;
+import net.flyingfishflash.ledger.accounts.exceptions.NextSiblingAccountNotFoundException;
+import net.flyingfishflash.ledger.accounts.exceptions.PrevSiblingAccountNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 public class AccountExceptionTests {
 
+  private static class TestAccountException extends AccountException {
+
+    private TestAccountException() {
+      super("Test Account Exception");
+    }
+  }
+
+  @Test
+  public void testAccountException_getHttpStatus() {
+    TestAccountException testAccountException = new TestAccountException();
+    assertThat(testAccountException.getHttpStatus()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
   @Test
   public void testAccountException_getErrorDomain() {
-    AccountException accountException =
-        new AccountNotFoundException("This is an account Exception");
-
-    assertEquals("Accounts", accountException.getErrorDomain());
+    TestAccountException testAccountException = new TestAccountException();
+    assertThat(testAccountException.getErrorDomain()).isEqualTo("Accounts");
   }
 
   @Test
-  public void testAccountException_getHttpStatus1() {
-    AccountException accountException =
-        new AccountNotFoundException("This is an account Exception");
-
-    assertEquals(HttpStatus.NOT_FOUND, accountException.getHttpStatus());
+  public void testAccountException_getErrorSubject() {
+    TestAccountException testAccountException = new TestAccountException();
+    assertThat(testAccountException.getErrorSubject()).isEqualTo("Account");
   }
 
   @Test
-  public void testAccountException_getHttpStatus2() {
-
-    AccountException accountException =
-        new AccountNotFoundException(1L, "Account Not Found Exception");
-
-    assertEquals(HttpStatus.NOT_FOUND, accountException.getHttpStatus());
+  public void testAccountNotFoundException_getHttpStatus1() {
+    AccountNotFoundException accountException = new AccountNotFoundException("Account Guid");
+    assertThat(accountException.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
   }
 
   @Test
-  public void testAccountException_getHttpStatus3() {
+  public void testAccountNotFoundException_getHttpStatus2() {
+    AccountNotFoundException accountException =
+        new AccountNotFoundException(1L, "Exception Context");
+    assertThat(accountException.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+  }
 
-    AccountException accountException =
-        new AccountNotFoundException("any guid", "Account Not Found Exception");
-
-    assertEquals(HttpStatus.NOT_FOUND, accountException.getHttpStatus());
+  @Test
+  public void testAccountNotFoundException_getHttpStatus3() {
+    AccountNotFoundException accountException =
+        new AccountNotFoundException("any guid", "Exception Context");
+    assertThat(accountException.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
   }
 
   @Test
   public void testEligibleParentAccountNotFoundException_getHttpStatus1() {
-
-    AccountException accountException =
+    EligibleParentAccountNotFoundException accountException =
         new EligibleParentAccountNotFoundException("guid");
-
-    assertEquals(HttpStatus.NOT_FOUND, accountException.getHttpStatus());
+    assertThat(accountException.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
   }
 
   @Test
   public void testEligibleParentAccountNotFoundException_getHttpStatus2() {
-
-    AccountException accountException =
-        new EligibleParentAccountNotFoundException(1L, "Account Name");
-
-    assertEquals(HttpStatus.NOT_FOUND, accountException.getHttpStatus());
+    EligibleParentAccountNotFoundException accountException =
+        new EligibleParentAccountNotFoundException(1L, "Exception Context");
+    assertThat(accountException.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
   }
 
   @Test
   public void testEligibleParentAccountNotFoundException_getHttpStatus3() {
+    EligibleParentAccountNotFoundException accountException =
+        new EligibleParentAccountNotFoundException("guid", "Exception Context");
+    assertThat(accountException.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+  }
 
-    AccountException accountException =
-        new EligibleParentAccountNotFoundException("guid", "Account Name");
+  @Test
+  public void testNextSiblingAccountNotFoundException_getHttpsStatus1() {
+    NextSiblingAccountNotFoundException accountException =
+        new NextSiblingAccountNotFoundException("Account Long Name", 1L);
+    assertThat(accountException.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+  }
 
-    assertEquals(HttpStatus.NOT_FOUND, accountException.getHttpStatus());
+  @Test
+  public void testPrevSiblingAccountNotFoundException_getHttpsStatus1() {
+    PrevSiblingAccountNotFoundException accountException =
+        new PrevSiblingAccountNotFoundException("Account Long Name", 1L);
+    assertThat(accountException.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
   }
 }

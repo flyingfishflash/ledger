@@ -9,5 +9,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootConfiguration
 @EnableAutoConfiguration
-@EnableJpaRepositories(basePackages = {"net.flyingfishflash.ledger.commodities"})
+@EnableJpaRepositories(
+    basePackages = {
+      "net.flyingfishflash.ledger.commodities",
+      "net.flyingfishflash.ledger.foundation",
+    })
 public class CommodityTestConfiguration extends CommodityConfiguration {}

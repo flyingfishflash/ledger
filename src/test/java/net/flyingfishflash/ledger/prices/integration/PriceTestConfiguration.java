@@ -9,5 +9,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootConfiguration
 @EnableAutoConfiguration
-@EnableJpaRepositories(basePackages = {"net.flyingfishflash.ledger.prices"})
+@EnableJpaRepositories(
+    basePackages = {
+      "net.flyingfishflash.ledger.prices",
+      "net.flyingfishflash.ledger.foundation",
+    })
 public class PriceTestConfiguration extends PriceConfiguration {}

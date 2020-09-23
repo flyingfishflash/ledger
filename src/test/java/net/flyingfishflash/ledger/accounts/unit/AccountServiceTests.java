@@ -76,7 +76,7 @@ public class AccountServiceTests {
               accountService.findByGuid("Any Guid");
             });
     verify(accountRepository).findByGuid(anyString());
-    assertEquals("Account not found for guid Any Guid", exception.getLocalizedMessage());
+    assertEquals("Account not found for guid 'Any Guid'", exception.getLocalizedMessage());
   }
 
   @Test

@@ -13,7 +13,7 @@ import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
 import net.flyingfishflash.ledger.accounts.exceptions.EligibleParentAccountNotFoundException;
 import net.flyingfishflash.ledger.accounts.exceptions.NextSiblingAccountNotFoundException;
 import net.flyingfishflash.ledger.accounts.exceptions.PrevSiblingAccountNotFoundException;
-import net.flyingfishflash.ledger.utilities.IdentifierFactory;
+import net.flyingfishflash.ledger.foundation.IdentifierFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

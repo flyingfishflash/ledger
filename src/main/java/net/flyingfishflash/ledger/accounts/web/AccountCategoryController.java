@@ -7,7 +7,7 @@ import java.util.List;
 import net.flyingfishflash.ledger.accounts.data.AccountCategory;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
 import net.flyingfishflash.ledger.accounts.service.AccountCategoryService;
-import net.flyingfishflash.ledger.utilities.validators.Enum;
+import net.flyingfishflash.ledger.foundation.validators.Enum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -3,14 +3,14 @@ CREATE sequence hibernate_sequence START WITH 1 increment BY 1;
 CREATE TABLE account (
 	id BIGINT NOT NULL
 	,category VARCHAR(255)
-	,code VARCHAR(255)
-	,currency VARCHAR(255)
+	,code VARCHAR(128)
+	,currency VARCHAR(10)
 	,description VARCHAR(2048)
 	,discriminator VARCHAR(255) NOT NULL
 	,guid VARCHAR(255)
 	,hidden boolean
 	,longName VARCHAR(4096)
-	,name VARCHAR(255)
+	,name VARCHAR(128)
 	,normalBalance VARCHAR(255)
 	,note VARCHAR(4096)
 	,parentId BIGINT

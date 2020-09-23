@@ -1,11 +1,9 @@
-/*
 package net.flyingfishflash.ledger.application.integration;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.security.test.context.support.WithMockUser;
 
 @ComponentScan(
     basePackages = {
@@ -18,18 +16,12 @@ import org.springframework.security.test.context.support.WithMockUser;
       // "spring.flyway.enabled=false",
       // "spring.jpa.hibernate.ddl-auto=create-drop",
     })
-*/
-/*
-@SpringBootConfiguration
-@EnableAutoConfiguration
-*//*
-
+// @SpringBootConfiguration
+// @EnableAutoConfiguration
 class ApplicationTests {
 
-  @WithMockUser(value = "admin")
   @Test
   void applicationContextLoads() {
     System.out.println("\nApplication Integration Test\n");
   }
 }
-*/

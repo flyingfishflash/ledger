@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiResponses;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.Map;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import net.flyingfishflash.ledger.accounts.data.Account;
@@ -20,12 +21,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -93,6 +96,30 @@ public class AccountController {
     accountService.removeSubTree(account);
 
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
+
+  @PatchMapping("{id}")
+  @ResponseBody
+  @ApiOperation(value = "Update the details of a single account")
+  @ApiResponses(value = {@ApiResponse(code = 400, message = "Bad Request")})
+  public ResponseEntity<?> patchAccount(
+      @PathVariable("id") Long id, @RequestBody Map<String, Object> patchRequest) {
+
+    /*
+      if (newParent != account.getParentId() && newParent != account.getId()) {
+        accountService.insertAsLastChildOf(
+            account,
+            accountRepository
+                .findById(newParent)
+                .orElseThrow(
+                    () -> new IllegalArgumentException("Account Id " + newParent + " Not found")));
+      } else {
+        accountRepository.update(account);
+      }
+    */
+
+    // return accountService.patchAccount(id, patchRequest);
+    return new ResponseEntity<>("patchAccountResponse object", HttpStatus.OK);
   }
 
   // Change the position of an account in the hierarchy within the sibling level (down)

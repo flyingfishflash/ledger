@@ -1,0 +1,104 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.3.4.RELEASE'
+    id 'fr.brouillard.oss.gradle.jgitver' version '0.10.0-rc03'
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+
+    maven {
+        url = uri('https://jitpack.io')
+    }
+
+    maven {
+        url = uri('https://oss.jfrog.org/artifactory/oss-snapshot-local/')
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator:2.3.4.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.3.4.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket:2.3.4.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-validation:2.3.4.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-security:2.3.4.RELEASE'
+    implementation 'org.springframework.session:spring-session-core:2.3.1.RELEASE'
+    implementation 'org.springframework.session:spring-session-jdbc:2.3.1.RELEASE'
+    implementation 'jakarta.validation:jakarta.validation-api:2.0.2'
+    implementation 'io.springfox:springfox-boot-starter:3.0.0-SNAPSHOT'
+    implementation 'com.github.eXsio:nestedj:5.0.3'
+    implementation 'com.h2database:h2:1.4.200'
+    implementation 'org.postgresql:postgresql:42.2.16'
+    implementation 'org.javamoney:moneta:1.4.2'
+    implementation 'javax.interceptor:javax.interceptor-api:1.2.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.2'
+    implementation 'org.flywaydb:flyway-core:6.5.6'
+    runtimeOnly 'javax.xml.bind:jaxb-api:2.3.1'
+    testImplementation 'org.springframework.security:spring-security-test:5.4.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE' exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+}
+
+test {
+    useJUnitPlatform()
+
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+
+    filter {
+        includeTestsMatching "net.flyingfishflash.ledger.*.unit.*"
+    }
+}
+
+task integrationTests(type: Test) {
+    useJUnitPlatform()
+
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+
+    filter {
+        includeTestsMatching "net.flyingfishflash.ledger.*.integration.*"
+    }
+}
+
+task allTests(type: Test, dependsOn: test) {
+
+    useJUnitPlatform()
+
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+
+    filter {
+        includeTestsMatching "net.flyingfishflash.ledger.*.integration.*"
+    }
+}
+
+task finalize {
+    doLast {
+        println('Version: ' + version)
+    }
+}
+
+springBoot {
+    buildInfo()
+}
+
+check.dependsOn integrationTests
+
+integrationTests.mustRunAfter test
+
+build.finalizedBy(finalize)
+
+bootJar.archiveFileName = "ledger.jar"
+
+group = 'net.flyingfishflash'
+description = 'Ledger'
+sourceCompatibility = '14'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}

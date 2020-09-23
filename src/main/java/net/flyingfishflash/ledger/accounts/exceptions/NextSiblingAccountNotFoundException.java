@@ -1,9 +1,7 @@
 package net.flyingfishflash.ledger.accounts.exceptions;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.PRECONDITION_FAILED)
 public class NextSiblingAccountNotFoundException extends AccountException {
 
   public NextSiblingAccountNotFoundException(String accountLongName, Long id) {
