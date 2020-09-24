@@ -13,7 +13,7 @@ steps:
     commands:
       - chmod +x drone-generate-docker-tags.sh
       - echo -n $(./drone-generate-docker-tags.sh) > .tags
-      - if [ "${DRONE_COMMIT_BRANCH}" = "master" ] ; then echo ",latest" >> .tags ; fi
+      - if [ "${DRONE_COMMIT_BRANCH}" = "master" ] || [ "${DRONE_COMMIT_BRANCH}" = "" ] ; then echo ",latest" >> .tags ; fi
       - cat .tags
 
   - name: publish feature branch
@@ -38,6 +38,10 @@ steps:
       branch:
         include:
           - master
+      event:
+        include:
+          - push
+          - tag
 
 trigger:
   event:
