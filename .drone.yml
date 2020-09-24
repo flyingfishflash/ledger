@@ -13,6 +13,7 @@ steps:
     commands:
       - chmod +x drone-generate-docker-tags.sh
       - echo -n $(./drone-generate-docker-tags.sh) > .tags
+      - if [ "${DRONE_COMMIT_BRANCH}" = "master" ] ; then echo ",latest" >> .tags ; fi
       - cat .tags
 
   - name: publish feature branch
