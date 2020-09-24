@@ -3,18 +3,23 @@ type: docker
 name: default
 
 steps:
-  - name: fetch
+  - name: fetch git tags
     image: alpine/git
     commands:
       - git fetch --tags
+
+  - name: generate docker tags
+    image: gradle:6.6-jdk14
+    commands:
+      - chmod +x drone-generate-docker-tags.sh
+      - echo -n $(./drone-generate-docker-tags.sh) > .tags
+      - cat .tags
 
   - name: publish feature branch
     image: plugins/docker
     settings:
       auto_tag: false
       repo: registry.flyingfishflash.net/flyingfishflash/ledger
-      tags:
-        - "${DRONE_COMMIT_BRANCH}"
     when:
       branch:
         exclude:
@@ -26,8 +31,12 @@ steps:
   - name: publish master branch
     image: plugins/docker
     settings:
-      auto_tag: true
+      auto_tag: false
       repo: registry.flyingfishflash.net/flyingfishflash/ledger
+    when:
+      branch:
+        include:
+          - master
 
 trigger:
   event:
