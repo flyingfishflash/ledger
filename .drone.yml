@@ -35,13 +35,9 @@ steps:
       auto_tag: false
       repo: registry.flyingfishflash.net/flyingfishflash/ledger
     when:
-      branch:
-        include:
-          - master
-      event:
-        include:
-          - push
-          - tag
+      ref:
+        - refs/heads/master
+        - refs/tags/*
 
 trigger:
   event:
