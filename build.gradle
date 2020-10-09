@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.3.4.RELEASE'
     id 'fr.brouillard.oss.gradle.jgitver' version '0.10.0-rc03'
+    id "com.diffplug.spotless" version "5.6.1"
 }
 
 repositories {
@@ -66,7 +67,6 @@ task integrationTests(type: Test) {
 }
 
 task allTests(type: Test, dependsOn: test) {
-
     useJUnitPlatform()
 
     testLogging {
@@ -102,4 +102,19 @@ sourceCompatibility = '14'
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+}
+
+spotless {
+    format 'misc', {
+        target '*.gradle', '*.md', '.gitignore'
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+
+    java {
+        googleJavaFormat('1.9')
+        trimTrailingWhitespace()
+        importOrder('java', 'javax', 'com', 'org', 'net.flyingfishflash.ledger')
+    }
 }
