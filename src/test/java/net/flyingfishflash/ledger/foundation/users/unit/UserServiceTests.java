@@ -20,7 +20,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
 import javax.validation.ConstraintViolationException;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import net.flyingfishflash.ledger.foundation.multitenancy.TenantService;
 import net.flyingfishflash.ledger.foundation.users.data.Role;
 import net.flyingfishflash.ledger.foundation.users.data.User;
@@ -32,14 +43,6 @@ import net.flyingfishflash.ledger.foundation.users.data.dto.UserProfileResponse;
 import net.flyingfishflash.ledger.foundation.users.exceptions.UserCreateException;
 import net.flyingfishflash.ledger.foundation.users.exceptions.UserNotFoundException;
 import net.flyingfishflash.ledger.foundation.users.service.UserService;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTests {

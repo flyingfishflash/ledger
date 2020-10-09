@@ -9,8 +9,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import net.flyingfishflash.ledger.commodities.data.Commodity;
+
 import pl.exsio.nestedj.model.NestedNode;
+
+import net.flyingfishflash.ledger.commodities.data.Commodity;
 
 @Entity
 public class Account implements NestedNode<Long> {

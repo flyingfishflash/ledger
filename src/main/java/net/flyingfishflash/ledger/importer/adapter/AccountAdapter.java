@@ -1,8 +1,14 @@
 package net.flyingfishflash.ledger.importer.adapter;
 
 import java.util.List;
+
 import javax.money.Monetary;
 import javax.money.UnknownCurrencyException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
 import net.flyingfishflash.ledger.ApplicationConfiguration;
 import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
@@ -10,9 +16,6 @@ import net.flyingfishflash.ledger.accounts.service.AccountService;
 import net.flyingfishflash.ledger.commodities.service.CommodityService;
 import net.flyingfishflash.ledger.importer.dto.GncAccount;
 import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 @Component
 public class AccountAdapter {
@@ -31,11 +34,14 @@ public class AccountAdapter {
    * Class constructor.
    *
    * <p>Translates GncAccount objects to Account objects and persists the results.
-   *  @param accountService Service class for interacting with accounts
+   *
+   * @param accountService Service class for interacting with accounts
    * @param commodityService Service class for interacting with commodities
    * @param gnucashFileImportStatus
    */
-  public AccountAdapter(AccountService accountService, CommodityService commodityService,
+  public AccountAdapter(
+      AccountService accountService,
+      CommodityService commodityService,
       GnucashFileImportStatus gnucashFileImportStatus) {
 
     this.accountService = accountService;
@@ -106,13 +112,13 @@ public class AccountAdapter {
         account.setName(gncAccount.getName());
         account.setHidden(gncAccount.isHidden());
         account.setPlaceholder(gncAccount.isPlaceholder());
-        account.setType(
-            AccountType.valueOf(prettyAccountType(gncAccount.getGncAccountType())));
+        account.setType(AccountType.valueOf(prettyAccountType(gncAccount.getGncAccountType())));
         /* Determine the currency and commodity associated with the account
          * TODO: Commodity and Currency are mutually exclusive. Review this situation.
          */
         if (gncAccount.getGncCommodityNamespace().equalsIgnoreCase("currency")) {
-          String currencyMnemonic = Monetary.getCurrency(gncAccount.getGncCommodity()).getCurrencyCode();
+          String currencyMnemonic =
+              Monetary.getCurrency(gncAccount.getGncCommodity()).getCurrencyCode();
           try {
             account.setCurrency(currencyMnemonic);
           } catch (UnknownCurrencyException e) {
@@ -135,7 +141,6 @@ public class AccountAdapter {
     }
     logger.info(persistedCount + " persisted");
     gnucashFileImportStatus.setAccountsPersisted(persistedCount);
-
   }
 
   /** Capitalize the first letter of the account type string */

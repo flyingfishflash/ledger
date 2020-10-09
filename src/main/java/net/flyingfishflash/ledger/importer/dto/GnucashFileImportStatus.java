@@ -1,14 +1,17 @@
 package net.flyingfishflash.ledger.importer.dto;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -32,7 +35,7 @@ public class GnucashFileImportStatus implements Serializable {
 
   private static final Logger logger = LoggerFactory.getLogger(GnucashFileImportStatus.class);
 
-  public class Component implements Serializable{
+  public class Component implements Serializable {
     public String component;
     public Integer gncCount = 0;
     public Integer sentToAdapter = 0;

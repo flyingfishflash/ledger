@@ -2,15 +2,17 @@ package net.flyingfishflash.ledger.importer;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.flyingfishflash.ledger.importer.adapter.CommodityAdapter;
-import net.flyingfishflash.ledger.importer.dto.GncCommodity;
-import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import net.flyingfishflash.ledger.importer.adapter.CommodityAdapter;
+import net.flyingfishflash.ledger.importer.dto.GncCommodity;
+import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
 
 /**
  * Handler for parsing commodity elements found in the GnuCash XML file. The discovered commodities
@@ -51,8 +53,8 @@ public class GncXmlCommodityHandler extends DefaultHandler {
    *     results.
    * @param gnucashFileImportStatus
    */
-  public GncXmlCommodityHandler(CommodityAdapter commodityAdapter,
-      GnucashFileImportStatus gnucashFileImportStatus) {
+  public GncXmlCommodityHandler(
+      CommodityAdapter commodityAdapter, GnucashFileImportStatus gnucashFileImportStatus) {
 
     this.commodityAdapter = commodityAdapter;
     this.gnucashFileImportStatus = gnucashFileImportStatus;

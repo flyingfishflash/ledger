@@ -4,10 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Comparator;
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
 import net.flyingfishflash.ledger.accounts.data.AccountCategory;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
 import net.flyingfishflash.ledger.accounts.service.AccountCategoryService;
-import org.junit.jupiter.api.Test;
 
 public class AccountCategoryServiceTests {
 

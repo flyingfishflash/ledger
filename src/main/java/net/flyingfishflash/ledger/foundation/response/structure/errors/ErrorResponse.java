@@ -1,6 +1,7 @@
 package net.flyingfishflash.ledger.foundation.response.structure.errors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import net.flyingfishflash.ledger.foundation.response.structure.ResponseApiStatusCode;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

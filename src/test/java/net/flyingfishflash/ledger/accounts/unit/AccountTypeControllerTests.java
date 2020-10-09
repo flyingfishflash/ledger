@@ -7,12 +7,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
-import net.flyingfishflash.ledger.accounts.data.AccountCategory;
-import net.flyingfishflash.ledger.accounts.data.AccountType;
-import net.flyingfishflash.ledger.accounts.service.AccountTypeService;
-import net.flyingfishflash.ledger.accounts.web.AccountTypeController;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +22,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import net.flyingfishflash.ledger.accounts.data.AccountCategory;
+import net.flyingfishflash.ledger.accounts.data.AccountType;
+import net.flyingfishflash.ledger.accounts.service.AccountTypeService;
+import net.flyingfishflash.ledger.accounts.web.AccountTypeController;
 
 @ExtendWith(MockitoExtension.class)
 public class AccountTypeControllerTests {

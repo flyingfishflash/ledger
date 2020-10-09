@@ -3,6 +3,7 @@ package net.flyingfishflash.ledger.prices.data;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import net.flyingfishflash.ledger.commodities.data.Commodity;
 
 @Entity
@@ -27,11 +29,11 @@ public class Price {
   @ManyToOne
   @JoinColumn(name = "commodity_id")
   private Commodity commodity;
-/*
-  @ManyToOne
-  @JoinColumn(name = "currency_id")
-  private Commodity currency;
-*/
+  /*
+    @ManyToOne
+    @JoinColumn(name = "currency_id")
+    private Commodity currency;
+  */
   @Column(name = "currency", length = 3)
   private String currency;
 
@@ -149,5 +151,4 @@ public class Price {
   public void setPrice(BigDecimal price) {
     this.price = price;
   }
-
 }

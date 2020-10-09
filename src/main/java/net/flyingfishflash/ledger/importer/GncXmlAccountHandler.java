@@ -4,15 +4,17 @@ import static java.util.Comparator.comparing;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import net.flyingfishflash.ledger.importer.adapter.AccountAdapter;
-import net.flyingfishflash.ledger.importer.dto.GncAccount;
-import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import net.flyingfishflash.ledger.importer.adapter.AccountAdapter;
+import net.flyingfishflash.ledger.importer.dto.GncAccount;
+import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
 
 /**
  * Handler for parsing Account elements found in the GnuCash XML file. The discovered accounts are
@@ -50,8 +52,8 @@ public class GncXmlAccountHandler extends DefaultHandler {
   String slotTagAttribute = null;
 
   /** Creates a handler for handling XML stream events when parsing the XML backup file */
-  public GncXmlAccountHandler(AccountAdapter accountAdapter,
-      GnucashFileImportStatus gnucashFileImportStatus) {
+  public GncXmlAccountHandler(
+      AccountAdapter accountAdapter, GnucashFileImportStatus gnucashFileImportStatus) {
 
     this.accountAdapter = accountAdapter;
     this.gnucashFileImportStatus = gnucashFileImportStatus;
@@ -212,7 +214,6 @@ public class GncXmlAccountHandler extends DefaultHandler {
     Comparator<GncAccount> gncAccountComparator =
         (comparing(GncAccount::getAccountCode, Comparator.nullsFirst(Comparator.naturalOrder())));
     gncAccounts.sort(gncAccountComparator);
-
 
     accountAdapter.addRecords(gncAccounts);
     gncAccounts = null;

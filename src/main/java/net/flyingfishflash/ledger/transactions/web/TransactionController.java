@@ -1,11 +1,12 @@
 package net.flyingfishflash.ledger.transactions.web;
 
-import net.flyingfishflash.ledger.transactions.service.TransactionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import net.flyingfishflash.ledger.transactions.service.TransactionService;
 
 @RestController
 @Validated
@@ -16,9 +17,7 @@ public class TransactionController {
 
   private TransactionService transactionService;
 
-
-  public TransactionController(
-      TransactionService transactionService) {
+  public TransactionController(TransactionService transactionService) {
     this.transactionService = transactionService;
   }
 }

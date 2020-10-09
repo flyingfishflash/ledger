@@ -1,12 +1,14 @@
 package net.flyingfishflash.ledger.foundation;
 
 import javax.sql.DataSource;
-import net.flyingfishflash.ledger.foundation.multitenancy.TenantIdentifierResolver;
-import net.flyingfishflash.ledger.foundation.users.data.UserRepository;
+
 import org.flywaydb.core.Flyway;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+
+import net.flyingfishflash.ledger.foundation.multitenancy.TenantIdentifierResolver;
+import net.flyingfishflash.ledger.foundation.users.data.UserRepository;
 
 @Component
 @Order(1)

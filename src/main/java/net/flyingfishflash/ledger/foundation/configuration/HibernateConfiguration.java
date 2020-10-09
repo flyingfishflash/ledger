@@ -2,8 +2,9 @@ package net.flyingfishflash.ledger.foundation.configuration;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.sql.DataSource;
-import net.flyingfishflash.ledger.Application;
+
 import org.hibernate.MultiTenancyStrategy;
 import org.hibernate.cfg.Environment;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
@@ -15,6 +16,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+
+import net.flyingfishflash.ledger.Application;
 
 @Configuration
 public class HibernateConfiguration {

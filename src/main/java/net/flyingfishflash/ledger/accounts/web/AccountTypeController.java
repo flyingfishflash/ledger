@@ -1,13 +1,11 @@
 package net.flyingfishflash.ledger.accounts.web;
 
+import java.util.List;
+
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import java.util.List;
-import net.flyingfishflash.ledger.accounts.data.AccountType;
-import net.flyingfishflash.ledger.accounts.data.AccountCategory;
-import net.flyingfishflash.ledger.accounts.service.AccountTypeService;
-import net.flyingfishflash.ledger.foundation.validators.Enum;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import net.flyingfishflash.ledger.accounts.data.AccountCategory;
+import net.flyingfishflash.ledger.accounts.data.AccountType;
+import net.flyingfishflash.ledger.accounts.service.AccountTypeService;
+import net.flyingfishflash.ledger.foundation.validators.Enum;
 
 @RestController
 @Validated
@@ -36,11 +39,9 @@ public class AccountTypeController {
   // Obtain the List of Account Types associated with an Account Category
   @GetMapping(value = "by-category")
   @ApiOperation(value = "Retrieve the account types associated with an account category")
-  @ApiResponses(value = { @ApiResponse(code = 400, message = "Bad Request") })
+  @ApiResponses(value = {@ApiResponse(code = 400, message = "Bad Request")})
   public List<AccountType> findAccountTypesByCategory(
-      @RequestParam(name = "category")
-          @Enum(enumClass = AccountCategory.class)
-          String category) {
+      @RequestParam(name = "category") @Enum(enumClass = AccountCategory.class) String category) {
     return accountTypeService.findAccountTypesByCategory(category);
   }
 }

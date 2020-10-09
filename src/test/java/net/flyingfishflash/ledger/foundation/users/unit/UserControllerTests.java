@@ -12,21 +12,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.flyingfishflash.ledger.foundation.users.data.Role;
-import net.flyingfishflash.ledger.foundation.users.data.User;
-import net.flyingfishflash.ledger.foundation.users.data.dto.UserCreateRequest;
-import net.flyingfishflash.ledger.foundation.users.data.dto.UserCreateResponse;
-import net.flyingfishflash.ledger.foundation.users.data.dto.UserDeleteResponse;
-import net.flyingfishflash.ledger.foundation.users.data.dto.UserProfileResponse;
-import net.flyingfishflash.ledger.foundation.users.service.UserService;
-import net.flyingfishflash.ledger.foundation.users.web.UserController;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,6 +33,15 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import net.flyingfishflash.ledger.foundation.users.data.Role;
+import net.flyingfishflash.ledger.foundation.users.data.User;
+import net.flyingfishflash.ledger.foundation.users.data.dto.UserCreateRequest;
+import net.flyingfishflash.ledger.foundation.users.data.dto.UserCreateResponse;
+import net.flyingfishflash.ledger.foundation.users.data.dto.UserDeleteResponse;
+import net.flyingfishflash.ledger.foundation.users.data.dto.UserProfileResponse;
+import net.flyingfishflash.ledger.foundation.users.service.UserService;
+import net.flyingfishflash.ledger.foundation.users.web.UserController;
 
 @ExtendWith(MockitoExtension.class)
 public class UserControllerTests {

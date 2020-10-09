@@ -1,7 +1,5 @@
 package net.flyingfishflash.ledger.foundation.configuration;
 
-import net.flyingfishflash.ledger.foundation.authentication.CustomAuthenticationEntryPoint;
-import net.flyingfishflash.ledger.foundation.users.service.UserService;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +15,9 @@ import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.session.FindByIndexNameSessionRepository;
 import org.springframework.session.Session;
 import org.springframework.session.security.SpringSessionBackedSessionRegistry;
+
+import net.flyingfishflash.ledger.foundation.authentication.CustomAuthenticationEntryPoint;
+import net.flyingfishflash.ledger.foundation.users.service.UserService;
 
 @Configuration
 @EnableWebSecurity

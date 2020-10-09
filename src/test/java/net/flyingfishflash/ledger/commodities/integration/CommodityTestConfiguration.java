@@ -1,9 +1,10 @@
 package net.flyingfishflash.ledger.commodities.integration;
 
-import net.flyingfishflash.ledger.commodities.CommodityConfiguration;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
+import net.flyingfishflash.ledger.commodities.CommodityConfiguration;
 
 // Integration Test Configuration
 

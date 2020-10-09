@@ -14,16 +14,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import net.flyingfishflash.ledger.commodities.data.Commodity;
-import net.flyingfishflash.ledger.commodities.data.CommodityRepository;
-import net.flyingfishflash.ledger.commodities.exceptions.CommodityNotFoundException;
-import net.flyingfishflash.ledger.commodities.service.CommodityService;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import net.flyingfishflash.ledger.commodities.data.Commodity;
+import net.flyingfishflash.ledger.commodities.data.CommodityRepository;
+import net.flyingfishflash.ledger.commodities.exceptions.CommodityNotFoundException;
+import net.flyingfishflash.ledger.commodities.service.CommodityService;
 
 @ExtendWith(MockitoExtension.class)
 public class CommodityServiceTests {

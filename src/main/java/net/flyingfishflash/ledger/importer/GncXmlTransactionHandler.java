@@ -7,16 +7,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.flyingfishflash.ledger.importer.adapter.TransactionAdapter;
-import net.flyingfishflash.ledger.importer.dto.GncSplit;
-import net.flyingfishflash.ledger.importer.dto.GncTransaction;
-import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import net.flyingfishflash.ledger.importer.adapter.TransactionAdapter;
+import net.flyingfishflash.ledger.importer.dto.GncSplit;
+import net.flyingfishflash.ledger.importer.dto.GncTransaction;
+import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
 
 /**
  * Handler for parsing Transaction and LedgerItem elements found in the GnuCash XML file. The
@@ -60,15 +62,14 @@ public class GncXmlTransactionHandler extends DefaultHandler {
   /** Saves the attribute of the slot tag Used for determining where we are in the budget amounts */
   String slotTagAttribute = null;
 
-
   /**
    * Creates a handler for handling XML stream events when parsing the XML backup file
    *
    * @param transactionAdapter
    * @param gnucashFileImportStatus
    */
-  public GncXmlTransactionHandler(TransactionAdapter transactionAdapter,
-      GnucashFileImportStatus gnucashFileImportStatus) {
+  public GncXmlTransactionHandler(
+      TransactionAdapter transactionAdapter, GnucashFileImportStatus gnucashFileImportStatus) {
     this.transactionAdapter = transactionAdapter;
     this.gnucashFileImportStatus = gnucashFileImportStatus;
   }

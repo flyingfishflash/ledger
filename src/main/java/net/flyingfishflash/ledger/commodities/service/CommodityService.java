@@ -1,14 +1,17 @@
 package net.flyingfishflash.ledger.commodities.service;
 
 import java.util.List;
+
 import javax.transaction.Transactional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
 import net.flyingfishflash.ledger.commodities.data.Commodity;
 import net.flyingfishflash.ledger.commodities.data.CommodityRepository;
 import net.flyingfishflash.ledger.commodities.exceptions.CommodityNotFoundException;
 import net.flyingfishflash.ledger.foundation.IdentifierFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 @Service
 @Transactional

@@ -1,15 +1,11 @@
 package net.flyingfishflash.ledger.foundation.authentication.web;
 
 import java.security.Principal;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.flyingfishflash.ledger.foundation.authentication.AuthenticationFacade;
-import net.flyingfishflash.ledger.foundation.authentication.payload.response.SignInResponse;
-import net.flyingfishflash.ledger.foundation.authentication.payload.response.SignOutResponse;
-import net.flyingfishflash.ledger.foundation.users.data.User;
-import net.flyingfishflash.ledger.foundation.users.data.UserRepository;
-import net.flyingfishflash.ledger.foundation.users.service.UserService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -21,6 +17,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import net.flyingfishflash.ledger.foundation.authentication.AuthenticationFacade;
+import net.flyingfishflash.ledger.foundation.authentication.payload.response.SignInResponse;
+import net.flyingfishflash.ledger.foundation.authentication.payload.response.SignOutResponse;
+import net.flyingfishflash.ledger.foundation.users.data.User;
+import net.flyingfishflash.ledger.foundation.users.data.UserRepository;
+import net.flyingfishflash.ledger.foundation.users.service.UserService;
 
 @RestController
 @RequestMapping("/api/v1/ledger/auth")

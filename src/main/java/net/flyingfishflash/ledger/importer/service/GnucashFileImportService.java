@@ -1,6 +1,5 @@
 package net.flyingfishflash.ledger.importer.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -10,21 +9,15 @@ import java.io.PushbackInputStream;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.zip.GZIPInputStream;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import net.flyingfishflash.ledger.accounts.service.AccountService;
-import net.flyingfishflash.ledger.commodities.service.CommodityService;
-import net.flyingfishflash.ledger.importer.GncXmlAccountHandler;
-import net.flyingfishflash.ledger.importer.GncXmlCommodityHandler;
-import net.flyingfishflash.ledger.importer.GncXmlPriceHandler;
-import net.flyingfishflash.ledger.importer.GncXmlTransactionHandler;
-import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
-import net.flyingfishflash.ledger.prices.service.PriceService;
-import net.flyingfishflash.ledger.foundation.WebSocketSessionId;
-import net.flyingfishflash.ledger.transactions.service.TransactionService;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -33,6 +26,17 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
+
+import net.flyingfishflash.ledger.accounts.service.AccountService;
+import net.flyingfishflash.ledger.commodities.service.CommodityService;
+import net.flyingfishflash.ledger.foundation.WebSocketSessionId;
+import net.flyingfishflash.ledger.importer.GncXmlAccountHandler;
+import net.flyingfishflash.ledger.importer.GncXmlCommodityHandler;
+import net.flyingfishflash.ledger.importer.GncXmlPriceHandler;
+import net.flyingfishflash.ledger.importer.GncXmlTransactionHandler;
+import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
+import net.flyingfishflash.ledger.prices.service.PriceService;
+import net.flyingfishflash.ledger.transactions.service.TransactionService;
 
 @Service
 public class GnucashFileImportService {
@@ -193,10 +197,11 @@ public class GnucashFileImportService {
         "/import/status/counts-user" + webSocketSessionId.getSessionId(),
         "{ \"message\" : \"new counts available\" }");
 
-    //ObjectMapper mapper = new ObjectMapper();
-    //String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(gnucashFileImportStatus);
+    // ObjectMapper mapper = new ObjectMapper();
+    // String json =
+    // mapper.writerWithDefaultPrettyPrinter().writeValueAsString(gnucashFileImportStatus);
 
-    //simpMessagingTemplate.convertAndSend(
+    // simpMessagingTemplate.convertAndSend(
     //    "/import/status/counts-user" + webSocketSessionId.getSessionId(), json);
   }
 }

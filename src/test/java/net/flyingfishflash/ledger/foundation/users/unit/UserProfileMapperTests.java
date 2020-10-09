@@ -2,11 +2,12 @@ package net.flyingfishflash.ledger.foundation.users.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.Test;
+
 import net.flyingfishflash.ledger.foundation.users.data.User;
 import net.flyingfishflash.ledger.foundation.users.data.dto.UserProfileMapper;
 import net.flyingfishflash.ledger.foundation.users.data.dto.UserProfileRequest;
 import net.flyingfishflash.ledger.foundation.users.data.dto.UserProfileResponse;
-import org.junit.jupiter.api.Test;
 
 public class UserProfileMapperTests {
 

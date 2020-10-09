@@ -1,10 +1,12 @@
 package net.flyingfishflash.ledger.foundation.configuration;
 
 import javax.sql.DataSource;
-import net.flyingfishflash.ledger.foundation.multitenancy.TenantIdentifierResolver;
+
 import org.flywaydb.core.Flyway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import net.flyingfishflash.ledger.foundation.multitenancy.TenantIdentifierResolver;
 
 @Configuration
 public class FlyWayConfiguration {

@@ -5,8 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import net.flyingfishflash.ledger.accounts.data.AccountType;
+
 import org.junit.jupiter.api.Test;
+
+import net.flyingfishflash.ledger.accounts.data.AccountType;
 
 public class AccountTypeTests {
 

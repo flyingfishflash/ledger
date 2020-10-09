@@ -5,16 +5,19 @@ import static java.util.Comparator.comparing;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
 import javax.money.Monetary;
 import javax.money.UnknownCurrencyException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
 import net.flyingfishflash.ledger.commodities.service.CommodityService;
 import net.flyingfishflash.ledger.importer.dto.GncPrice;
 import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
 import net.flyingfishflash.ledger.prices.data.Price;
 import net.flyingfishflash.ledger.prices.service.PriceService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 @Component
 public class PriceAdapter {
@@ -35,11 +38,14 @@ public class PriceAdapter {
    * Class constructor.
    *
    * <p>Translates GncPrice objects to Price objects and persists the results.
-   *  @param priceService Service class for interacting with prices
+   *
+   * @param priceService Service class for interacting with prices
    * @param commodityService Service class for interacting with commodities
    * @param gnucashFileImportStatus
    */
-  public PriceAdapter(PriceService priceService, CommodityService commodityService,
+  public PriceAdapter(
+      PriceService priceService,
+      CommodityService commodityService,
       GnucashFileImportStatus gnucashFileImportStatus) {
 
     this.priceService = priceService;

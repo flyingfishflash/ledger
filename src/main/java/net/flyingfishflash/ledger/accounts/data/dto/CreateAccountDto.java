@@ -14,13 +14,15 @@ package net.flyingfishflash.ledger.accounts.data.dto;
 }
 */
 
-import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+
+import io.swagger.annotations.ApiModelProperty;
+
 import net.flyingfishflash.ledger.foundation.validators.Enum;
 
 public class CreateAccountDto {
@@ -157,17 +159,32 @@ public class CreateAccountDto {
 
   @Override
   public String toString() {
-    return "CreateAccountDto{" +
-        "code='" + code + '\'' +
-        ", description='" + description + '\'' +
-        ", hidden=" + hidden +
-        ", mode='" + mode + '\'' +
-        ", name='" + name + '\'' +
-        ", note='" + note + '\'' +
-        ", parentId=" + parentId +
-        ", placeholder=" + placeholder +
-        ", siblingId=" + siblingId +
-        ", taxRelated=" + taxRelated +
-        '}';
+    return "CreateAccountDto{"
+        + "code='"
+        + code
+        + '\''
+        + ", description='"
+        + description
+        + '\''
+        + ", hidden="
+        + hidden
+        + ", mode='"
+        + mode
+        + '\''
+        + ", name='"
+        + name
+        + '\''
+        + ", note='"
+        + note
+        + '\''
+        + ", parentId="
+        + parentId
+        + ", placeholder="
+        + placeholder
+        + ", siblingId="
+        + siblingId
+        + ", taxRelated="
+        + taxRelated
+        + '}';
   }
 }

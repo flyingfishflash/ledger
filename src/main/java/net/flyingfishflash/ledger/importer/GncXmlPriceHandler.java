@@ -4,15 +4,17 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import net.flyingfishflash.ledger.importer.adapter.PriceAdapter;
-import net.flyingfishflash.ledger.importer.dto.GncPrice;
-import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import net.flyingfishflash.ledger.importer.adapter.PriceAdapter;
+import net.flyingfishflash.ledger.importer.dto.GncPrice;
+import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
 
 /**
  * Handler for parsing prices found in the GnuCash XML file. The prices are passed to an adapter
@@ -52,8 +54,8 @@ public class GncXmlPriceHandler extends DefaultHandler {
    * @param priceAdapter Translates GncPrice objects into Price objects and persists the results.
    * @param gnucashFileImportStatus
    */
-  public GncXmlPriceHandler(PriceAdapter priceAdapter,
-      GnucashFileImportStatus gnucashFileImportStatus) {
+  public GncXmlPriceHandler(
+      PriceAdapter priceAdapter, GnucashFileImportStatus gnucashFileImportStatus) {
 
     this.priceAdapter = priceAdapter;
     this.gnucashFileImportStatus = gnucashFileImportStatus;

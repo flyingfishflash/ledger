@@ -3,9 +3,11 @@ package net.flyingfishflash.ledger.accounts.service;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import net.flyingfishflash.ledger.accounts.data.AccountCategory;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
-import org.springframework.stereotype.Service;
 
 @Service
 public class AccountCategoryService {

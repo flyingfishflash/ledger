@@ -2,6 +2,7 @@ package net.flyingfishflash.ledger;
 
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
+
 import org.springframework.context.annotation.Configuration;
 
 @Configuration

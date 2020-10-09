@@ -14,16 +14,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import net.flyingfishflash.ledger.prices.data.Price;
-import net.flyingfishflash.ledger.prices.data.PriceRepository;
-import net.flyingfishflash.ledger.prices.exceptions.PriceNotFoundException;
-import net.flyingfishflash.ledger.prices.service.PriceService;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import net.flyingfishflash.ledger.prices.data.Price;
+import net.flyingfishflash.ledger.prices.data.PriceRepository;
+import net.flyingfishflash.ledger.prices.exceptions.PriceNotFoundException;
+import net.flyingfishflash.ledger.prices.service.PriceService;
 
 @ExtendWith(MockitoExtension.class)
 public class PriceServiceTests {

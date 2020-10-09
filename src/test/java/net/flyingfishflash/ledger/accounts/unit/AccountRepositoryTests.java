@@ -11,13 +11,9 @@ import static org.mockito.Mockito.verify;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import javax.persistence.EntityManager;
-import net.flyingfishflash.ledger.accounts.data.Account;
-import net.flyingfishflash.ledger.accounts.data.AccountRepository;
-import net.flyingfishflash.ledger.accounts.data.AccountType;
-import net.flyingfishflash.ledger.accounts.exceptions.AccountCreateException;
-import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
-import net.flyingfishflash.ledger.foundation.IdentifierFactory;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +24,15 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.util.ReflectionTestUtils;
+
 import pl.exsio.nestedj.NestedNodeRepository;
+
+import net.flyingfishflash.ledger.accounts.data.Account;
+import net.flyingfishflash.ledger.accounts.data.AccountRepository;
+import net.flyingfishflash.ledger.accounts.data.AccountType;
+import net.flyingfishflash.ledger.accounts.exceptions.AccountCreateException;
+import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
+import net.flyingfishflash.ledger.foundation.IdentifierFactory;
 
 @ExtendWith(MockitoExtension.class)
 public class AccountRepositoryTests {

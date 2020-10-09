@@ -23,22 +23,24 @@ package net.flyingfishflash.ledger.importer.dto;
  * @author Jesse Shieh <jesse.shieh.pub@gmail.com>
  */
 public enum GncTransactionType {
-    DEBIT, CREDIT;
+  DEBIT,
+  CREDIT;
 
-    private GncTransactionType opposite;
+  private GncTransactionType opposite;
 
-    static {
-        DEBIT.opposite = CREDIT;
-        CREDIT.opposite = DEBIT;
-    }
+  static {
+    DEBIT.opposite = CREDIT;
+    CREDIT.opposite = DEBIT;
+  }
 
-    /**
-     * Inverts the transaction type.
-     * <p>{@link GncTransactionType#CREDIT} becomes {@link GncTransactionType#DEBIT} and vice versa</p>
-     * @return Inverted transaction type
-     */
-    public GncTransactionType invert() {
-        return opposite;
-    }
+  /**
+   * Inverts the transaction type.
+   *
+   * <p>{@link GncTransactionType#CREDIT} becomes {@link GncTransactionType#DEBIT} and vice versa
+   *
+   * @return Inverted transaction type
+   */
+  public GncTransactionType invert() {
+    return opposite;
+  }
 }
-

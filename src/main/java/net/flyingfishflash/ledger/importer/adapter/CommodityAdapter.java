@@ -2,13 +2,15 @@ package net.flyingfishflash.ledger.importer.adapter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
 import net.flyingfishflash.ledger.commodities.data.Commodity;
 import net.flyingfishflash.ledger.commodities.service.CommodityService;
 import net.flyingfishflash.ledger.importer.dto.GncCommodity;
 import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 @Component
 public class CommodityAdapter {
@@ -28,8 +30,8 @@ public class CommodityAdapter {
    * @param commodityService Service class for interacting with commodities
    * @param gnucashFileImportStatus
    */
-  public CommodityAdapter(CommodityService commodityService,
-      GnucashFileImportStatus gnucashFileImportStatus) {
+  public CommodityAdapter(
+      CommodityService commodityService, GnucashFileImportStatus gnucashFileImportStatus) {
 
     this.commodityService = commodityService;
     this.gnucashFileImportStatus = gnucashFileImportStatus;

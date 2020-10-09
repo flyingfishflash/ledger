@@ -1,8 +1,9 @@
 package net.flyingfishflash.ledger.foundation.response.structure.success;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SuccessResponseStructure<T> implements java.io.Serializable {

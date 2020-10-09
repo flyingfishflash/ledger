@@ -1,6 +1,7 @@
 package net.flyingfishflash.ledger;
 
 import javax.sql.DataSource;
+
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;

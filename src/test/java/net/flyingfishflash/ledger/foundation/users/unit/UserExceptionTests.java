@@ -2,11 +2,12 @@ package net.flyingfishflash.ledger.foundation.users.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+
 import net.flyingfishflash.ledger.foundation.users.exceptions.UserCreateException;
 import net.flyingfishflash.ledger.foundation.users.exceptions.UserException;
 import net.flyingfishflash.ledger.foundation.users.exceptions.UserNotFoundException;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
 public class UserExceptionTests {
 

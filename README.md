@@ -5,7 +5,7 @@
 
 ### Build
 
-A docker-compose file is supplied which you can use via: 
+A docker-compose file is supplied which you can use via:
 ```shell
 docker-compose -f docker-compose.yaml up -d
 ```

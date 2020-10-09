@@ -1,6 +1,7 @@
 package net.flyingfishflash.ledger.foundation.multitenancy;
 
 import javax.sql.DataSource;
+
 import org.flywaydb.core.Flyway;
 import org.springframework.stereotype.Component;
 

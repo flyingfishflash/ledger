@@ -5,21 +5,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
-import net.flyingfishflash.ledger.foundation.multitenancy.TenantService;
-import net.flyingfishflash.ledger.foundation.users.data.Role;
-import net.flyingfishflash.ledger.foundation.users.data.User;
-import net.flyingfishflash.ledger.foundation.users.data.UserRepository;
-import net.flyingfishflash.ledger.foundation.users.data.dto.UserProfileMapper;
-import net.flyingfishflash.ledger.foundation.users.data.dto.UserProfileRequest;
-import net.flyingfishflash.ledger.foundation.users.data.dto.UserProfileResponse;
-import net.flyingfishflash.ledger.foundation.users.data.dto.UserCreateRequest;
-import net.flyingfishflash.ledger.foundation.users.exceptions.UserCreateException;
-import net.flyingfishflash.ledger.foundation.users.exceptions.UserNotFoundException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,6 +19,17 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import net.flyingfishflash.ledger.foundation.multitenancy.TenantService;
+import net.flyingfishflash.ledger.foundation.users.data.Role;
+import net.flyingfishflash.ledger.foundation.users.data.User;
+import net.flyingfishflash.ledger.foundation.users.data.UserRepository;
+import net.flyingfishflash.ledger.foundation.users.data.dto.UserCreateRequest;
+import net.flyingfishflash.ledger.foundation.users.data.dto.UserProfileMapper;
+import net.flyingfishflash.ledger.foundation.users.data.dto.UserProfileRequest;
+import net.flyingfishflash.ledger.foundation.users.data.dto.UserProfileResponse;
+import net.flyingfishflash.ledger.foundation.users.exceptions.UserCreateException;
+import net.flyingfishflash.ledger.foundation.users.exceptions.UserNotFoundException;
 
 @Service
 @Transactional

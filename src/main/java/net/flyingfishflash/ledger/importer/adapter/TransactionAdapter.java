@@ -4,8 +4,15 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.money.Monetary;
 import javax.money.UnknownCurrencyException;
+
+import org.javamoney.moneta.Money;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
 import net.flyingfishflash.ledger.accounts.service.AccountService;
 import net.flyingfishflash.ledger.importer.GncXmlHelper;
 import net.flyingfishflash.ledger.importer.dto.GncSplit;
@@ -15,10 +22,6 @@ import net.flyingfishflash.ledger.transactions.data.Entry;
 import net.flyingfishflash.ledger.transactions.data.EntryType;
 import net.flyingfishflash.ledger.transactions.data.Transaction;
 import net.flyingfishflash.ledger.transactions.service.TransactionService;
-import org.javamoney.moneta.Money;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 @Component
 public class TransactionAdapter {
@@ -31,7 +34,9 @@ public class TransactionAdapter {
 
   private List<Transaction> transactions;
 
-  public TransactionAdapter(TransactionService transactionService, AccountService accountService,
+  public TransactionAdapter(
+      TransactionService transactionService,
+      AccountService accountService,
       GnucashFileImportStatus gnucashFileImportStatus) {
     this.transactionService = transactionService;
     this.accountService = accountService;

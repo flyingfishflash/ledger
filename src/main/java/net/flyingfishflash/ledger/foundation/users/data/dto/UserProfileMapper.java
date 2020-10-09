@@ -1,8 +1,9 @@
 package net.flyingfishflash.ledger.foundation.users.data.dto;
 
-import net.flyingfishflash.ledger.foundation.users.data.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.flyingfishflash.ledger.foundation.users.data.User;
 
 public class UserProfileMapper {
 

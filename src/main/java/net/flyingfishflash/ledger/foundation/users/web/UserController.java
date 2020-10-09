@@ -1,17 +1,15 @@
 package net.flyingfishflash.ledger.foundation.users.web;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Map;
+
 import javax.validation.Valid;
-import net.flyingfishflash.ledger.foundation.users.data.User;
-import net.flyingfishflash.ledger.foundation.users.data.dto.UserCreateRequest;
-import net.flyingfishflash.ledger.foundation.users.data.dto.UserCreateResponse;
-import net.flyingfishflash.ledger.foundation.users.data.dto.UserProfileResponse;
-import net.flyingfishflash.ledger.foundation.users.service.UserService;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -28,6 +26,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import net.flyingfishflash.ledger.foundation.users.data.User;
+import net.flyingfishflash.ledger.foundation.users.data.dto.UserCreateRequest;
+import net.flyingfishflash.ledger.foundation.users.data.dto.UserCreateResponse;
+import net.flyingfishflash.ledger.foundation.users.data.dto.UserProfileResponse;
+import net.flyingfishflash.ledger.foundation.users.service.UserService;
 
 @RestController
 @Validated

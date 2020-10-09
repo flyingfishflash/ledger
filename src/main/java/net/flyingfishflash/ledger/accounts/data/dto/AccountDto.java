@@ -5,9 +5,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+
+import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.AccountCategory;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
-import net.flyingfishflash.ledger.accounts.data.Account;
 
 public class AccountDto {
 
@@ -88,24 +89,48 @@ public class AccountDto {
 
   @Override
   public String toString() {
-    return "AccountDto{" +
-        "accountCategory=" + accountCategory +
-        ", accountType=" + accountType +
-        ", code='" + code + '\'' +
-        ", description='" + description + '\'' +
-        ", discriminator='" + discriminator + '\'' +
-        ", guid='" + guid + '\'' +
-        ", hidden=" + hidden +
-        ", id=" + id +
-        ", longName='" + longName + '\'' +
-        ", name='" + name + '\'' +
-        ", note='" + note + '\'' +
-        ", parentId=" + parentId +
-        ", placeholder=" + placeholder +
-        ", taxRelated=" + taxRelated +
-        ", treeLeft=" + treeLeft +
-        ", treeLevel=" + treeLevel +
-        ", treeRight=" + treeRight +
-        '}';
+    return "AccountDto{"
+        + "accountCategory="
+        + accountCategory
+        + ", accountType="
+        + accountType
+        + ", code='"
+        + code
+        + '\''
+        + ", description='"
+        + description
+        + '\''
+        + ", discriminator='"
+        + discriminator
+        + '\''
+        + ", guid='"
+        + guid
+        + '\''
+        + ", hidden="
+        + hidden
+        + ", id="
+        + id
+        + ", longName='"
+        + longName
+        + '\''
+        + ", name='"
+        + name
+        + '\''
+        + ", note='"
+        + note
+        + '\''
+        + ", parentId="
+        + parentId
+        + ", placeholder="
+        + placeholder
+        + ", taxRelated="
+        + taxRelated
+        + ", treeLeft="
+        + treeLeft
+        + ", treeLevel="
+        + treeLevel
+        + ", treeRight="
+        + treeRight
+        + '}';
   }
 }

@@ -2,6 +2,7 @@ package net.flyingfishflash.ledger.transactions.data;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,11 +12,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import net.flyingfishflash.ledger.accounts.data.Account;
+
 import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.javamoney.moneta.Money;
+
+import net.flyingfishflash.ledger.accounts.data.Account;
 
 @Entity
 @TypeDef(

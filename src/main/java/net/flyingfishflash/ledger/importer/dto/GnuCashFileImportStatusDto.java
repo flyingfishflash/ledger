@@ -16,11 +16,9 @@ public class GnuCashFileImportStatusDto {
     Component(String component) {
       this.component = component;
     }
-
   }
 
   List<Component> components = new ArrayList<>(4);
 
   String status;
-
 }
