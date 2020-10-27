@@ -50,7 +50,7 @@ public class PriceServiceTests {
   }
 
   @Test
-  public void testSaveAllCommodities() {
+  public void testSaveAllPrices() {
     List<Price> priceList = Collections.singletonList(new Price());
     priceService.saveAllPrices(priceList);
     verify(priceRepositoryMock, times(1)).saveAll(anyList());
