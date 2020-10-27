@@ -84,6 +84,11 @@ task finalize {
     }
 }
 
+bootRun {
+    jvmArgs = ["-Duser.timezone=UTC"]
+}
+
+
 springBoot {
     buildInfo()
 }
