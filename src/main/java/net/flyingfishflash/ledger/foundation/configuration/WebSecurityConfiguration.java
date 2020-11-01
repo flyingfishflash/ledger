@@ -28,18 +28,16 @@ public class WebSecurityConfiguration<S extends Session> extends WebSecurityConf
   private final UserService userService;
 
   private static final String[] AUTH_WHITELIST = {
-    "/v2/api-docs",
-    "/swagger-ui",
-    "/swagger-ui/**",
-    "/swagger-resources",
-    "/swagger-resources/**",
-    "/configuration/ui",
-    "/configuration/security",
-    "/webjars/**",
+    "/actuator/health",
+    "/actuator/info",
     "/api/v1/ledger/auth/signin",
     "/api/v1/ledger/auth/signup",
     "/api/test/**",
     "/h2-console/**",
+    "/swagger-ui/**",
+    "/swagger-resources/**",
+    "/v2/api-docs",
+    "/webjars/**",
     "/ws*",
   };
 

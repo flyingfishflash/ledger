@@ -1,43 +1,100 @@
 
-before_script:
-  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-
 variables:
   DOCKER_DRIVER: overlay2
   VERSION: ""
 
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+
 stages:
   - build
-  - release
+  - unit tests
+  - integration tests
+  - publish
 
 image: docker:latest
 
-services:
-  - docker:dind
+cache:
+  key: "$CI_COMMIT_REF_NAME"
+  paths:
+    - build
+    - .gradle
+    - .version
 
-#before_script:
-#  - VERSION=$(awk -F'[<>]' '/<version>/{print $3}' pom.xml | head -n 1)
-#  - echo "$VERSION"
-#  - echo
-
-build-master-or-version-tagged-ref:
-  retry: 1
+build-jar:
+  image: gradle:6.7-jdk14
   stage: build
   script:
-    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
-    - docker push "$CI_REGISTRY_IMAGE"
+    - echo $CI_COMMIT_BRANCH
+    - chmod +x ./scripts/version.sh
+    - ./scripts/version.sh > ./.version
+    - >
+      if [ "$CI_COMMIT_BRANCH" != "master" ] && [ "$CI_COMMIT_BRANCH" != "" ]
+      ; then echo "-$CI_COMMIT_BRANCH" >> .version
+      ; fi
+    - cat .version
+    - echo
+    - gradle bootJar testClasses --build-cache
+
+unit-tests:
+  image: gradle:6.7-jdk14
+  stage: 'unit tests'
+  script:
+    - gradle test
+      -x bootBuildInfo
+      --no-daemon
+
+h2-integration-tests:
+  image: gradle:6.7-jdk14
+  stage: 'integration tests'
+  script:
+    - gradle integrationTests
+      -x bootBuildInfo
+      --no-daemon
+
+postgres-integration-tests:
+  image: gradle:6.7-jdk14
+  stage: 'integration tests'
+  services:
+    - postgres:latest
+  variables:
+    POSTGRES_DB: ledger
+    POSTGRES_USER: ledger
+    POSTGRES_PASSWORD: ledger
+  script:
+    - gradle integrationTests
+      -x bootBuildInfo
+      --no-daemon
+      -Dspring.profiles.active=postgresql
+      -Dspring.datasource.url=jdbc:postgresql://postgres:5432/ledger
+      -Dspring.datasource.username=ledger
+      -Dspring.datasource.password=ledger
+      -Dspring.datasource.platform=postgresql
+
+publish-feature:
+  services:
+    - docker:dind
+  stage: publish
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - VERSION=$(cat .version)
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:$VERSION" -t "$CI_REGISTRY_IMAGE:development" -f Dockerfile.drone .
+    - docker push "$CI_REGISTRY_IMAGE:$VERSION"
+    - docker push "$CI_REGISTRY_IMAGE:development"
+  except:
+    - master
+    - tags
+
+publish-master-or-version-tagged-ref:
+  services:
+    - docker:dind
+  stage: publish
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - VERSION=$(cat .version)
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:$VERSION" -t "$CI_REGISTRY_IMAGE:latest" -f Dockerfile.drone .
+    - docker push "$CI_REGISTRY_IMAGE:$VERSION"
+    - docker push "$CI_REGISTRY_IMAGE:latest"
   only:
     - master
     - /^v(\d+\.)?(\d+\.)?(\*|\d+)$/
-
-build-feature:
-  retry: 1
-  stage: build
-  script:
-    - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
-    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
-  except:
-    - development
-    - hotfix
-    - master
-    - tags

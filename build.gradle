@@ -13,6 +13,7 @@ ext {
 repositories {
     mavenCentral()
     mavenLocal()
+    jcenter()
 
     maven {
         url = uri('https://jitpack.io')
@@ -60,18 +61,7 @@ test {
 }
 
 task integrationTests(type: Test) {
-    useJUnitPlatform()
-
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
-
-    filter {
-        includeTestsMatching "net.flyingfishflash.ledger.*.integration.*"
-    }
-}
-
-task allTests(type: Test, dependsOn: test) {
+    systemProperties System.properties
     useJUnitPlatform()
 
     testLogging {
@@ -97,8 +87,6 @@ bootRun {
 springBoot {
     buildInfo()
 }
-
-check.dependsOn integrationTests
 
 integrationTests.mustRunAfter test
 
