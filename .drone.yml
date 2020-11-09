@@ -1,26 +1,115 @@
 kind: pipeline
 type: docker
-name: default
+name: 'build ➔ test ➔ publish'
+
+# drone secrets:
+# custom_mirror = registry-mirror.domain.tld
+# custom_repository = registry.domain.tld/namespace/ledger
+# custom_repository_ledger_development = registry.domain.tld/namespace/ledger:development
+# ssh_username
+# ssh_host
+# ssh_key
+
+volumes:
+  - name: gradle_user_home
+    host:
+      path: /var/lib/docker/volumes_managed/drone_gradle_cache
+
+services:
+  - name: postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: ledger
+      POSTGRES_PASSWORD: ledger
+      POSTGRES_DB: ledger
 
 steps:
   - name: fetch git tags
-    image: alpine/git
+    image: drone/git:latest
     commands:
       - git fetch --tags
 
-  - name: generate docker tags
-    image: gradle:6.6-jdk14
+  - name: build jar and docker tags
+    image: gradle:6.7-jdk14
     commands:
-      - chmod +x drone-generate-docker-tags.sh
-      - echo -n $(./drone-generate-docker-tags.sh) > .tags
-      - if [ "${DRONE_COMMIT_BRANCH}" = "master" ] || [ "${DRONE_COMMIT_BRANCH}" = "" ] ; then echo ",latest" >> .tags ; fi
-      - cat .tags
+      - >
+        gradle version
+        -x bootBuildInfo
+        --gradle-user-home=/drone/src/gradle-user-home
+        | grep Version | awk '{ print $2 }' | tr -d "\n" > ./.tags
+      - >
+        if [ "${DRONE_COMMIT_BRANCH}" = "master" ] || [ "${DRONE_COMMIT_BRANCH}" = "" ]
+        ; then echo ",latest" >> .tags
+        ; else echo ",development" >> .tags
+        ; fi
+      - >
+        cat .tags && echo
+      - >
+        gradle bootJar testClasses
+        --gradle-user-home=/drone/src/gradle-user-home
+    volumes:
+      - name: gradle_user_home
+        path: /drone/src/gradle-user-home
+
+  - name: unit tests
+    image: gradle:6.7-jdk14
+    commands:
+      - gradle test
+        -x bootBuildInfo
+        --no-daemon
+        --gradle-user-home=/drone/src/gradle-user-home
+    volumes:
+      - name: gradle_user_home
+        path: /drone/src/gradle-user-home
+
+  - name: h2 integration tests
+    image: gradle:6.7-jdk14
+    commands:
+      - gradle integrationTests
+        -x bootBuildInfo
+        --no-daemon
+        --gradle-user-home=/drone/src/gradle-user-home
+    volumes:
+      - name: gradle_user_home
+        path: /drone/src/gradle-user-home
+
+  - name: verify postgres
+    image: postgres
+    commands:
+      - |
+        until psql "dbname=ledger host=postgres user=ledger password=ledger port=5432" \
+          -c "select 1;" >/dev/null 2>&1; do sleep 1; done
+      - |
+        psql "dbname=ledger host=postgres user=ledger password=ledger port=5432" \
+          -c "select count(*) from pg_catalog.pg_tables;"
+
+  - name: postgres integration tests
+    image: gradle:6.7-jdk14
+    commands:
+      - gradle integrationTests
+        -x bootBuildInfo
+        --no-daemon
+        --gradle-user-home=/drone/src/gradle-user-home
+        -Dspring.profiles.active=postgresql
+        -Dspring.datasource.url=jdbc:postgresql://postgres:5432/ledger
+        -Dspring.datasource.username=ledger
+        -Dspring.datasource.password=ledger
+        -Dspring.datasource.platform=postgresql
+    volumes:
+      - name: gradle_user_home
+        path: /drone/src/gradle-user-home
 
   - name: publish feature branch
     image: plugins/docker
     settings:
       auto_tag: false
-      repo: registry.flyingfishflash.net/flyingfishflash/ledger
+      cache_from:
+        from_secret: custom_repository_ledger_development
+      dockerfile: Dockerfile.drone
+      mirror:
+        from_secret: custom_mirror
+      repo:
+        from_secret: custom_repository
     when:
       branch:
         exclude:
@@ -33,7 +122,13 @@ steps:
     image: plugins/docker
     settings:
       auto_tag: false
-      repo: registry.flyingfishflash.net/flyingfishflash/ledger
+      cache_from:
+        from_secret: custom_repository_ledger_development
+      dockerfile: Dockerfile.drone
+      mirror:
+        from_secret: custom_mirror
+      repo:
+        from_secret: custom_repository
     when:
       ref:
         - refs/heads/master
@@ -44,4 +139,26 @@ trigger:
     - push
     - tag
 
+---
 
+kind: pipeline
+name: deploy
+type: docker
+
+depends_on:
+  - 'build ➔ test ➔ publish'
+
+steps:
+  - name: deploy
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: ssh_host
+      username:
+        from_secret: ssh_username
+      key:
+        from_secret: ssh_key
+      script:
+        - cd docker
+        - ansible-playbook docker-0.yaml -i inventory.yaml -e do=restart --tags=ledger
+        # otherwise: docker-compose up stacks/ledger/docker-compose.yaml -d --remove-orphans

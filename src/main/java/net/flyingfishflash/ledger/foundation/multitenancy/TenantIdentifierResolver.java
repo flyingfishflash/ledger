@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TenantIdentifierResolver implements CurrentTenantIdentifierResolver {
 
-  public static final String COMMON = "common";
+  public static final String COMMON = "public";
   public static final String USERS = "users";
 
   @Override

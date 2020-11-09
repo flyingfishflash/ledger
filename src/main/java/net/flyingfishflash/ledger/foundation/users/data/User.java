@@ -28,7 +28,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Entity
 @Table(
     name = "users",
-    schema = "common",
+    schema = "public",
     uniqueConstraints = {
       @UniqueConstraint(columnNames = "username"),
       @UniqueConstraint(columnNames = "email")
@@ -68,7 +68,7 @@ public class User implements UserDetails {
 
   private boolean enabled;
 
-  @JoinTable(name = "user_roles", schema = "common")
+  @JoinTable(name = "user_roles", schema = "public")
   @Enumerated(EnumType.STRING)
   @ElementCollection(fetch = FetchType.EAGER)
   private List<Role> roles;

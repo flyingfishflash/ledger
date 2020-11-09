@@ -1,15 +1,62 @@
-version: "3"
+version: "3.8"
 
 services:
 
   ledger:
     container_name: ledger
+    depends_on:
+      - ledger_postgres
     environment:
-      - SPRING_PROFILES_ACTIVE=h2
-      - SPRING_DATASOURCE_URL=jdbc:h2:mem:ledger;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-      - SPRING_JPA_SHOW_SQL=FALSE
-      - SPRING_H2_CONSOLE_SETTINGS_WEB_ALLOW_OTHERS=TRUE
-      # http://localhost:9090/h2-console
-    image: registry.gitlab.com/rollenwiese/ledger:latest
+      JDK_JAVA_OPTIONS: >
+        -Djava.security.egd=file:/dev/./urandom
+        -Duser.timezone="UTC"
+      SPRING_PROFILES_ACTIVE: postgresql
+      SPRING_JPA_SHOW_SQL: 'false'
+      SPRING_DATASOURCE_URL: jdbc:postgresql://ledger_postgres:5432/ledger
+      SPRING_DATASOURCE_USERNAME: ledger
+      SPRING_DATASOURCE_PASSWORD: ledger
+      SPRING_DATASOURCE_PLATFORM: POSTGRESQL
+#      SPRING_PROFILES_ACTIVE: h2
+#      SPRING_H2_CONSOLE_SETTINGS_WEB_ALLOW_OTHERS: 'true'
+#      SPRING_DATASOURCE_PLATFORM: 'POSTGRESQL'
+#      SPRING_DATASOURCE_URL: jdbc:h2:mem:ledger;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=TRUE;DATABASE_TO_LOWER=true;MODE=PostgreSQL
+#      SPRING_DATASOURCE_USERNAME: ledger
+#      SPRING_DATASOURCE_PASSWORD:
+#      http://docker-host:8181/h2-console
+    healthcheck:
+      test: "wget http://127.0.0.1:8181/actuator/info -T 30 -q -O -"
+      interval: "60s"
+      timeout: "5s"
+      start_period: "15s"
+      retries: 3
+    image: registry.gitlab.com/rollenwiese/ledger:development
+    logging:
+      driver: journald
+      options:
+        tag: docker/ledger
+    networks:
+      - default
     ports:
-      - 9090:8080
+      - "52300:8181"
+    restart: unless-stopped
+
+  ledger_postgres:
+    container_name: ledger_postgres
+    environment:
+      - POSTGRES_USER=ledger
+      - POSTGRES_PASSWORD=ledger
+      - POSTGRES_DB=ledger
+    image: index.docker.io/postgres:latest
+    logging:
+      driver: journald
+      options:
+        tag: docker/ledger_postgres
+    networks:
+      - default
+    ports:
+      - "52301:5432"
+    restart: unless-stopped
+
+networks:
+
+  default:

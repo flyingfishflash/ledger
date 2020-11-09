@@ -24,6 +24,13 @@ CREATE TABLE account (
 	,CONSTRAINT account_pk PRIMARY KEY (id)
 	);
 
+CREATE TABLE book (
+  id BIGINT NOT NULL
+  ,createdInstant TIMESTAMP
+  ,name VARCHAR(50)
+  ,CONSTRAINT book_pk PRIMARY KEY (id)
+  );
+
 CREATE TABLE commodity (
 	id BIGINT NOT NULL
 	,cusip VARCHAR(9)
@@ -58,7 +65,7 @@ CREATE TABLE entry (
 CREATE TABLE price (
 	id BIGINT NOT NULL
 	,currency VARCHAR(3)
-	,DATE TIMESTAMP
+	,date TIMESTAMP
 	,denominator BIGINT
 	,guid VARCHAR(32)
 	,numerator BIGINT
@@ -81,6 +88,8 @@ CREATE TABLE transaction (
 	);
 
 ALTER TABLE account ADD CONSTRAINT account_guid_uk UNIQUE (guid);
+
+ALTER TABLE book ADD CONSTRAINT book_name_uk UNIQUE (name);
 
 ALTER TABLE commodity ADD CONSTRAINT commodity_namespace_mnemonic_uk UNIQUE (
 	namespace
