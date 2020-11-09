@@ -3,11 +3,21 @@ plugins {
     id 'org.springframework.boot' version '2.3.4.RELEASE'
     id 'fr.brouillard.oss.gradle.jgitver' version '0.10.0-rc03'
     id "com.diffplug.spotless" version "5.6.1"
+    id "com.github.node-gradle.node" version "3.0.0-rc3"
 }
+
+group = 'net.flyingfishflash'
+description = 'Ledger'
+sourceCompatibility = '14'
 
 ext {
     springBootVersion = "2.3.5.RELEASE"
     springSessionVersion = "2.4.0"
+    googleJavaFormatVersion = "1.9"
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }
 
 repositories {
@@ -73,33 +83,57 @@ task integrationTests(type: Test) {
     }
 }
 
+task buildFrontEnd(type: NpmTask) {
+    dependsOn(npmInstall)
+    args = ['run', 'buildProd']
+}
+
+task releaseNotes(type: NpmTask) {
+    args = ['run', 'release', '--', '--dry-run']
+}
+
 task finalize {
     doLast {
         println(version)
     }
 }
 
+processResources {
+    from("src/main/frontend/dist/ledger-frontend/") {
+        into("static")
+    }
+
+//    rename("application-${profile}.properties", "application.properties")
+//    if (profile == "prod") {
+//        dependsOn(buildWeb)
+//        from("${spa}/dist/notes") {
+//            into("static")
+//        }
+//    }
+}
+
+bootJar {
+    dependsOn(buildFrontEnd)
+    archiveFileName = "ledger.jar"
+}
+
 bootRun {
     jvmArgs = ["-Duser.timezone=UTC"]
 }
 
-
-springBoot {
-    buildInfo()
+build {
+    finalizedBy(finalize)
+    dependsOn buildFrontEnd
 }
 
-integrationTests.mustRunAfter test
+integrationTests {
+    mustRunAfter(test)
+}
 
-build.finalizedBy(finalize)
-
-bootJar.archiveFileName = "ledger.jar"
-
-group = 'net.flyingfishflash'
-description = 'Ledger'
-sourceCompatibility = '14'
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
+node {
+    download = true
+    version = "15.2.0"
+    nodeProjectDir = file("${project.projectDir}/src/main/frontend/")
 }
 
 spotless {
@@ -111,8 +145,12 @@ spotless {
     }
 
     java {
-        googleJavaFormat('1.9')
+        googleJavaFormat(googleJavaFormatVersion)
         trimTrailingWhitespace()
         importOrder('java', 'javax', 'com', 'org', 'net.flyingfishflash.ledger')
+    }
+
+    springBoot {
+        buildInfo()
     }
 }
