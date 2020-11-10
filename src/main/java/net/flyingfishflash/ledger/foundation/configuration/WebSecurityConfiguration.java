@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.session.FindByIndexNameSessionRepository;
 import org.springframework.session.Session;
@@ -32,13 +33,13 @@ public class WebSecurityConfiguration<S extends Session> extends WebSecurityConf
     "/actuator/info",
     "/api/v1/ledger/auth/signin",
     "/api/v1/ledger/auth/signup",
-    "/api/test/**",
+    "/assets/config.json",
     "/h2-console/**",
     "/swagger-ui/**",
     "/swagger-resources/**",
     "/v2/api-docs",
     "/webjars/**",
-    "/ws*",
+    "/ws*"
   };
 
   private final FindByIndexNameSessionRepository<S> sessionRepository;
@@ -93,9 +94,17 @@ public class WebSecurityConfiguration<S extends Session> extends WebSecurityConf
         .maxSessionsPreventsLogin(true)
         .sessionRegistry(sessionRegistry());
 
-    // for h2 console, non-production only
+    // enable for h2 console
+    // enable for non-production only
     http.csrf().disable();
-    http.headers().frameOptions().disable();
+    // #http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+    // http.headers().frameOptions().disable();
+    http.headers()
+        // .contentSecurityPolicy("script-src 'self'; report-to /csp-report-endpoint/")
+        // .and()
+        .referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.SAME_ORIGIN)
+        .and()
+        .featurePolicy("accelerometer 'none'; camera 'none'; microphone 'none'");
     // @formatter:on
 
   }
