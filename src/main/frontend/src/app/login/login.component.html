@@ -1,0 +1,34 @@
+<mat-card>
+  <mat-card-content>
+      <div>
+
+        <img id="profile-img" src="/assets/images/project-icon.png" width="100" height="100"/>
+        <h2>Ledger</h2>
+
+        <form *ngIf="!isLoggedIn" name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
+          <mat-form-field>
+            <input matInput type="text" placeholder="User Name" [(ngModel)]="form.username" name="username" required #username="ngModel">
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput type="password" [type]="hide ? 'password' : 'text'" placeholder="Password" name="password" [(ngModel)]="form.password" required #password="ngModel">
+          </mat-form-field>
+          <!--button class="show-hide-password-button" (click)="hide = !hide">
+            <mat-icon matSuffix>{{ this.hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button-->          
+          <button mat-flat-button color=primary>Login</button>
+          <div style="margin-top: 16px;">
+            <div *ngIf="f.submitted && isLoginFailed" style="margin: 16px;">
+              <mat-error>{{ errorMessage }}</mat-error>
+            </div>
+            <div *ngIf="f.submitted && username.invalid" style="margin: 16px;">
+              <mat-error>Please provide a valid user name</mat-error>
+            </div>
+            <div *ngIf="f.submitted && password.invalid" style="margin: 16px;">
+              <mat-error *ngIf="password.errors.required">Please provide a valid password</mat-error>
+            </div>
+          </div>
+        </form>
+
+      </div>
+  </mat-card-content>
+</mat-card>

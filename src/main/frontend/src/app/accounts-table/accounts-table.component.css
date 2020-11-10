@@ -1,0 +1,27 @@
+/* Structure */
+
+.table-filter .mat-form-field + .mat-form-field {
+  margin-left: 18px;
+  margin-top: 28px;
+}
+
+table {
+    width: 100%;
+  }
+  
+/*   .mat-form-field {
+    font-size: 14px;
+    width: 100%;
+  } */
+
+/*   .table-row {
+    height: 30px !important;
+  } */
+
+  tr.mat-row {
+/*
+       border: 1px solid #e7e7e7;
+       font-weight: bold;
+ */
+       height: 32px;
+  }

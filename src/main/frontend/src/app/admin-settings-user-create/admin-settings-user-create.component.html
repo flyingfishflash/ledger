@@ -1,0 +1,184 @@
+<div class="container" id="profile-component-content" style="padding:24px;">
+  <div class="flex-container" fxLayout="row" fxLayout.sm="column" fxLayoutAlign="space-evenly none">
+    <mat-card class="flex-child-1">
+
+      <h1 class="mat-h1">{{ componentHeading }}</h1>
+
+      <mat-card-content>
+
+        <mat-card class="mat-elevation-z0" style="margin-top:16px;">
+          <form id="profile-details-form" [formGroup]="userForm">
+            <strong>User Name</strong>
+            <p>Set a name to be user for signing in to the application.</p>
+            <div style="margin-top: 2.5rem; margin-bottom: 1.5rem;" fxLayoutGap="16px" fxLayoutAlign="space-between"
+              fxLayout.sm="column">
+              <mat-form-field appearance="outline">
+                <mat-label>User Name</mat-label>
+                <input matInput formControlName="username" required>
+                <mat-error *ngIf="this.userForm.controls.username.hasError('required')">
+                  User name is <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="this.userForm.controls.username.hasError('minlength')">
+                  User name must be at least
+                  {{ this.userForm.controls.username.errors.minlength.requiredLength }} characters.
+                </mat-error>
+                <mat-error *ngIf="this.userForm.controls.username.hasError('maxlength')">
+                  User name must be no more than
+                  {{ this.userForm.controls.username.errors.maxlength.requiredLength }} characters.
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <strong>Details</strong>
+            <p>Set a name and an email address for this user.</p>
+            <div style="margin-top: 2.5rem; margin-bottom: 1.5rem;" fxLayoutGap="16px" fxLayoutAlign="space-between"
+              fxLayout.sm="column">
+              <mat-form-field appearance="outline">
+                <mat-label>First Name</mat-label>
+                <input matInput formControlName="firstName" required>
+                <mat-error *ngIf="this.userForm.controls.firstName.hasError('required')">
+                  First name is <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="this.userForm.controls.firstName.hasError('maxlength')">
+                  First name must be no more than
+                  {{ this.userForm.controls.firstName.errors.maxlength.requiredLength }} characters.
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Last Name</mat-label>
+                <input matInput formControlName="lastName" required>
+                <mat-error *ngIf="this.userForm.controls.lastName.hasError('required')">
+                  Last name is <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="this.userForm.controls.lastName.hasError('maxlength')">
+                  Last name must be no more than
+                  {{ this.userForm.controls.lastName.errors.maxlength.requiredLength }} characters.
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>E-Mail</mat-label>
+                <input matInput type="text" formControlName="email" required>
+                <mat-error
+                  *ngIf="this.userForm.controls.email.hasError('email') && !this.userForm.controls.email.hasError('required')">
+                  Please enter a valid email address
+                </mat-error>
+                <mat-error *ngIf="this.userForm.controls.email.hasError('required')">
+                  Email is <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="this.userForm.controls.email.hasError('maxlength')">
+                  Email must be no more than
+                  {{ this.userForm.controls.email.errors.maxlength.requiredLength }} characters.
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <strong>Role</strong>
+            <p>Select a role.</p>
+            <div style="margin-top: 2.5rem; margin-bottom: 2.5rem;" fxLayoutGap="16px">
+              <mat-radio-group class="example-radio-group" formControlName="role">
+                <mat-radio-button class="example-radio-button" *ngFor="let role of rolesArray" [value]="role.roleValue"
+                  name="roles">
+                  {{ role.roleName }}
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <strong>Password</strong>
+            <p>Set a password used to log-in to the application.</p>
+            <div style="margin-top: 2.5rem; margin-bottom: 1.5rem;" fxLayoutGap="16px">
+              <mat-form-field appearance="outline">
+                <mat-label>Password</mat-label>
+                <input matInput type="password" [type]="hide ? 'password' : 'text'" formControlName="password" required>
+              </mat-form-field>
+              <button class="show-hide-password-button" (click)="hide = !hide">
+                <mat-icon matSuffix>{{ this.hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+              <div>
+                <ul style="list-style-type: none; margin:0; padding:0;">
+                  <li>
+                    <label class="col"
+                      [ngClass]="userForm.controls.password.hasError('required')|| userForm.controls.password.hasError('noWhitespace')  ? 'text-danger' : 'text-success'">
+                      <i class="material-icons" style="font-size:1.2rem">
+                        {{ userForm.controls.password.hasError('required') || userForm.controls.password.hasError('noWhitespace') ? 'cancel' : 'check_circle' }}
+                      </i>
+                      No whitespace
+                    </label>
+                  <li>
+                  <li>
+                    <label class="col"
+                      [ngClass]="userForm.controls.password.hasError('required') || userForm.controls.password.hasError('minlength')  ? 'text-danger' : 'text-success'">
+                      <i class="material-icons" style="font-size:1.2rem">
+                        {{ userForm.controls.password.hasError('required') || userForm.controls.password.hasError('minlength') ? 'cancel' : 'check_circle' }}
+                      </i>
+                      At least 8 characters
+                    </label>
+                  <li>
+                    <label class="col"
+                      [ngClass]="userForm.controls.password.hasError('required') || userForm.controls.password.hasError('hasNumber')  ? 'text-danger' : 'text-success'">
+                      <i class="material-icons" style="font-size:1.2rem">
+                        {{ userForm.controls.password.hasError('required') || userForm.controls.password.hasError('hasNumber') ? 'cancel' : 'check_circle' }}
+                      </i>
+                      At least 1 number
+                    </label>
+                  </li>
+                  <li>
+                    <label class="col"
+                      [ngClass]="userForm.controls.password.hasError('required') || userForm.controls.password.hasError('hasLowercase')  ? 'text-danger' : 'text-success'">
+                      <i class="material-icons" style="font-size:1.2rem">
+                        {{ userForm.controls.password.hasError('required') || userForm.controls.password.hasError('hasLowercase') ? 'cancel' : 'check_circle' }}
+                      </i>
+                      At least 1 character in lower case
+                    </label>
+                  </li>
+                  <li>
+                    <label class="col"
+                      [ngClass]="userForm.controls.password.hasError('required') || userForm.controls.password.hasError('hasUppercase')  ? 'text-danger' : 'text-success'">
+                      <i class="material-icons" style="font-size:1.2rem">
+                        {{ userForm.controls.password.hasError('required') || userForm.controls.password.hasError('hasUppercase') ? 'cancel' : 'check_circle' }}
+                      </i>
+                      At least 1 character in upper case
+                    </label>
+                  </li>
+                  <li>
+                    <label class="col"
+                      [ngClass]="userForm.controls.password.hasError('required') || userForm.controls.password.hasError('hasSpecialCharacters')  ? 'text-danger' : 'text-success'">
+                      <i class="material-icons" style="font-size:1.2rem">
+                        {{ userForm.controls.password.hasError('required') || userForm.controls.password.hasError('hasSpecialCharacters') ? 'cancel' : 'check_circle' }}
+                      </i>
+                      At least 1 special character
+                    </label>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+          </form>
+        </mat-card>
+
+      </mat-card-content>
+
+
+      <mat-card-actions>
+        <div style="margin:16px;">
+          <span>
+            {{ (createUserStatusSubject | async)?.message }}
+          </span>
+        </div>
+        <div fxLayoutGap="10px" class="button-group" style="margin:16px; float: right;">
+          <span>
+            <button mat-flat-button color="primary" (click)="onCancel()" [routerLink]="''"
+              matTooltip="Cancel Edit of Profile Information">Cancel
+            </button>
+          </span>
+          <span>
+            <button mat-flat-button type="submit" color="primary" (click)="onSubmit()"
+              matTooltip="Submit user information">Submit
+            </button>
+            <!--button mat-flat-button type="submit" color="primary" (click)="onSubmit()"
+                        [disabled]="(!userForm.valid)" matTooltip="Submit user information">Submit
+                        </button-->
+          </span>
+        </div>
+      </mat-card-actions>
+
+    </mat-card><!-- flex-child-1-->
+  </div>
+  <!--flex-container-->
+</div>
