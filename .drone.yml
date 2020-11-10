@@ -6,6 +6,8 @@ name: 'build ➔ test ➔ publish'
 # custom_mirror = registry-mirror.domain.tld
 # custom_repository = registry.domain.tld/namespace/ledger
 # custom_repository_ledger_development = registry.domain.tld/namespace/ledger:development
+# production_api_host = ledger.domain.tld
+# production_api_scheme = https
 # ssh_username
 # ssh_host
 # ssh_key
@@ -13,11 +15,14 @@ name: 'build ➔ test ➔ publish'
 volumes:
   - name: gradle_user_home
     host:
-      path: /var/lib/docker/volumes_managed/drone_gradle_cache
+      path: /var/lib/docker/volumes_managed/drone_gradle_user_home
+  - name: node_modules
+    host:
+      path: /var/lib/docker/volumes_managed/drone_node_modules
 
 services:
   - name: postgres
-    image: postgres
+    image: postgres:latest
     environment:
       POSTGRES_USER: ledger
       POSTGRES_PASSWORD: ledger
@@ -45,11 +50,25 @@ steps:
       - >
         cat .tags && echo
       - >
+        sed -i "s@localhost:8181@$API_HOST@g" src/main/frontend/src/environments/environment.prod.ts
+      - >
+        sed -i "s@http@$API_SCHEME@g" src/main/frontend/src/environments/environment.prod.ts
+      - >
+        export PATH=/drone/src/src/main/frontend/node_modules/.bin:$PATH
+      - >
         gradle bootJar testClasses
         --gradle-user-home=/drone/src/gradle-user-home
+    environment:
+      NODE_OPTION: --max-old-space-size=4096
+      API_HOST:
+        from_secret: production_api_host
+      API_SCHEME:
+        from_secret: production_api_scheme
     volumes:
       - name: gradle_user_home
         path: /drone/src/gradle-user-home
+      - name: node_modules
+        path: /drone/src/src/main/frontend/node_modules
 
   - name: unit tests
     image: gradle:6.7-jdk14
