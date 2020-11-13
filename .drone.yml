@@ -137,7 +137,7 @@ steps:
         exclude:
           - tag
 
-  - name: publish master branch
+  - name: publish release
     image: plugins/docker
     settings:
       auto_tag: false
@@ -150,7 +150,6 @@ steps:
         from_secret: custom_repository
     when:
       ref:
-        - refs/heads/master
         - refs/tags/*
 
 trigger:
