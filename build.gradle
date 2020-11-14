@@ -108,9 +108,15 @@ task finalize {
     }
 }
 
+task explodeBootJar(type: Sync) {
+    dependsOn bootJar
+    into "$buildDir/boot_jar_exploded"
+    from project.zipTree(bootJar.archiveFile)
+}
+
 bootJar {
     dependsOn(buildFrontEnd)
-    archiveFileName = "ledger.jar"
+    //archiveFileName = "ledger.jar"
 }
 
 bootRun {
