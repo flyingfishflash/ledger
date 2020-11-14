@@ -1,24 +1,153 @@
-kind: pipeline
-type: docker
-name: 'build ➔ test ➔ publish'
-
 # drone secrets:
-# custom_mirror = registry-mirror.domain.tld
-# custom_repository = registry.domain.tld/namespace/ledger
-# custom_repository_ledger_development = registry.domain.tld/namespace/ledger:development
-# production_api_host = ledger.domain.tld
-# production_api_scheme = https
+# registry_mirror = http://registry-mirror.domain.tld
+# repository_backend  = registry.domain.tld/namespace/ledger
+# repository_frontend = registry.domain.tld/namespace/ledger-frontend
+# repository_backend_development  = registry.domain.tld/namespace/ledger:development
+# repository_frontend_development = registry.domain.tld/namespace/ledger-frontend:development
 # ssh_username
 # ssh_host
 # ssh_key
 
+kind: pipeline
+type: docker
+name: 'frontend - build'
+
 volumes:
-  - name: gradle_user_home
+  - name: drone_cache
     host:
-      path: /var/lib/docker/volumes_managed/drone_gradle_user_home
-  - name: node_modules
+      path: /var/lib/docker/volumes_managed/drone_cache
+
+trigger:
+  event:
+    - push
+    - tag
+
+steps:
+  - name: cache pull
+    image: drone/git
+    commands:
+      - /drone/src/scripts/drone-cache-pull.sh ledger-frontend
+    volumes:
+      - name: drone_cache
+        path: /drone/drone_cache
+
+  - name: build
+    image: node:latest
+    depends_on:
+      - 'cache pull'
+    commands:
+      - export PATH=/drone/src/src/main/frontend/node_modules/.bin:$PATH
+      - cd /drone/src/src/main/frontend
+      - npm install
+      - ng build --prod
+
+  - name: cache push
+    image: drone/git
+    depends_on:
+      - 'build'
+    commands:
+      - /drone/src/scripts/drone-cache-push.sh ledger-frontend
+    volumes:
+      - name: drone_cache
+        path: /drone/drone_cache
+
+---
+
+kind: pipeline
+name: 'frontend - publish'
+type: docker
+
+depends_on:
+  - 'frontend - build'
+
+volumes:
+  - name: drone_cache
     host:
-      path: /var/lib/docker/volumes_managed/drone_node_modules
+      path: /var/lib/docker/volumes_managed/drone_cache
+
+clone:
+  disable: true
+
+steps:
+  - name: clone
+    image: drone/git
+    commands:
+      - git clone $DRONE_REPO_LINK .
+      - git config advice.detachedHead false
+      - git checkout $DRONE_COMMIT
+      - git fetch --tags
+
+  - name: cache pull
+    image: drone/git
+    depends_on:
+      - 'clone'
+    commands:
+      - /drone/src/scripts/drone-cache-pull.sh ledger-frontend
+      - pwd
+      - ls -la
+      - ls /drone/src/src/main/frontend/dist/ledger-frontend/ -la
+    volumes:
+      - name: drone_cache
+        path: /drone/drone_cache
+
+  - name: publish feature
+    image: plugins/docker
+    depends_on:
+      - 'cache pull'
+    settings:
+      auto_tag: false
+      cache_from:
+        from_secret: repository_frontend_development
+      context: /drone/src/src/main/frontend/
+      dockerfile: /drone/src/src/main/frontend/Dockerfile
+      tags: development
+      mirror:
+        from_secret: registry_mirror
+      repo:
+        from_secret: repository_frontend
+    when:
+      branch:
+        exclude:
+          - master
+      event:
+        exclude:
+          - tag
+
+  - name: publish release
+    image: plugins/docker
+    depends_on:
+      - 'cache pull'
+    settings:
+      auto_tag: false
+      cache_from:
+        from_secret: repository_frontend_development
+      dockerfile: /drone/src/src/main/frontend/Dockerfile
+      mirror:
+        from_secret: registry_mirror
+      repo:
+        from_secret: repository_frontend
+    when:
+      ref:
+        - refs/tags/*
+
+---
+
+kind: pipeline
+type: docker
+name: 'backend - build'
+
+trigger:
+  event:
+    - push
+    - tag
+
+clone:
+  disable: true
+
+volumes:
+  - name: drone_cache
+    host:
+      path: /var/lib/docker/volumes_managed/drone_cache
 
 services:
   - name: postgres
@@ -29,68 +158,23 @@ services:
       POSTGRES_DB: ledger
 
 steps:
-  - name: fetch git tags
-    image: drone/git:latest
+  - name: clone
+    image: drone/git
     commands:
+      - git clone $DRONE_REPO_LINK .
+      - git config advice.detachedHead false
+      - git checkout $DRONE_COMMIT
       - git fetch --tags
 
-  - name: build jar and docker tags
-    image: gradle:6.7-jdk14
+  - name: cache pull
+    image: drone/git
+    depends_on:
+      - 'clone'
     commands:
-      - >
-        gradle version
-        -x bootBuildInfo
-        --gradle-user-home=/drone/src/gradle-user-home
-        | grep Version | awk '{ print $2 }' | tr -d "\n" > ./.tags
-      - >
-        if [ "${DRONE_COMMIT_BRANCH}" = "master" ] || [ "${DRONE_COMMIT_BRANCH}" = "" ]
-        ; then echo ",latest" >> .tags
-        ; else echo ",development" >> .tags
-        ; fi
-      - >
-        cat .tags && echo
-      - >
-        sed -i "s@localhost:8181@$API_HOST@g" src/main/frontend/src/environments/environment.prod.ts
-      - >
-        sed -i "s@http@$API_SCHEME@g" src/main/frontend/src/environments/environment.prod.ts
-      - >
-        export PATH=/drone/src/src/main/frontend/node_modules/.bin:$PATH
-      - >
-        gradle bootJar testClasses
-        --gradle-user-home=/drone/src/gradle-user-home
-    environment:
-      NODE_OPTION: --max-old-space-size=4096
-      API_HOST:
-        from_secret: production_api_host
-      API_SCHEME:
-        from_secret: production_api_scheme
+      - /drone/src/scripts/drone-cache-pull.sh ledger-backend
     volumes:
-      - name: gradle_user_home
-        path: /drone/src/gradle-user-home
-      - name: node_modules
-        path: /drone/src/src/main/frontend/node_modules
-
-  - name: unit tests
-    image: gradle:6.7-jdk14
-    commands:
-      - gradle test
-        -x bootBuildInfo
-        --no-daemon
-        --gradle-user-home=/drone/src/gradle-user-home
-    volumes:
-      - name: gradle_user_home
-        path: /drone/src/gradle-user-home
-
-  - name: h2 integration tests
-    image: gradle:6.7-jdk14
-    commands:
-      - gradle integrationTests
-        -x bootBuildInfo
-        --no-daemon
-        --gradle-user-home=/drone/src/gradle-user-home
-    volumes:
-      - name: gradle_user_home
-        path: /drone/src/gradle-user-home
+      - name: drone_cache
+        path: /drone/drone_cache
 
   - name: verify postgres
     image: postgres
@@ -102,33 +186,75 @@ steps:
         psql "dbname=ledger host=postgres user=ledger password=ledger port=5432" \
           -c "select count(*) from pg_catalog.pg_tables;"
 
-  - name: postgres integration tests
+  - name: build
     image: gradle:6.7-jdk14
+    depends_on:
+      - 'cache pull'
+      - 'verify postgres'
     commands:
-      - gradle integrationTests
+      - >
+        gradle explodeBootJar testClasses writeVersion --build-cache
+      - >
+        gradle test
+      - >
+        gradle integrationTests
         -x bootBuildInfo
-        --no-daemon
-        --gradle-user-home=/drone/src/gradle-user-home
+      - >
+        gradle integrationTests
+        -x bootBuildInfo
         -Dspring.profiles.active=postgresql
         -Dspring.datasource.url=jdbc:postgresql://postgres:5432/ledger
         -Dspring.datasource.username=ledger
         -Dspring.datasource.password=ledger
         -Dspring.datasource.platform=postgresql
-    volumes:
-      - name: gradle_user_home
-        path: /drone/src/gradle-user-home
+      - >
+        gradle --stop
+    environment:
+      NODE_OPTION: --max-old-space-size=4096
 
-  - name: publish feature branch
-    image: plugins/docker
-    settings:
-      auto_tag: false
-      cache_from:
-        from_secret: custom_repository_ledger_development
-      dockerfile: Dockerfile.drone
-      mirror:
-        from_secret: custom_mirror
-      repo:
-        from_secret: custom_repository
+  - name: cache push
+    image: drone/git
+    depends_on:
+      - 'build'
+    commands:
+      - /drone/src/scripts/drone-cache-push.sh ledger-backend
+    volumes:
+      - name: drone_cache
+        path: /drone/drone_cache
+
+---
+
+kind: pipeline
+name: 'backend - publish'
+type: docker
+
+depends_on:
+  - 'backend - build'
+
+volumes:
+  - name: drone_cache
+    host:
+      path: /var/lib/docker/volumes_managed/drone_cache
+
+steps:
+  - name: cache pull
+    image: drone/git
+    depends_on:
+      - 'clone'
+    commands:
+      - /drone/src/scripts/drone-cache-pull.sh ledger-backend
+    volumes:
+      - name: drone_cache
+        path: /drone/drone_cache
+
+  - name: write docker tag (development)
+    image: drone/git:latest
+    depends_on:
+      - 'cache pull'
+    commands:
+      - cat version > .tags
+      - echo ",development" >> .tags
+      - cat .tags
     when:
       branch:
         exclude:
@@ -137,25 +263,54 @@ steps:
         exclude:
           - tag
 
-  - name: publish release
+  - name: publish feature
     image: plugins/docker
+    depends_on:
+      - 'write docker tag (development)'
     settings:
       auto_tag: false
       cache_from:
-        from_secret: custom_repository_ledger_development
+        from_secret: repository_backend_development
       dockerfile: Dockerfile.drone
+      tags: development
       mirror:
-        from_secret: custom_mirror
+        from_secret: registry_mirror
       repo:
-        from_secret: custom_repository
+        from_secret: repository_backend
+    when:
+      branch:
+        exclude:
+          - master
+      event:
+        exclude:
+          - tag
+
+  - name: write docker tag (release)
+    image: drone/git:latest
+    commands:
+      - cat version > .tags
+      - echo ",latest" >> .tags
+      - cat .tags
     when:
       ref:
         - refs/tags/*
 
-trigger:
-  event:
-    - push
-    - tag
+  - name: publish release
+    image: plugins/docker
+    depends_on:
+      - 'write docker tag (release)'
+    settings:
+      auto_tag: false
+      cache_from:
+        from_secret: repository_backend_development
+      dockerfile: Dockerfile.drone
+      mirror:
+        from_secret: registry_mirror
+      repo:
+        from_secret: repository_backend
+    when:
+      ref:
+        - refs/tags/*
 
 ---
 
@@ -164,7 +319,11 @@ name: deploy
 type: docker
 
 depends_on:
-  - 'build ➔ test ➔ publish'
+  - 'frontend - publish'
+  - 'backend - publish'
+
+clone:
+  disable: true
 
 steps:
   - name: deploy
