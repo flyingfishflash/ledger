@@ -8,8 +8,7 @@ before_script:
 
 stages:
   - build
-  - unit tests
-  - integration tests
+  - tests
   - publish
 
 image: docker:latest
@@ -19,26 +18,19 @@ cache:
   paths:
     - build
     - .gradle
-    - .version
+    - version
 
 build-jar:
   image: gradle:6.7-jdk14
   stage: build
   script:
     - echo $CI_COMMIT_BRANCH
-    - chmod +x ./scripts/version.sh
-    - ./scripts/version.sh > ./.version
-    - >
-      if [ "$CI_COMMIT_BRANCH" != "master" ] && [ "$CI_COMMIT_BRANCH" != "" ]
-      ; then echo "-$CI_COMMIT_BRANCH" >> .version
-      ; fi
-    - cat .version
     - echo
-    - gradle bootJar testClasses --build-cache
+    - gradle explodeBootJar testClasses writeVersion --build-cache
 
 unit-tests:
   image: gradle:6.7-jdk14
-  stage: 'unit tests'
+  stage: tests
   script:
     - gradle test
       -x bootBuildInfo
@@ -46,7 +38,7 @@ unit-tests:
 
 h2-integration-tests:
   image: gradle:6.7-jdk14
-  stage: 'integration tests'
+  stage: tests
   script:
     - gradle integrationTests
       -x bootBuildInfo
@@ -54,7 +46,7 @@ h2-integration-tests:
 
 postgres-integration-tests:
   image: gradle:6.7-jdk14
-  stage: 'integration tests'
+  stage: tests
   services:
     - postgres:latest
   variables:
@@ -77,7 +69,8 @@ publish-feature:
   stage: publish
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - VERSION=$(cat .version)
+    - echo "-$CI_COMMIT_BRANCH" >> version
+    - VERSION=$(cat version)
     - docker build --pull -t "$CI_REGISTRY_IMAGE:$VERSION" -t "$CI_REGISTRY_IMAGE:development" -f Dockerfile.drone .
     - docker push "$CI_REGISTRY_IMAGE:$VERSION"
     - docker push "$CI_REGISTRY_IMAGE:development"
@@ -91,10 +84,9 @@ publish-master-or-version-tagged-ref:
   stage: publish
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - VERSION=$(cat .version)
+    - VERSION=$(cat version)
     - docker build --pull -t "$CI_REGISTRY_IMAGE:$VERSION" -t "$CI_REGISTRY_IMAGE:latest" -f Dockerfile.drone .
     - docker push "$CI_REGISTRY_IMAGE:$VERSION"
     - docker push "$CI_REGISTRY_IMAGE:latest"
   only:
-    - master
     - /^v(\d+\.)?(\d+\.)?(\*|\d+)$/
