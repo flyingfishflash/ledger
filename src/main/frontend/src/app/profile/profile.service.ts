@@ -2,10 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError, Subject, ReplaySubject } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
+import { AppConfig } from '../app-config';
 import { BasicAuthService } from '../_services/basic-auth.service'
-
-const API = environment.api.url;
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' }), withCredentials: true
@@ -18,6 +16,7 @@ export class ProfileService {
   loggedInUserId;
 
   constructor(
+    private appConfig: AppConfig,
     private http: HttpClient,
     private authenticationService: BasicAuthService
   ) {
@@ -37,21 +36,21 @@ export class ProfileService {
   }
 
   loadData() {
-    this.http.get<any>(API + '/users/' + this.loggedInUserId + '/profile')
+    this.http.get<any>(this.appConfig.apiServer.url + '/users/' + this.loggedInUserId + '/profile')
       .subscribe(data => {
         this.subject.next(data.response.body);
       });
   }
 
   loadDataById(id) {
-    this.http.get<any>(API + '/users/' + id + '/profile')
+    this.http.get<any>(this.appConfig.apiServer.url + '/users/' + id + '/profile')
       .subscribe(data => {
         this.subject.next(data.response.body);
       });
   }
 
   userDetailsUpdate(payload, id) {
-    this.http.patch<any>(API + '/users/' + id, {
+    this.http.patch<any>(this.appConfig.apiServer.url + '/users/' + id, {
       email: payload.email,
       firstName: payload.firstName,
       lastName: payload.lastName,
@@ -76,7 +75,7 @@ export class ProfileService {
 
   userDetailsUpdateOriginal(payload): Observable<any> {
     console.log(payload);
-    return this.http.patch(API + '/users/' + this.loggedInUserId, { payload }, httpOptions).pipe(catchError(this.handleError));
+    return this.http.patch(this.appConfig.apiServer.url + '/users/' + this.loggedInUserId, { payload }, httpOptions).pipe(catchError(this.handleError));
   }
 
   handleError(err: HttpErrorResponse) {

@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, Subject, timer, throwError } from 'rxjs';
 import { map, switchMap, retry, tap, share, takeUntil, catchError } from 'rxjs/operators';
 
-const API = environment.api.url;
-
+import { AppConfig } from '../app-config';
 
 @Injectable({
   providedIn: 'root'
@@ -17,13 +15,14 @@ export class ImportService {
   private stopPolling = new Subject();
 
   constructor(
+    private appConfig: AppConfig,
     private http: HttpClient,
   ) {
 
     console.log('constructing import service');
 
     this.allCurrencies$ = timer(1, 1000).pipe(
-      switchMap(() => http.get<any[]>(`${API}/import/gnucashFileImportStatus`)),
+      switchMap(() => http.get<any[]>(`${this.appConfig.apiServer.url}/import/gnucashFileImportStatus`)),
       retry(),
       tap(console.log),
       share(),
@@ -35,7 +34,7 @@ export class ImportService {
 
   getImportStatus(): Observable<any> {
     console.log('getImportStatus()');
-    return this.http.get<any[]>(`${API}/import/gnucashFileImportStatus`).pipe(
+    return this.http.get<any[]>(`${this.appConfig.apiServer.url}/import/gnucashFileImportStatus`).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
@@ -48,7 +47,7 @@ export class ImportService {
   }
 
   uploadFile(formData): Observable<any> {
-    return this.http.post<any[]>(`${API}/import/gnucash`, formData).pipe(
+    return this.http.post<any[]>(`${this.appConfig.apiServer.url}/import/gnucash`, formData).pipe(
       map(res => {
         return res;
       }

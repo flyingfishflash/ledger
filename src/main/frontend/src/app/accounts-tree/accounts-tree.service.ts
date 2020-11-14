@@ -1,12 +1,10 @@
-import { environment } from 'src/environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, from, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { AppConfig } from '../app-config'
 import { IAccount } from '../accounts-table/account';
-
-const API = environment.api.url;
 
 @Injectable({
     // available for injection by angular from anywhere in application
@@ -17,7 +15,7 @@ export class AccountsTreeService {
     // private accountUrl = '/api/accounts/accounts.json';
     private accountUrl = 'http://nas:8181/api/v1/ledger/accounts';
 
-    constructor(private http: HttpClient) {}
+    constructor(private appConfig: AppConfig, private http: HttpClient) {}
 
     list_to_tree(list) {
 
@@ -133,7 +131,7 @@ export class AccountsTreeService {
       getAccounts(paramData): Observable<any> {
 
 //        return this.http.get<IAccount[]>(this.accountUrl).pipe(
-        return this.http.get<IAccount[]>(`${API}/accounts`, {params: paramData}).pipe(
+        return this.http.get<IAccount[]>(`${this.appConfig.apiServer.url}/accounts`, {params: paramData}).pipe(
 
             map(res => { return this.list_to_tree(res); }));
 

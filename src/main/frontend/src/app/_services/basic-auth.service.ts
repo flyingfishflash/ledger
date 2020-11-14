@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { environment } from '../../environments/environment';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
+import { AppConfig } from '../app-config';
 import { User } from '../_models/user';
 import { Router } from '@angular/router';
 import { map } from 'rxjs/internal/operators/map';
-
-const API = environment.api.url;
 
 @Injectable({ providedIn: 'root' })
 export class BasicAuthService {
@@ -15,10 +13,11 @@ export class BasicAuthService {
 
   private userSubject: BehaviorSubject<User>;
   public user: Observable<any>;
-
+  
   constructor(
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private appConfig: AppConfig
   ) {
     this.userSubject = new BehaviorSubject<User>(JSON.parse(window.sessionStorage.getItem(this.STORAGE_KEY_AUTHENTICATED_USER)));
     this.user = this.userSubject.asObservable();
@@ -34,7 +33,7 @@ export class BasicAuthService {
       credentials ? { authorization: this.createBasicAuthToken(credentials.username, credentials.password) } : {}
     );
 
-    return this.http.get<any>(API + '/auth/signin', { headers: headers, withCredentials: true }).pipe(map(user => {
+    return this.http.get<any>(this.appConfig.apiServer.url + '/auth/signin', { headers: headers, withCredentials: true }).pipe(map(user => {
       const u = new User();
       u.id = user.response.body.id;
       u.username = user.response.body.username;
@@ -51,7 +50,7 @@ export class BasicAuthService {
   }
 
   signOut(parameter: string) {
-    this.http.post<any>(API + '/auth/signout', { parameter }).subscribe(result => {
+    this.http.post<any>(this.appConfig.apiServer.url + '/auth/signout', { parameter }).subscribe(result => {
       if (result.response.body.message === 'Logged Out') {
         window.sessionStorage.clear();
         this.userSubject.next(null);

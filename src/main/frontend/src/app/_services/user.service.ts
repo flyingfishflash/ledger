@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import { AppConfig } from '../app-config';
 import { Observable, throwError, Subject, ReplaySubject } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { BasicAuthService } from './basic-auth.service';
 import { EVENT_MANAGER_PLUGINS } from '@angular/platform-browser';
-
-const API = environment.api.url;
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' }), withCredentials: true
@@ -20,13 +18,14 @@ export class UserService {
   loggedInUserId;
 
   constructor(
+    private appConfig: AppConfig,
     private http: HttpClient,
     private authenticationService: BasicAuthService) {
     this.loggedInUserId = authenticationService.getLoggedInUserId();
   }
 
   findAllUsers(): Observable<any> {
-    return this.http.get<any>(`${API}/users`).pipe(
+    return this.http.get<any>(`${this.appConfig.apiServer.url}/users`).pipe(
       map(res => {
         return res.response.body;
       }), catchError(this.handleError)
@@ -35,7 +34,7 @@ export class UserService {
 
   userDetailsUpdate(payload): Observable<any> {
     console.log(payload);
-    return this.http.patch<any>(API + '/users/' + this.loggedInUserId, {
+    return this.http.patch<any>(this.appConfig.apiServer.url + '/users/' + this.loggedInUserId, {
       email: payload.email,
       firstName: payload.firstName,
       lastName: payload.lastName,
@@ -47,7 +46,7 @@ export class UserService {
     let roles: string[] = [];
     roles.push(userFormValue.role);
 
-    return this.http.post<any>(API + '/users/', {
+    return this.http.post<any>(this.appConfig.apiServer.url + '/users/', {
       email: userFormValue.email,
       firstName: userFormValue.firstName,
       lastName: userFormValue.lastName,
@@ -64,7 +63,7 @@ export class UserService {
     let httpParams = new HttpParams().set('id', id);
     let options = { params: httpParams, withCredentials: true };
 
-    this.http.delete<any>(API + '/users/delete', options, )
+    this.http.delete<any>(this.appConfig.apiServer.url + '/users/delete', options, )
       .subscribe(
         successResponse => {
           console.log(successResponse);

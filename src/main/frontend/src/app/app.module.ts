@@ -1,6 +1,8 @@
+import { AppConfig, initConfig } from './app-config';
 import { BrowserModule } from '@angular/platform-browser';
 // import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
+import { Inject, APP_INITIALIZER } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -8,6 +10,8 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { InjectableRxStompConfig, RxStompService, rxStompServiceFactory } from '@stomp/ng2-stompjs';
 
+//import { AppConfigService } from './_services/app-config.service';
+//import { AppConfig } from './app-config'
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AccountsTableComponent } from './accounts-table/accounts-table.component';
@@ -26,7 +30,6 @@ import { ProfileComponent } from './profile/profile.component';
 import { authInterceptorProviders } from './_interceptors/auth.interceptor';
 import { AdminSettingsComponent } from './admin-settings/admin-settings.component';
 import { AdminSettingsUserCreateComponent } from './admin-settings-user-create/admin-settings-user-create.component';
-
 
 @NgModule({
   imports: [
@@ -56,6 +59,11 @@ import { AdminSettingsUserCreateComponent } from './admin-settings-user-create/a
 
   providers: [
     authInterceptorProviders,
+    AppConfig,
+    { provide: APP_INITIALIZER,
+      useFactory: initConfig,
+      deps: [AppConfig],
+      multi: true},
     RxStompService
 /*     {
       provide: InjectableRxStompConfig,
