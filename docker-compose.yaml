@@ -2,17 +2,23 @@ version: "3.8"
 
 services:
 
-  ledger:
-    container_name: ledger
+  ledger-backend:
+    container_name: ledger-backend
     depends_on:
-      - ledger_postgres
+      - ledger-postgres
     environment:
+#      The value of API_SERVER will be used to generate the resources/static/assets/config.json file
+#      config.json is fetched by api clients
+#      Defaults to: http://localhost:8181)
+#      API_SERVER: http://dockerhost:52300
+#      If behind a proxy like traefik with a DNS name configured:
+#      API_SERVER: ledger-backend.mydomain.tld
       JDK_JAVA_OPTIONS: >
         -Djava.security.egd=file:/dev/./urandom
         -Duser.timezone="UTC"
       SPRING_PROFILES_ACTIVE: postgresql
       SPRING_JPA_SHOW_SQL: 'false'
-      SPRING_DATASOURCE_URL: jdbc:postgresql://ledger_postgres:5432/ledger
+      SPRING_DATASOURCE_URL: jdbc:postgresql://ledger-postgres:5432/ledger
       SPRING_DATASOURCE_USERNAME: ledger
       SPRING_DATASOURCE_PASSWORD: ledger
       SPRING_DATASOURCE_PLATFORM: POSTGRESQL
@@ -29,7 +35,7 @@ services:
       timeout: "5s"
       start_period: "15s"
       retries: 3
-    image: registry.gitlab.com/rollenwiese/ledger:development
+    image: registry.gitlab.com/rollenwiese/ledger:backend-development
     logging:
       driver: journald
       options:
@@ -40,8 +46,25 @@ services:
       - "52300:8181"
     restart: unless-stopped
 
-  ledger_postgres:
-    container_name: ledger_postgres
+  ledger-frontend:
+    container_name: ledger-frontend
+    depends_on:
+      - ledger-backend
+    environment:
+      UPSTREAM_SERVER: 'ledger-backend:8181'
+    image: registry.gitlab.com/rollenwiese/ledger:frontend-development
+    logging:
+      driver: journald
+      options:
+        tag: docker/ledger_frontend
+    networks:
+      - default
+    ports:
+      - "52301:80"
+    restart: unless-stopped
+
+  ledger-postgres:
+    container_name: ledger-postgres
     environment:
       - POSTGRES_USER=ledger
       - POSTGRES_PASSWORD=ledger
@@ -54,7 +77,7 @@ services:
     networks:
       - default
     ports:
-      - "52301:5432"
+      - "52302:5432"
     restart: unless-stopped
 
 networks:
