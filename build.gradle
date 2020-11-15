@@ -17,10 +17,6 @@ ext {
     googleJavaFormatVersion = "1.9"
 }
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
-
 repositories {
     mavenCentral()
     mavenLocal()
@@ -60,6 +56,41 @@ dependencies {
     testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion" exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 }
 
+task buildFrontEnd(type: NpmTask) {
+    dependsOn(npmInstall)
+    args = ['run', 'buildProd']
+}
+
+task explodeBootJar(type: Sync) {
+    dependsOn bootJar
+    into "$buildDir/boot_jar_exploded"
+    from project.zipTree(bootJar.archiveFile)
+}
+
+task finalize {
+    doLast {
+        println(version)
+    }
+}
+
+task integrationTests(type: Test) {
+    systemProperties System.properties
+    useJUnitPlatform()
+    mustRunAfter(test)
+
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+
+    filter {
+        includeTestsMatching "net.flyingfishflash.ledger.*.integration.*"
+    }
+}
+
+task writeVersion {
+    new File(projectDir, "version").text = version
+}
+
 test {
     useJUnitPlatform()
 
@@ -72,48 +103,6 @@ test {
     }
 }
 
-task integrationTests(type: Test) {
-    systemProperties System.properties
-    useJUnitPlatform()
-
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
-
-    filter {
-        includeTestsMatching "net.flyingfishflash.ledger.*.integration.*"
-    }
-}
-
-/*
-task buildFrontEndVersion(type: NpmTask) {
-    dependsOn(npmInstall)
-    args = ['npm', 'version', '--', '--dry-run']
-}
-*/
-
-task buildFrontEnd(type: NpmTask) {
-    dependsOn(npmInstall)
-//    dependsOn(buildFrontEndVersion)
-    args = ['run', 'buildProd']
-}
-
-/*task releaseNotes(type: NpmTask) {
-    args = ['run', 'release', '--', '--dry-run']
-}*/
-
-task finalize {
-    doLast {
-        println(version)
-    }
-}
-
-task explodeBootJar(type: Sync) {
-    dependsOn bootJar
-    into "$buildDir/boot_jar_exploded"
-    from project.zipTree(bootJar.archiveFile)
-}
-
 bootJar {
     dependsOn(buildFrontEnd)
     //archiveFileName = "ledger.jar"
@@ -124,8 +113,6 @@ bootRun {
 }
 
 build {
-    println ("Updating version file with:" + version)
-    new File(projectDir, "version").text = version
     finalizedBy(finalize)
     dependsOn buildFrontEnd
 }
@@ -143,10 +130,6 @@ changelog {
 
     //match '^fix|^feat|^fix|^perf|^refactor|^docs|BREAKING' //default
     match '^fix|^feat|^fix|^chore|^docs|^style|^refactor|^perf|^test|BREAKING'
-}
-
-integrationTests {
-    mustRunAfter(test)
 }
 
 node {
