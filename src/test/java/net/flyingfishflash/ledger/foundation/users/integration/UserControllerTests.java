@@ -34,6 +34,6 @@ public class UserControllerTests {
             .withBasicAuth("testuser", "TestUser1@")
             .getForEntity("/api/v1/ledger/users/profile", UserProfileResponse.class);
 
-    assertEquals(userProfileResponse.getStatusCode(), HttpStatus.OK);
+    assertEquals(HttpStatus.OK, userProfileResponse.getStatusCode());
   }
 }
