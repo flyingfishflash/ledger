@@ -151,7 +151,7 @@ public class AccountControllerTests {
   @Test
   public void testDeleteAccountAndDescendants() throws Exception {
 
-    String requestParameter = "";
+    String requestParameter = "1";
 
     MockHttpServletResponse response =
         mvc.perform(

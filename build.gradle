@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '2.3.4.RELEASE'
+    id 'org.springframework.boot' version '2.4.0'
     id 'fr.brouillard.oss.gradle.jgitver' version '0.10.0-rc03'
     id "com.diffplug.spotless" version "5.6.1"
     id "com.github.node-gradle.node" version "3.0.0-rc3"
@@ -12,9 +12,10 @@ description = 'Ledger'
 sourceCompatibility = '14'
 
 ext {
-    springBootVersion = "2.3.5.RELEASE"
-    springSessionVersion = "2.4.0"
+    springBootVersion = "2.4.0"
+    springSessionVersion = "2.4.1"
     googleJavaFormatVersion = "1.9"
+    nodeJsVersion = "15.2.1"
 }
 
 repositories {
@@ -53,7 +54,7 @@ dependencies {
     implementation 'commons-validator:commons-validator:1.7'
     runtimeOnly 'javax.xml.bind:jaxb-api:2.3.1'
     testImplementation 'org.springframework.security:spring-security-test:5.4.1'
-    testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion" exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
 }
 
 task buildFrontEnd(type: NpmTask) {
@@ -134,7 +135,7 @@ changelog {
 
 node {
     download = true
-    version = "15.2.0"
+    version = nodeJsVersion
     nodeProjectDir = file("${project.projectDir}/src/main/frontend/")
 }
 
