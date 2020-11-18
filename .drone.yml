@@ -193,7 +193,7 @@ steps:
       - 'verify postgres'
     commands:
       - >
-        gradle explodeBootJar testClasses writeVersion --build-cache
+        gradle :backend:explodebootjar :backend:testClasses
       - >
         gradle test
       - >

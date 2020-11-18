@@ -3,7 +3,6 @@ plugins {
     id 'org.springframework.boot' version '2.4.0'
     id 'fr.brouillard.oss.gradle.jgitver' version '0.10.0-rc03'
     id "com.diffplug.spotless" version "5.6.1"
-    id "com.github.node-gradle.node" version "3.0.0-rc3"
     id 'com.geoffgranum.gradle-conventional-changelog' version '0.3.1'
 }
 
@@ -12,10 +11,7 @@ description = 'Ledger'
 sourceCompatibility = '14'
 
 ext {
-    springBootVersion = "2.4.0"
-    springSessionVersion = "2.4.1"
     googleJavaFormatVersion = "1.9"
-    nodeJsVersion = "15.2.1"
 }
 
 repositories {
@@ -33,6 +29,10 @@ repositories {
 }
 
 dependencies {
+
+    String springBootVersion = "2.4.0"
+    String springSessionVersion = "2.4.1"
+
     implementation "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
     implementation "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
@@ -55,11 +55,6 @@ dependencies {
     runtimeOnly 'javax.xml.bind:jaxb-api:2.3.1'
     testImplementation 'org.springframework.security:spring-security-test:5.4.1'
     testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
-}
-
-task buildFrontEnd(type: NpmTask) {
-    dependsOn(npmInstall)
-    args = ['run', 'buildProd']
 }
 
 task explodeBootJar(type: Sync) {
@@ -89,6 +84,7 @@ task integrationTests(type: Test) {
 }
 
 task writeVersion {
+    outputs.upToDateWhen { false }
     new File(projectDir, "version").text = version
 }
 
@@ -105,8 +101,6 @@ test {
 }
 
 bootJar {
-    dependsOn(buildFrontEnd)
-    //archiveFileName = "ledger.jar"
 }
 
 bootRun {
@@ -115,7 +109,6 @@ bootRun {
 
 build {
     finalizedBy(finalize)
-    dependsOn buildFrontEnd
 }
 
 changelog {
@@ -131,26 +124,6 @@ changelog {
 
     //match '^fix|^feat|^fix|^perf|^refactor|^docs|BREAKING' //default
     match '^fix|^feat|^fix|^chore|^docs|^style|^refactor|^perf|^test|BREAKING'
-}
-
-node {
-    download = true
-    version = nodeJsVersion
-    nodeProjectDir = file("${project.projectDir}/src/main/frontend/")
-}
-
-processResources {
-    from("src/main/frontend/dist/ledger-frontend/") {
-        into("static")
-    }
-
-//    rename("application-${profile}.properties", "application.properties")
-//    if (profile == "prod") {
-//        dependsOn(buildWeb)
-//        from("${spa}/dist/notes") {
-//            into("static")
-//        }
-//    }
 }
 
 spotless {
