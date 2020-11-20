@@ -36,8 +36,8 @@ steps:
     depends_on:
       - 'cache pull'
     commands:
-      - export PATH=/drone/src/src/main/frontend/node_modules/.bin:$PATH
-      - cd /drone/src/src/main/frontend
+      - export PATH=/drone/src/frontend/node_modules/.bin:$PATH
+      - cd /drone/src/frontend
       - npm install
       - ng build --prod
 
@@ -85,7 +85,7 @@ steps:
       - /drone/src/scripts/drone-cache-pull.sh ledger-frontend
       - pwd
       - ls -la
-      - ls /drone/src/src/main/frontend/dist/ledger-frontend/ -la
+      - ls /drone/src/frontend/dist/ledger-frontend/ -la
     volumes:
       - name: drone_cache
         path: /drone/drone_cache
@@ -98,8 +98,8 @@ steps:
       auto_tag: false
       cache_from:
         from_secret: repository_frontend_development
-      context: /drone/src/src/main/frontend/
-      dockerfile: /drone/src/src/main/frontend/Dockerfile
+      context: /drone/src/frontend/
+      dockerfile: /drone/src/frontend/Dockerfile
       tags: development
       mirror:
         from_secret: registry_mirror
@@ -121,7 +121,7 @@ steps:
       auto_tag: false
       cache_from:
         from_secret: repository_frontend_development
-      dockerfile: /drone/src/src/main/frontend/Dockerfile
+      dockerfile: /drone/src/frontend/Dockerfile
       mirror:
         from_secret: registry_mirror
       repo:
@@ -193,15 +193,15 @@ steps:
       - 'verify postgres'
     commands:
       - >
-        gradle :backend:explodebootjar :backend:testClasses
+        gradle :backend:explodebootjar :backend:testClasses writeVersion
       - >
-        gradle test
+        gradle :backend:test
       - >
-        gradle integrationTests
-        -x bootBuildInfo
+        gradle :backend:integrationTests
+        -x :backend:bootBuildInfo
       - >
-        gradle integrationTests
-        -x bootBuildInfo
+        gradle :backend:integrationTests
+        -x backend:bootBuildInfo
         -Dspring.profiles.active=postgresql
         -Dspring.datasource.url=jdbc:postgresql://postgres:5432/ledger
         -Dspring.datasource.username=ledger
@@ -271,7 +271,8 @@ steps:
       auto_tag: false
       cache_from:
         from_secret: repository_backend_development
-      dockerfile: Dockerfile.drone
+      context: /drone/src/backend/
+      dockerfile: /drone/src/backend/Dockerfile
       tags: development
       mirror:
         from_secret: registry_mirror
@@ -303,7 +304,8 @@ steps:
       auto_tag: false
       cache_from:
         from_secret: repository_backend_development
-      dockerfile: Dockerfile.drone
+      context: /drone/src/backend/
+      dockerfile: /drone/src/backend/Dockerfile
       mirror:
         from_secret: registry_mirror
       repo:
