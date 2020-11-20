@@ -1,5 +1,5 @@
 upstream ledger-backend {
-    server ledger-backend:8181;
+    server ${UPSTREAM_SERVER};
 }
 
 server {
