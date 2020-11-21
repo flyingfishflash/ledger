@@ -1,5 +1,5 @@
-import { InjectableRxStompConfig } from '@stomp/ng2-stompjs';
-import { environment } from 'src/environments/environment';
+import { InjectableRxStompConfig } from "@stomp/ng2-stompjs";
+import { environment } from "src/environments/environment";
 // import { TokenStorageService } from '../_services/token-storage.service';
 
 // https://stomp-js.github.io/guide/ng2-stompjs/ng2-stomp-with-angular7.html
@@ -7,17 +7,13 @@ import { environment } from 'src/environments/environment';
 export const rxStompConfig: InjectableRxStompConfig = {
   brokerURL: environment.wsEndpoint,
 
-
-
   // Headers
   // Typical keys: login, passcode, host
   connectHeaders: {
-    login: 'admi',
+    login: "admi",
     // passcode: 'admin',
-    authorization: ''
+    authorization: "",
   },
-
-
 
   // Interval in milliseconds
   // Set to 0 to disable
@@ -32,7 +28,7 @@ export const rxStompConfig: InjectableRxStompConfig = {
   // Will log diagnostics on console
   // It can be quite verbose, not recommended in production
   // Skip this key to stop logging to console
-   debug: (msg: string): void => {
+  debug: (msg: string): void => {
     console.log(new Date(), msg);
-  }
+  },
 };

@@ -1,35 +1,34 @@
-import { Component, OnInit } from '@angular/core';
-import { BasicAuthService } from '../_services/basic-auth.service';
-import { Router, ActivatedRoute } from '@angular/router';
-import { first } from 'rxjs/internal/operators/first';
+import { Component, OnInit } from "@angular/core";
+import { BasicAuthService } from "../_services/basic-auth.service";
+import { Router, ActivatedRoute } from "@angular/router";
+import { first } from "rxjs/internal/operators/first";
 
 @Component({
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  templateUrl: "./login.component.html",
+  styleUrls: ["./login.component.css"],
 })
 export class LoginComponent implements OnInit {
   form: any = {};
   isLoggedIn = false;
   isLoginFailed = false;
-  errorMessage = '';
+  errorMessage = "";
   hide = true;
   returnUrl: string;
 
   constructor(
     private basicAuthService: BasicAuthService,
     private router: Router,
-    private route: ActivatedRoute,
+    private route: ActivatedRoute
   ) {
-
     // redirect to home if already logged in
     if (this.basicAuthService.userValue) {
-      this.router.navigate(['/home']);
+      this.router.navigate(["/home"]);
     }
   }
 
   ngOnInit() {
     // get return url from route parameters or default to '/'
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    this.returnUrl = this.route.snapshot.queryParams["returnUrl"] || "/";
   }
 
   onSubmit() {
@@ -37,7 +36,6 @@ export class LoginComponent implements OnInit {
   }
 
   private onSubmitBasicAuth() {
-
     // this.submitted = true;
 
     if (this.form.invalid) {
@@ -45,22 +43,24 @@ export class LoginComponent implements OnInit {
     }
 
     // this.loading = true;
-    this.basicAuthService.signIn(this.form)
+    this.basicAuthService
+      .signIn(this.form)
       .pipe(first())
       .subscribe(
-        data => {
+        (data) => {
           console.log(data);
           this.isLoggedIn = true;
           this.isLoginFailed = false;
           this.router.navigate([this.returnUrl]);
         },
-        error => {
+        (error) => {
           // this.error = error;
           // this.loading = false;
-        });
+        }
+      );
   }
 
-/*   private onSubmitBasicAuth1() {
+  /*   private onSubmitBasicAuth1() {
     this.basicAuthService.signIn(this.form).subscribe(
       (result) => {
         console.log('result below:');

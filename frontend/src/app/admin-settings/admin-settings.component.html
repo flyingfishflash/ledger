@@ -1,68 +1,83 @@
-<div class="container" id="profile-component-content" style="padding:24px;">
-    <div class="flex-container" fxLayout="row" fxLayout.sm="column" fxLayoutAlign="space-evenly none">
-        <mat-card class="flex-child-1">
+<div class="container" id="profile-component-content" style="padding: 24px;">
+  <div
+    class="flex-container"
+    fxLayout="row"
+    fxLayout.sm="column"
+    fxLayoutAlign="space-evenly none"
+  >
+    <mat-card class="flex-child-1">
+      <!--h1 class="mat-h1">{{ componentHeading }}</h1-->
 
-            <!--h1 class="mat-h1">{{ componentHeading }}</h1-->
+      <mat-card-content>
+        <mat-tab-group dynamicHeight>
+          <mat-tab label="Settings">
+            <ng-template mat-tab-label>
+              <mat-icon class="tab-icon">settings</mat-icon>
+              Settings
+            </ng-template>
+          </mat-tab>
+          <mat-tab label="Maintenance">
+            <ng-template mat-tab-label>
+              <mat-icon class="tab-icon">build</mat-icon>
+              Maintenance
+            </ng-template>
+          </mat-tab>
+          <mat-tab label="Users">
+            <ng-template mat-tab-label>
+              <mat-icon class="tab-icon">group</mat-icon>
+              Users
+            </ng-template>
+            <div fxLayoutGap="10px" style="margin: 16px; display: flex;">
+              <div style="flex-grow: 1;">
+                <input matInput placeholder="Search Users" />
+              </div>
+              <button
+                mat-flat-button
+                color="primary"
+                [routerLink]="'user/create'"
+                matTooltip="Add New User"
+              >
+                Add User
+              </button>
+            </div>
+            <div>
+              <mat-nav-list>
+                <mat-list-item *ngFor="let user of users">
+                  <mat-icon mat-list-icon>account_circle</mat-icon>
+                  <div mat-line>{{ user.username }}</div>
+                  <div mat-line>{{ user.authorities[0].authority }}</div>
+                  <button
+                    mat-flat-button
+                    color="primary"
+                    [routerLink]="'/profile'"
+                    [state]="{ data: { userId: user.id } }"
+                    matTooltip="Add New User"
+                    style="margin: 10px;"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    mat-flat-button
+                    color="primary"
+                    matTooltip="Add New User"
+                    (click)="onClickDelete(user.id)"
+                  >
+                    Delete
+                  </button>
+                </mat-list-item>
 
-            <mat-card-content>
-
-                <mat-tab-group dynamicHeight>
-                    <mat-tab label="Settings">
-                        <ng-template mat-tab-label>
-                            <mat-icon class="tab-icon">settings</mat-icon>
-                            Settings
-                        </ng-template>
-                    </mat-tab>
-                    <mat-tab label="Maintenance">
-                        <ng-template mat-tab-label>
-                            <mat-icon class="tab-icon">build</mat-icon>
-                            Maintenance
-                        </ng-template>
-                    </mat-tab>
-                    <mat-tab label="Users">
-                        <ng-template mat-tab-label>
-                            <mat-icon class="tab-icon">group</mat-icon>
-                            Users
-                        </ng-template>
-                        <div fxLayoutGap="10px" style="margin:16px; display: flex;">
-                            <div style="flex-grow: 1;">
-                                <input matInput placeholder="Search Users">
-                            </div>
-                            <button mat-flat-button color="primary" [routerLink]="'user/create'"
-                                matTooltip="Add New User">Add User
-                            </button>
-                        </div>
-                        <div>
-                            <mat-nav-list>
-
-                                <mat-list-item *ngFor="let user of users">
-                                    <mat-icon mat-list-icon>account_circle</mat-icon>
-                                    <div mat-line>{{ user.username }}</div>
-                                    <div mat-line>{{ user.authorities[0].authority }}</div>
-                                    <button mat-flat-button color="primary" [routerLink]="'/profile'"
-                                        [state]="{ data: { 'userId': user.id } }" matTooltip="Add New User"
-                                        style="margin: 10px;">Edit
-                                    </button>
-                                    <button mat-flat-button color="primary" matTooltip="Add New User"
-                                        (click)="onClickDelete(user.id)">Delete
-                                    </button>
-                                </mat-list-item>
-
-                                <!--a mat-list-item href="" *ngFor="let user of users"> {{ user.username }} </a-->
-                            </mat-nav-list>
-                        </div>
-                    </mat-tab>
-                    <mat-tab label="Roles">
-                        <ng-template mat-tab-label>
-                            <mat-icon class="tab-icon">lock_open</mat-icon>
-                            Roles
-                        </ng-template>
-                    </mat-tab>
-                </mat-tab-group>
-
-            </mat-card-content>
-
-        </mat-card>
-
-    </div>
+                <!--a mat-list-item href="" *ngFor="let user of users"> {{ user.username }} </a-->
+              </mat-nav-list>
+            </div>
+          </mat-tab>
+          <mat-tab label="Roles">
+            <ng-template mat-tab-label>
+              <mat-icon class="tab-icon">lock_open</mat-icon>
+              Roles
+            </ng-template>
+          </mat-tab>
+        </mat-tab-group>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>

@@ -1,16 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 
-import { IAccount } from 'src/app/accounts/account';
-import { AccountsService } from 'src/app/accounts/accounts.service';
+import { IAccount } from "src/app/accounts/account";
+import { AccountsService } from "src/app/accounts/accounts.service";
 
 @Component({
-  selector: 'app-accounts-table',
-  templateUrl: './accounts-table.component.html',
-  styleUrls: ['./accounts-table.component.css']
+  selector: "app-accounts-table",
+  templateUrl: "./accounts-table.component.html",
+  styleUrls: ["./accounts-table.component.css"],
 })
 export class AccountsTableComponent implements OnInit {
-  componentHeading = 'Accounts Table';
-  displayedColumns: string[] = ['name', 'code', 'description', 'action'];
+  componentHeading = "Accounts Table";
+  displayedColumns: string[] = ["name", "code", "description", "action"];
 
   _listFilter: string;
   errorMessage: any;
@@ -20,30 +20,31 @@ export class AccountsTableComponent implements OnInit {
   accountCategories: string[];
 
   constructor(private accountsService: AccountsService) {
-
     this.filteredAccounts = this.accounts;
   }
 
   performFilter(filterBy: string): IAccount[] {
     filterBy = filterBy.toLocaleLowerCase();
-    return this.accounts.filter((account: IAccount) =>
-      account.name.toLocaleLowerCase().indexOf(filterBy) !== -1);
+    return this.accounts.filter(
+      (account: IAccount) =>
+        account.name.toLocaleLowerCase().indexOf(filterBy) !== -1
+    );
   }
 
   ngOnInit(): void {
     this.accountsService.getAccounts().subscribe({
-      next: accounts => {
+      next: (accounts) => {
         this.accounts = accounts;
         this.filteredAccounts = this.accounts;
       },
-      error: err => this.errorMessage = err
+      error: (err) => (this.errorMessage = err),
     });
 
     this.accountsService.getAccountCategories().subscribe({
-      next: accountCategories => {
+      next: (accountCategories) => {
         this.accountCategories = accountCategories;
       },
-      error: err => this.errorMessage = err
+      error: (err) => (this.errorMessage = err),
     });
   }
 
@@ -53,6 +54,8 @@ export class AccountsTableComponent implements OnInit {
 
   set listFilter(value: string) {
     this._listFilter = value;
-    this.filteredAccounts = this._listFilter ? this.performFilter(this._listFilter) : this.accounts;
+    this.filteredAccounts = this._listFilter
+      ? this.performFilter(this._listFilter)
+      : this.accounts;
   }
 }

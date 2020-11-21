@@ -40,3 +40,17 @@ changelog {
     trackerUrl 'https://github.com/rollenwiese/ledger'
     versionNum version.toString()
 }
+
+spotless {
+    format 'yaml', {
+        target '*.yml'
+        prettier()
+    }
+
+    format 'misc', {
+        target '*.gradle', '*.md', '.gitignore'
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+}

@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { BasicAuthService } from '../_services/basic-auth.service';
-import { User } from '../_models/user';
-import { Role } from '../_models/role';
-import { Router } from '@angular/router';
+import { Component, OnInit } from "@angular/core";
+import { BasicAuthService } from "../_services/basic-auth.service";
+import { User } from "../_models/user";
+import { Role } from "../_models/role";
+import { Router } from "@angular/router";
 
 @Component({
-  selector: 'app-heading',
-  templateUrl: './heading.component.html',
-  styleUrls: ['./heading.component.css']
+  selector: "app-heading",
+  templateUrl: "./heading.component.html",
+  styleUrls: ["./heading.component.css"],
 })
 export class HeadingComponent implements OnInit {
   isLoggedIn = false;
@@ -18,7 +18,7 @@ export class HeadingComponent implements OnInit {
     private basicAuthService: BasicAuthService,
     private router: Router
   ) {
-    this.basicAuthService.user.subscribe(x => this.user = x);
+    this.basicAuthService.user.subscribe((x) => (this.user = x));
     this.username = this.user.username;
   }
 
@@ -30,12 +30,14 @@ export class HeadingComponent implements OnInit {
   }
 
   navigateToProfile() {
-    // if already at the profile route, force a reload of window, which will refresh the 
+    // if already at the profile route, force a reload of window, which will refresh the
     // component using the currently logged in user's data
-    if (this.router.url == '/profile') {
+    if (this.router.url == "/profile") {
       location.reload();
     } else {
-      this.router.navigateByUrl('/profile', { state: { data: { userId: this.user.id } } });
+      this.router.navigateByUrl("/profile", {
+        state: { data: { userId: this.user.id } },
+      });
     }
   }
 
@@ -44,6 +46,6 @@ export class HeadingComponent implements OnInit {
   }
 
   logout() {
-    this.basicAuthService.signOut('parameter');
+    this.basicAuthService.signOut("parameter");
   }
 }

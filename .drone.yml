@@ -10,7 +10,7 @@
 
 kind: pipeline
 type: docker
-name: 'frontend - build'
+name: "frontend - build"
 
 volumes:
   - name: drone_cache
@@ -34,7 +34,7 @@ steps:
   - name: build
     image: node:latest
     depends_on:
-      - 'cache pull'
+      - "cache pull"
     commands:
       - export PATH=/drone/src/frontend/node_modules/.bin:$PATH
       - cd /drone/src/frontend
@@ -44,7 +44,7 @@ steps:
   - name: cache push
     image: drone/git
     depends_on:
-      - 'build'
+      - "build"
     commands:
       - /drone/src/scripts/drone-cache-push.sh ledger-frontend
     volumes:
@@ -52,13 +52,12 @@ steps:
         path: /drone/drone_cache
 
 ---
-
 kind: pipeline
-name: 'frontend - publish'
+name: "frontend - publish"
 type: docker
 
 depends_on:
-  - 'frontend - build'
+  - "frontend - build"
 
 volumes:
   - name: drone_cache
@@ -80,7 +79,7 @@ steps:
   - name: cache pull
     image: drone/git
     depends_on:
-      - 'clone'
+      - "clone"
     commands:
       - /drone/src/scripts/drone-cache-pull.sh ledger-frontend
       - pwd
@@ -93,7 +92,7 @@ steps:
   - name: publish feature
     image: plugins/docker
     depends_on:
-      - 'cache pull'
+      - "cache pull"
     settings:
       auto_tag: false
       cache_from:
@@ -116,7 +115,7 @@ steps:
   - name: publish release
     image: plugins/docker
     depends_on:
-      - 'cache pull'
+      - "cache pull"
     settings:
       auto_tag: false
       cache_from:
@@ -131,10 +130,9 @@ steps:
         - refs/tags/*
 
 ---
-
 kind: pipeline
 type: docker
-name: 'backend - build'
+name: "backend - build"
 
 trigger:
   event:
@@ -169,7 +167,7 @@ steps:
   - name: cache pull
     image: drone/git
     depends_on:
-      - 'clone'
+      - "clone"
     commands:
       - /drone/src/scripts/drone-cache-pull.sh ledger-backend
     volumes:
@@ -189,8 +187,8 @@ steps:
   - name: build
     image: gradle:6.7-jdk14
     depends_on:
-      - 'cache pull'
-      - 'verify postgres'
+      - "cache pull"
+      - "verify postgres"
     commands:
       - >
         gradle :backend:explodebootjar :backend:testClasses writeVersion
@@ -215,7 +213,7 @@ steps:
   - name: cache push
     image: drone/git
     depends_on:
-      - 'build'
+      - "build"
     commands:
       - /drone/src/scripts/drone-cache-push.sh ledger-backend
     volumes:
@@ -223,13 +221,12 @@ steps:
         path: /drone/drone_cache
 
 ---
-
 kind: pipeline
-name: 'backend - publish'
+name: "backend - publish"
 type: docker
 
 depends_on:
-  - 'backend - build'
+  - "backend - build"
 
 volumes:
   - name: drone_cache
@@ -240,7 +237,7 @@ steps:
   - name: cache pull
     image: drone/git
     depends_on:
-      - 'clone'
+      - "clone"
     commands:
       - /drone/src/scripts/drone-cache-pull.sh ledger-backend
     volumes:
@@ -250,7 +247,7 @@ steps:
   - name: write docker tag (development)
     image: drone/git:latest
     depends_on:
-      - 'cache pull'
+      - "cache pull"
     commands:
       - cat version > .tags
       - echo ",development" >> .tags
@@ -266,7 +263,7 @@ steps:
   - name: publish feature
     image: plugins/docker
     depends_on:
-      - 'write docker tag (development)'
+      - "write docker tag (development)"
     settings:
       auto_tag: false
       cache_from:
@@ -299,7 +296,7 @@ steps:
   - name: publish release
     image: plugins/docker
     depends_on:
-      - 'write docker tag (release)'
+      - "write docker tag (release)"
     settings:
       auto_tag: false
       cache_from:
@@ -315,14 +312,13 @@ steps:
         - refs/tags/*
 
 ---
-
 kind: pipeline
 name: deploy
 type: docker
 
 depends_on:
-  - 'frontend - publish'
-  - 'backend - publish'
+  - "frontend - publish"
+  - "backend - publish"
 
 clone:
   disable: true

@@ -1,5 +1,5 @@
 <mat-toolbar color="primary">
-  <img src="/assets/images/project-icon.png" width="40" height="40" alt="">
+  <img src="/assets/images/project-icon.png" width="40" height="40" alt="" />
   <span>
     <button mat-button [routerLink]="''">Ledger</button>
   </span>
@@ -11,18 +11,31 @@
   </span>
 
   <mat-menu #menuBook="matMenu">
-    <button mat-menu-item [routerLink]="'/accounts-tree'">Accounts (Tree)</button>
-    <button mat-menu-item [routerLink]="'/accounts-table'">Accounts (Table)</button>
+    <button mat-menu-item [routerLink]="'/accounts-tree'">
+      Accounts (Tree)
+    </button>
+    <button mat-menu-item [routerLink]="'/accounts-table'">
+      Accounts (Table)
+    </button>
     <button mat-menu-item>Transactions</button>
     <button mat-menu-item>Securities</button>
     <button mat-menu-item>Prices</button>
     <button mat-menu-item>Settings</button>
-    <button mat-menu-item [routerLink]="'import'">Import Book from Gnucash XML</button>
+    <button mat-menu-item [routerLink]="'import'">
+      Import Book from Gnucash XML
+    </button>
   </mat-menu>
 
   <span fxFlex fxLayout fxLayoutAlign="end">
-    <span><button mat-button [routerLink]="'/admin/settings'" *ngIf="isAdmin"><mat-icon style="margin-right: 0.5rem;">settings</mat-icon>Settings</button></span>
-    <button mat-button [matMenuTriggerFor]="menuUser"><mat-icon style="margin-right: 0.5rem;">account_circle</mat-icon>{{ username }}</button>
+    <span
+      ><button mat-button [routerLink]="'/admin/settings'" *ngIf="isAdmin">
+        <mat-icon style="margin-right: 0.5rem;">settings</mat-icon>Settings
+      </button></span
+    >
+    <button mat-button [matMenuTriggerFor]="menuUser">
+      <mat-icon style="margin-right: 0.5rem;">account_circle</mat-icon
+      >{{ username }}
+    </button>
   </span>
 
   <mat-menu #menuUser="matMenu">

@@ -1,12 +1,11 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from "@angular/core";
 
 @Pipe({
-    name: 'padWithSpaces'
+  name: "padWithSpaces",
 })
 export class PadWithSpacesPipe implements PipeTransform {
-
-    transform(value: string, characterCount: number): string {
-        // console.log(value.padStart(value.length + characterCount+3, ' '));
-        return value.padStart(value.length + characterCount + 3, '  ');
-    }
+  transform(value: string, characterCount: number): string {
+    // console.log(value.padStart(value.length + characterCount+3, ' '));
+    return value.padStart(value.length + characterCount + 3, "  ");
+  }
 }
