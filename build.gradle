@@ -10,32 +10,33 @@ subprojects {
     }
 }
 
-task finalize {
+task cleanChangeLog {
+    outputs.upToDateWhen { false }
     doLast {
-        println(version)
+        exec {
+            commandLine "sh", "-c", "[ -e \"CHANGELOG.md\" ] && sed -i '/## Docs/,\$d' CHANGELOG.md || echo * CHANGELOG.md doesn\\'t exist"
+        }
     }
 }
 
 task writeVersion {
     outputs.upToDateWhen { false }
-    new File(projectDir, "version").text = version
+    doLast {
+        new File(projectDir, "version").text = version
+    }
 }
 
 build {
-    finalizedBy(finalize)
+    finalizedBy writeVersion
 }
 
 changelog {
-    file 'CHANGELOG.md'
-
+    append 'false'
     appName rootProject.name
-
-    versionNum version.toString()
-
-    repoUrl 'https://github.com/rollenwiese/ledger'
-
-    trackerUrl 'https://github.com/rollenwiese/ledger'
-
+    file 'CHANGELOG.md'
     //match '^fix|^feat|^fix|^perf|^refactor|^docs|BREAKING' //default
     match '^fix|^feat|^fix|^chore|^docs|^style|^refactor|^perf|^test|BREAKING'
+    repoUrl 'https://github.com/rollenwiese/ledger'
+    trackerUrl 'https://github.com/rollenwiese/ledger'
+    versionNum version.toString()
 }
