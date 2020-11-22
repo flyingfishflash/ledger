@@ -120,6 +120,7 @@ steps:
       auto_tag: false
       cache_from:
         from_secret: repository_frontend_development
+      context: /drone/src/frontend/
       dockerfile: /drone/src/frontend/Dockerfile
       mirror:
         from_secret: registry_mirror
