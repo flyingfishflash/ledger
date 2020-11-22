@@ -13,6 +13,7 @@ services:
 #      API_SERVER: http://dockerhost:52300
 #      If behind a proxy like traefik with a DNS name configured:
 #      API_SERVER: ledger-backend.mydomain.tld
+      API_SERVER: http://localhost:53200
       JDK_JAVA_OPTIONS: >
         -Djava.security.egd=file:/dev/./urandom
         -Duser.timezone="UTC"

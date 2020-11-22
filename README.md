@@ -14,3 +14,7 @@ docker-compose -f docker-compose.yaml up -d
 
 * [http://localhost:52300/](http://localhost:52300/api/)
 * Documentation: [http://localhost:52300/swagger-ui/](http://localhost:52300/swagger-ui/)
+
+## Web Application
+
+* [http://localhost:52301](https://localhost:52301)
