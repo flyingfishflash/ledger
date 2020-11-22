@@ -1,0 +1,52 @@
+.flex-child-1 {
+  max-width: 840px;
+}
+
+.password-match-color {
+  color: green;
+}
+
+.show-hide-password-button {
+  background-color: Transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+}
+
+.is-invalid {
+  border-left: solid 6px red;
+}
+
+.material-icons-password-validation {
+  display: inline-flex;
+  vertical-align: middle;
+  font-size: 0.9em;
+}
+
+.material-icons {
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.testbox {
+  background-color: green;
+}
+
+/* 
+.child-1{
+background-color: orange;
+}
+.child-2{
+background-color: yellow;
+max-width: 800px;
+}
+.child-3{
+background-color: green;
+}
+
+.container{
+margin: 15px;
+border:2px solid red;
+} */

@@ -1,4 +1,3 @@
-
 variables:
   DOCKER_DRIVER: overlay2
   VERSION: ""
@@ -8,53 +7,119 @@ before_script:
 
 stages:
   - build
-  - unit tests
-  - integration tests
+  - tests
   - publish
 
 image: docker:latest
 
-cache:
-  key: "$CI_COMMIT_REF_NAME"
-  paths:
-    - build
-    - .gradle
-    - .version
+build-dist:
+  image: node:latest
+  stage: build
+  script:
+    - export PATH=/builds/rollenwiese/ledger/frontend/node_modules/.bin:$PATH
+    - cd frontend
+    - npm install
+    - ng build --prod
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-frontend"
+    paths:
+      - frontend/node_modules
+      - frontend/dist
+
+publish-frontend-feature:
+  services:
+    - docker:dind
+  stage: publish
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - echo "-$CI_COMMIT_BRANCH" >> version
+    - VERSION=$(cat version)
+    - cd frontend
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:frontend-development" -f Dockerfile .
+    - docker push "$CI_REGISTRY_IMAGE:frontend-development"
+  except:
+    - master
+    - tags
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-frontend"
+    policy: pull
+    paths:
+      - frontend/node_modules
+      - frontend/dist
+
+publish-frontend-version-tagged-ref:
+  services:
+    - docker:dind
+  stage: publish
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - VERSION=$(cat version)
+    - cd frontend
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-frontend" -t "$CI_REGISTRY_IMAGE:frontend-latest" -f Dockerfile .
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-frontend"
+    - docker push "$CI_REGISTRY_IMAGE:frontend-latest"
+  only:
+    - /^v(\d+\.)?(\d+\.)?(\*|\d+)$/
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-frontend"
+    policy: pull
+    paths:
+      - frontend/node_modules
+      - frontend/dist
 
 build-jar:
   image: gradle:6.7-jdk14
   stage: build
   script:
     - echo $CI_COMMIT_BRANCH
-    - chmod +x ./scripts/version.sh
-    - ./scripts/version.sh > ./.version
-    - >
-      if [ "$CI_COMMIT_BRANCH" != "master" ] && [ "$CI_COMMIT_BRANCH" != "" ]
-      ; then echo "-$CI_COMMIT_BRANCH" >> .version
-      ; fi
-    - cat .version
     - echo
-    - gradle bootJar testClasses --build-cache
+    - gradle
+      :backend:explodebootjar
+      :backend:testClasses
+      --no-daemon
+cache:
+  key: "$CI_COMMIT_REF_SLUG-backend"
+  paths:
+    - build
+    - .gradle
+    - version
+    - backend/build
 
 unit-tests:
   image: gradle:6.7-jdk14
-  stage: 'unit tests'
+  stage: tests
   script:
-    - gradle test
+    - gradle :backend:test
       -x bootBuildInfo
       --no-daemon
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-backend"
+    policy: pull
+    paths:
+      - build
+      - .gradle
+      - version
+      - backend/build
 
 h2-integration-tests:
   image: gradle:6.7-jdk14
-  stage: 'integration tests'
+  stage: tests
   script:
-    - gradle integrationTests
+    - gradle :backend:integrationTests
       -x bootBuildInfo
       --no-daemon
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-backend"
+    policy: pull
+    paths:
+      - build
+      - .gradle
+      - version
+      - backend/build
 
 postgres-integration-tests:
   image: gradle:6.7-jdk14
-  stage: 'integration tests'
+  stage: tests
   services:
     - postgres:latest
   variables:
@@ -62,7 +127,7 @@ postgres-integration-tests:
     POSTGRES_USER: ledger
     POSTGRES_PASSWORD: ledger
   script:
-    - gradle integrationTests
+    - gradle :backend:integrationTests
       -x bootBuildInfo
       --no-daemon
       -Dspring.profiles.active=postgresql
@@ -70,31 +135,56 @@ postgres-integration-tests:
       -Dspring.datasource.username=ledger
       -Dspring.datasource.password=ledger
       -Dspring.datasource.platform=postgresql
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-backend"
+    policy: pull
+    paths:
+      - build
+      - .gradle
+      - version
+      - backend/build
 
-publish-feature:
+publish-backend-feature:
   services:
     - docker:dind
   stage: publish
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - VERSION=$(cat .version)
-    - docker build --pull -t "$CI_REGISTRY_IMAGE:$VERSION" -t "$CI_REGISTRY_IMAGE:development" -f Dockerfile.drone .
-    - docker push "$CI_REGISTRY_IMAGE:$VERSION"
-    - docker push "$CI_REGISTRY_IMAGE:development"
+    - echo "-$CI_COMMIT_BRANCH" >> version
+    - VERSION=$(cat version)
+    - cd backend
+    - docker build -t "$CI_REGISTRY_IMAGE:backend-development" -f Dockerfile .
+    - docker push "$CI_REGISTRY_IMAGE:backend-development"
   except:
     - master
     - tags
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-backend"
+    policy: pull
+    paths:
+      - build
+      - .gradle
+      - version
+      - backend/build
 
-publish-master-or-version-tagged-ref:
+publish-backend-version-tagged-ref:
   services:
     - docker:dind
   stage: publish
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - VERSION=$(cat .version)
-    - docker build --pull -t "$CI_REGISTRY_IMAGE:$VERSION" -t "$CI_REGISTRY_IMAGE:latest" -f Dockerfile.drone .
-    - docker push "$CI_REGISTRY_IMAGE:$VERSION"
-    - docker push "$CI_REGISTRY_IMAGE:latest"
+    - VERSION=$(cat version)
+    - cd backend
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-backend" -t "$CI_REGISTRY_IMAGE:backend-latest" -f Dockerfile.drone .
+    - docker push "$CI_REGISTRY_IMAGE:backend-latest"
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-backend"
   only:
-    - master
     - /^v(\d+\.)?(\d+\.)?(\*|\d+)$/
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-backend"
+    policy: pull
+    paths:
+      - build
+      - .gradle
+      - version
+      - backend/build

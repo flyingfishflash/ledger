@@ -1,0 +1,113 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.4.0'
+    id 'com.diffplug.spotless'
+}
+
+group = 'net.flyingfishflash'
+description = 'Ledger'
+sourceCompatibility = '14'
+
+repositories {
+    mavenCentral()
+    jcenter()
+
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
+
+    maven {
+        url = uri('https://jitpack.io')
+    }
+
+    maven {
+        url = uri('https://oss.jfrog.org/artifactory/oss-snapshot-local/')
+    }
+}
+
+dependencies {
+
+    String springBootVersion = "2.4.0"
+    String springSessionVersion = "2.4.1"
+
+    implementation "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-websocket:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-validation:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-security:$springBootVersion"
+    implementation "org.springframework.session:spring-session-core:$springSessionVersion"
+    implementation "org.springframework.session:spring-session-jdbc:$springSessionVersion"
+    implementation 'jakarta.validation:jakarta.validation-api:2.0.2'
+    implementation 'io.springfox:springfox-boot-starter:3.0.0-SNAPSHOT'
+    implementation 'com.github.eXsio:nestedj:5.0.3'
+    implementation 'com.h2database:h2:1.4.200'
+    implementation 'org.postgresql:postgresql:42.2.18'
+    implementation 'org.javamoney:moneta:1.4.2'
+    implementation 'javax.interceptor:javax.interceptor-api:1.2.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.2'
+    implementation 'org.zalando:jackson-datatype-money:1.2.0'
+    implementation 'org.flywaydb:flyway-core:7.0.1'
+    implementation 'commons-validator:commons-validator:1.7'
+    runtimeOnly 'javax.xml.bind:jaxb-api:2.3.1'
+    testImplementation 'org.springframework.security:spring-security-test:5.4.1'
+    testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+}
+
+task explodeBootJar(type: Sync) {
+    dependsOn bootJar
+    into "$buildDir/boot_jar_exploded"
+    from project.zipTree(bootJar.archiveFile)
+}
+
+task integrationTests(type: Test) {
+    systemProperties System.properties
+    useJUnitPlatform()
+    mustRunAfter(test)
+
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+
+    filter {
+        includeTestsMatching "net.flyingfishflash.ledger.*.integration.*"
+    }
+}
+
+test {
+    useJUnitPlatform()
+
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+
+    filter {
+        includeTestsMatching "net.flyingfishflash.ledger.*.unit.*"
+    }
+}
+
+bootJar {
+}
+
+bootRun {
+    jvmArgs = ["-Duser.timezone=UTC"]
+}
+
+spotless {
+    format 'misc', {
+        target '*.gradle', '*.md', '.gitignore'
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+
+    java {
+        googleJavaFormat(googleJavaFormatVersion)
+        trimTrailingWhitespace()
+        importOrder('java', 'javax', 'com', 'org', 'net.flyingfishflash.ledger')
+    }
+
+    springBoot {
+        buildInfo()
+    }
+}
