@@ -76,6 +76,7 @@ build-jar:
     - gradle
       :backend:explodebootjar
       :backend:testClasses
+      writeVersion
       --no-daemon
 cache:
   key: "$CI_COMMIT_REF_SLUG-backend"
