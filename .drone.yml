@@ -56,6 +56,11 @@ kind: pipeline
 name: "frontend - publish"
 type: docker
 
+trigger:
+  branch:
+    exclude:
+      - master
+
 depends_on:
   - "frontend - build"
 
@@ -105,9 +110,6 @@ steps:
       repo:
         from_secret: repository_frontend
     when:
-      branch:
-        exclude:
-          - master
       event:
         exclude:
           - tag
@@ -226,6 +228,11 @@ kind: pipeline
 name: "backend - publish"
 type: docker
 
+trigger:
+  branch:
+    exclude:
+      - master
+
 depends_on:
   - "backend - build"
 
@@ -254,9 +261,6 @@ steps:
       - echo ",development" >> .tags
       - cat .tags
     when:
-      branch:
-        exclude:
-          - master
       event:
         exclude:
           - tag
@@ -277,9 +281,6 @@ steps:
       repo:
         from_secret: repository_backend
     when:
-      branch:
-        exclude:
-          - master
       event:
         exclude:
           - tag
@@ -316,6 +317,13 @@ steps:
 kind: pipeline
 name: deploy
 type: docker
+
+trigger:
+  branch:
+    exclude:
+      - master
+  ref:
+    - refs/tags/*
 
 depends_on:
   - "frontend - publish"
