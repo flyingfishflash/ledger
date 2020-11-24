@@ -57,9 +57,12 @@ name: "frontend - publish"
 type: docker
 
 trigger:
-  branch:
-    exclude:
-      - master
+  event:
+    - push
+    - tag
+  ref:
+    - refs/heads/feature-*
+    - refs/tags/*
 
 depends_on:
   - "frontend - build"
@@ -110,9 +113,8 @@ steps:
       repo:
         from_secret: repository_frontend
     when:
-      event:
-        exclude:
-          - tag
+      ref:
+        - refs/heads/feature-*
 
   - name: publish release
     image: plugins/docker
@@ -229,9 +231,12 @@ name: "backend - publish"
 type: docker
 
 trigger:
-  branch:
-    exclude:
-      - master
+  event:
+    - push
+    - tag
+  ref:
+    - refs/heads/feature-*
+    - refs/tags/*
 
 depends_on:
   - "backend - build"
@@ -261,9 +266,8 @@ steps:
       - echo ",development" >> .tags
       - cat .tags
     when:
-      event:
-        exclude:
-          - tag
+      ref:
+        - refs/heads/feature-*
 
   - name: publish feature
     image: plugins/docker
@@ -281,9 +285,8 @@ steps:
       repo:
         from_secret: repository_backend
     when:
-      event:
-        exclude:
-          - tag
+      ref:
+        - refs/heads/feature-*
 
   - name: write docker tag (release)
     image: drone/git:latest
@@ -319,10 +322,11 @@ name: deploy
 type: docker
 
 trigger:
-  branch:
-    exclude:
-      - master
+  event:
+    - push
+    - tag
   ref:
+    - refs/heads/feature-*
     - refs/tags/*
 
 depends_on:
