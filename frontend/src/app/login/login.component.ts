@@ -1,7 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { BasicAuthService } from "../_services/basic-auth.service";
+import { ActuatorService } from "../_services/actuator.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import { first } from "rxjs/internal/operators/first";
+import { ActuatorInfo } from "../_models/actuator-info";
+import { initConfig } from "../app-config";
 
 @Component({
   templateUrl: "./login.component.html",
@@ -14,11 +17,15 @@ export class LoginComponent implements OnInit {
   errorMessage = "";
   hide = true;
   returnUrl: string;
+  info: ActuatorInfo;
+  buildDate: string;
+  todayString: string;
 
   constructor(
     private basicAuthService: BasicAuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private actuatorService: ActuatorService
   ) {
     // redirect to home if already logged in
     if (this.basicAuthService.userValue) {
@@ -29,8 +36,23 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     // get return url from route parameters or default to '/'
     this.returnUrl = this.route.snapshot.queryParams["returnUrl"] || "/";
+
+    this.actuatorService.getInfo().subscribe({
+      next: (response) => {
+        this.info = response;
+        this.buildDate = response.build.time;
+        //this.todayString = new Date(info.build.time).toUTCString;
+      },
+      error: (err) => (this.errorMessage = err),
+    });
+
+    //this.init();
   }
 
+  /*   init() {
+    this.todayString = new Date(this.buildDate.toString()).toUTCString;
+  }
+ */
   onSubmit() {
     this.onSubmitBasicAuth();
   }
