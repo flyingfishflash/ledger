@@ -16,6 +16,9 @@ task cleanChangeLog {
         exec {
             commandLine "sh", "-c", "[ -e \"CHANGELOG.md\" ] && sed -i '/## Docs/,\$d' CHANGELOG.md || echo * CHANGELOG.md doesn\\'t exist"
         }
+        exec {
+            commandLine "sh", "-c", "[ -e \"CHANGELOG.md\" ] && sed -i '/<a name/d' CHANGELOG.md || echo * CHANGELOG.md doesn\\'t exist"
+        }
     }
 }
 
