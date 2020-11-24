@@ -4,9 +4,11 @@ plugins {
     id 'com.diffplug.spotless'
 }
 
+//artifactId = 'ledger-backend'
 group = 'net.flyingfishflash'
+//name = 'ledger'
 description = 'Ledger'
-sourceCompatibility = '14'
+
 
 repositories {
     mavenCentral()
@@ -93,6 +95,10 @@ bootRun {
     jvmArgs = ["-Duser.timezone=UTC"]
 }
 
+java {
+    sourceCompatibility = 'VERSION_14'
+}
+
 spotless {
     format 'misc', {
         target '*.gradle', '*.md', '.gitignore'
@@ -108,6 +114,17 @@ spotless {
     }
 
     springBoot {
-        buildInfo()
+        buildInfo() {
+            properties {
+                artifact = 'ledger-backend'
+                name = 'Ledger'
+/*
+                additional = [
+                        'placeholder.property1': 'property value',
+                        'placeholder.property2': 'property value'
+                ]
+*/
+            }
+        }
     }
 }
