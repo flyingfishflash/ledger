@@ -33,6 +33,7 @@ public class WebSecurityConfiguration<S extends Session> extends WebSecurityConf
     "/actuator/info",
     "/api/v1/ledger/auth/signin",
     "/api/v1/ledger/auth/signup",
+    "/api/v1/ledger/actuator/info",
     "/assets/config.json",
     "/h2-console/**",
     "/swagger-ui/**",
