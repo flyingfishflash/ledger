@@ -31,7 +31,7 @@ services:
 #      SPRING_DATASOURCE_PASSWORD:
 #      http://docker-host:8181/h2-console
     healthcheck:
-      test: "wget http://127.0.0.1:8181/actuator/info -T 30 -q -O -"
+      test: "wget http://127.0.0.1:8181/api/v1/ledger/actuator/info -T 30 -q -O -"
       interval: "60s"
       timeout: "5s"
       start_period: "15s"
