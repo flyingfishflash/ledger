@@ -2,7 +2,22 @@ plugins {
     id 'com.diffplug.spotless' version '5.8.2'
     id 'fr.brouillard.oss.gradle.jgitver' version '0.10.0-rc03'
     id 'com.geoffgranum.gradle-conventional-changelog' version '0.3.1'
+    id "com.github.breadmoirai.github-release" version "2.2.12"
 }
+
+ext {
+
+    file = new File('CHANGELOG.md')
+    changelogFileContents = 'Default Body Content'
+
+    if (file.exists()) {
+        changelogFileContents = file.text
+    }
+
+    // defined in gradle.properties in the project root folder
+    githubApiToken = findProperty('githubApiToken') ?: ''
+}
+
 
 subprojects {
     ext {
@@ -39,9 +54,36 @@ changelog {
     file 'CHANGELOG.md'
     //match '^fix|^feat|^fix|^perf|^refactor|^docs|BREAKING' //default
     match '^fix|^feat|^fix|^chore|^docs|^style|^refactor|^perf|^test|BREAKING'
-    repoUrl 'https://github.com/rollenwiese/ledger'
-    trackerUrl 'https://github.com/rollenwiese/ledger'
+    repoUrl 'https://github.com/flyingfishflash/ledger'
+    trackerUrl 'https://github.com/flyingfishflash/ledger'
     versionNum version.toString()
+}
+
+githubRelease {
+    token githubApiToken
+    // default is the last part of your group. Eg group: "com.github.breadmoirai" => owner: "breadmoirai"
+    owner "flyingfishflash"
+    // by default this is set to your project name
+    repo "ledger"
+    // by default this is set to "v${project.version}"
+    // tagName "v0.3.4"
+    // by default this is set to "master"
+    targetCommitish "master"
+    // Release title, by default this is the same as the tagName
+    // releaseName "v0.3.4"
+    // by default this is empty
+    body changelogFileContents
+    // by default this is false
+    draft false
+    // by default this is false
+    prerelease false
+    //releaseAssets jar.destinationDir.listFiles // this points to which files you want to upload as assets with your release
+    overwrite false
+    // by default false; if set to true, will delete an existing release with the same tag and name
+    dryRun true
+    // by default false; you can use this to see what actions would be taken without making a release
+    apiEndpoint "https://api.github.com" // should only change for github enterprise users
+    client // This is the okhttp client used for http requests
 }
 
 spotless {
