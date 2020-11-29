@@ -1,7 +1,10 @@
+import org.springframework.boot.gradle.plugin.ResolveMainClassName
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '2.4.0'
     id 'com.diffplug.spotless'
+    id 'jacoco'
 }
 
 //artifactId = 'ledger-backend'
@@ -74,6 +77,10 @@ task integrationTests(type: Test) {
     filter {
         includeTestsMatching "net.flyingfishflash.ledger.*.integration.*"
     }
+
+    jacoco {
+        enabled = false
+    }
 }
 
 test {
@@ -86,6 +93,8 @@ test {
     filter {
         includeTestsMatching "net.flyingfishflash.ledger.*.unit.*"
     }
+
+    finalizedBy jacocoTestReport
 }
 
 bootJar {
@@ -93,6 +102,19 @@ bootJar {
 
 bootRun {
     jvmArgs = ["-Duser.timezone=UTC"]
+}
+
+
+
+jacocoTestReport {
+
+    dependsOn test
+
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.enabled true
+    }
 }
 
 java {
