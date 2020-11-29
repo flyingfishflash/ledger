@@ -16,7 +16,7 @@ build-dist:
   image: node:latest
   stage: build
   script:
-    - export PATH=/builds/rollenwiese/ledger/frontend/node_modules/.bin:$PATH
+    - export PATH=$PWD/frontend/node_modules/.bin:$PATH
     - cd frontend
     - npm install
     - ng build --prod
