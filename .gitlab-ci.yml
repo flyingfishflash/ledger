@@ -8,6 +8,7 @@ before_script:
 stages:
   - build
   - tests
+  - code coverage reports
   - publish
 
 image: docker:latest
@@ -23,7 +24,6 @@ build-dist:
   cache:
     key: "$CI_COMMIT_REF_SLUG-frontend"
     paths:
-      - frontend/node_modules
       - frontend/dist
 
 publish-frontend-feature:
@@ -39,6 +39,8 @@ publish-frontend-feature:
   except:
     - master
     - tags
+  only:
+    - /^feature-/
   cache:
     key: "$CI_COMMIT_REF_SLUG-frontend"
     policy: pull
@@ -71,17 +73,18 @@ build-jar:
     - echo $CI_COMMIT_BRANCH
     - echo
     - gradle
+      :backend:clean
       :backend:explodebootjar
       :backend:testClasses
       writeVersion
       --no-daemon
-cache:
-  key: "$CI_COMMIT_REF_SLUG-backend"
-  paths:
-    - build
-    - .gradle
-    - version
-    - backend/build
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-backend"
+    paths:
+      - build
+      - .gradle
+      - version
+      - backend/build
 
 unit-tests:
   image: gradle:6.7-jdk14
@@ -142,6 +145,27 @@ postgres-integration-tests:
       - version
       - backend/build
 
+submit-codecov-backend:
+  image: gradle:6.7-jdk14
+  stage: code coverage reports
+  script:
+    - apt-get update && apt-get -y upgrade && apt-get -y install curl
+    - gradle :backend:test
+      -x bootBuildInfo
+      --no-daemon
+    - bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-backend"
+    policy: pull
+    paths:
+      - build
+      - .gradle
+      - version
+      - backend/build
+  only:
+    - master
+    - /^feature-/
+
 publish-backend-feature:
   services:
     - docker:dind
@@ -156,6 +180,8 @@ publish-backend-feature:
   except:
     - master
     - tags
+  only:
+    - /^feature-/
   cache:
     key: "$CI_COMMIT_REF_SLUG-backend"
     policy: pull
