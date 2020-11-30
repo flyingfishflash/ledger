@@ -92,9 +92,11 @@ unit-tests:
   stage: tests
   needs: ["build-jar"]
   script:
+    - apt-get update && apt-get -y upgrade && apt-get -y install curl
     - gradle :backend:test
       -x bootBuildInfo
       --no-daemon
+    - bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
   cache:
     key: "$CI_COMMIT_REF_SLUG-backend"
     policy: pull
@@ -148,28 +150,6 @@ postgres-integration-tests:
       - .gradle
       - version
       - backend/build
-
-submit-codecov-backend:
-  image: gradle:6.7-jdk14
-  stage: code coverage reports
-  needs: ["build-jar"]
-  script:
-    - apt-get update && apt-get -y upgrade && apt-get -y install curl
-    - gradle :backend:test
-      -x bootBuildInfo
-      --no-daemon
-    - bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
-  cache:
-    key: "$CI_COMMIT_REF_SLUG-backend"
-    policy: pull
-    paths:
-      - build
-      - .gradle
-      - version
-      - backend/build
-  only:
-    - master
-    - /^feature-/
 
 publish-backend-feature:
   services:
