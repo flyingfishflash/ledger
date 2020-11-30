@@ -87,8 +87,8 @@ githubRelease {
 }
 
 spotless {
-    format 'yaml', {
-        target '*.yml'
+    format 'json', {
+        target '*.json'
         prettier()
     }
 
@@ -97,5 +97,10 @@ spotless {
         trimTrailingWhitespace()
         indentWithSpaces()
         endWithNewline()
+    }
+
+    format 'yaml', {
+        target '*.yml'
+        prettier()
     }
 }
