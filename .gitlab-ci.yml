@@ -89,6 +89,7 @@ build-jar:
 unit-tests:
   image: gradle:6.7-jdk14
   stage: tests
+  needs: ["build-jar"]
   script:
     - gradle :backend:test
       -x bootBuildInfo
@@ -105,6 +106,7 @@ unit-tests:
 h2-integration-tests:
   image: gradle:6.7-jdk14
   stage: tests
+  needs: ["build-jar"]
   script:
     - gradle :backend:integrationTests
       -x bootBuildInfo
@@ -121,6 +123,7 @@ h2-integration-tests:
 postgres-integration-tests:
   image: gradle:6.7-jdk14
   stage: tests
+  needs: ["build-jar"]
   services:
     - postgres:latest
   variables:
@@ -148,6 +151,7 @@ postgres-integration-tests:
 submit-codecov-backend:
   image: gradle:6.7-jdk14
   stage: code coverage reports
+  needs: ["build-jar"]
   script:
     - apt-get update && apt-get -y upgrade && apt-get -y install curl
     - gradle :backend:test
