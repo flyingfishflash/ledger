@@ -19,11 +19,12 @@ build-dist:
   script:
     - export PATH=$PWD/frontend/node_modules/.bin:$PATH
     - cd frontend
-    - npm install
+    - npm ci --cache .npm --prefer-offline
     - ng build --prod
   cache:
     key: "$CI_COMMIT_REF_SLUG-frontend"
     paths:
+      - frontend/.npm/
       - frontend/dist
 
 publish-frontend-feature:
@@ -89,10 +90,13 @@ build-jar:
 unit-tests:
   image: gradle:6.7-jdk14
   stage: tests
+  needs: ["build-jar"]
   script:
+    - apt-get update && apt-get -y upgrade && apt-get -y install curl
     - gradle :backend:test
       -x bootBuildInfo
       --no-daemon
+    - bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
   cache:
     key: "$CI_COMMIT_REF_SLUG-backend"
     policy: pull
@@ -105,6 +109,7 @@ unit-tests:
 h2-integration-tests:
   image: gradle:6.7-jdk14
   stage: tests
+  needs: ["build-jar"]
   script:
     - gradle :backend:integrationTests
       -x bootBuildInfo
@@ -121,6 +126,7 @@ h2-integration-tests:
 postgres-integration-tests:
   image: gradle:6.7-jdk14
   stage: tests
+  needs: ["build-jar"]
   services:
     - postgres:latest
   variables:
@@ -144,27 +150,6 @@ postgres-integration-tests:
       - .gradle
       - version
       - backend/build
-
-submit-codecov-backend:
-  image: gradle:6.7-jdk14
-  stage: code coverage reports
-  script:
-    - apt-get update && apt-get -y upgrade && apt-get -y install curl
-    - gradle :backend:test
-      -x bootBuildInfo
-      --no-daemon
-    - bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
-  cache:
-    key: "$CI_COMMIT_REF_SLUG-backend"
-    policy: pull
-    paths:
-      - build
-      - .gradle
-      - version
-      - backend/build
-  only:
-    - master
-    - /^feature-/
 
 publish-backend-feature:
   services:
