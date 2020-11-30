@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 
 import { AdminSettingsComponent } from "./admin-settings.component";
 
@@ -6,11 +6,13 @@ describe("AdminSettingsComponent", () => {
   let component: AdminSettingsComponent;
   let fixture: ComponentFixture<AdminSettingsComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [AdminSettingsComponent],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [AdminSettingsComponent],
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AdminSettingsComponent);
