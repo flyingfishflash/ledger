@@ -12,7 +12,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "release": "standard-version",
-    "postinstall": "ngcc"
+    "postinstall": "ngcc --tsconfig ./tsconfig.app.json --tsconfig ./tsconfig.spec.json"
   },
   "private": true,
   "dependencies": {
