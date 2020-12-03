@@ -6,6 +6,8 @@ import { catchError, map } from "rxjs/operators";
 import { AppConfig } from "../app-config";
 import { list_to_tree_sorted } from "src/app/_helpers/tree-utilities";
 import { IAccount } from "./account";
+import { ActivatedRoute, Router } from "@angular/router";
+import { BasicAuthService } from "../_services/basic-auth.service";
 
 @Injectable({
   providedIn: "root",
@@ -13,7 +15,13 @@ import { IAccount } from "./account";
 export class AccountsService {
   // private accountUrl = '/api/accounts/accounts.json';
 
-  constructor(private appConfig: AppConfig, private http: HttpClient) {}
+  constructor(
+    private appConfig: AppConfig,
+    private basicAuthService: BasicAuthService,
+    private http: HttpClient,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   getAccounts(): Observable<any> {
     return this.http.get<any>(`${this.appConfig.apiServer.url}/accounts`).pipe(
@@ -68,16 +76,15 @@ export class AccountsService {
         }
     */
 
-  handleError(err: HttpErrorResponse) {
+  handleError(error: any) {
     let errorMessage = "";
-    if (err.error instanceof ErrorEvent) {
-      errorMessage = "An error occurred: " + err.error.message;
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = "A client internal error occurred: " + error.error.message;
     } else {
-      errorMessage = "HttpErrorResponse: " + err.status + " / " + err.message;
+      console.log(
+        "Error type: " + Object.getPrototypeOf(error).constructor.name
+      );
     }
-    console.log("Error handled.");
-    // console.log(err);
-    console.error(errorMessage);
     return throwError(errorMessage);
   }
 }

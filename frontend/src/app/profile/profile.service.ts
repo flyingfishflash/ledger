@@ -59,6 +59,7 @@ export class ProfileService {
       .subscribe((data) => {
         this.subject.next(data.response.body);
       });
+    // TODO: Handle error
   }
 
   userDetailsUpdate(payload, id) {

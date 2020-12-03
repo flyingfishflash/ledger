@@ -1,3 +1,5 @@
+// TODO: split these imports in to core/shared
+
 import { AppConfig, initConfig } from "./app-config";
 import { BrowserModule } from "@angular/platform-browser";
 // import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -30,8 +32,10 @@ import { PadWithSpacesPipe } from "./shared/pad-with-spaces.pipe";
 import { LoginComponent } from "./login/login.component";
 import { HomeComponent } from "./home/home.component";
 import { ProfileComponent } from "./profile/profile.component";
+import { ErrorDialogService } from "./shared/errors/error-dialog.service";
+import { ErrorDialogComponent } from "./shared/errors/error-dialog/error-dialog.component";
 
-import { authInterceptorProviders } from "./_interceptors/auth.interceptor";
+import { InterceptorProviders } from "./_interceptors/interceptors";
 import { AdminSettingsComponent } from "./admin-settings/admin-settings.component";
 import { AdminSettingsUserCreateComponent } from "./admin-settings-user-create/admin-settings-user-create.component";
 
@@ -59,10 +63,12 @@ import { AdminSettingsUserCreateComponent } from "./admin-settings-user-create/a
     ProfileComponent,
     AdminSettingsComponent,
     AdminSettingsUserCreateComponent,
+    ErrorDialogComponent,
   ],
 
   providers: [
-    authInterceptorProviders,
+    InterceptorProviders,
+    ErrorDialogService,
     AppConfig,
     {
       provide: APP_INITIALIZER,

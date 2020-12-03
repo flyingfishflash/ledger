@@ -4,28 +4,45 @@ import {
   HttpHandler,
   HttpEvent,
   HttpInterceptor,
+  HttpErrorResponse,
 } from "@angular/common/http";
 import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
-
 import { BasicAuthService } from "../_services/basic-auth.service";
+import { ErrorDialogService } from "../shared/errors/error-dialog.service";
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-  constructor(private authenticationService: BasicAuthService) {}
+  constructor(
+    private authenticationService: BasicAuthService,
+    private errorDialogService: ErrorDialogService
+  ) {}
 
   intercept(
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
-      catchError((err) => {
-        if ([401, 403].indexOf(err.status) !== -1) {
-          // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
-          this.authenticationService.signOut("anything");
-        }
+      catchError((error: HttpErrorResponse) => {
+        let errorMessage = "";
+        if (error.error instanceof ErrorEvent) {
+          errorMessage = `Error: ${error.error.message}`;
+        } else {
+          errorMessage = `Error Status: ${error.status}\nError Message: ${error.message}`;
 
-        const error = err.error.message || err.statusText;
+          if (request.url.indexOf("signin") === -1) {
+            if ([401, 403].indexOf(error.status) !== -1) {
+              this.authenticationService.redirectToLogin();
+            }
+            this.errorDialogService.openDialog(
+              error.error.response.body.message ?? JSON.stringify(error),
+              error.status
+            );
+          } else {
+            // errors signing in should be displayed using the login component, not via dialog box
+          }
+        }
+        console.log(errorMessage);
         return throwError(error);
       })
     );

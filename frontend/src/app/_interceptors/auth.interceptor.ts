@@ -1,8 +1,8 @@
 import {
   HTTP_INTERCEPTORS,
-  HttpHeaders,
   HttpResponse,
   HttpEvent,
+  HttpErrorResponse,
 } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import {
@@ -14,54 +14,58 @@ import { catchError, map } from "rxjs/operators";
 import { throwError, Observable } from "rxjs";
 
 import { BasicAuthService } from "../_services/basic-auth.service";
-import { TokenStorageService } from "../_services/token-storage.service";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(
-    private token: TokenStorageService,
-    private basicAuthService: BasicAuthService
-  ) {}
+  constructor(private basicAuthService: BasicAuthService) {}
 
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     let authReq = req;
-    // const nonAuthReq = req;
 
+    /*
+      Intercepted request by authenticated user
+    */
     if (
-      this.basicAuthService.isUserLoggedIn() &&
-      req.url.indexOf("signin") === -1
+      this.basicAuthService.isUserLoggedIn() //&& req.url.indexOf("signin") === -1
     ) {
-      console.log("authorized http request intercept");
+      //console.log("authorized http request intercept");
       authReq = req.clone({
         headers: req.headers
           .append("Access-Control-Allow-Credentials", "true")
-          .append(
-            "Authorization",
-            this.basicAuthService.getBasicAuthenticationToken()
-          )
+          .append("X-Auth-Token", this.basicAuthService.getSessionId())
           .append("X-Requested-With", "XMLHttpRequest"),
         withCredentials: true,
       });
-      return next.handle(authReq).pipe(
+      /*       return next.handle(authReq).pipe(
         map((event: HttpEvent<any>) => {
           if (event instanceof HttpResponse) {
             console.log("authorized http response intercept");
+            // console.log("X-Auth-Token: ", event.headers.get("X-Auth-Token"));
           }
           return event;
         }),
-        catchError((error) => {
-          console.log("Error response status: ", error.status);
-          if (error.status === 401) {
-            console.log("401 ERROR");
+        catchError((error: HttpErrorResponse) => {
+          let errorMessage = "";
+          if (error.error instanceof ErrorEvent) {
+            errorMessage = `Error: ${error.error.message}`;
+          } else {
+            errorMessage = `Error Status: ${error.status}\nError Message: ${error.message}`;
+            if (error.status === 401) {
+              this.basicAuthService.redirectToLogin();
+            }
           }
-          return throwError(error);
+          console.log(errorMessage);
+          return throwError(errorMessage);
         })
-      );
+      ); */
     } else {
-      console.log("anonymous http request intercept");
+      /*
+        Intercepted request by non-authenticated user
+      */
+      /*       console.log("anonymous http request intercept");
       return next.handle(req).pipe(
         map((event: HttpEvent<any>) => {
           if (event instanceof HttpResponse) {
@@ -69,117 +73,18 @@ export class AuthInterceptor implements HttpInterceptor {
           }
           return event;
         }),
-        catchError((error) => {
-          console.log("Error response status: ", error.status);
-          if (error.status === 401) {
-            console.log("401 ERROR");
+        catchError((error: HttpErrorResponse) => {
+          let errorMessage = "";
+          if (error.error instanceof ErrorEvent) {
+            errorMessage = `Error: ${error.error.message}`;
+          } else {
+            errorMessage = `Error Status: ${error.status}\nError Message: ${error.message}`;
           }
-          return throwError(error);
+          console.log(errorMessage);
+          return throwError(errorMessage);
         })
-      );
+      ); */
     }
-  }
-
-  intercept1(
-    req: HttpRequest<any>,
-    next: HttpHandler
-  ): Observable<HttpEvent<any>> {
-    const xAuthToken = this.token.getXAuthToken();
-
-    if (
-      this.basicAuthService.isUserLoggedIn() &&
-      req.url.indexOf("signin") === -1
-    ) {
-      console.log("authreq");
-      console.log(xAuthToken);
-      const authReq = req.clone({
-        headers: new HttpHeaders({
-          "Content-Type": "application/json",
-          "X-Requested-With": "XMLHttpRequest",
-          "Access-Control-Allow-Credentials": "true",
-          "X-Auth-Token": xAuthToken,
-          // 'Authorization': sessionStorage.getItem(SESSION_ATTRIBUTE_BASIC_AUTH_TOKEN)
-        }),
-        withCredentials: true,
-      });
-      return next.handle(authReq).pipe(
-        map((event: HttpEvent<any>) => {
-          if (event instanceof HttpResponse) {
-          }
-          return event;
-        }),
-        catchError((error) => {
-          console.log("Error response status: ", error.status);
-          if (error.status === 401) {
-            console.log("401 ERROR");
-          }
-          return throwError(error);
-        })
-      );
-    } else {
-      return next.handle(req);
-    }
-  }
-
-  interceptBasicAuth(req: HttpRequest<any>, next: HttpHandler) {
-    // Basic Authentication
-    let authReq = req;
-    authReq = req.clone({
-      headers: req.headers.append("X-Requested-With", "XMLHttpRequest"),
-    });
-    return next.handle(authReq).pipe(
-      map((event: HttpEvent<any>) => {
-        if (event instanceof HttpResponse) {
-        }
-        return event;
-      }),
-      catchError((error) => {
-        console.log("Error response status: ", error.status);
-        if (error.status === 401) {
-          console.log("401 ERROR");
-        }
-        return throwError(error);
-      })
-    );
-  }
-
-  private interceptTokenAuth(req: HttpRequest<any>, next: HttpHandler) {
-    let authReq = req;
-    // let newReq = req;
-    // const token = this.token.getToken();
-    const xAuthToken = this.token.getXAuthToken();
-    // if (token != null) {
-    authReq = req.clone({
-      headers: req.headers,
-      // .set(STORAGE_KEY_TOKEN_HEADER, 'Bearer ' + token)
-      // .append('X-Requested-With', 'XMLHttpRequest')
-      // .append('Access-Control-Allow-Credentials', 'true' )
-      // .append('X-Auth-Token', xAuthToken)
-      // , withCredentials: true
-    });
-    // }
-    return next.handle(authReq).pipe(
-      map((event: HttpEvent<any>) => {
-        if (event instanceof HttpResponse) {
-          if (xAuthToken == null) {
-            this.token.saveXAuthToken(event.headers.get("X-Auth-Token"));
-          }
-          console.log("Header: ", event.headers.get("X-Auth-Token"));
-        }
-        return event;
-      }),
-      catchError((error) => {
-        console.log("Error response status: ", error.status);
-        if (error.status === 401) {
-          console.log("401 ERROR");
-          // this.userService.setLoggedUser(null);
-        }
-        return throwError(error);
-      })
-    );
+    return next.handle(authReq);
   }
 }
-
-export const authInterceptorProviders = [
-  { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-];

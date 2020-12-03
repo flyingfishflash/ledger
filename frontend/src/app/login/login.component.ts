@@ -70,10 +70,11 @@ export class LoginComponent implements OnInit {
       .pipe(first())
       .subscribe(
         (data) => {
-          console.log(data);
+          //console.log(data);
           this.isLoggedIn = true;
           this.isLoginFailed = false;
-          this.router.navigate([this.returnUrl]);
+          this.router.navigateByUrl("/home");
+          //this.router.navigate([this.returnUrl]);
         },
         (error) => {
           // this.error = error;

@@ -8,7 +8,7 @@ import { Observable, throwError, BehaviorSubject } from "rxjs";
 import { AppConfig } from "../app-config";
 import { User } from "../_models/user";
 import { Router } from "@angular/router";
-import { map } from "rxjs/internal/operators/map";
+import { tap } from "rxjs/internal/operators/tap";
 
 @Injectable({ providedIn: "root" })
 export class BasicAuthService {
@@ -49,19 +49,17 @@ export class BasicAuthService {
 
     return this.http
       .get<any>(this.appConfig.apiServer.url + "/auth/signin", {
+        observe: "response",
         headers: headers,
         withCredentials: true,
       })
       .pipe(
-        map((user) => {
+        tap((resp) => {
           const u = new User();
-          u.id = user.response.body.id;
-          u.username = user.response.body.username;
-          u.token = this.createBasicAuthToken(
-            user.response.body.username,
-            credentials.password
-          );
-          u.roles = user.response.body.roles;
+          u.id = resp.body.response.body.id;
+          u.username = resp.body.response.body.username;
+          u.roles = resp.body.response.body.roles;
+          u.sessionId = resp.headers.get("x-auth-token");
           window.sessionStorage.setItem(
             this.STORAGE_KEY_AUTHENTICATED_USER,
             JSON.stringify(u)
@@ -93,6 +91,13 @@ export class BasicAuthService {
       );
   }
 
+  redirectToLogin() {
+    window.sessionStorage.clear();
+    this.userSubject.next(null);
+    this.userSubject.unsubscribe;
+    this.router.navigate([""]);
+  }
+
   isUserLoggedIn() {
     if (this.userSubject.getValue() == null) {
       return false;
@@ -101,14 +106,20 @@ export class BasicAuthService {
   }
 
   getLoggedInUserId() {
-    const id = this.userSubject.getValue().id;
-    if (id === null) {
-      console.log("id is null");
-      return null;
+    try {
+      const id = this.userSubject.getValue().id;
+      if (id === null) {
+        //console.log("id is null");
+        return null;
+      }
+      //console.log("id is not null");
+      //console.log(id);
+      return id;
+    } catch (err) {
+      console.log("caught getloggedinuserid error, redirecting to login");
+      console.log(err);
+      this.redirectToLogin();
     }
-    console.log("id is not null");
-    console.log(id);
-    return id;
   }
 
   getLoggedInUserName() {
@@ -119,12 +130,12 @@ export class BasicAuthService {
     return username;
   }
 
-  getBasicAuthenticationToken() {
-    const token = this.userSubject.getValue().token;
-    if (token === null) {
+  getSessionId() {
+    const sessionId = this.userSubject.getValue().sessionId;
+    if (sessionId === null) {
       return "";
     }
-    return token;
+    return sessionId;
   }
 
   handleError(err: HttpErrorResponse) {
