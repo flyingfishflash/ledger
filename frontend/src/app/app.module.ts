@@ -1,74 +1,58 @@
-// TODO: split these imports in to core/shared
-
-import { AppConfig, initConfig } from "./app-config";
+// modules (angular)
+import { APP_INITIALIZER } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
-// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from "@angular/core";
-import { Inject, APP_INITIALIZER } from "@angular/core";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FlexLayoutModule } from "@angular/flex-layout";
 import { HttpClientModule } from "@angular/common/http";
+import { NgModule } from "@angular/core";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
-import { FlexLayoutModule } from "@angular/flex-layout";
+// modules
+import { AppRoutingModule } from "app/app-routing.module";
+import { CoreModule } from "@core/core.module";
+import { SharedModule } from "@shared/shared.module";
+import { LoginModule } from "@modules/login/login.module";
+
+// components
+import { AppComponent } from "app/app.component";
+import { AuthLayoutComponent } from "./layout/auth-layout/auth-layout.component";
+import { ContentLayoutComponent } from "./layout/content-layout/content-layout.component";
+import { HeadingComponent } from "./layout/heading/heading.component";
+
+import { AppConfig } from "app/app-config";
+import { initConfig } from "app/app-config";
+
 import {
   InjectableRxStompConfig,
   RxStompService,
   rxStompServiceFactory,
 } from "@stomp/ng2-stompjs";
 
-//import { AppConfigService } from './_services/app-config.service';
-//import { AppConfig } from './app-config'
-import { AppRoutingModule } from "./app-routing.module";
-import { AppComponent } from "./app.component";
-import { AccountsTableComponent } from "./accounts-table/accounts-table.component";
-import { AccountsTreeComponent } from "./accounts-tree/accounts-tree.component";
-import { HeadingComponent } from "./heading/heading.component";
-import { ImportComponent } from "./import/import.component";
-import { LedgerMaterialModule } from "./shared/material-module";
 // import { rxStompConfig } from './shared/rx-stomp.config';
 
-import { PadWithSpacesPipe } from "./shared/pad-with-spaces.pipe";
-
-import { LoginComponent } from "./login/login.component";
-import { HomeComponent } from "./home/home.component";
-import { ProfileComponent } from "./profile/profile.component";
-import { ErrorDialogService } from "./shared/errors/error-dialog.service";
-import { ErrorDialogComponent } from "./shared/errors/error-dialog/error-dialog.component";
-
-import { InterceptorProviders } from "./_interceptors/interceptors";
-import { AdminSettingsComponent } from "./admin-settings/admin-settings.component";
-import { AdminSettingsUserCreateComponent } from "./admin-settings-user-create/admin-settings-user-create.component";
-
 @NgModule({
+  bootstrap: [AppComponent],
+
+  declarations: [
+    AppComponent,
+    AuthLayoutComponent,
+    ContentLayoutComponent,
+    HeadingComponent,
+  ],
+
+  exports: [FlexLayoutModule],
+
   imports: [
     AppRoutingModule,
     BrowserModule,
     FlexLayoutModule,
-    FormsModule,
     HttpClientModule,
+    CoreModule,
+    LoginModule,
     NoopAnimationsModule,
-    ReactiveFormsModule,
-    LedgerMaterialModule,
-  ],
-
-  declarations: [
-    AppComponent,
-    AccountsTableComponent,
-    AccountsTreeComponent,
-    HeadingComponent,
-    ImportComponent,
-    PadWithSpacesPipe,
-    LoginComponent,
-    HomeComponent,
-    ProfileComponent,
-    AdminSettingsComponent,
-    AdminSettingsUserCreateComponent,
-    ErrorDialogComponent,
+    SharedModule,
   ],
 
   providers: [
-    InterceptorProviders,
-    ErrorDialogService,
     AppConfig,
     {
       provide: APP_INITIALIZER,
@@ -87,7 +71,5 @@ import { AdminSettingsUserCreateComponent } from "./admin-settings-user-create/a
       deps: [InjectableRxStompConfig]
     }  */
   ],
-
-  bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -1,36 +1,80 @@
+// modules (angular)
 import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
+import { RouterModule } from "@angular/router";
+import { Routes } from "@angular/router";
 
-import { AccountsTreeComponent } from "./accounts-tree/accounts-tree.component";
-import { AccountsTableComponent } from "./accounts-table/accounts-table.component";
-import { AdminSettingsComponent } from "./admin-settings/admin-settings.component";
-import { AdminSettingsUserCreateComponent } from "./admin-settings-user-create/admin-settings-user-create.component";
-import { ImportComponent } from "./import/import.component";
-import { HomeComponent } from "./home/home.component";
-import { LoginComponent } from "./login/login.component";
-import { ProfileComponent } from "./profile/profile.component";
-import { AuthGuard } from "./_helpers/auth.guard";
-import { Role } from "./_models/role";
+// components
+import { AuthLayoutComponent } from "./layout/auth-layout/auth-layout.component";
+import { ContentLayoutComponent } from "./layout/content-layout/content-layout.component";
+
+import { AuthGuard } from "@core/guards/auth.guard";
+import { BasicAuthUserRole } from "@core/authentication/basic-auth-user-role";
 
 const routes: Routes = [
-  { path: "", component: LoginComponent, canActivate: [AuthGuard] },
-  { path: "profile", component: ProfileComponent },
   {
-    path: "admin/settings",
-    component: AdminSettingsComponent,
-    canActivate: [AuthGuard],
+    path: "",
+    redirectTo: "/login",
+    pathMatch: "full",
   },
   {
-    path: "admin/settings/user/create",
-    component: AdminSettingsUserCreateComponent,
-    canActivate: [AuthGuard],
+    path: "",
+    component: ContentLayoutComponent,
+    //canActivate: [AuthGuard],
+    children: [
+      {
+        path: "accounts-table",
+        loadChildren: () =>
+          import("@modules/accounts-table/accounts-table.module").then(
+            (m) => m.AccountsTableModule
+          ),
+      },
+      {
+        path: "accounts-tree",
+        loadChildren: () =>
+          import("@modules/accounts-tree/accounts-tree.module").then(
+            (m) => m.AccountsTreeModule
+          ),
+      },
+      {
+        path: "admin/settings",
+        loadChildren: () =>
+          import("@modules/admin-settings/admin-settings.module").then(
+            (m) => m.AdminSettingsModule
+          ),
+      },
+      {
+        path: "admin/settings/user/create",
+        loadChildren: () =>
+          import(
+            "@modules/admin-settings-user-create/admin-settings-user-create.module"
+          ).then((m) => m.AdminSettingsUserCreateModule),
+      },
+      {
+        path: "home",
+        loadChildren: () =>
+          import("@modules/home/home.module").then((m) => m.HomeModule),
+      },
+      {
+        path: "import",
+        loadChildren: () =>
+          import("@modules/import/import.module").then((m) => m.ImportModule),
+      },
+      {
+        path: "profile",
+        loadChildren: () =>
+          import("@modules/profile/profile.module").then(
+            (m) => m.ProfileModule
+          ),
+      },
+    ],
   },
-  { path: "accounts-tree", component: AccountsTreeComponent },
-  { path: "accounts-table", component: AccountsTableComponent },
-  { path: "home", component: HomeComponent },
-  { path: "import", component: ImportComponent },
-  { path: "login", component: LoginComponent },
-  { path: "**", redirectTo: "" },
+  {
+    path: "login",
+    component: AuthLayoutComponent,
+    loadChildren: () =>
+      import("@modules/login/login.module").then((m) => m.LoginModule),
+  },
+  { path: "**", redirectTo: "/login" },
   // { path: '**', component: PageNotFoundComponent },
 ];
 
@@ -39,7 +83,6 @@ const routes: Routes = [
     RouterModule.forRoot(
       routes,
       { enableTracing: false, relativeLinkResolution: "legacy" } // <-- debugging purposes only
-      // <-- debugging purposes only
     ),
   ],
   exports: [RouterModule],

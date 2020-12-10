@@ -1,0 +1,109 @@
+// angular
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { HttpHeaders } from "@angular/common/http";
+import { HttpErrorResponse } from "@angular/common/http";
+import { HttpParams } from "@angular/common/http";
+import { EVENT_MANAGER_PLUGINS } from "@angular/platform-browser";
+
+// third party
+import { Observable } from "rxjs";
+import { throwError } from "rxjs";
+import { catchError } from "rxjs/operators";
+import { map } from "rxjs/operators";
+
+// core and shared
+import { AppConfig } from "../../app-config";
+import { Logger } from "@core/logging/logger.service";
+import { StorageService } from "@core/storage/storage.service";
+
+const log = new Logger("user.service");
+
+const httpOptions = {
+  headers: new HttpHeaders({ "Content-Type": "application/json" }),
+  withCredentials: true,
+};
+
+@Injectable({
+  providedIn: "root",
+})
+export class UserService {
+  constructor(
+    private appConfig: AppConfig,
+    private http: HttpClient,
+    private storageService: StorageService
+  ) {}
+
+  findAllUsers(): Observable<any> {
+    return this.http.get<any>(`${this.appConfig.apiServer.url}/users`).pipe(
+      map((res) => {
+        return res.response.body;
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  userDetailsUpdate(payload): Observable<any> {
+    log.debug(payload);
+    return this.http
+      .patch<any>(
+        this.appConfig.apiServer.url +
+          "/users/" +
+          this.storageService.getAuthenticatedUser().id,
+        {
+          email: payload.email,
+          firstName: payload.firstName,
+          lastName: payload.lastName,
+          password: payload.password,
+        },
+        httpOptions
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  userSignUp(userFormValue): Observable<any> {
+    let roles: string[] = [];
+    roles.push(userFormValue.role);
+
+    return this.http
+      .post<any>(
+        this.appConfig.apiServer.url + "/users/",
+        {
+          email: userFormValue.email,
+          firstName: userFormValue.firstName,
+          lastName: userFormValue.lastName,
+          password: userFormValue.password,
+          roles: roles,
+          username: userFormValue.username,
+        },
+        httpOptions
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  userDeleteById(id) {
+    const payload: any = {};
+    payload.id = id;
+    let httpParams = new HttpParams().set("id", id);
+    let options = { params: httpParams, withCredentials: true };
+
+    this.http
+      .delete<any>(this.appConfig.apiServer.url + "/users/delete", options)
+      .subscribe(
+        (successResponse) => {
+          log.debug(successResponse);
+          // this.subject.next(successResponse.response.body);
+          // const fields = Object.getOwnPropertyNames(payload);
+          // const ps = new Date().toLocaleTimeString() + ': ' + 'Updated profile (' + fields.toString().replace(/,/g, ', ').split(/(?=[A-Z])/).map(s => s.toLowerCase()).join(' ') + ')';
+          // this.profileUpdateStatus.next(ps);
+        },
+        (errorResponse) => {
+          this.handleError(errorResponse);
+        }
+      );
+  }
+
+  handleError(httpErrorResponse: HttpErrorResponse) {
+    return throwError(httpErrorResponse);
+  }
+}
