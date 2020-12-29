@@ -7,14 +7,14 @@
 
 export const environment = {
   production: false,
-  api: {
+  wsEndpoint: "ws://localhost:8181/ws",
+  /*   api: {
     url: "http://localhost:8181/api/v1/ledger",
     version: "v1",
   },
-  wsEndpoint: "ws://localhost:8181/ws",
   authApi: {
     url: "http://localhost:8181/api/v1/ledger",
-  },
+  }, */
 };
 
 /*

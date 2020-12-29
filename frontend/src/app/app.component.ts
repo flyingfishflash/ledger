@@ -1,7 +1,12 @@
-import { Component, OnInit } from "@angular/core";
+// angular
 import { Location } from "@angular/common";
-import { BasicAuthService } from "./_services/basic-auth.service";
-import { User } from "./_models/user";
+import { Component } from "@angular/core";
+
+// core and shared
+import { environment } from "../environments/environment";
+import { BasicAuthService } from "@core/authentication/basic-auth.service";
+import { BasicAuthUser } from "@core/authentication/basic-auth-user";
+import { Logger } from "@core/logging/logger.service";
 
 @Component({
   selector: "app-root",
@@ -10,12 +15,18 @@ import { User } from "./_models/user";
 })
 export class AppComponent {
   username: string;
-  user: User;
+  user: BasicAuthUser;
 
   constructor(
     private basicAuthService: BasicAuthService,
     private location: Location
   ) {
     this.basicAuthService.user.subscribe((x) => (this.user = x));
+  }
+
+  ngOnInit() {
+    if (environment.production) {
+      Logger.enableProductionMode();
+    }
   }
 }

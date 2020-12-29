@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.FieldError;
@@ -33,6 +34,15 @@ import net.flyingfishflash.ledger.foundation.response.structure.errors.ErrorResp
 public class AdviceForStandardExceptions extends ResponseEntityExceptionHandler {
 
   private static final Logger logger = LoggerFactory.getLogger(AdviceForStandardExceptions.class);
+
+  @ExceptionHandler(InsufficientAuthenticationException.class)
+  public ResponseEntity<ErrorResponse<ErrorResponseBody>> handleInsufficientAuthenticationException(
+      Exception exception) {
+
+    return new ResponseEntity<>(
+        new ErrorResponse<>(new ErrorResponseBody(exception), ResponseApiStatusCode.Fail),
+        HttpStatus.UNAUTHORIZED);
+  }
 
   @ExceptionHandler(AuthenticationException.class)
   public ResponseEntity<ErrorResponse<ErrorResponseBody>> handleAuthenticationException(

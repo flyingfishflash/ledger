@@ -9,15 +9,17 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
-import org.springframework.security.web.savedrequest.NullRequestCache;
+import org.springframework.security.web.session.InvalidSessionStrategy;
 import org.springframework.session.FindByIndexNameSessionRepository;
 import org.springframework.session.Session;
 import org.springframework.session.security.SpringSessionBackedSessionRegistry;
 
 import net.flyingfishflash.ledger.foundation.authentication.CustomAuthenticationEntryPoint;
+import net.flyingfishflash.ledger.foundation.authentication.CustomInvalidSessionStrategy;
 import net.flyingfishflash.ledger.foundation.users.service.UserService;
 
 @Configuration
@@ -73,10 +75,18 @@ public class WebSecurityConfiguration<S extends Session> extends WebSecurityConf
     return new SpringSessionBackedSessionRegistry<>(this.sessionRepository);
   }
 
+  @Bean
+  public InvalidSessionStrategy invalidSessionStrategy() {
+    return new CustomInvalidSessionStrategy();
+  }
+
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     // @formatter:off
-    http.cors()
+    http // .exceptionHandling()
+        // .authenticationEntryPoint(customAuthenticationEntryPoint)
+        // .and()
+        .cors()
         .and()
         .httpBasic()
         .authenticationEntryPoint(customAuthenticationEntryPoint)
@@ -85,21 +95,27 @@ public class WebSecurityConfiguration<S extends Session> extends WebSecurityConf
         .antMatchers(AUTH_WHITELIST)
         .permitAll()
         .anyRequest()
-        .authenticated()
-        .and()
-        .requestCache()
-        .requestCache(new NullRequestCache());
+        .authenticated();
+    // .and()
+    // .requestCache()
+    // .requestCache(new NullRequestCache());
 
     http.sessionManagement()
+        // .sessionFixation()
+        // .migrateSession()
+        .sessionCreationPolicy(SessionCreationPolicy.NEVER)
+        .invalidSessionStrategy(invalidSessionStrategy())
+        // .invalidSessionUrl("/invalidSession.html")
         .maximumSessions(1)
         .maxSessionsPreventsLogin(true)
         .sessionRegistry(sessionRegistry());
+    // .expiredUrl("/sessionExpired.html");
 
     // enable for h2 console
     // enable for non-production only
     http.csrf().disable();
+    http.headers().frameOptions().disable();
     // #http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
-    // http.headers().frameOptions().disable();
     http.headers()
         // .contentSecurityPolicy("script-src 'self'; report-to /csp-report-endpoint/")
         // .and()

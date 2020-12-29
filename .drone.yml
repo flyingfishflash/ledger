@@ -196,7 +196,7 @@ steps:
       - "verify postgres"
     commands:
       - >
-        gradle :backend:explodebootjar :backend:testClasses writeVersion
+        gradle :backend:explodebootjar :backend:testClasses :backend:spotlessCheck writeVersion
       - >
         gradle :backend:test
       - >

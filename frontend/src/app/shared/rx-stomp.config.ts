@@ -1,5 +1,5 @@
 import { InjectableRxStompConfig } from "@stomp/ng2-stompjs";
-import { environment } from "src/environments/environment";
+import { environment } from "environments/environment";
 // import { TokenStorageService } from '../_services/token-storage.service';
 
 // https://stomp-js.github.io/guide/ng2-stompjs/ng2-stomp-with-angular7.html

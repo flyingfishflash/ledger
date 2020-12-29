@@ -33,30 +33,5 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     logger.info("* Authentication Exception: " + exception.getLocalizedMessage());
 
     resolver.resolveException(request, response, null, exception);
-
-    /*
-
-
-    ObjectMapper objectMapper = new ObjectMapper();
-
-    response.setStatus(HttpStatus.UNAUTHORIZED.value());
-    response.setContentType("application/json");
-
-    ErrorResponseBody ledgerError =
-        new ErrorResponseBody(
-            "custom error code",
-            exception.getLocalizedMessage(),
-            "error domain",
-            "error reason",
-            "error message");
-
-    ErrorResponse<ErrorResponseBody> errorResponse =
-        new ErrorResponse<>(ledgerError, exception.getLocalizedMessage());
-
-    OutputStream out = response.getOutputStream();
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.writeValue(out, errorResponse);
-    out.flush();
-    */
   }
 }

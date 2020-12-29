@@ -8,17 +8,16 @@
   "files": [],
   "references": [
     {
-      "path": "./tsconfig.app.json"
+      "path": "./src/tsconfig.app.json"
     },
-    {
-      "path": "./tsconfig.spec.json"
+     {
+      "path": "./src/tsconfig.spec.json"
     }
-  ],
+   ],
   "compilerOptions": {
-    "experimentalDecorators": true
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true
+    "strictInjectionParameters": true,
   }
 }
