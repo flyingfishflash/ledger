@@ -31,7 +31,6 @@ export class ImportService {
   private stopPolling = new Subject();
 
   constructor(private appConfig: AppConfig, private http: HttpClient) {
-
     this.allCurrencies$ = timer(1, 1000).pipe(
       switchMap(() =>
         http.get<any[]>(
