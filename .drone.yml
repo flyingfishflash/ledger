@@ -327,6 +327,39 @@ trigger:
     - tag
   ref:
     - refs/heads/feature-*
+
+depends_on:
+  - "frontend - publish"
+  - "backend - publish"
+
+clone:
+  disable: true
+
+steps:
+  - name: deploy to development
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: ssh_host_dev
+      username:
+        from_secret: ssh_username
+      key:
+        from_secret: ssh_key
+      script:
+        - cd docker
+        - ansible-playbook dev.yaml -i inventory.yaml -e do=restart --tags=ledger
+        # otherwise: docker-compose up stacks/ledger/docker-compose.yaml -d --remove-orphans
+
+---
+kind: pipeline
+name: deploy to production
+type: docker
+
+trigger:
+  event:
+    - push
+    - tag
+  ref:
     - refs/tags/*
 
 depends_on:
@@ -341,12 +374,12 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: ssh_host
+        from_secret: ssh_host_prd
       username:
         from_secret: ssh_username
       key:
         from_secret: ssh_key
       script:
         - cd docker
-        - ansible-playbook docker-0.yaml -i inventory.yaml -e do=restart --tags=ledger
+        - ansible-playbook prd.yaml -i inventory.yaml -e do=restart --tags=ledger
         # otherwise: docker-compose up stacks/ledger/docker-compose.yaml -d --remove-orphans
