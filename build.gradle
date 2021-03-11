@@ -1,5 +1,5 @@
 plugins {
-    id 'com.diffplug.spotless' version '5.8.2'
+    id 'com.diffplug.spotless' version '5.11.0'
     id 'fr.brouillard.oss.gradle.jgitver' version '0.10.0-rc03'
     id 'com.geoffgranum.gradle-conventional-changelog' version '0.3.1'
     id "com.github.breadmoirai.github-release" version "2.2.12"
