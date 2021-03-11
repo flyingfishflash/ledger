@@ -28,6 +28,11 @@ repositories {
     maven {
         url = uri('https://oss.jfrog.org/artifactory/oss-snapshot-local/')
     }
+
+    // can be removed when jacoco 0.8.7 is released
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
 }
 
 dependencies {
@@ -104,7 +109,10 @@ bootRun {
     jvmArgs = ["-Duser.timezone=UTC"]
 }
 
-
+// can be removed when jacoco 0.8.7 is released
+jacoco {
+    toolVersion = '0.8.7-SNAPSHOT'
+}
 
 jacocoTestReport {
 
