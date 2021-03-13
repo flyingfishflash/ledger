@@ -1,12 +1,12 @@
 export enum BasicAuthUserRole {
-  Administrator = "ROLE_ADMIN",
-  Editor = "ROLE_USER",
-  Viewer = "ROLE_VIEWER",
+  administrator = "ROLE_ADMIN",
+  editor = "ROLE_USER",
+  viewer = "ROLE_VIEWER",
 }
 
 export const reverseRole = new Map<string, BasicAuthUserRole>();
 Object.keys(BasicAuthUserRole).forEach((role: BasicAuthUserRole) => {
-  const roleValue: string = BasicAuthUserRole[<any>role];
+  const roleValue: string = BasicAuthUserRole[role] as any;
   reverseRole.set(roleValue, role);
 });
 

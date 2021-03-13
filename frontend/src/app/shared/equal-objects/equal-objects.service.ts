@@ -16,8 +16,7 @@ export interface ObjectEqualityState {
 })
 export class EqualObjectsService {
   isEqual(value, other): ObjectEqualityState {
-    let myReturn: ObjectEqualityState;
-    myReturn = { equal: true, differences: [] };
+    const myReturn: ObjectEqualityState = { equal: true, differences: [] };
     log.debug(myReturn);
 
     // Get the value type
@@ -107,8 +106,8 @@ export class EqualObjectsService {
       }
     } else {
       for (const key in value) {
-        log.debug(key);
-        if (value.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(value, key)) {
+          log.debug(key);
           if (compare(value[key], other[key]) === false) {
             myReturn.equal = false;
             myReturn.differences.push(key);

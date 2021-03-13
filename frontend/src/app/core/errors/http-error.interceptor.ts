@@ -1,14 +1,15 @@
 // angular
-import { HttpRequest } from "@angular/common/http";
-import { HttpHandler } from "@angular/common/http";
-import { HttpEvent } from "@angular/common/http";
-import { HttpInterceptor } from "@angular/common/http";
-import { HttpErrorResponse } from "@angular/common/http";
+import {
+  HttpErrorResponse,
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
+} from "@angular/common/http";
 import { Injectable } from "@angular/core";
 
 // third party
-import { Observable } from "rxjs";
-import { throwError } from "rxjs";
+import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 
 // core and shared

@@ -1,17 +1,15 @@
 // angular
-import { Component } from "@angular/core";
-import { OnDestroy } from "@angular/core";
-import { OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 
 // third party
 import { Subscription } from "rxjs";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { Message } from "@stomp/stompjs";
-import { InjectableRxStompConfig } from "@stomp/ng2-stompjs";
-import { RxStompService } from "@stomp/ng2-stompjs";
+import { InjectableRxStompConfig, RxStompService } from "@stomp/ng2-stompjs";
 
 // core and shared
 import { environment } from "environments/environment";
-import { ImportService } from "./import-service.service";
+import { ImportService } from "./import.service";
 import { StorageService } from "@core/storage/storage.service";
 import { rxStompConfig } from "@shared/rx-stomp.config";
 import { Logger } from "@core/logging/logger.service";
@@ -140,26 +138,23 @@ export class ImportComponent implements OnInit, OnDestroy {
 
   private initStomp() {
     log.debug("initStomp()");
-    const stompConfig: InjectableRxStompConfig = Object.assign(
-      {},
-      rxStompConfig,
-      {
-        brokerURL: environment.wsEndpoint,
-        connectHeaders: {
-          login: this.storageService.getLoggedInUserName(),
-          authorization: null,
-        },
-        heartbeatIncoming: 0,
-        heartbeatOutgoing: 20000,
-        reconnectDelay: 5000,
-        debug: (msg: string): void => {
-          log.debug(new Date(), msg);
-        },
-        beforeConnect: () => {
-          log.debug("%c called before connect", "color: blue");
-        },
-      }
-    );
+    const stompConfig: InjectableRxStompConfig = {
+      ...rxStompConfig,
+      brokerURL: environment.wsEndpoint,
+      connectHeaders: {
+        login: this.storageService.getLoggedInUserName(),
+        authorization: null,
+      },
+      heartbeatIncoming: 0,
+      heartbeatOutgoing: 20000,
+      reconnectDelay: 5000,
+      debug: (msg: string): void => {
+        log.debug(new Date(), msg);
+      },
+      beforeConnect: () => {
+        log.debug("%c called before connect", "color: blue");
+      },
+    };
 
     this.rxStompService.configure(stompConfig);
     this.rxStompService.activate();

@@ -1,7 +1,6 @@
 // angular
 import { NestedTreeControl } from "@angular/cdk/tree";
-import { Component } from "@angular/core";
-import { OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { MatTreeNestedDataSource } from "@angular/material/tree";
 
 // core and shared

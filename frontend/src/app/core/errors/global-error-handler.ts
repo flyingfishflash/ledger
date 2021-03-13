@@ -1,7 +1,5 @@
 // angular
-import { ErrorHandler } from "@angular/core";
-import { Injectable } from "@angular/core";
-
+import { ErrorHandler, Injectable } from "@angular/core";
 import { ErrorDialogService } from "@shared/errors/error-dialog.service";
 
 @Injectable()

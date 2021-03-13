@@ -1,7 +1,6 @@
 // angular
 import { OverlayContainer } from "@angular/cdk/overlay";
-import { Component } from "@angular/core";
-import { OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 
 // core and shared
 //import { ThemeService } from '@core/services/theme.service';

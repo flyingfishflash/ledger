@@ -1,25 +1,29 @@
-import { HttpClient } from "@angular/common/http";
-import { HttpErrorResponse } from "@angular/common/http";
-import { HttpHeaders } from "@angular/common/http";
+// angular
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { BehaviorSubject } from "rxjs";
-import { Observable } from "rxjs";
-import { throwError } from "rxjs";
+// third party
+import { BehaviorSubject, Observable, throwError } from "rxjs";
+import { tap } from "rxjs/internal/operators/tap";
 
+// core and shared
 import { AppConfig } from "app/app-config";
+import { BasicAuthUser } from "./basic-auth-user";
 import { Logger } from "@core/logging/logger.service";
 import { StorageService } from "@core/storage/storage.service";
-import { tap } from "rxjs/internal/operators/tap";
-import { BasicAuthUser } from "./basic-auth-user";
 
 const log = new Logger("basic-auth.service");
 
 @Injectable({ providedIn: "root" })
 export class BasicAuthService {
-  private userSubject: BehaviorSubject<BasicAuthUser>;
   public user: Observable<any>;
+
+  private userSubject: BehaviorSubject<BasicAuthUser>;
 
   constructor(
     private router: Router,
@@ -53,12 +57,12 @@ export class BasicAuthService {
     return this.http
       .get<any>(this.appConfig.apiServer.url + "/auth/signin", {
         observe: "response",
-        headers: headers,
+        headers,
         withCredentials: true,
       })
       .pipe(
         tap((resp) => {
-          let u = new BasicAuthUser(resp);
+          const u = new BasicAuthUser(resp);
           this.storageService.saveAuthenticatedUser(u);
           this.userSubject.next(u);
           return u;
@@ -90,7 +94,7 @@ export class BasicAuthService {
   redirectToLogin() {
     window.sessionStorage.clear();
     this.userSubject.next(null);
-    this.userSubject.unsubscribe;
+    //this.userSubject.unsubscribe();
     this.router.navigate(["/login"]);
   }
 

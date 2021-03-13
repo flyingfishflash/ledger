@@ -1,6 +1,5 @@
 // angular
-import { Component } from "@angular/core";
-import { OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 
 // core and shared
 import { IAccount } from "@shared/accounts/account";

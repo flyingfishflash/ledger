@@ -10,7 +10,7 @@ const log = new Logger("tree-utilities.service");
   providedIn: "root",
 })
 export class TreeUtilitiesService {
-  list_to_tree_sorted(list) {
+  listToTreeSorted(list) {
     const map = {};
     let node;
     const roots = [];
@@ -62,7 +62,7 @@ export class TreeUtilitiesService {
     return roots;
   }
 
-  list_to_tree_unsorted(list) {
+  listToTreeUnsorted(list) {
     /**
      * Slower.
      * For use when tree structure is potentially unsorted.
@@ -106,7 +106,7 @@ export class TreeUtilitiesService {
     for (i = 0; i <= maxId - minId; i++) {
       arrElem = list[i];
       mappedArr[arrElem.id] = arrElem;
-      mappedArr[arrElem.id]["children"] = [];
+      mappedArr[arrElem.id].children = [];
     }
 
     // log.debug(mappedArr);
@@ -116,7 +116,7 @@ export class TreeUtilitiesService {
         mappedElem = mappedArr[id];
         // If the element is not at the root level, add it to its parent array of children.
         if (mappedElem.parentId !== 27) {
-          mappedArr[mappedElem["parentId"]]["children"].push(mappedElem);
+          mappedArr[mappedElem.parentId].children.push(mappedElem);
         } else {
           // If the element is at the root level, add it to first level elements array.
           tree.push(mappedElem);

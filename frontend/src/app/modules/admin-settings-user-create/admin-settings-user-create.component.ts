@@ -1,13 +1,9 @@
 // angular
-import { Component } from "@angular/core";
-import { OnInit } from "@angular/core";
-import { FormBuilder } from "@angular/forms";
-import { FormGroup } from "@angular/forms";
-import { Validators } from "@angular/forms";
+import { Component, OnInit } from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 
 // third party
-import { Observable } from "rxjs";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 
 // core and shared
 import { rolesArray } from "@shared/users/role";

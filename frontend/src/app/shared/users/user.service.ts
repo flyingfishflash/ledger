@@ -1,16 +1,16 @@
 // angular
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { HttpHeaders } from "@angular/common/http";
-import { HttpErrorResponse } from "@angular/common/http";
-import { HttpParams } from "@angular/common/http";
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+  HttpParams,
+} from "@angular/common/http";
 import { EVENT_MANAGER_PLUGINS } from "@angular/platform-browser";
 
 // third party
-import { Observable } from "rxjs";
-import { throwError } from "rxjs";
-import { catchError } from "rxjs/operators";
-import { map } from "rxjs/operators";
+import { Observable, throwError } from "rxjs";
+import { catchError, map } from "rxjs/operators";
 
 // core and shared
 import { AppConfig } from "../../app-config";
@@ -20,6 +20,7 @@ import { StorageService } from "@core/storage/storage.service";
 const log = new Logger("user.service");
 
 const httpOptions = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   headers: new HttpHeaders({ "Content-Type": "application/json" }),
   withCredentials: true,
 };
@@ -62,7 +63,7 @@ export class UserService {
   }
 
   userSignUp(userFormValue): Observable<any> {
-    let roles: string[] = [];
+    const roles: string[] = [];
     roles.push(userFormValue.role);
 
     return this.http
@@ -73,7 +74,7 @@ export class UserService {
           firstName: userFormValue.firstName,
           lastName: userFormValue.lastName,
           password: userFormValue.password,
-          roles: roles,
+          roles,
           username: userFormValue.username,
         },
         httpOptions
@@ -84,8 +85,8 @@ export class UserService {
   userDeleteById(id) {
     const payload: any = {};
     payload.id = id;
-    let httpParams = new HttpParams().set("id", id);
-    let options = { params: httpParams, withCredentials: true };
+    const httpParams = new HttpParams().set("id", id);
+    const options = { params: httpParams, withCredentials: true };
 
     this.http
       .delete<any>(this.appConfig.apiServer.url + "/users/delete", options)
