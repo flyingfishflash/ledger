@@ -1,6 +1,5 @@
 // angular
-import { Component } from "@angular/core";
-import { OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 
 // core and shared
@@ -35,7 +34,7 @@ export class HeadingComponent implements OnInit {
   navigateToProfile() {
     // if already at the profile route, force a reload of window, which will refresh the
     // component using the currently logged in user's data
-    if (this.router.url == "/profile") {
+    if (this.router.url === "/profile") {
       location.reload();
     } else {
       this.router.navigateByUrl("/profile", {
@@ -46,7 +45,7 @@ export class HeadingComponent implements OnInit {
 
   get isAdmin() {
     return (
-      this.user && this.user.roles.includes(BasicAuthUserRole.Administrator)
+      this.user && this.user.roles.includes(BasicAuthUserRole.administrator)
     );
   }
 

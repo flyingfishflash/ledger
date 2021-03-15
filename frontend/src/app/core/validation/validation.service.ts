@@ -1,8 +1,6 @@
 // angular
 import { Injectable } from "@angular/core";
-import { AbstractControl } from "@angular/forms";
-import { ValidationErrors } from "@angular/forms";
-import { ValidatorFn } from "@angular/forms";
+import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
 
 @Injectable({
   providedIn: "root",
@@ -14,7 +12,7 @@ export class ValidationService {
     labelName?: string
   ): any {
     const config = {
-      required: `Field is required.`,
+      required: "Field is required.",
       invalidPassword:
         "Invalid password. Password must be at least 6 characters long, and contain a number.",
       maxlength: `The field can't contain more than ${validatorValue.requiredLength} characters.`,

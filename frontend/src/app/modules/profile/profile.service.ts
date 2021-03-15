@@ -1,14 +1,13 @@
 // angular
-import { HttpClient } from "@angular/common/http";
-import { HttpErrorResponse } from "@angular/common/http";
-import { HttpHeaders } from "@angular/common/http";
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from "@angular/common/http";
 import { Injectable } from "@angular/core";
 
 // third party
-import { Observable } from "rxjs";
-import { ReplaySubject } from "rxjs";
-import { Subject } from "rxjs";
-import { throwError } from "rxjs";
+import { Observable, ReplaySubject, Subject, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 
 // core and shared
@@ -19,6 +18,7 @@ import { StorageService } from "@core/storage/storage.service";
 const log = new Logger("profile.service");
 
 const httpOptions = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   headers: new HttpHeaders({ "Content-Type": "application/json" }),
   withCredentials: true,
 };
@@ -27,7 +27,9 @@ const httpOptions = {
   providedIn: "root",
 })
 export class ProfileService {
-  loggedInUserId;
+  private loggedInUserId;
+  private subject: Subject<any> = new ReplaySubject<any>(1);
+  private profileUpdateStatus: Subject<any> = new ReplaySubject<any>(1);
 
   constructor(
     private appConfig: AppConfig,
@@ -36,10 +38,6 @@ export class ProfileService {
   ) {
     this.loggedInUserId = storageService.getLoggedInUserId();
   }
-
-  private subject: Subject<any> = new ReplaySubject<any>(1);
-
-  private profileUpdateStatus: Subject<any> = new ReplaySubject<any>(1);
 
   get $getSubject(): Observable<any> {
     return this.subject.asObservable();

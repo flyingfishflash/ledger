@@ -76,6 +76,7 @@
         "no-sparse-arrays": "error",
         "no-template-curly-in-string": "error",
         "no-trailing-spaces": "off",
+        "no-underscore-dangle": ["error", { "allowAfterThis": true }],
         "prefer-object-spread": "error",
         "quote-props": "off",
         "quotes": [

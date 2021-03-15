@@ -1,14 +1,11 @@
 // angular
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { ActivatedRoute } from "@angular/router";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 
 // third party
-import { Observable } from "rxjs";
-import { throwError } from "rxjs";
-import { catchError } from "rxjs/operators";
-import { map } from "rxjs/operators";
+import { Observable, throwError } from "rxjs";
+import { catchError, map } from "rxjs/operators";
 
 // core and shared
 import { AppConfig } from "app/app-config";
@@ -51,7 +48,7 @@ export class AccountsService {
   getAccountsTree(): Observable<any> {
     return this.http.get<any>(`${this.appConfig.apiServer.url}/accounts`).pipe(
       map((res) => {
-        return this.treeUtilitiesService.list_to_tree_sorted(res.response.body);
+        return this.treeUtilitiesService.listToTreeSorted(res.response.body);
       }),
       catchError(this.handleError)
     );

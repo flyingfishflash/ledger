@@ -1,7 +1,6 @@
 // angular
 import { NgModule } from "@angular/core";
-import { RouterModule } from "@angular/router";
-import { Routes } from "@angular/router";
+import { Routes, RouterModule } from "@angular/router";
 
 // components
 import { ImportComponent } from "./import.component";

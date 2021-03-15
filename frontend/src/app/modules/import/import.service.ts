@@ -1,26 +1,24 @@
 // angular
-import { HttpClient } from "@angular/common/http";
-import { HttpErrorResponse } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 
 // third party
-import { Observable } from "rxjs";
-import { Subject } from "rxjs";
-import { timer } from "rxjs";
-import { throwError } from "rxjs";
-import { catchError } from "rxjs/operators";
-import { map } from "rxjs/operators";
-import { switchMap } from "rxjs/operators";
-import { retry } from "rxjs/operators";
-import { tap } from "rxjs/operators";
-import { share } from "rxjs/operators";
-import { takeUntil } from "rxjs/operators";
+import { Observable, Subject, timer, throwError } from "rxjs";
+import {
+  catchError,
+  map,
+  switchMap,
+  retry,
+  tap,
+  share,
+  takeUntil,
+} from "rxjs/operators";
 
 // core and shared
 import { AppConfig } from "app/app-config";
 import { Logger } from "@core/logging/logger.service";
 
-const log = new Logger("import-service.service");
+const log = new Logger("import.service");
 
 @Injectable({
   providedIn: "root",
@@ -31,7 +29,6 @@ export class ImportService {
   private stopPolling = new Subject();
 
   constructor(private appConfig: AppConfig, private http: HttpClient) {
-
     this.allCurrencies$ = timer(1, 1000).pipe(
       switchMap(() =>
         http.get<any[]>(

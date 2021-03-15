@@ -1,6 +1,6 @@
 // angular
 import { Location } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 
 // core and shared
 import { environment } from "../environments/environment";
@@ -13,7 +13,7 @@ import { Logger } from "@core/logging/logger.service";
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   username: string;
   user: BasicAuthUser;
 
@@ -24,7 +24,7 @@ export class AppComponent {
     this.basicAuthService.user.subscribe((x) => (this.user = x));
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.production) {
       Logger.enableProductionMode();
     }

@@ -1,6 +1,5 @@
 // angular
-import { Component } from "@angular/core";
-import { OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { MatTabChangeEvent } from "@angular/material/tabs";
 import { Router } from "@angular/router";
 

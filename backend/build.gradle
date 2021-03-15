@@ -15,11 +15,6 @@ description = 'Ledger'
 
 repositories {
     mavenCentral()
-    jcenter()
-
-    maven {
-        url "https://plugins.gradle.org/m2/"
-    }
 
     maven {
         url = uri('https://jitpack.io')

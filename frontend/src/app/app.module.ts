@@ -1,9 +1,8 @@
 // modules (angular)
-import { APP_INITIALIZER } from "@angular/core";
+import { APP_INITIALIZER, NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { HttpClientModule } from "@angular/common/http";
-import { NgModule } from "@angular/core";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 // modules
@@ -19,7 +18,6 @@ import { ContentLayoutComponent } from "./layout/content-layout/content-layout.c
 import { HeadingComponent } from "./layout/heading/heading.component";
 
 import { AppConfig } from "app/app-config";
-import { initConfig } from "app/app-config";
 
 import {
   InjectableRxStompConfig,
@@ -28,6 +26,10 @@ import {
 } from "@stomp/ng2-stompjs";
 
 // import { rxStompConfig } from './shared/rx-stomp.config';
+
+const appInitializerFn = (config: AppConfig): (() => Promise<void>) => {
+  return () => config.load();
+};
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -56,7 +58,7 @@ import {
     AppConfig,
     {
       provide: APP_INITIALIZER,
-      useFactory: initConfig,
+      useFactory: appInitializerFn,
       deps: [AppConfig],
       multi: true,
     },

@@ -1,10 +1,6 @@
 // angular
-import { Component } from "@angular/core";
-import { OnDestroy } from "@angular/core";
-import { OnInit } from "@angular/core";
-import { FormBuilder } from "@angular/forms";
-import { FormGroup } from "@angular/forms";
-import { Validators } from "@angular/forms";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 
 // third party
 import { Observable } from "rxjs";

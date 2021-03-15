@@ -2,16 +2,15 @@
 import { Injectable } from "@angular/core";
 
 // third party
-import { Observable } from "rxjs";
-import { combineLatest } from "rxjs";
-import { debounceTime } from "rxjs/operators";
-import { map } from "rxjs/operators";
-import { shareReplay } from "rxjs/operators";
+import { combineLatest, Observable } from "rxjs";
+import { debounceTime, map, shareReplay } from "rxjs/operators";
 
 // core and shared
 import { Logger } from "@core/logging/logger.service";
-import { EqualObjectsService } from "@shared/equal-objects/equal-objects.service";
-import { ObjectEqualityState } from "@shared/equal-objects/equal-objects.service";
+import {
+  EqualObjectsService,
+  ObjectEqualityState,
+} from "@shared/equal-objects/equal-objects.service";
 
 const log = new Logger("dirty-check.service");
 

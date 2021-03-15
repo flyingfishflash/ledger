@@ -1,7 +1,6 @@
 // modules (angular)
 import { NgModule } from "@angular/core";
-import { RouterModule } from "@angular/router";
-import { Routes } from "@angular/router";
+import { Routes, RouterModule } from "@angular/router";
 
 // components
 import { AuthLayoutComponent } from "./layout/auth-layout/auth-layout.component";

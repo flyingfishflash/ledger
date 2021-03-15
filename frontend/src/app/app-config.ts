@@ -35,6 +35,3 @@ export class AppConfig implements IAppConfig {
       });
   }
 }
-export function initConfig(config: AppConfig): () => Promise<void> {
-  return () => config.load();
-}
