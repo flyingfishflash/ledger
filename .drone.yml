@@ -5,7 +5,8 @@
 # repository_backend_development  = registry.domain.tld/namespace/ledger:development
 # repository_frontend_development = registry.domain.tld/namespace/ledger-frontend:development
 # ssh_username
-# ssh_host
+# ssh_host_dev
+# ssh_host_prd
 # ssh_key
 
 kind: pipeline
@@ -318,7 +319,7 @@ steps:
 
 ---
 kind: pipeline
-name: deploy
+name: "deploy - development"
 type: docker
 
 trigger:
@@ -336,7 +337,7 @@ clone:
   disable: true
 
 steps:
-  - name: deploy to development
+  - name: deploy
     image: appleboy/drone-ssh
     settings:
       host:
@@ -352,7 +353,7 @@ steps:
 
 ---
 kind: pipeline
-name: deploy to production
+name: "deploy - production"
 type: docker
 
 trigger:
