@@ -2,7 +2,7 @@ import org.springframework.boot.gradle.plugin.ResolveMainClassName
 
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '2.4.3'
+    id 'org.springframework.boot' version '2.4.4'
     id 'com.diffplug.spotless'
     id 'jacoco'
 }
@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    String springBootVersion = "2.4.3"
+    String springBootVersion = "2.4.4"
     String springSessionVersion = "2.4.2"
 
     implementation "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
