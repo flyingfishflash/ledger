@@ -27,7 +27,6 @@ repositories {
 }
 
 dependencies {
-
     String springBootVersion = "2.4.3"
     String springSessionVersion = "2.4.2"
 
@@ -106,7 +105,6 @@ jacoco {
 }
 
 jacocoTestReport {
-
     dependsOn test
 
     reports {
