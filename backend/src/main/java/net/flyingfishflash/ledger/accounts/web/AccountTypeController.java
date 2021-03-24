@@ -2,9 +2,9 @@ package net.flyingfishflash.ledger.accounts.web;
 
 import java.util.List;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,15 +31,15 @@ public class AccountTypeController {
 
   // Obtain the List of Account Types
   @GetMapping
-  @ApiOperation(value = "Retrieve all account types")
+  @Operation(summary = "Retrieve all account types")
   public List<AccountType> findAllAccountTypes() {
     return accountTypeService.findAllAccountTypes();
   }
 
   // Obtain the List of Account Types associated with an Account Category
   @GetMapping(value = "by-category")
-  @ApiOperation(value = "Retrieve the account types associated with an account category")
-  @ApiResponses(value = {@ApiResponse(code = 400, message = "Bad Request")})
+  @Operation(summary = "Retrieve the account types associated with an account category")
+  @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
   public List<AccountType> findAccountTypesByCategory(
       @RequestParam(name = "category") @Enum(enumClass = AccountCategory.class) String category) {
     return accountTypeService.findAccountTypesByCategory(category);

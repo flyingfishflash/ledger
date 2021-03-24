@@ -6,9 +6,9 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +48,7 @@ public class UserController {
 
   @GetMapping
   @ResponseBody
-  @ApiOperation(value = "Retrieve all users")
+  @Operation(summary = "Retrieve all users")
   public Collection<User> findAll() {
 
     return userService.findAllUsers();
@@ -56,8 +56,8 @@ public class UserController {
 
   @GetMapping("{id}/profile")
   @ResponseBody
-  @ApiOperation(value = "Retrieve profile of a single user by id")
-  @ApiResponses(value = {@ApiResponse(code = 400, message = "Bad Request")})
+  @Operation(summary = "Retrieve profile of a single user by id")
+  @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
   public UserProfileResponse profileById(@PathVariable("id") Long id) {
 
     return userService.profileById(id);
@@ -65,7 +65,7 @@ public class UserController {
 
   @GetMapping("/profile")
   @ResponseBody
-  @ApiOperation(value = "Retrieve profile of a single user by authenticated user name")
+  @Operation(summary = "Retrieve profile of a single user by authenticated user name")
   public UserProfileResponse profileByUsername(Principal principal) {
 
     return userService.profileByUsername(principal.getName());
@@ -73,8 +73,8 @@ public class UserController {
 
   @PatchMapping("{id}")
   @ResponseBody
-  @ApiOperation(value = "Update the profile information of a single user")
-  @ApiResponses(value = {@ApiResponse(code = 400, message = "Bad Request")})
+  @Operation(summary = "Update the profile information of a single user")
+  @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
   public UserProfileResponse profilePatch(
       @PathVariable("id") Long id, @RequestBody Map<String, Object> patchRequest) {
 
@@ -86,8 +86,8 @@ public class UserController {
   }
 
   @PostMapping
-  @ApiOperation(value = "Create a new user.")
-  @ApiResponses(value = {@ApiResponse(code = 400, message = "Bad Request")})
+  @Operation(summary = "Create a new user.")
+  @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
   public ResponseEntity<UserCreateResponse> signUp(
       @Valid @RequestBody UserCreateRequest userSignUpRequest) {
 
@@ -99,8 +99,8 @@ public class UserController {
   }
 
   @DeleteMapping(value = "/delete")
-  @ApiOperation(value = "Delete a user")
-  @ApiResponses(value = {@ApiResponse(code = 400, message = "Bad Request")})
+  @Operation(summary = "Delete a user")
+  @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public ResponseEntity<?> deleteById(@RequestParam Long id) {
 

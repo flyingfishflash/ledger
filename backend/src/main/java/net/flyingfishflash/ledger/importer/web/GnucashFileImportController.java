@@ -8,7 +8,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +44,7 @@ public class GnucashFileImportController {
   }
 
   @PostMapping(value = "/gnucash")
-  @ApiOperation(value = "Import Gnucash file")
+  @Operation(summary = "Import Gnucash file")
   public ResponseEntity<GnucashFileImportStatus> gnucashFileImport(
       @RequestParam("file") MultipartFile file, Principal principal)
       throws ParserConfigurationException, SAXException, IOException {
@@ -61,7 +61,7 @@ public class GnucashFileImportController {
   }
 
   @GetMapping(value = "/gnucashFileImportStatus")
-  @ApiOperation(value = "Status of Gnucash file import")
+  @Operation(summary = "Status of Gnucash file import")
   public ResponseEntity<GnucashFileImportStatus> gnucashFileImportStatus()
       throws JsonProcessingException {
 

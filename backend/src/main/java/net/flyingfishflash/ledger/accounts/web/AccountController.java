@@ -8,9 +8,9 @@ import java.util.Map;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +50,7 @@ public class AccountController {
   }
 
   @GetMapping
-  @ApiOperation(value = "Retrieve all accounts")
+  @Operation(summary = "Retrieve all accounts")
   public ResponseEntity<Collection<Account>> findAllAccounts() {
 
     Collection<Account> allAccounts = accountService.findAllAccounts();
@@ -59,7 +59,7 @@ public class AccountController {
   }
 
   @GetMapping(value = "{id}")
-  @ApiOperation(value = "Retrieve a single account")
+  @Operation(summary = "Retrieve a single account")
   public ResponseEntity<AccountDto> findAccountById(@PathVariable("id") @Min(1) Long id) {
 
     Account account = accountService.findById(id);
@@ -69,8 +69,8 @@ public class AccountController {
   }
 
   @PostMapping
-  @ApiOperation(value = "Create a new account")
-  @ApiResponses(value = {@ApiResponse(code = 400, message = "Bad Request")})
+  @Operation(summary = "Create a new account")
+  @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
   public ResponseEntity<AccountDto> createAccount(
       @RequestHeader(name = "X-COM-LOCATION", required = false) String headerLocation,
       @Valid @RequestBody CreateAccountDto createAccountDto)
@@ -92,7 +92,7 @@ public class AccountController {
   }
 
   @DeleteMapping(value = "/delete")
-  @ApiOperation(value = "Delete an account and all of it's descendants")
+  @Operation(summary = "Delete an account and all of it's descendants")
   public ResponseEntity<?> deleteAccountAndDescendents(
       @RequestParam(name = "accountId") Long accountId) {
 
@@ -104,8 +104,8 @@ public class AccountController {
 
   @PatchMapping("{id}")
   @ResponseBody
-  @ApiOperation(value = "Update the details of a single account")
-  @ApiResponses(value = {@ApiResponse(code = 400, message = "Bad Request")})
+  @Operation(summary = "Update the details of a single account")
+  @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
   public ResponseEntity<?> patchAccount(
       @PathVariable("id") Long id, @RequestBody Map<String, Object> patchRequest) {
 
@@ -128,8 +128,8 @@ public class AccountController {
 
   // Change the position of an account in the hierarchy within the sibling level (down)
   @PostMapping(value = "/insert-as-next-sibling")
-  @ApiOperation(
-      value =
+  @Operation(
+      summary =
           "Change the position of an account in the hierarchy within the sibling level (move down in a list)")
   public ResponseEntity<?> insertAsNextSiblingOf(@RequestParam("id") Long id)
       throws URISyntaxException {
@@ -149,8 +149,8 @@ public class AccountController {
 
   // Change the position of an account in the hierarchy within the sibling level (up)
   @PostMapping(value = "/insert-as-prev-sibling")
-  @ApiOperation(
-      value =
+  @Operation(
+      summary =
           "Change the position of an account in the hierarchy within the sibling level (move up in a list)")
   public ResponseEntity<?> insertAsPrevSiblingOf(@RequestParam("id") Long id)
       throws URISyntaxException {
@@ -170,8 +170,9 @@ public class AccountController {
 
   // Retrieve a list of accounts that may be made a direct parent of a given account
   @GetMapping(value = "{id}/eligible-parent-accounts")
-  @ApiOperation(
-      value = "Retrieve a list of accounts that may be made a direct parent of a given account")
+  @Operation(
+      description =
+          "Retrieve a list of accounts that may be made a direct parent of a given account")
   public ResponseEntity<Collection<Account>> getEligibleParentAccountsOf(
       @PathVariable("id") Long id) throws URISyntaxException {
 

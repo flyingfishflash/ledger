@@ -38,10 +38,9 @@ public class WebSecurityConfiguration<S extends Session> extends WebSecurityConf
     "/api/v1/ledger/actuator/info",
     "/assets/config.json",
     "/h2-console/**",
+    "/swagger-ui.html",
     "/swagger-ui/**",
-    "/swagger-resources/**",
-    "/v2/api-docs",
-    "/webjars/**",
+    "/v3/api-docs/**",
     "/ws*"
   };
 
