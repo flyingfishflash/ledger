@@ -1,11 +1,18 @@
 {
   "root": true,
-  "ignorePatterns": ["projects/**/*"],
+  "ignorePatterns": [
+    "projects/**/*"
+  ],
   "overrides": [
     {
-      "files": ["*.ts"],
+      "files": [
+        "*.ts"
+      ],
       "parserOptions": {
-        "project": ["tsconfig.json", "e2e/tsconfig.json"],
+        "project": [
+          "tsconfig.json",
+          "e2e/tsconfig.json"
+        ],
         "createDefaultProgram": true
       },
       "extends": [
@@ -15,7 +22,9 @@
         "prettier",
         "prettier/@typescript-eslint"
       ],
-      "plugins": ["eslint-plugin-react"],
+      "plugins": [
+        "eslint-plugin-react"
+      ],
       "rules": {
         "@angular-eslint/component-selector": [
           "error",
@@ -53,10 +62,19 @@
           }
         ],
         "@typescript-eslint/no-this-alias": "error",
-        "@typescript-eslint/semi": ["off", null],
+        "@typescript-eslint/semi": [
+          "off",
+          null
+        ],
         "@typescript-eslint/type-annotation-spacing": "off",
-        "arrow-parens": ["off", "always"],
-        "brace-style": ["off", "off"],
+        "arrow-parens": [
+          "off",
+          "always"
+        ],
+        "brace-style": [
+          "off",
+          "off"
+        ],
         "eol-last": "off",
         "import/no-extraneous-dependencies": "error",
         "import/order": "off",
@@ -76,24 +94,39 @@
         "no-sparse-arrays": "error",
         "no-template-curly-in-string": "error",
         "no-trailing-spaces": "off",
-        "no-underscore-dangle": ["error", { "allowAfterThis": true }],
+        "no-underscore-dangle": [
+          "error",
+          {
+            "allowAfterThis": true
+          }
+        ],
         "prefer-object-spread": "error",
         "quote-props": "off",
         "quotes": [
           "error",
           "double",
-          { "avoidEscape": true, "allowTemplateLiterals": false }
+          {
+            "avoidEscape": true,
+            "allowTemplateLiterals": false
+          }
         ],
         "react/jsx-curly-spacing": "off",
         "react/jsx-equals-spacing": "off",
         "react/jsx-wrap-multilines": "off",
         "space-before-function-paren": "off",
-        "space-in-parens": ["off", "never"]
+        "space-in-parens": [
+          "off",
+          "never"
+        ]
       }
     },
     {
-      "files": ["*.html"],
-      "extends": ["plugin:@angular-eslint/template/recommended"],
+      "files": [
+        "*.html"
+      ],
+      "extends": [
+        "plugin:@angular-eslint/template/recommended"
+      ],
       "rules": {}
     }
   ]
