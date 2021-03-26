@@ -5,9 +5,9 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +48,7 @@ public class BookController {
 
   @GetMapping("{id}")
   @ResponseBody
-  @ApiOperation(value = "Retrieve a single book")
+  @Operation(summary = "Retrieve a single book")
   public Book findById(@PathVariable("id") Long id) {
 
     return bookService.findById(id);
@@ -56,15 +56,15 @@ public class BookController {
 
   @GetMapping
   @ResponseBody
-  @ApiOperation(value = "Retrieve all books")
+  @Operation(summary = "Retrieve all books")
   public Collection<Book> findAll() {
 
     return bookService.findAllBooks();
   }
 
   @PostMapping
-  @ApiOperation(value = "Create a new book of accounts")
-  @ApiResponses(value = {@ApiResponse(code = 400, message = "Bad Request")})
+  @Operation(summary = "Create a new book of accounts")
+  @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
   public ResponseEntity<Book> bookCreate(@Valid @RequestBody BookRequest bookRequest) {
 
     Book newBook = bookService.createBook(bookRequest);
@@ -74,8 +74,8 @@ public class BookController {
 
   @PatchMapping("{id}")
   @ResponseBody
-  @ApiOperation(value = "Update the properties of a single book")
-  @ApiResponses(value = {@ApiResponse(code = 400, message = "Bad Request")})
+  @Operation(summary = "Update the properties of a single book")
+  @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
   public Book bookPatch(
       @PathVariable("id") Long id, @RequestBody Map<String, Object> patchRequest) {
 
@@ -83,7 +83,7 @@ public class BookController {
   }
 
   @DeleteMapping("{id}")
-  @ApiOperation(value = "Delete a book and all its related objects")
+  @Operation(summary = "Delete a book and all its related objects")
   public ResponseEntity<?> bookDelete(@PathVariable("id") Long id) {
 
     bookService.deleteBook(id);
@@ -93,8 +93,8 @@ public class BookController {
 
   @PostMapping("/active")
   @ResponseBody
-  @ApiOperation(value = "Set the active book for a session")
-  @ApiResponses(value = {@ApiResponse(code = 400, message = "Bad Request")})
+  @Operation(summary = "Set the active book for a session")
+  @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
   public Book setActiveBook(@RequestBody SetActiveBookRequest setActiveBookRequest) {
     activeBook.setBookId(bookService.findById(setActiveBookRequest.getId()).getId());
     logger.info(activeBook.toString());
@@ -103,8 +103,8 @@ public class BookController {
 
   @GetMapping("/active")
   @ResponseBody
-  @ApiOperation(value = "Get the active book for a session")
-  @ApiResponses(value = {@ApiResponse(code = 400, message = "Bad Request")})
+  @Operation(summary = "Get the active book for a session")
+  @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
   public Book getActiveBook() {
     return bookService.findById(activeBook.getBookId());
   }
