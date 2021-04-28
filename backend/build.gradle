@@ -46,7 +46,7 @@ dependencies {
     implementation 'org.javamoney:moneta:1.4.2'
     implementation 'javax.interceptor:javax.interceptor-api:1.2.2'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
-    implementation 'org.zalando:jackson-datatype-money:1.2.1'
+    implementation 'org.zalando:jackson-datatype-money:1.2.2'
     implementation 'org.flywaydb:flyway-core:7.7.0'
     implementation 'commons-validator:commons-validator:1.7'
     runtimeOnly 'javax.xml.bind:jaxb-api:2.3.1'
