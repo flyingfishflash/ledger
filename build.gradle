@@ -1,5 +1,5 @@
 plugins {
-    id 'com.diffplug.spotless' version '5.11.0'
+    id 'com.diffplug.spotless' version '5.12.4'
     id 'fr.brouillard.oss.gradle.jgitver' version '0.10.0-rc03'
 }
 
@@ -8,7 +8,7 @@ ext {
 
 subprojects {
     ext {
-        googleJavaFormatVersion = "1.9"
+        googleJavaFormatVersion = "1.10.0"
     }
 }
 

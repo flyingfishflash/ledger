@@ -165,5 +165,4 @@ dist/
 .idea/*
 backend/src/main/resources/basic_ledger.gnucash
 backend/src/main/resources/db/initialization/
-gradle.properties
 version
