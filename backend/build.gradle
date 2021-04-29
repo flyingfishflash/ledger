@@ -114,8 +114,8 @@ jacocoTestReport {
     }
 }
 
-java {
-    sourceCompatibility = 'VERSION_14'
+compileJava {
+    options.release = 15
 }
 
 spotless {
