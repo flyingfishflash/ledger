@@ -1,4 +1,4 @@
-FROM openjdk:15-jdk-alpine
+FROM openjdk:16-jdk-alpine
 VOLUME /tmp
 EXPOSE 8181
 RUN mkdir /app
