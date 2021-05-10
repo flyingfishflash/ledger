@@ -25,7 +25,7 @@ trigger:
 
 steps:
   - name: cache pull
-    image: drone/git
+    image: alpine/git
     commands:
       - /drone/src/scripts/drone-cache-pull.sh ledger-frontend
     volumes:
@@ -41,9 +41,10 @@ steps:
       - cd /drone/src/frontend
       - npm install
       - ng build --prod
+      - ls -l
 
   - name: cache push
-    image: drone/git
+    image: alpine/git
     depends_on:
       - "build"
     commands:
@@ -78,7 +79,7 @@ clone:
 
 steps:
   - name: clone
-    image: drone/git
+    image: alpine/git
     commands:
       - git clone $DRONE_REPO_LINK .
       - git config advice.detachedHead false
@@ -86,7 +87,7 @@ steps:
       - git fetch --tags
 
   - name: cache pull
-    image: drone/git
+    image: alpine/git
     depends_on:
       - "clone"
     commands:
@@ -163,7 +164,7 @@ services:
 
 steps:
   - name: clone
-    image: drone/git
+    image: alpine/git
     commands:
       - git clone $DRONE_REPO_LINK .
       - git config advice.detachedHead false
@@ -171,7 +172,7 @@ steps:
       - git fetch --tags
 
   - name: cache pull
-    image: drone/git
+    image: alpine/git
     depends_on:
       - "clone"
     commands:
@@ -217,7 +218,7 @@ steps:
       NODE_OPTION: --max-old-space-size=4096
 
   - name: cache push
-    image: drone/git
+    image: alpine/git
     depends_on:
       - "build"
     commands:
@@ -249,7 +250,7 @@ volumes:
 
 steps:
   - name: cache pull
-    image: drone/git
+    image: alpine/git
     depends_on:
       - "clone"
     commands:
@@ -259,7 +260,7 @@ steps:
         path: /drone/drone_cache
 
   - name: write docker tag (development)
-    image: drone/git:latest
+    image: alpine/git
     depends_on:
       - "cache pull"
     commands:
@@ -290,7 +291,7 @@ steps:
         - refs/heads/feature-*
 
   - name: write docker tag (release)
-    image: drone/git:latest
+    image: alpine/git
     commands:
       - cat version > .tags
       - echo ",latest" >> .tags
