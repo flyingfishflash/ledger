@@ -10,7 +10,7 @@ then
 else
   if [ "$1" = "ledger-backend" ];
   then
-    tar -cf "$drone_cache" /drone/src/.gradle/ /drone/src/version /drone/src/backend/build/
+    tar -cf "$drone_cache" /drone/src/.gradle/ /drone/src/backend/build/
   else
     echo "neither ledger-frontend or ledger-backend was passed as a parameter"
   fi

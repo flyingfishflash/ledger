@@ -74,22 +74,16 @@ volumes:
     host:
       path: /var/lib/docker/volumes_managed/drone_cache
 
-clone:
-  disable: true
-
 steps:
-  - name: clone
+  - name: fetch git tags
     image: alpine/git
     commands:
-      - git clone $DRONE_REPO_LINK .
-      - git config advice.detachedHead false
-      - git checkout $DRONE_COMMIT
       - git fetch --tags
 
   - name: cache pull
     image: alpine/git
     depends_on:
-      - "clone"
+      - "fetch git tags"
     commands:
       - /drone/src/scripts/drone-cache-pull.sh ledger-frontend
       - pwd
@@ -146,9 +140,6 @@ trigger:
     - push
     - tag
 
-clone:
-  disable: true
-
 volumes:
   - name: drone_cache
     host:
@@ -163,18 +154,16 @@ services:
       POSTGRES_DB: ledger
 
 steps:
-  - name: clone
+   # git tags are needed by ./scripts/build/version.sh
+  - name: fetch git tags
     image: alpine/git
     commands:
-      - git clone $DRONE_REPO_LINK .
-      - git config advice.detachedHead false
-      - git checkout $DRONE_COMMIT
       - git fetch --tags
 
   - name: cache pull
     image: alpine/git
     depends_on:
-      - "clone"
+      - "fetch git tags"
     commands:
       - /drone/src/scripts/drone-cache-pull.sh ledger-backend
     volumes:
@@ -198,7 +187,7 @@ steps:
       - "verify postgres"
     commands:
       - >
-        gradle :backend:explodebootjar :backend:testClasses :backend:spotlessCheck writeVersion
+        gradle :backend:explodebootjar :backend:testClasses :backend:spotlessCheck
       - >
         gradle :backend:test
       - >
@@ -251,8 +240,6 @@ volumes:
 steps:
   - name: cache pull
     image: alpine/git
-    depends_on:
-      - "clone"
     commands:
       - /drone/src/scripts/drone-cache-pull.sh ledger-backend
     volumes:
@@ -264,7 +251,7 @@ steps:
     depends_on:
       - "cache pull"
     commands:
-      - cat version > .tags
+      - ./scripts/build/version.sh version > .tags
       - echo ",development" >> .tags
       - cat .tags
     when:
@@ -293,7 +280,7 @@ steps:
   - name: write docker tag (release)
     image: alpine/git
     commands:
-      - cat version > .tags
+      - ./scripts/build/version.sh version > .tags
       - echo ",latest" >> .tags
       - cat .tags
     when:
