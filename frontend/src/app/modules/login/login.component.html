@@ -9,13 +9,17 @@
       />
       <h2 class="mat-h2">Ledger</h2>
       <h3 class="mat-h3" style="margin: 0.8rem;">
-        v{{ info?.build?.version }}
+        {{ info?.build?.version }}
       </h3>
       <p class="mat-small" style="margin: 0.1rem;">
         {{ info?.build?.time | date: "mediumDate":"UTC" }}
       </p>
       <p class="mat-small" style="margin: 0.1rem;">
         {{ info?.build?.time | date: "longTime":"UTC" }}
+      </p>
+      <p class="mat-small" style="margin: 0.1rem;">
+        <br />
+        {{ info?.build?.ciPlatform }} | {{ info?.build?.ciPipelineId }} | {{ info?.build?.commit }}
       </p>
       <div><br /></div>
 
