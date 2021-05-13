@@ -33,7 +33,7 @@ publish-frontend-feature:
   stage: publish
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - echo "-$CI_COMMIT_BRANCH" >> version
+#    - echo "-$CI_COMMIT_BRANCH" >> version
     - cd frontend
     - docker build --pull -t "$CI_REGISTRY_IMAGE:frontend-development" -f Dockerfile .
     - docker push "$CI_REGISTRY_IMAGE:frontend-development"
@@ -73,18 +73,18 @@ build-jar:
   script:
     - echo $CI_COMMIT_BRANCH
     - echo
+    - ./scripts/build/version.sh all
+    - echo
     - gradle
       :backend:clean
       :backend:explodebootjar
       :backend:testClasses
-      writeVersion
       --no-daemon
   cache:
     key: "$CI_COMMIT_REF_SLUG-backend"
     paths:
       - build
       - .gradle
-      - version
       - backend/build
 
 unit-tests:
@@ -103,7 +103,6 @@ unit-tests:
     paths:
       - build
       - .gradle
-      - version
       - backend/build
 
 h2-integration-tests:
@@ -120,7 +119,6 @@ h2-integration-tests:
     paths:
       - build
       - .gradle
-      - version
       - backend/build
 
 postgres-integration-tests:
@@ -148,7 +146,6 @@ postgres-integration-tests:
     paths:
       - build
       - .gradle
-      - version
       - backend/build
 
 publish-backend-feature:
@@ -157,9 +154,10 @@ publish-backend-feature:
   stage: publish
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - echo "-$CI_COMMIT_BRANCH" >> version
-    - VERSION=$(cat version)
+#    - echo "-$CI_COMMIT_BRANCH" >> version
+    - VERSION=$(./scripts/build/version.sh version)
     - cd backend
+    - echo "$VERSION"
     - docker build -t "$CI_REGISTRY_IMAGE:backend-development" -f Dockerfile .
     - docker push "$CI_REGISTRY_IMAGE:backend-development"
   except:
@@ -173,7 +171,6 @@ publish-backend-feature:
     paths:
       - build
       - .gradle
-      - version
       - backend/build
 
 publish-backend-version-tagged-ref:
@@ -182,7 +179,7 @@ publish-backend-version-tagged-ref:
   stage: publish
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - VERSION=$(cat version)
+    - VERSION=$(./scripts/build/version.sh version)
     - cd backend
     - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-backend" -t "$CI_REGISTRY_IMAGE:backend-latest" -f Dockerfile .
     - docker push "$CI_REGISTRY_IMAGE:backend-latest"
@@ -195,5 +192,4 @@ publish-backend-version-tagged-ref:
     paths:
       - build
       - .gradle
-      - version
       - backend/build
