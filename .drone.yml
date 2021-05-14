@@ -27,7 +27,7 @@ steps:
   - name: cache pull
     image: alpine/git
     commands:
-      - /drone/src/scripts/drone-cache-pull.sh ledger-frontend
+      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-frontend
     volumes:
       - name: drone_cache
         path: /drone/drone_cache
@@ -48,7 +48,7 @@ steps:
     depends_on:
       - "build"
     commands:
-      - /drone/src/scripts/drone-cache-push.sh ledger-frontend
+      - /drone/src/scripts/ci/drone/drone-cache-push.sh ledger-frontend
     volumes:
       - name: drone_cache
         path: /drone/drone_cache
@@ -85,7 +85,7 @@ steps:
     depends_on:
       - "fetch git tags"
     commands:
-      - /drone/src/scripts/drone-cache-pull.sh ledger-frontend
+      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-frontend
       - pwd
       - ls -la
       - ls /drone/src/frontend/dist/ledger-frontend/ -la
@@ -165,7 +165,7 @@ steps:
     depends_on:
       - "fetch git tags"
     commands:
-      - /drone/src/scripts/drone-cache-pull.sh ledger-backend
+      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-backend
     volumes:
       - name: drone_cache
         path: /drone/drone_cache
@@ -211,7 +211,7 @@ steps:
     depends_on:
       - "build"
     commands:
-      - /drone/src/scripts/drone-cache-push.sh ledger-backend
+      - /drone/src/scripts/ci/drone/drone-cache-push.sh ledger-backend
     volumes:
       - name: drone_cache
         path: /drone/drone_cache
@@ -241,7 +241,7 @@ steps:
   - name: cache pull
     image: alpine/git
     commands:
-      - /drone/src/scripts/drone-cache-pull.sh ledger-backend
+      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-backend
     volumes:
       - name: drone_cache
         path: /drone/drone_cache
