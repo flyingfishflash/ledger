@@ -181,7 +181,7 @@ steps:
           -c "select count(*) from pg_catalog.pg_tables;"
 
   - name: build
-    image: gradle:7.0.1-jdk16-hotspot
+    image: gradle:7.0.2-jdk16-hotspot
     depends_on:
       - "cache pull"
       - "verify postgres"
