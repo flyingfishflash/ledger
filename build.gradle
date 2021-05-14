@@ -1,7 +1,6 @@
 plugins {
     id 'com.diffplug.spotless' version '5.12.4'
     id "com.github.ben-manes.versions" version '0.38.0'
-    id 'fr.brouillard.oss.gradle.jgitver' version '0.10.0-rc03'
 }
 
 ext {
@@ -10,19 +9,26 @@ ext {
 subprojects {
     ext {
         googleJavaFormatVersion = "1.10.0"
+        scmVersion = "./scripts/build/version.sh version".execute().text.trim()
+        scmCommit = "./scripts/build/version.sh commit".execute().text.trim()
+        ciPlatform = "./scripts/build/version.sh ci-platform".execute().text.trim()
+        ciPipelineId = "./scripts/build/version.sh ci-pipeline-id".execute().text.trim()
     }
 }
 
-task writeVersion {
-    outputs.upToDateWhen { false }
+tasks.register("printVersionScriptOutput") {
     doLast {
-        new File(projectDir, "version").text = version
+        project.exec {
+            commandLine("./scripts/build/version.sh",  "all")
+        }
     }
 }
 
+/*
 build {
-    finalizedBy writeVersion
+    finalizedBy aTask
 }
+*/
 
 spotless {
     format 'json', {

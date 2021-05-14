@@ -103,7 +103,7 @@ fabric.properties
 
 ### Gradle ###
 .gradle
-build/
+#build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -119,6 +119,7 @@ gradle-app.setting
 
 ### Gradle Patch ###
 **/build/
+!/scripts/build/
 
 # IDE - VSCode
 .vscode/*

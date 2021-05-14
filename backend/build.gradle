@@ -125,12 +125,12 @@ spotless {
             properties {
                 artifact = 'ledger-backend'
                 name = 'Ledger'
-/*
+                version = scmVersion
                 additional = [
-                        'placeholder.property1': 'property value',
-                        'placeholder.property2': 'property value'
+                        'ciPlatform': ciPlatform,
+                        'ciPipelineId': ciPipelineId,
+                        'commit': scmCommit
                 ]
-*/
             }
         }
     }
