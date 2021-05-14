@@ -154,7 +154,7 @@ services:
       POSTGRES_DB: ledger
 
 steps:
-   # git tags are needed by ./scripts/build/version.sh
+  # git tags are needed by ./scripts/build/version.sh
   - name: fetch git tags
     image: alpine/git
     commands:
