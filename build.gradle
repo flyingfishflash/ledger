@@ -9,10 +9,10 @@ ext {
 subprojects {
     ext {
         googleJavaFormatVersion = "1.10.0"
-        scmVersion = "./scripts/build/version.sh version".execute().text.trim()
-        scmCommit = "./scripts/build/version.sh commit".execute().text.trim()
-        ciPlatform = "./scripts/build/version.sh ci-platform".execute().text.trim()
-        ciPipelineId = "./scripts/build/version.sh ci-pipeline-id".execute().text.trim()
+        scmVersion = "./scripts/version.sh version".execute().text.trim()
+        scmCommit = "./scripts/version.sh commit".execute().text.trim()
+        ciPlatform = "./scripts/version.sh ci-platform".execute().text.trim()
+        ciPipelineId = "./scripts/version.sh ci-pipeline-id".execute().text.trim()
     }
 }
 

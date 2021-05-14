@@ -16,7 +16,7 @@ Usage:
 
 if [ "$CI" = "true" ]; then
 
-  #Drone CI build
+  # Drone CI build
   if [ "$DRONE" = "true" ]; then
 
     ci_platform="drone"
@@ -40,7 +40,7 @@ if [ "$CI" = "true" ]; then
 
 else
 
-  #Non-CI build
+  # Non-CI build
   scm_commit_short_sha=$(git log --pretty=format:%h -1)
   version=$(git describe --exact-match 2> /dev/null || echo -n "`git symbolic-ref HEAD 2> /dev/null | cut -b 12-`")
 
