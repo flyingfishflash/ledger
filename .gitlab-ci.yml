@@ -20,7 +20,8 @@ build-dist:
     - export PATH=$PWD/frontend/node_modules/.bin:$PATH
     - cd frontend
     - npm ci --cache .npm --prefer-offline
-    - ng build --prod
+    - ng version
+    - ng build --configuration production
   cache:
     key: "$CI_COMMIT_REF_SLUG-frontend"
     paths:
