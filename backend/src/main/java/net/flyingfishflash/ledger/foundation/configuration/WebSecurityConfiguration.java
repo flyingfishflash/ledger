@@ -120,8 +120,11 @@ public class WebSecurityConfiguration<S extends Session> extends WebSecurityConf
         // .and()
         .referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.SAME_ORIGIN)
         .and()
-        .featurePolicy("accelerometer 'none'; camera 'none'; microphone 'none'");
+        // https://w3c.github.io/permissions/#permission-registry
+        .permissionsPolicy(
+            permissions ->
+                permissions.policy(
+                    "geolocation=(none) accelerometer=(none) camera=(none) microphone=(none"));
     // @formatter:on
-
   }
 }
