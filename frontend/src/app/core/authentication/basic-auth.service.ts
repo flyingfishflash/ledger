@@ -9,7 +9,7 @@ import { Router } from "@angular/router";
 
 // third party
 import { BehaviorSubject, Observable, throwError } from "rxjs";
-import { tap } from "rxjs/internal/operators/tap";
+import { tap } from "rxjs/operators";
 
 // core and shared
 import { AppConfig } from "app/app-config";

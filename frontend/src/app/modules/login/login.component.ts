@@ -3,7 +3,7 @@ import { Component, OnInit } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 
 // third party
-import { first } from "rxjs/internal/operators/first";
+import { first } from "rxjs/operators";
 
 // core and shared
 import { ActuatorInfo } from "@shared/actuator/actuator-info";
