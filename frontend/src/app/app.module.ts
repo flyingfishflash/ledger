@@ -17,6 +17,7 @@ import { LoginModule } from "@modules/login/login.module";
 import { AppComponent } from "app/app.component";
 import { AuthLayoutComponent } from "./layout/auth-layout/auth-layout.component";
 import { ContentLayoutComponent } from "./layout/content-layout/content-layout.component";
+import { ErrorLayoutComponent } from "./layout/error-layout/error-layout.component";
 import { HeadingComponent } from "./layout/heading/heading.component";
 
 import {
@@ -25,13 +26,6 @@ import {
   rxStompServiceFactory,
 } from "@stomp/ng2-stompjs";
 import { AppConfigRuntime } from "./app-config-runtime";
-
-/* interface Config {
-  apiServer: {
-    url: string;
-    urlAuth: string;
-  };
-} */
 
 // import { rxStompConfig } from './shared/rx-stomp.config';
 
@@ -48,6 +42,7 @@ const appInitializerFn = (
     AppComponent,
     AuthLayoutComponent,
     ContentLayoutComponent,
+    ErrorLayoutComponent,
     HeadingComponent,
   ],
 

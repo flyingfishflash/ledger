@@ -5,6 +5,7 @@ import { Routes, RouterModule } from "@angular/router";
 // components
 import { AuthLayoutComponent } from "./layout/auth-layout/auth-layout.component";
 import { ContentLayoutComponent } from "./layout/content-layout/content-layout.component";
+import { ErrorLayoutComponent } from "./layout/error-layout/error-layout.component";
 
 import { AuthGuard } from "@core/guards/auth.guard";
 import { BasicAuthUserRole } from "@core/authentication/basic-auth-user-role";
@@ -66,6 +67,12 @@ const routes: Routes = [
           ),
       },
     ],
+  },
+  {
+    path: "error",
+    component: ErrorLayoutComponent,
+    loadChildren: () =>
+      import("@modules/error/error.module").then((m) => m.ErrorModule),
   },
   {
     path: "login",
