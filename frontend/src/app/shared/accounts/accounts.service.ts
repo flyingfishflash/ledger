@@ -8,10 +8,13 @@ import { Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 
 // core and shared
-import { AppConfig } from "app/app-config";
+import { AppConfigRuntime } from "app/app-config-runtime";
 import { BasicAuthService } from "app/core/authentication/basic-auth.service";
 import { TreeUtilitiesService } from "@shared/tree-utilities/tree-utilties.service";
 import { IAccount } from "./account";
+import { Logger } from "@core/logging/logger.service";
+
+const log = new Logger("account.service");
 
 @Injectable({
   providedIn: "root",
@@ -20,7 +23,7 @@ export class AccountsService {
   // private accountUrl = '/api/accounts/accounts.json';
 
   constructor(
-    private appConfig: AppConfig,
+    private appConfig: AppConfigRuntime,
     private basicAuthService: BasicAuthService,
     private treeUtilitiesService: TreeUtilitiesService,
     private http: HttpClient,
@@ -29,12 +32,14 @@ export class AccountsService {
   ) {}
 
   getAccounts(): Observable<any> {
-    return this.http.get<any>(`${this.appConfig.apiServer.url}/accounts`).pipe(
-      map((res) => {
-        return res.response.body;
-      }),
-      catchError(this.handleError)
-    );
+    return this.http
+      .get<any>(`${this.appConfig.assets.api.server.url}/accounts`)
+      .pipe(
+        map((res) => {
+          return res.response.body;
+        }),
+        catchError(this.handleError)
+      );
   }
 
   /*
@@ -46,12 +51,14 @@ export class AccountsService {
     */
 
   getAccountsTree(): Observable<any> {
-    return this.http.get<any>(`${this.appConfig.apiServer.url}/accounts`).pipe(
-      map((res) => {
-        return this.treeUtilitiesService.listToTreeSorted(res.response.body);
-      }),
-      catchError(this.handleError)
-    );
+    return this.http
+      .get<any>(`${this.appConfig.assets.api.server.url}/accounts`)
+      .pipe(
+        map((res) => {
+          return this.treeUtilitiesService.listToTreeSorted(res.response.body);
+        }),
+        catchError(this.handleError)
+      );
   }
 
   /*
@@ -64,7 +71,7 @@ export class AccountsService {
 
   getAccountCategories(): Observable<string[]> {
     return this.http
-      .get<any>(`${this.appConfig.apiServer.url}/account-categories`)
+      .get<any>(`${this.appConfig.assets.api.server.url}/account-categories`)
       .pipe(
         map((res) => {
           return res.response.body;
@@ -84,10 +91,11 @@ export class AccountsService {
   handleError(error: any) {
     let errorMessage = "";
     if (error.error instanceof ErrorEvent) {
-      errorMessage = "A client internal error occurred: " + error.error.message;
+      errorMessage = `A client internal error occurred:\nError Message: ${error.error.message}`;
     } else {
-      errorMessage = "A non-client error occured";
+      errorMessage = `A server-side error occured:\nError Status: ${error.status}\nError Message: ${error.message}`;
     }
-    return throwError(errorMessage);
+    log.error(errorMessage);
+    return throwError(error);
   }
 }

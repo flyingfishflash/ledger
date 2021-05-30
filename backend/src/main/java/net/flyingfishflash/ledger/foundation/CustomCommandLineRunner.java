@@ -120,7 +120,7 @@ public class CustomCommandLineRunner implements CommandLineRunner {
 
     FileWriter fw = new FileWriter(f.getAbsoluteFile());
     BufferedWriter bw = new BufferedWriter(fw);
-    bw.write("{\n\"apiServer\":{\n\"url\":\"" + apiUrl + "\",\n\"urlAuth\":\"\"}\n}");
+    bw.write("{\n\t\"server\": {\n\t\t\"url\": \"" + apiUrl + "\"\n\t}\n}");
     bw.close();
   }
 }

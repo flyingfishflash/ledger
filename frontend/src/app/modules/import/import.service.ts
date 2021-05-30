@@ -15,7 +15,7 @@ import {
 } from "rxjs/operators";
 
 // core and shared
-import { AppConfig } from "app/app-config";
+import { AppConfigRuntime } from "app/app-config-runtime";
 import { Logger } from "@core/logging/logger.service";
 
 const log = new Logger("import.service");
@@ -28,11 +28,11 @@ export class ImportService {
 
   private stopPolling = new Subject();
 
-  constructor(private appConfig: AppConfig, private http: HttpClient) {
+  constructor(private appConfig: AppConfigRuntime, private http: HttpClient) {
     this.allCurrencies$ = timer(1, 1000).pipe(
       switchMap(() =>
         http.get<any[]>(
-          `${this.appConfig.apiServer.url}/import/gnucashFileImportStatus`
+          `${this.appConfig.assets.api.server.url}/import/gnucashFileImportStatus`
         )
       ),
       retry(),
@@ -48,7 +48,7 @@ export class ImportService {
     log.debug("getImportStatus()");
     return this.http
       .get<any[]>(
-        `${this.appConfig.apiServer.url}/import/gnucashFileImportStatus`
+        `${this.appConfig.assets.api.server.url}/import/gnucashFileImportStatus`
       )
       .pipe(
         map((res) => res),
@@ -65,7 +65,10 @@ export class ImportService {
 
   uploadFile(formData): Observable<any> {
     return this.http
-      .post<any[]>(`${this.appConfig.apiServer.url}/import/gnucash`, formData)
+      .post<any[]>(
+        `${this.appConfig.assets.api.server.url}/import/gnucash`,
+        formData
+      )
       .pipe(
         map((res) => {
           return res;

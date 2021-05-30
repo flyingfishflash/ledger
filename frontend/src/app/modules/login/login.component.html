@@ -8,20 +8,23 @@
         height="100"
       />
       <h2 class="mat-h2">Ledger</h2>
-      <h3 class="mat-h3" style="margin: 0.8rem;">
-        {{ info?.build?.version }}
-      </h3>
-      <p class="mat-small" style="margin: 0.1rem;">
-        {{ info?.build?.time | date: "mediumDate":"UTC" }}
-      </p>
-      <p class="mat-small" style="margin: 0.1rem;">
-        {{ info?.build?.time | date: "longTime":"UTC" }}
-      </p>
-      <p class="mat-small" style="margin: 0.1rem;">
-        <br />
-        {{ info?.build?.ciPlatform }} | {{ info?.build?.ciPipelineId }} |
-        {{ info?.build?.commit }}
-      </p>
+      <div *ngIf="!isLoginDisabled">
+        <h3 class="mat-h3" style="margin: 0.8rem;">
+          {{ appConfigInfoBuild.version }}
+        </h3>
+        <p class="mat-small" style="margin: 0.1rem;">
+          {{ appConfigInfoBuild.time | date: "mediumDate":"UTC" }}
+        </p>
+        <p class="mat-small" style="margin: 0.1rem;">
+          {{ appConfigInfoBuild.time | date: "longTime":"UTC" }}
+        </p>
+        <p class="mat-small" style="margin: 0.1rem;">
+          <br />
+          {{ appConfigInfoBuild.ciPlatform }} |
+          {{ appConfigInfoBuild.ciPipelineId }} |
+          {{ appConfigInfoBuild.commit }}
+        </p>
+      </div>
       <div><br /></div>
 
       <form
@@ -40,6 +43,7 @@
             name="username"
             required
             #username="ngModel"
+            [disabled]="isLoginDisabled"
           />
         </mat-form-field>
         <mat-form-field>
@@ -52,17 +56,28 @@
             [(ngModel)]="form.password"
             required
             #password="ngModel"
+            [disabled]="isLoginDisabled"
           />
         </mat-form-field>
         <!--button class="show-hide-password-button" (click)="hide = !hide">
             <mat-icon matSuffix>{{ this.hide ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button-->
-        <button style="margin-top: 16px;" mat-flat-button color="primary">
+        <button
+          style="margin-top: 32px;"
+          mat-flat-button
+          color="primary"
+          [disabled]="isLoginDisabled"
+        >
           Login
         </button>
-        <div style="margin-top: 16px;">
-          <div *ngIf="f.submitted && isLoginFailed" style="margin: 16px;">
-            <mat-error>{{ errorMessage }}</mat-error>
+        <div style="margin-top: 32px; height: 3em;">
+          <div
+            *ngIf="(f.submitted && isLoginFailed) || errorMessage"
+            style="margin: 16px;"
+          >
+            <mat-error
+              ><span>{{ errorMessage }}</span></mat-error
+            >
           </div>
           <div *ngIf="f.submitted && username.invalid" style="margin: 16px;">
             <mat-error>Please provide a valid user name</mat-error>

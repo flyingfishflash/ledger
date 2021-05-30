@@ -1,9 +1,5 @@
 // angular
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HttpHeaders,
-} from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 
@@ -12,7 +8,7 @@ import { BehaviorSubject, Observable, throwError } from "rxjs";
 import { tap } from "rxjs/operators";
 
 // core and shared
-import { AppConfig } from "app/app-config";
+import { AppConfigRuntime } from "app/app-config-runtime";
 import { BasicAuthUser } from "./basic-auth-user";
 import { Logger } from "@core/logging/logger.service";
 import { StorageService } from "@core/storage/storage.service";
@@ -28,7 +24,7 @@ export class BasicAuthService {
   constructor(
     private router: Router,
     private http: HttpClient,
-    private appConfig: AppConfig,
+    private appConfig: AppConfigRuntime,
     private storageService: StorageService
   ) {
     this.userSubject = new BehaviorSubject<BasicAuthUser>(
@@ -55,14 +51,14 @@ export class BasicAuthService {
     );
 
     return this.http
-      .get<any>(this.appConfig.apiServer.url + "/auth/signin", {
+      .get<any>(this.appConfig.assets.api.server.url + "/auth/signin", {
         observe: "response",
         headers,
         withCredentials: true,
       })
       .pipe(
-        tap((resp) => {
-          const u = new BasicAuthUser(resp);
+        tap((res: HttpResponse<any>) => {
+          const u = new BasicAuthUser(res);
           this.storageService.saveAuthenticatedUser(u);
           this.userSubject.next(u);
           return u;
@@ -76,7 +72,9 @@ export class BasicAuthService {
 
   signOut(parameter: string) {
     this.http
-      .post<any>(this.appConfig.apiServer.url + "/auth/signout", { parameter })
+      .post<any>(this.appConfig.assets.api.server.url + "/auth/signout", {
+        parameter,
+      })
       .subscribe(
         (result) => {
           if (result.response.body.message === "Logged Out") {
@@ -98,15 +96,14 @@ export class BasicAuthService {
     this.router.navigate(["/login"]);
   }
 
-  handleError(err: HttpErrorResponse) {
+  handleError(error: any) {
     let errorMessage = "";
-    if (err.error instanceof ErrorEvent) {
-      errorMessage = "An error occurred: " + err.error.message;
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = `A client internal error occurred:\nError Message: ${error.error.message}`;
     } else {
-      errorMessage = "HttpErrorResponse: " + err.status + " / " + err.message;
+      errorMessage = `A server-side error occured:\nError Status: ${error.status}\nError Message: ${error.message}`;
     }
-    log.debug("Error handled.");
     log.error(errorMessage);
-    return throwError(errorMessage);
+    return throwError(error);
   }
 }

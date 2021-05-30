@@ -48,7 +48,7 @@
                 mat-flat-button
                 (click)="onUploadClick()"
                 matTooltip="Upload selected file"
-                [disabled]="uploadFileName == ''"
+                [disabled]="uploadFileName === ''"
               >
                 Upload
               </button>
@@ -59,7 +59,7 @@
                 mat-flat-button
                 (click)="onClearClick()"
                 matTooltip="Clear selected file"
-                [disabled]="uploadFileName == ''"
+                [disabled]="uploadFileName === ''"
               >
                 Clear
               </button>

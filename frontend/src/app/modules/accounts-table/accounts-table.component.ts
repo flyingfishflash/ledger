@@ -1,9 +1,15 @@
 // angular
 import { Component, OnInit } from "@angular/core";
 
+// third party
+import { throwError } from "rxjs";
+
 // core and shared
 import { IAccount } from "@shared/accounts/account";
 import { AccountsService } from "@shared/accounts/accounts.service";
+import { Logger } from "@core/logging/logger.service";
+
+const log = new Logger("accounts-table.component");
 
 @Component({
   selector: "app-accounts-table",
@@ -35,19 +41,35 @@ export class AccountsTableComponent implements OnInit {
 
   ngOnInit(): void {
     this.accountsService.getAccounts().subscribe({
-      next: (accounts) => {
-        this.accounts = accounts;
+      next: (res) => {
+        this.accounts = res;
         this.filteredAccounts = this.accounts;
       },
-      error: (err) => (this.errorMessage = err),
+      error: (err) => {
+        this.handleError(err);
+      },
     });
 
     this.accountsService.getAccountCategories().subscribe({
-      next: (accountCategories) => {
-        this.accountCategories = accountCategories;
+      next: (res) => {
+        this.accountCategories = res;
       },
-      error: (err) => (this.errorMessage = err),
+      error: (err) => {
+        this.handleError(err);
+      },
     });
+  }
+
+  handleError(error: any) {
+    let errorMessage = "";
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = `A client internal error occurred:\nError Message: ${error.error.message}`;
+    } else {
+      errorMessage = `A server-side error occured:\nError Status: ${error.status}\nError Message: ${error.message}`;
+    }
+    this.errorMessage = errorMessage;
+    log.error(errorMessage);
+    return throwError(error);
   }
 
   get listFilter(): string {
