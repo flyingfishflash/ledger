@@ -1,9 +1,5 @@
 // angular
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HttpHeaders,
-} from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 
 // third party
@@ -11,7 +7,7 @@ import { Observable, ReplaySubject, Subject, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 
 // core and shared
-import { AppConfig } from "app/app-config";
+import { AppConfigRuntime } from "app/app-config-runtime";
 import { Logger } from "@core/logging/logger.service";
 import { StorageService } from "@core/storage/storage.service";
 
@@ -32,11 +28,11 @@ export class ProfileService {
   private profileUpdateStatus: Subject<any> = new ReplaySubject<any>(1);
 
   constructor(
-    private appConfig: AppConfig,
+    private appConfig: AppConfigRuntime,
     private http: HttpClient,
     private storageService: StorageService
   ) {
-    this.loggedInUserId = storageService.getLoggedInUserId();
+    this.loggedInUserId = this.storageService.getLoggedInUserId();
   }
 
   get $getSubject(): Observable<any> {
@@ -50,29 +46,40 @@ export class ProfileService {
   loadData() {
     this.http
       .get<any>(
-        this.appConfig.apiServer.url +
+        this.appConfig.assets.api.server.url +
           "/users/" +
           this.loggedInUserId +
           "/profile"
       )
-      .subscribe((data) => {
-        this.subject.next(data.response.body);
-      });
+      .subscribe(
+        (res) => {
+          this.subject.next(res.response.body);
+        },
+        (err) => {
+          this.handleError(err);
+        }
+      );
   }
 
   loadDataById(id) {
     this.http
-      .get<any>(this.appConfig.apiServer.url + "/users/" + id + "/profile")
-      .subscribe((data) => {
-        this.subject.next(data.response.body);
-      });
-    // TODO: Handle error
+      .get<any>(
+        this.appConfig.assets.api.server.url + "/users/" + id + "/profile"
+      )
+      .subscribe(
+        (res) => {
+          this.subject.next(res.response.body);
+        },
+        (err) => {
+          this.handleError(err);
+        }
+      );
   }
 
   userDetailsUpdate(payload, id) {
     this.http
       .patch<any>(
-        this.appConfig.apiServer.url + "/users/" + id,
+        this.appConfig.assets.api.server.url + "/users/" + id,
         {
           email: payload.email,
           firstName: payload.firstName,
@@ -82,8 +89,8 @@ export class ProfileService {
         httpOptions
       )
       .subscribe(
-        (successResponse) => {
-          this.subject.next(successResponse.response.body);
+        (res) => {
+          this.subject.next(res.response.body);
           const fields = Object.getOwnPropertyNames(payload);
           const ps =
             new Date().toLocaleTimeString() +
@@ -98,8 +105,8 @@ export class ProfileService {
             ")";
           this.profileUpdateStatus.next(ps);
         },
-        (errorResponse) => {
-          this.handleError(errorResponse);
+        (err) => {
+          this.handleError(err);
         }
       );
   }
@@ -112,23 +119,21 @@ export class ProfileService {
     log.debug(payload);
     return this.http
       .patch(
-        this.appConfig.apiServer.url + "/users/" + this.loggedInUserId,
+        this.appConfig.assets.api.server.url + "/users/" + this.loggedInUserId,
         { payload },
         httpOptions
       )
       .pipe(catchError(this.handleError));
   }
 
-  handleError(err: HttpErrorResponse) {
+  handleError(error: any) {
     let errorMessage = "";
-    if (err.error instanceof ErrorEvent) {
-      errorMessage = "An error occurred: " + err.error.message;
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = `A client internal error occurred:\nError Message: ${error.error.message}`;
     } else {
-      errorMessage = "HttpErrorResponse: " + err.status + " / " + err.message;
+      errorMessage = `A server-side error occured:\nError Status: ${error.status}\nError Message: ${error.message}`;
     }
-    log.debug("Error handled.");
-    // log.debug(err);
-    console.error(errorMessage);
-    return throwError(errorMessage);
+    log.error(errorMessage);
+    return throwError(error);
   }
 }

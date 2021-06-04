@@ -1,5 +1,5 @@
 {
-    "apiServer":{
-    "url":"http://localhost:8181/api/v1/ledger",
-    "urlAuth":""}
+    "server":{
+        "url":"http://localhost:8181/api/v1/ledger"
+    }
 }

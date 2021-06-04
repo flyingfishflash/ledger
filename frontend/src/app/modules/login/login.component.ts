@@ -1,69 +1,67 @@
 // angular
+import { HttpErrorResponse } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 
 // third party
-import { first } from "rxjs/internal/operators/first";
+import { first } from "rxjs/operators";
+import { throwError } from "rxjs";
 
 // core and shared
-import { ActuatorInfo } from "@shared/actuator/actuator-info";
-import { ActuatorService } from "@shared/actuator/actuator.service";
+import { AppConfigRuntime } from "app/app-config-runtime";
 import { BasicAuthService } from "@core/authentication/basic-auth.service";
+import { Logger } from "@core/logging/logger.service";
+import { AppConfigRuntimeInfoBuild } from "app/app-config-runtime-info-build";
+
+const log = new Logger("login.component");
 
 @Component({
   templateUrl: "./login.component.html",
   styleUrls: ["./login.component.css"],
 })
 export class LoginComponent implements OnInit {
+  appConfigInfoBuild: AppConfigRuntimeInfoBuild;
+  errorMessage = null;
   form: any = {};
+  hide = true;
   isLoggedIn = false;
   isLoginFailed = false;
-  errorMessage = "";
-  hide = true;
+  isLoginDisabled = true;
   returnUrl: string;
-  info: ActuatorInfo;
-  buildDate: string;
   todayString: string;
 
   constructor(
     private basicAuthService: BasicAuthService,
     private router: Router,
     private route: ActivatedRoute,
-    private actuatorService: ActuatorService
+    private appConfig: AppConfigRuntime
   ) {
-    // redirect to home if already logged in
     if (this.basicAuthService.userValue) {
       this.router.navigate(["/home"]);
+    }
+    if (this.appConfig.assets.api.server) {
+      if (this.appConfig.api.actuator.info.build) {
+        this.appConfigInfoBuild = { ...this.appConfig.api.actuator.info.build };
+        this.isLoginDisabled = false;
+      } else {
+        this.errorMessage =
+          "Application build information couldn't be obtained.";
+      }
+    } else {
+      this.errorMessage = "API connection not configured.";
     }
   }
 
   ngOnInit() {
-    // get return url from route parameters or default to '/'
     this.returnUrl = this.route.snapshot.queryParams.returnUrl || "/";
-
-    this.actuatorService.getInfo().subscribe({
-      next: (response) => {
-        this.info = response;
-        this.buildDate = response.build.time;
-        //this.todayString = new Date(info.build.time).toUTCString;
-      },
-      error: (err) => (this.errorMessage = err),
-    });
-
-    //this.init();
   }
 
-  /*   init() {
-    this.todayString = new Date(this.buildDate.toString()).toUTCString;
-  }
- */
   onSubmit() {
     this.onSubmitBasicAuth();
   }
 
   private onSubmitBasicAuth() {
     // this.submitted = true;
-
     if (this.form.invalid) {
       return;
     }
@@ -73,78 +71,42 @@ export class LoginComponent implements OnInit {
       .signIn(this.form)
       .pipe(first())
       .subscribe(
-        (data) => {
-          //log.debug(data);
+        (res) => {
           this.isLoggedIn = true;
           this.isLoginFailed = false;
           this.router.navigateByUrl("/home");
           //this.router.navigate([this.returnUrl]);
         },
-        (error) => {
-          // this.error = error;
-          // this.loading = false;
+        (err) => {
+          this.handleError(err);
         }
       );
   }
 
-  /*   private onSubmitBasicAuth1() {
-    this.basicAuthService.signIn(this.form).subscribe(
-      (result) => {
-        log.debug('result below:');
-        log.debug(result);
-        if (result.name) {
-          this.isLoggedIn = true;
-          this.isLoginFailed = false;
-          //this.basicAuthService.registerSuccessfulLogin(this.form.username, this.form.password);
-          this.basicAuthService.registerSuccessfulLogin1(result.principal, this.form.password);
-          log.debug(this.basicAuthService.userValue);
-          //setTimeout(() => {  log.debug("World!"); }, 2000);
-          this.router.navigate([this.returnUrl]);
-        } else {
-          this.isLoginFailed = true;
-          this.isLoggedIn = false;
+  private handleError(error: any) {
+    log.debug(error);
+    let errorMessage = null;
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = `A client internal error occurred:\nError Message: ${error.error.message}`;
+    } else if (error instanceof HttpErrorResponse) {
+      log.debug("httperror");
+      if (error.error.status) {
+        log.debug("api error");
+        if (error.error.status === "fail") {
+          errorMessage = error.error.response.body.message;
         }
-      },
-      err => {
-        // err.error.message is populated in the case of a JSON response
-        log.debug('there was an error');
-        log.debug(err);
-        this.errorMessage = err.error.exception;
-        log.debug(this.errorMessage);
-        this.isLoginFailed = true;
-        this.isLoggedIn = false;
+      } else {
+        log.debug("non-api error");
+        errorMessage = `A server-side error occured:\nError Status: ${error.message}`;
       }
-    );
-  } */
-
-  /*   private onSubmitJwtTokenAuth() {
-      this.authService.login(this.form).subscribe(
-        data => {
-          // this.tokenStorage.saveToken(data.accessToken);
-          // this.tokenStorage.saveUser(data);
-  
-          this.isLoginFailed = false;
-          this.isLoggedIn = true;
-          // this.roles = this.tokenStorage.getUser().roles;
-          this.reloadPage();
-        },
-        err => {
-          this.errorMessage = err.error.message;
-          this.isLoginFailed = true;
-        }
-      );
     }
-   */
-  /*   private reloadPage() {
-      window.location.reload();
-      // this.basicAuthService.getUserDetails();
-  
-      this.basicAuthService.getUserDetails().subscribe({
-        next: response => {
-          this.userDetails = response;
-        },
-        error: err => this.errorMessage = err
-      });
-      log.debug(this.userDetails);
-    } */
+
+    log.error(errorMessage ? errorMessage : error);
+
+    this.errorMessage = errorMessage;
+    log.error(this.errorMessage);
+    this.isLoggedIn = false;
+    this.isLoginFailed = true;
+    return throwError(error);
+  }
 }

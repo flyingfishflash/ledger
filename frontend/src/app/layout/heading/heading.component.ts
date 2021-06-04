@@ -9,7 +9,7 @@ import { BasicAuthUserRole } from "@core/authentication/basic-auth-user-role";
 import { Logger } from "@core/logging/logger.service";
 import { StorageService } from "@core/storage/storage.service";
 
-const log = new Logger("heading.component.ts");
+const log = new Logger("heading.component");
 
 @Component({
   selector: "app-heading",

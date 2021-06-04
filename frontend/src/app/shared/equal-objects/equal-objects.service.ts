@@ -17,16 +17,18 @@ export interface ObjectEqualityState {
 export class EqualObjectsService {
   isEqual(value, other): ObjectEqualityState {
     const myReturn: ObjectEqualityState = { equal: true, differences: [] };
-    log.debug(myReturn);
+    // log.debug(myReturn);
 
     // Get the value type
     const type = Object.prototype.toString.call(value);
     // let objName = Object.prototype.toString.call(other);
 
-    /*     log.debug(type);
-              log.debug(objName);
-              log.debug(Object.getOwnPropertyNames(value));
-           */
+    /*
+      log.debug(type);
+      log.debug(objName);
+      log.debug(Object.getOwnPropertyNames(value));
+    */
+
     // If the two objects are not the same type, return false
     if (type !== Object.prototype.toString.call(other)) {
       myReturn.equal = false;
@@ -54,7 +56,7 @@ export class EqualObjectsService {
 
     // Compare two items
     const compare = (item1, item2) => {
-      log.debug(item1, item2);
+      // log.debug(item1, item2);
 
       // Get the object type
       const itemType = Object.prototype.toString.call(item1);
@@ -107,7 +109,7 @@ export class EqualObjectsService {
     } else {
       for (const key in value) {
         if (Object.prototype.hasOwnProperty.call(value, key)) {
-          log.debug(key);
+          // log.debug(key);
           if (compare(value[key], other[key]) === false) {
             myReturn.equal = false;
             myReturn.differences.push(key);
@@ -121,7 +123,7 @@ export class EqualObjectsService {
     // If nothing failed, return true
     {
       // myReturn.equal = true;
-      log.debug(myReturn);
+      // log.debug(myReturn);
       return myReturn;
     }
   }
