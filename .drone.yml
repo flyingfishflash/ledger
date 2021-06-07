@@ -65,6 +65,7 @@ trigger:
     - tag
   ref:
     - refs/heads/feature-*
+    - refs/heads/fix-*
     - refs/tags/*
 
 depends_on:
@@ -112,6 +113,7 @@ steps:
     when:
       ref:
         - refs/heads/feature-*
+        - refs/heads/fix-*
 
   - name: publish release
     image: plugins/docker
@@ -228,6 +230,7 @@ trigger:
     - tag
   ref:
     - refs/heads/feature-*
+    - refs/heads/fix-*
     - refs/tags/*
 
 depends_on:
@@ -258,6 +261,7 @@ steps:
     when:
       ref:
         - refs/heads/feature-*
+        - refs/heads/fix-*
 
   - name: publish feature
     image: plugins/docker
@@ -277,6 +281,7 @@ steps:
     when:
       ref:
         - refs/heads/feature-*
+        - refs/heads/fix-*
 
   - name: write docker tag (release)
     image: alpine/git
@@ -317,6 +322,7 @@ trigger:
     - tag
   ref:
     - refs/heads/feature-*
+    - refs/heads/fix-*
 
 depends_on:
   - "frontend - publish"

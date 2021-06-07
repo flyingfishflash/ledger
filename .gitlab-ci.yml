@@ -43,6 +43,7 @@ publish-frontend-feature:
     - tags
   only:
     - /^feature-/
+    - /^fix-/
   cache:
     key: "$CI_COMMIT_REF_SLUG-frontend"
     policy: pull
@@ -166,6 +167,7 @@ publish-backend-feature:
     - tags
   only:
     - /^feature-/
+    - /^fix-/
   cache:
     key: "$CI_COMMIT_REF_SLUG-backend"
     policy: pull
