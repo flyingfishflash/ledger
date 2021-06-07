@@ -28,7 +28,6 @@ export class LoginComponent implements OnInit {
   isLoginFailed = false;
   isLoginDisabled = true;
   returnUrl: string;
-  todayString: string;
 
   constructor(
     private basicAuthService: BasicAuthService,
@@ -45,28 +44,32 @@ export class LoginComponent implements OnInit {
         this.isLoginDisabled = false;
       } else {
         this.errorMessage =
-          "Application build information couldn't be obtained.";
+          "Application build information couldn't be obtained";
       }
     } else {
-      this.errorMessage = "API connection not configured.";
+      this.errorMessage = "API connection not configured";
     }
+    this.form.submitted = false;
   }
 
   ngOnInit() {
     this.returnUrl = this.route.snapshot.queryParams.returnUrl || "/";
   }
 
+  onFocusInEvent() {
+    this.isLoginFailed = false;
+  }
+
   onSubmit() {
+    log.debug("onSubmit");
     this.onSubmitBasicAuth();
   }
 
   private onSubmitBasicAuth() {
-    // this.submitted = true;
     if (this.form.invalid) {
       return;
     }
 
-    // this.loading = true;
     this.basicAuthService
       .signIn(this.form)
       .pipe(first())
@@ -101,10 +104,8 @@ export class LoginComponent implements OnInit {
       }
     }
 
-    log.error(errorMessage ? errorMessage : error);
-
     this.errorMessage = errorMessage;
-    log.error(this.errorMessage);
+    log.error(errorMessage ? errorMessage : error);
     this.isLoggedIn = false;
     this.isLoginFailed = true;
     return throwError(error);
