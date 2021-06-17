@@ -102,7 +102,7 @@ jacocoTestReport {
 }
 
 compileJava {
-    options.release = 15
+    options.release.set(15)
 }
 
 spotless {
