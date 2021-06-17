@@ -28,8 +28,8 @@ public class TenantConnectionProvider implements MultiTenantConnectionProvider {
 
   @Override
   public Connection getConnection(String tenantIdentifier) throws SQLException {
-    final Connection connection = getAnyConnection();
-    connection.createStatement().execute(String.format("SET search_path TO " + tenantIdentifier));
+    final var connection = getAnyConnection();
+    connection.createStatement().execute(String.format("SET search_path TO %s", tenantIdentifier));
     return connection;
   }
 
@@ -38,7 +38,7 @@ public class TenantConnectionProvider implements MultiTenantConnectionProvider {
       throws SQLException {
     connection
         .createStatement()
-        .execute(String.format("SET search_path TO " + TenantIdentifierResolver.COMMON));
+        .execute(String.format("SET search_path TO %s", TenantIdentifierResolver.COMMON));
     releaseAnyConnection(connection);
   }
 

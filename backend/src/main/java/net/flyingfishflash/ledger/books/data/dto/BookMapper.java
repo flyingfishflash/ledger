@@ -1,18 +1,11 @@
 package net.flyingfishflash.ledger.books.data.dto;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.flyingfishflash.ledger.books.data.Book;
 
 public class BookMapper {
 
-  private static final Logger logger = LoggerFactory.getLogger(BookMapper.class);
-
-  public BookMapper() {}
-
   public BookRequest mapEntityModelToRequestModel(Book book) {
-    BookRequest bookRequest = new BookRequest();
+    var bookRequest = new BookRequest();
     bookRequest.setName(book.getName());
     return bookRequest;
   }

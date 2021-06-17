@@ -1,18 +1,11 @@
 package net.flyingfishflash.ledger.foundation.users.data.dto;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.flyingfishflash.ledger.foundation.users.data.User;
 
 public class UserProfileMapper {
 
-  private static final Logger logger = LoggerFactory.getLogger(UserProfileMapper.class);
-
-  public UserProfileMapper() {}
-
   public UserProfileRequest mapEntityModelToRequestModel(User user) {
-    UserProfileRequest userProfileRequest = new UserProfileRequest();
+    var userProfileRequest = new UserProfileRequest();
     userProfileRequest.setEmail(user.getEmail());
     userProfileRequest.setFirstName(user.getFirstName());
     userProfileRequest.setLastName(user.getLastName());
@@ -21,7 +14,7 @@ public class UserProfileMapper {
   }
 
   public UserProfileResponse mapEntityModelToResponseModel(User user) {
-    UserProfileResponse userProfileResponse = new UserProfileResponse();
+    var userProfileResponse = new UserProfileResponse();
     userProfileResponse.setId(user.getId());
     userProfileResponse.setEmail(user.getEmail());
     userProfileResponse.setFirstName(user.getFirstName());
@@ -39,7 +32,7 @@ public class UserProfileMapper {
   }
 
   public UserProfileResponse mapRequestModelToResponseModel(UserProfileRequest userProfileRequest) {
-    UserProfileResponse userProfileResponse = new UserProfileResponse();
+    var userProfileResponse = new UserProfileResponse();
     userProfileResponse.setEmail(userProfileRequest.getEmail());
     userProfileResponse.setFirstName(userProfileRequest.getFirstName());
     userProfileResponse.setLastName(userProfileRequest.getLastName());

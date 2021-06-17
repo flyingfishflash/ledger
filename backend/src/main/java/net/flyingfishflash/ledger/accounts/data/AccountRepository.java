@@ -8,7 +8,6 @@ import java.util.StringJoiner;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
@@ -63,7 +62,7 @@ public class AccountRepository {
   public Optional<Account> findRoot() {
 
     try {
-      CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+      var cb = entityManager.getCriteriaBuilder();
       CriteriaQuery<Account> query = cb.createQuery(Account.class);
       Root<Account> root = query.from(Account.class);
       query.where(cb.isNull(root.get("parentId")));
@@ -76,7 +75,7 @@ public class AccountRepository {
   public Optional<Account> findById(Long id) {
 
     try {
-      CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+      var cb = entityManager.getCriteriaBuilder();
       CriteriaQuery<Account> select = cb.createQuery(Account.class);
       Root<Account> root = select.from(Account.class);
       select.where(cb.equal(root.get("id"), id));
@@ -89,7 +88,7 @@ public class AccountRepository {
   public Optional<Account> findByGuid(String guid) {
 
     try {
-      CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+      var cb = entityManager.getCriteriaBuilder();
       CriteriaQuery<Account> select = cb.createQuery(Account.class);
       Root<Account> root = select.from(Account.class);
       select.where(cb.equal(root.get("guid"), guid));
@@ -119,18 +118,17 @@ public class AccountRepository {
     }
 
     List<Account> parents = this.nodeRepository.getParents(parent);
-    StringJoiner sj = new StringJoiner(":");
+    var sj = new StringJoiner(":");
     // build the longname by collecting the ancestor account names in reverse
     for (int i = parents.size() - 1; i >= 0; i--) {
       if (parents.get(i).getTreeLeft() > 1) {
         sj.add(parents.get(i).getName());
       }
-      // logger.debug("array: " + parents.get(i).getName());
     }
     // append the parent/current node
     sj.add(parent.getName());
     sj.add(account.getName());
-    String longname = sj.toString();
+    var longname = sj.toString();
     logger.debug(longname);
 
     return longname;
@@ -153,13 +151,13 @@ public class AccountRepository {
 
   public void insertAsFirstRoot(Account account) {
 
-    isRootNodeInsertable(account);
+    isRootNodeInsertable(/*account*/ );
     this.nodeRepository.insertAsFirstRoot(account);
   }
 
   public void insertAsLastRoot(Account account) {
 
-    isRootNodeInsertable(account);
+    isRootNodeInsertable(/*account*/ );
     this.nodeRepository.insertAsLastRoot(account);
   }
 
@@ -177,28 +175,26 @@ public class AccountRepository {
 
   public void insertAsPrevSiblingOf(Account account, Account sibling) {
 
-    Account parent =
-        this.findById(account.getParentId())
-            .orElseThrow(
-                () ->
-                    new AccountNotFoundException(
-                        account.getParentId(),
-                        "Attempt to identify the parent account of an account to be inserted as a previous sibling."));
-    account.setLongName(this.deriveLongName(account));
-    this.nodeRepository.insertAsPrevSiblingOf(account, sibling);
+    if (this.findById(account.getParentId()).isPresent()) {
+      account.setLongName(this.deriveLongName(account));
+      this.nodeRepository.insertAsPrevSiblingOf(account, sibling);
+    } else {
+      throw new AccountNotFoundException(
+          account.getParentId(),
+          "Attempt to identify the parent account of an account to be inserted as a previous sibling.");
+    }
   }
 
   public void insertAsNextSiblingOf(Account account, Account sibling) {
 
-    Account parent =
-        this.findById(account.getParentId())
-            .orElseThrow(
-                () ->
-                    new AccountNotFoundException(
-                        account.getParentId(),
-                        "Attempt to identify the parent account of an account to be inserted as a next sibling."));
-    account.setLongName(this.deriveLongName(account));
-    this.nodeRepository.insertAsNextSiblingOf(account, sibling);
+    if (this.findById(account.getParentId()).isPresent()) {
+      account.setLongName(this.deriveLongName(account));
+      this.nodeRepository.insertAsNextSiblingOf(account, sibling);
+    } else {
+      throw new AccountNotFoundException(
+          account.getParentId(),
+          "Attempt to identify the parent account of an account to be inserted as a next sibling.");
+    }
   }
 
   public void removeSingle(Account account) {
@@ -220,7 +216,7 @@ public class AccountRepository {
    */
   private void preventUnsafeChanges(Account account) {
 
-    if (account.isRootNode()) {
+    if (Boolean.TRUE.equals(account.isRootNode())) {
       throw new UnsupportedOperationException(
           "A root level account may only be created with specific repository methods.");
     }
@@ -230,7 +226,7 @@ public class AccountRepository {
   public Long rootLevelNodeCount() {
 
     try {
-      CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+      var cb = entityManager.getCriteriaBuilder();
       CriteriaQuery<Long> cq = cb.createQuery(Long.class);
       Root<Account> root = cq.from(Account.class);
       cq.select(cb.count(root));
@@ -254,7 +250,7 @@ public class AccountRepository {
    * @param account - the account to be inserted as a rood node
    * @return true if the account may be inserted in to the hierarchy as a root node, otherwise false
    */
-  private void isRootNodeInsertable(Account account) {
+  private void isRootNodeInsertable(/*Account account*/ ) {
 
     if (rootLevelNodeCount() != 0L) {
       throw new AccountCreateException(

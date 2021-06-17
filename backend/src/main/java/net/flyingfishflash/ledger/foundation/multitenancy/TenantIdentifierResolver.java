@@ -18,8 +18,7 @@ public class TenantIdentifierResolver implements CurrentTenantIdentifierResolver
   @Override
   public String resolveCurrentTenantIdentifier() {
     return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
-        .filter(
-            Predicate.not(authentication -> authentication instanceof AnonymousAuthenticationToken))
+        .filter(Predicate.not(AnonymousAuthenticationToken.class::isInstance))
         .map(Principal::getName)
         .orElse(USERS);
   }

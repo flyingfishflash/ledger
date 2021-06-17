@@ -10,8 +10,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -30,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import net.flyingfishflash.ledger.foundation.users.data.User;
 import net.flyingfishflash.ledger.foundation.users.data.dto.UserCreateRequest;
 import net.flyingfishflash.ledger.foundation.users.data.dto.UserCreateResponse;
+import net.flyingfishflash.ledger.foundation.users.data.dto.UserDeleteResponse;
 import net.flyingfishflash.ledger.foundation.users.data.dto.UserProfileResponse;
 import net.flyingfishflash.ledger.foundation.users.service.UserService;
 
@@ -37,8 +36,6 @@ import net.flyingfishflash.ledger.foundation.users.service.UserService;
 @Validated
 @RequestMapping("/api/v1/ledger/users")
 public class UserController {
-
-  private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
   private final UserService userService;
 
@@ -102,10 +99,11 @@ public class UserController {
   @Operation(summary = "Delete a user")
   @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public ResponseEntity<?> deleteById(@RequestParam Long id) {
+  public ResponseEntity<UserDeleteResponse> deleteById(@RequestParam Long id) {
 
     userService.deleteById(id);
 
-    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    return new ResponseEntity<>(
+        new UserDeleteResponse("Deleted user id: " + id), HttpStatus.NO_CONTENT);
   }
 }

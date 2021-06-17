@@ -2,31 +2,14 @@ package net.flyingfishflash.ledger.prices.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public abstract class PriceException extends RuntimeException {
+public interface PriceException {
+  String ERROR_DOMAIN = "Prices";
 
-  private HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+  String ERROR_SUBJECT = "Price";
 
-  public PriceException(String message) {
-    super("Price" + " " + message);
-  }
+  HttpStatus getHttpStatus();
 
-  public PriceException(String message, Exception cause) {
-    super("Price" + " " + message, cause);
-  }
+  String getErrorDomain();
 
-  public HttpStatus getHttpStatus() {
-    return httpStatus;
-  }
-
-  public void setHttpStatus(HttpStatus httpStatus) {
-    this.httpStatus = httpStatus;
-  }
-
-  public String getErrorDomain() {
-    return "Prices";
-  }
-
-  public String getErrorSubject() {
-    return "Price";
-  }
+  String getErrorSubject();
 }

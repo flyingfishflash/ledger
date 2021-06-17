@@ -89,6 +89,7 @@ public class GncXmlPriceHandler extends DefaultHandler {
           inNodeCountDataPrice = true;
         }
         break;
+      default:
     }
   }
 
@@ -183,6 +184,7 @@ public class GncXmlPriceHandler extends DefaultHandler {
         gncPrices.add(gncPrice);
         inNodePrice = false;
         break;
+      default:
     }
 
     stringBuilder.setLength(0);
@@ -205,8 +207,8 @@ public class GncXmlPriceHandler extends DefaultHandler {
 
   private void sendToAdapter() {
 
-    logger.info(nodeCountDataPriceCount + " indicated by gnc:count-data cd:type=\"price\"");
-    logger.info(gncPrices.size() + " sent to the adapter");
+    logger.info("{} indicated by gnc:count-data cd:type=\"price\"", nodeCountDataPriceCount);
+    logger.info("{} sent to the adapter", gncPrices.size());
     gnucashFileImportStatus.setPricesGncCount(gncPrices.size());
     gnucashFileImportStatus.setPricesSentToAdapter(nodeCountDataPriceCount);
     priceAdapter.addRecords(gncPrices);

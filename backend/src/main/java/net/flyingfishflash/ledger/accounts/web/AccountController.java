@@ -12,8 +12,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,16 +30,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import net.flyingfishflash.ledger.accounts.data.Account;
+import net.flyingfishflash.ledger.accounts.data.dto.AccountCreateRequest;
 import net.flyingfishflash.ledger.accounts.data.dto.AccountDto;
-import net.flyingfishflash.ledger.accounts.data.dto.CreateAccountDto;
+import net.flyingfishflash.ledger.accounts.data.dto.ApiMessage;
 import net.flyingfishflash.ledger.accounts.service.AccountService;
 
 @RestController
 @Validated
 @RequestMapping("api/v1/ledger/accounts")
 public class AccountController {
-
-  private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
 
   private final AccountService accountService;
 
@@ -62,8 +59,8 @@ public class AccountController {
   @Operation(summary = "Retrieve a single account")
   public ResponseEntity<AccountDto> findAccountById(@PathVariable("id") @Min(1) Long id) {
 
-    Account account = accountService.findById(id);
-    AccountDto accountDto = new AccountDto(account);
+    var account = accountService.findById(id);
+    var accountDto = new AccountDto(account);
 
     return new ResponseEntity<>(accountDto, HttpStatus.OK);
   }
@@ -73,19 +70,18 @@ public class AccountController {
   @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
   public ResponseEntity<AccountDto> createAccount(
       @RequestHeader(name = "X-COM-LOCATION", required = false) String headerLocation,
-      @Valid @RequestBody CreateAccountDto createAccountDto)
-      throws URISyntaxException {
+      @Valid @RequestBody AccountCreateRequest accountCreateRequest) {
 
-    Account account = accountService.createAccount(createAccountDto);
-    AccountDto accountDto = new AccountDto(account);
+    var account = accountService.createAccount(accountCreateRequest);
+    var accountDto = new AccountDto(account);
 
-    URI location =
+    var location =
         ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
             .buildAndExpand(account.getId())
             .toUri();
 
-    HttpHeaders headers = new HttpHeaders();
+    var headers = new HttpHeaders();
     headers.setLocation(location);
 
     return new ResponseEntity<>(accountDto, headers, HttpStatus.CREATED);
@@ -93,20 +89,21 @@ public class AccountController {
 
   @DeleteMapping(value = "/delete")
   @Operation(summary = "Delete an account and all of it's descendants")
-  public ResponseEntity<?> deleteAccountAndDescendents(
+  public ResponseEntity<ApiMessage> deleteAccountAndDescendents(
       @RequestParam(name = "accountId") Long accountId) {
 
-    Account account = accountService.findById(accountId);
+    var account = accountService.findById(accountId);
     accountService.removeSubTree(account);
 
-    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    return new ResponseEntity<>(
+        new ApiMessage("Deleted account: " + account.getLongName()), HttpStatus.NO_CONTENT);
   }
 
   @PatchMapping("{id}")
   @ResponseBody
   @Operation(summary = "Update the details of a single account")
   @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
-  public ResponseEntity<?> patchAccount(
+  public ResponseEntity<ApiMessage> patchAccount(
       @PathVariable("id") Long id, @RequestBody Map<String, Object> patchRequest) {
 
     /*
@@ -123,7 +120,8 @@ public class AccountController {
     */
 
     // return accountService.patchAccount(id, patchRequest);
-    return new ResponseEntity<>("patchAccountResponse object", HttpStatus.OK);
+    return new ResponseEntity<>(
+        new ApiMessage("stand in for a patchAccountResponse object"), HttpStatus.OK);
   }
 
   // Change the position of an account in the hierarchy within the sibling level (down)
@@ -131,17 +129,17 @@ public class AccountController {
   @Operation(
       summary =
           "Change the position of an account in the hierarchy within the sibling level (move down in a list)")
-  public ResponseEntity<?> insertAsNextSiblingOf(@RequestParam("id") Long id)
+  public ResponseEntity<HttpHeaders> insertAsNextSiblingOf(@RequestParam("id") Long id)
       throws URISyntaxException {
 
-    Account account = accountService.findById(id);
-    Account sibling = accountService.getNextSibling(account);
+    var account = accountService.findById(id);
+    var sibling = accountService.getNextSibling(account);
     accountService.insertAsNextSiblingOf(account, sibling);
 
-    String uriString = ServletUriComponentsBuilder.fromCurrentRequest().toUriString();
-    URI location = new URI(uriString.substring(0, uriString.lastIndexOf("/")) + "/" + id);
+    var uriString = ServletUriComponentsBuilder.fromCurrentRequest().toUriString();
+    var location = new URI(uriString.substring(0, uriString.lastIndexOf("/")) + "/" + id);
 
-    HttpHeaders headers = new HttpHeaders();
+    var headers = new HttpHeaders();
     headers.setLocation(location);
 
     return new ResponseEntity<>(headers, HttpStatus.CREATED);
@@ -152,17 +150,17 @@ public class AccountController {
   @Operation(
       summary =
           "Change the position of an account in the hierarchy within the sibling level (move up in a list)")
-  public ResponseEntity<?> insertAsPrevSiblingOf(@RequestParam("id") Long id)
+  public ResponseEntity<HttpHeaders> insertAsPrevSiblingOf(@RequestParam("id") Long id)
       throws URISyntaxException {
 
-    Account account = accountService.findById(id);
-    Account sibling = accountService.getPrevSibling(account);
+    var account = accountService.findById(id);
+    var sibling = accountService.getPrevSibling(account);
     accountService.insertAsPrevSiblingOf(account, sibling);
 
-    String uriString = ServletUriComponentsBuilder.fromCurrentRequest().toUriString();
-    URI location = new URI(uriString.substring(0, uriString.lastIndexOf("/")) + "/" + id);
+    var uriString = ServletUriComponentsBuilder.fromCurrentRequest().toUriString();
+    var location = new URI(uriString.substring(0, uriString.lastIndexOf("/")) + "/" + id);
 
-    HttpHeaders headers = new HttpHeaders();
+    var headers = new HttpHeaders();
     headers.setLocation(location);
 
     return new ResponseEntity<>(headers, HttpStatus.CREATED);
@@ -174,9 +172,9 @@ public class AccountController {
       description =
           "Retrieve a list of accounts that may be made a direct parent of a given account")
   public ResponseEntity<Collection<Account>> getEligibleParentAccountsOf(
-      @PathVariable("id") Long id) throws URISyntaxException {
+      @PathVariable("id") Long id) {
 
-    Account account = accountService.findById(id);
+    var account = accountService.findById(id);
     return new ResponseEntity<>(accountService.getEligibleParentAccounts(account), HttpStatus.OK);
   }
 }

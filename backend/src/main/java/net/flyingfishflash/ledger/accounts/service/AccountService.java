@@ -5,15 +5,13 @@ import java.util.Iterator;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.AccountRepository;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
-import net.flyingfishflash.ledger.accounts.data.dto.CreateAccountDto;
+import net.flyingfishflash.ledger.accounts.data.dto.AccountCreateRequest;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountCreateException;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
 import net.flyingfishflash.ledger.accounts.exceptions.EligibleParentAccountNotFoundException;
@@ -25,41 +23,40 @@ import net.flyingfishflash.ledger.foundation.IdentifierFactory;
 @Transactional
 public class AccountService {
 
-  private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
-
   private final AccountRepository accountRepository;
 
   public AccountService(AccountRepository accountRepository) {
     this.accountRepository = accountRepository;
   }
 
-  public Account createAccount(CreateAccountDto createAccountDto) {
+  public Account createAccount(AccountCreateRequest accountCreateRequest) {
 
-    Account account = new Account(IdentifierFactory.getInstance().generateIdentifier());
-    Account sibling;
     Account parent;
     try {
-      parent = this.findById(createAccountDto.parentId);
+      parent = this.findById(accountCreateRequest.parentId);
     } catch (AccountNotFoundException e) {
       throw new AccountCreateException(
           "Failed to identify the parent account of an account to be created", e);
     }
 
-    account.setCode(createAccountDto.code);
-    account.setDescription(createAccountDto.description);
-    account.setHidden(createAccountDto.hidden);
-    account.setName(createAccountDto.name);
-    account.setParentId(createAccountDto.parentId);
-    account.setPlaceholder(createAccountDto.placeholder);
-    account.setTaxRelated(createAccountDto.taxRelated);
+    var account = new Account(IdentifierFactory.getInstance().generateIdentifier());
+    Account sibling;
 
-    if (parent.getType().equals(AccountType.Root)) {
-      account.setType(AccountType.Asset);
+    account.setCode(accountCreateRequest.code);
+    account.setDescription(accountCreateRequest.description);
+    account.setHidden(accountCreateRequest.hidden);
+    account.setName(accountCreateRequest.name);
+    account.setParentId(accountCreateRequest.parentId);
+    account.setPlaceholder(accountCreateRequest.placeholder);
+    account.setTaxRelated(accountCreateRequest.taxRelated);
+
+    if (parent.getType().equals(AccountType.ROOT)) {
+      account.setType(AccountType.ASSET);
     } else {
       account.setType(parent.getType());
     }
 
-    switch (createAccountDto.mode.toUpperCase()) {
+    switch (accountCreateRequest.mode.toUpperCase()) {
       case "FIRST_CHILD":
         accountRepository.insertAsFirstChildOf(account, parent);
         break;
@@ -68,7 +65,7 @@ public class AccountService {
         break;
       case "PREV_SIBLING":
         try {
-          sibling = this.findById(createAccountDto.siblingId);
+          sibling = this.findById(accountCreateRequest.siblingId);
         } catch (AccountNotFoundException e) {
           throw new AccountCreateException(
               "Failed to identify the sibling account of an account to be created.", e);
@@ -77,7 +74,7 @@ public class AccountService {
         break;
       case "NEXT_SIBLING":
         try {
-          sibling = this.findById(createAccountDto.siblingId);
+          sibling = this.findById(accountCreateRequest.siblingId);
         } catch (AccountNotFoundException e) {
           throw new AccountCreateException(
               "Failed to identify the sibling account of an account to be created.", e);
@@ -112,11 +109,11 @@ public class AccountService {
    */
   public Account createAccount(Account p) {
 
-    Account account =
+    var account =
         accountRepository.newAccount(IdentifierFactory.getInstance().generateIdentifier());
 
-    if (p.getType().equals(AccountType.Root)) {
-      account.setType(AccountType.Asset);
+    if (p.getType().equals(AccountType.ROOT)) {
+      account.setType(AccountType.ASSET);
     } else {
       account.setType(p.getType());
     }
@@ -153,7 +150,7 @@ public class AccountService {
 
   public Collection<Account> findAllAccounts() {
 
-    Account rootAccount =
+    var rootAccount =
         accountRepository
             .findRoot()
             .orElseThrow(() -> new AccountNotFoundException("(Root Account Not Found)"));
@@ -237,7 +234,7 @@ public class AccountService {
    */
   public Account getBaseLevelParent(Account account) {
 
-    Account r = new Account();
+    var r = new Account();
 
     if (account.getTreeLevel() > 1) {
       Iterable<Account> parents = accountRepository.getParents(account);
@@ -265,9 +262,8 @@ public class AccountService {
     Iterator<Account> it = eligibleParentAccounts.iterator();
     while (it.hasNext()) {
       Account a = it.next();
-      if (a.getTreeLeft() > account.getTreeLeft() && a.getTreeLeft() < account.getTreeRight()) {
-        it.remove();
-      } else if (a.getId().equals(account.getId())) {
+      if ((a.getTreeLeft() > account.getTreeLeft() && a.getTreeLeft() < account.getTreeRight())
+          || (a.getId().equals(account.getId()))) {
         it.remove();
       }
     }
@@ -276,7 +272,6 @@ public class AccountService {
         StreamSupport.stream(eligibleParentAccounts.spliterator(), false).count();
 
     if (eligibleParentsCount > 0) {
-      // return eligibleParentAccounts;
       return StreamSupport.stream(eligibleParentAccounts.spliterator(), false)
           .collect(Collectors.toList());
     } else {

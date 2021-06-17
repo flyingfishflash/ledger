@@ -2,25 +2,15 @@ package net.flyingfishflash.ledger.foundation.users.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public abstract class UserException extends RuntimeException {
+public interface UserException {
 
-  private final HttpStatus httpStatus;
+  String ERROR_DOMAIN = "Users";
 
-  public UserException(HttpStatus httpStatus, String message) {
-    super(message);
-    this.httpStatus = httpStatus;
-  }
+  String ERROR_SUBJECT = "User";
 
-  public UserException(HttpStatus httpStatus, String message, Exception cause) {
-    super(message, cause);
-    this.httpStatus = httpStatus;
-  }
+  HttpStatus getHttpStatus();
 
-  public HttpStatus getHttpStatus() {
-    return httpStatus;
-  }
+  String getErrorDomain();
 
-  public String getErrorDomain() {
-    return "User";
-  }
+  String getErrorSubject();
 }

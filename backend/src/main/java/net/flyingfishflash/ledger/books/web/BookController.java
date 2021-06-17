@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import net.flyingfishflash.ledger.books.data.ActiveBook;
 import net.flyingfishflash.ledger.books.data.Book;
+import net.flyingfishflash.ledger.books.data.dto.ApiMessage;
 import net.flyingfishflash.ledger.books.data.dto.BookRequest;
 import net.flyingfishflash.ledger.books.data.dto.SetActiveBookRequest;
 import net.flyingfishflash.ledger.books.service.BookService;
@@ -67,7 +68,7 @@ public class BookController {
   @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
   public ResponseEntity<Book> bookCreate(@Valid @RequestBody BookRequest bookRequest) {
 
-    Book newBook = bookService.createBook(bookRequest);
+    var newBook = bookService.createBook(bookRequest);
 
     return new ResponseEntity<>(newBook, HttpStatus.CREATED);
   }
@@ -84,11 +85,11 @@ public class BookController {
 
   @DeleteMapping("{id}")
   @Operation(summary = "Delete a book and all its related objects")
-  public ResponseEntity<?> bookDelete(@PathVariable("id") Long id) {
+  public ResponseEntity<ApiMessage> bookDelete(@PathVariable("id") Long id) {
 
     bookService.deleteBook(id);
 
-    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    return new ResponseEntity<>(new ApiMessage("Deleted book id: " + id), HttpStatus.NO_CONTENT);
   }
 
   @PostMapping("/active")
@@ -97,7 +98,7 @@ public class BookController {
   @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
   public Book setActiveBook(@RequestBody SetActiveBookRequest setActiveBookRequest) {
     activeBook.setBookId(bookService.findById(setActiveBookRequest.getId()).getId());
-    logger.info(activeBook.toString());
+    logger.info("{}", activeBook);
     return bookService.findById(activeBook.getBookId());
   }
 

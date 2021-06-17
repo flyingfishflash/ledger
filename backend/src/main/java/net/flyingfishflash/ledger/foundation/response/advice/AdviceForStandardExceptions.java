@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.validation.ConstraintViolationException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,7 +22,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import net.flyingfishflash.ledger.foundation.response.structure.ResponseApiStatusCode;
+import net.flyingfishflash.ledger.foundation.response.structure.ApiStatusCode;
 import net.flyingfishflash.ledger.foundation.response.structure.errors.ErrorResponse;
 import net.flyingfishflash.ledger.foundation.response.structure.errors.ErrorResponseBody;
 import net.flyingfishflash.ledger.foundation.response.structure.errors.ErrorResponseBodyItem;
@@ -33,14 +31,12 @@ import net.flyingfishflash.ledger.foundation.response.structure.errors.ErrorResp
 @RestControllerAdvice
 public class AdviceForStandardExceptions extends ResponseEntityExceptionHandler {
 
-  private static final Logger logger = LoggerFactory.getLogger(AdviceForStandardExceptions.class);
-
   @ExceptionHandler(InsufficientAuthenticationException.class)
   public ResponseEntity<ErrorResponse<ErrorResponseBody>> handleInsufficientAuthenticationException(
       Exception exception) {
 
     return new ResponseEntity<>(
-        new ErrorResponse<>(new ErrorResponseBody(exception), ResponseApiStatusCode.Fail),
+        new ErrorResponse<>(new ErrorResponseBody(exception), ApiStatusCode.FAIL),
         HttpStatus.UNAUTHORIZED);
   }
 
@@ -49,7 +45,7 @@ public class AdviceForStandardExceptions extends ResponseEntityExceptionHandler 
       Exception exception) {
 
     return new ResponseEntity<>(
-        new ErrorResponse<>(new ErrorResponseBody(exception), ResponseApiStatusCode.Fail),
+        new ErrorResponse<>(new ErrorResponseBody(exception), ApiStatusCode.FAIL),
         HttpStatus.UNAUTHORIZED);
   }
 
@@ -58,7 +54,7 @@ public class AdviceForStandardExceptions extends ResponseEntityExceptionHandler 
       Exception exception) {
 
     return new ResponseEntity<>(
-        new ErrorResponse<>(new ErrorResponseBody(exception), ResponseApiStatusCode.Fail),
+        new ErrorResponse<>(new ErrorResponseBody(exception), ApiStatusCode.FAIL),
         HttpStatus.BAD_REQUEST);
   }
 
@@ -82,7 +78,7 @@ public class AdviceForStandardExceptions extends ResponseEntityExceptionHandler 
               + " errors.";
 
       for (ObjectError error : exception.getBindingResult().getAllErrors()) {
-        FieldError fieldErrors = ((FieldError) error);
+        var fieldErrors = ((FieldError) error);
         responseBodyItemList.add(
             new ErrorResponseBodyItem(
                 // "Validation",
@@ -98,7 +94,7 @@ public class AdviceForStandardExceptions extends ResponseEntityExceptionHandler 
     return new ResponseEntity<>(
         new ErrorResponse<>(
             new ErrorResponseBody(exception, errorMessage, responseBodyItemList),
-            ResponseApiStatusCode.Fail),
+            ApiStatusCode.FAIL),
         HttpStatus.BAD_REQUEST);
   }
 
@@ -110,7 +106,7 @@ public class AdviceForStandardExceptions extends ResponseEntityExceptionHandler 
       WebRequest request) {
 
     return new ResponseEntity<>(
-        new ErrorResponse<>(new ErrorResponseBody(exception), ResponseApiStatusCode.Fail),
+        new ErrorResponse<>(new ErrorResponseBody(exception), ApiStatusCode.FAIL),
         HttpStatus.BAD_REQUEST);
   }
 
@@ -131,8 +127,7 @@ public class AdviceForStandardExceptions extends ResponseEntityExceptionHandler 
     }
 
     return new ResponseEntity<>(
-        new ErrorResponse<>(
-            new ErrorResponseBody(exception, errorMessage), ResponseApiStatusCode.Fail),
+        new ErrorResponse<>(new ErrorResponseBody(exception, errorMessage), ApiStatusCode.FAIL),
         HttpStatus.BAD_REQUEST);
   }
 }

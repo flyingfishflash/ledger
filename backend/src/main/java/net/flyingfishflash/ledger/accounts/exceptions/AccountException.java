@@ -2,36 +2,15 @@ package net.flyingfishflash.ledger.accounts.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public abstract class AccountException extends RuntimeException {
+public interface AccountException {
 
-  private HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+  String ERROR_DOMAIN = "Accounts";
 
-  public AccountException(String message) {
-    super(message);
-  }
+  String ERROR_SUBJECT = "Account";
 
-  public AccountException(HttpStatus httpStatus, String message) {
-    super(message);
-    this.httpStatus = httpStatus;
-  }
+  HttpStatus getHttpStatus();
 
-  public AccountException(String message, Exception cause) {
-    super(message, cause);
-  }
+  String getErrorDomain();
 
-  public HttpStatus getHttpStatus() {
-    return httpStatus;
-  }
-
-  public void setHttpStatus(HttpStatus httpStatus) {
-    this.httpStatus = httpStatus;
-  }
-
-  public String getErrorDomain() {
-    return "Accounts";
-  }
-
-  public String getErrorSubject() {
-    return "Account";
-  }
+  String getErrorSubject();
 }

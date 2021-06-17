@@ -28,7 +28,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.AccountRepository;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
-import net.flyingfishflash.ledger.accounts.data.dto.CreateAccountDto;
+import net.flyingfishflash.ledger.accounts.data.dto.AccountCreateRequest;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountCreateException;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
 import net.flyingfishflash.ledger.accounts.exceptions.EligibleParentAccountNotFoundException;
@@ -148,35 +148,35 @@ public class AccountServiceTests {
   @Test
   public void testCreateAccount_ParentAccountTypeIsRoot() {
     Account parentAccount = accountId2();
-    parentAccount.setType(AccountType.Root);
+    parentAccount.setType(AccountType.ROOT);
     when(accountRepository.newAccount(anyString())).thenReturn(new Account());
-    assertEquals(AccountType.Asset, accountService.createAccount(parentAccount).getType());
+    assertEquals(AccountType.ASSET, accountService.createAccount(parentAccount).getType());
   }
 
   @Test
   public void testCreateAccount_ParentAccountTypeIsNotRoot() {
     Account parentAccount = accountId2();
-    parentAccount.setType(AccountType.Liability);
+    parentAccount.setType(AccountType.LIABILITY);
     when(accountRepository.newAccount(anyString())).thenReturn(new Account());
-    assertEquals(AccountType.Liability, accountService.createAccount(parentAccount).getType());
+    assertEquals(AccountType.LIABILITY, accountService.createAccount(parentAccount).getType());
   }
 
   @Test
   public void testCreateAccount_InsertAsPrevSibling() {
 
-    CreateAccountDto createAccountDto = new CreateAccountDto();
-    createAccountDto.hidden = false;
-    createAccountDto.mode = "PREV_SIBLING";
-    createAccountDto.name = "Financial Assets";
-    createAccountDto.parentId = 2L;
-    createAccountDto.placeholder = true;
-    createAccountDto.siblingId = 8L;
-    createAccountDto.taxRelated = false;
+    AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
+    accountCreateRequest.hidden = false;
+    accountCreateRequest.mode = "PREV_SIBLING";
+    accountCreateRequest.name = "Financial Assets";
+    accountCreateRequest.parentId = 2L;
+    accountCreateRequest.placeholder = true;
+    accountCreateRequest.siblingId = 8L;
+    accountCreateRequest.taxRelated = false;
 
     when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
     when(accountRepository.findById(8L)).thenReturn(Optional.of(accountId8()));
     when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(accountId8()));
-    Account newAccount = accountService.createAccount(createAccountDto);
+    Account newAccount = accountService.createAccount(accountCreateRequest);
 
     verify(accountRepository).findById(2L);
     verify(accountRepository).findById(8L);
@@ -188,14 +188,14 @@ public class AccountServiceTests {
   @Test
   public void testCreateAccount_InsertAsPrevSibling_AccountCreateException() {
 
-    CreateAccountDto createAccountDto = new CreateAccountDto();
-    createAccountDto.hidden = false;
-    createAccountDto.mode = "PREV_SIBLING";
-    createAccountDto.name = "Financial Assets";
-    createAccountDto.parentId = 2L;
-    createAccountDto.placeholder = true;
-    createAccountDto.siblingId = 8L; // invalid value
-    createAccountDto.taxRelated = false;
+    AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
+    accountCreateRequest.hidden = false;
+    accountCreateRequest.mode = "PREV_SIBLING";
+    accountCreateRequest.name = "Financial Assets";
+    accountCreateRequest.parentId = 2L;
+    accountCreateRequest.placeholder = true;
+    accountCreateRequest.siblingId = 8L; // invalid value
+    accountCreateRequest.taxRelated = false;
 
     when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
     // simulate failure to identify the previous sibling of the subject account
@@ -203,7 +203,7 @@ public class AccountServiceTests {
     assertThrows(
         AccountCreateException.class,
         () -> {
-          Account newAccount = accountService.createAccount(createAccountDto);
+          Account newAccount = accountService.createAccount(accountCreateRequest);
         });
 
     // System.out.println(mockingDetails(accountRepository).printInvocations());
@@ -212,19 +212,19 @@ public class AccountServiceTests {
   @Test
   public void testCreateAccount_InsertAsNextSibling() {
 
-    CreateAccountDto createAccountDto = new CreateAccountDto();
-    createAccountDto.hidden = false;
-    createAccountDto.mode = "NEXT_SIBLING";
-    createAccountDto.name = "Fixed Assets";
-    createAccountDto.parentId = 2L;
-    createAccountDto.placeholder = true;
-    createAccountDto.siblingId = 7L;
-    createAccountDto.taxRelated = false;
+    AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
+    accountCreateRequest.hidden = false;
+    accountCreateRequest.mode = "NEXT_SIBLING";
+    accountCreateRequest.name = "Fixed Assets";
+    accountCreateRequest.parentId = 2L;
+    accountCreateRequest.placeholder = true;
+    accountCreateRequest.siblingId = 7L;
+    accountCreateRequest.taxRelated = false;
 
     when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
     when(accountRepository.findById(7L)).thenReturn(Optional.of(accountId7()));
     when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(accountId8()));
-    Account newAccount = accountService.createAccount(createAccountDto);
+    Account newAccount = accountService.createAccount(accountCreateRequest);
 
     verify(accountRepository).findById(2L);
     verify(accountRepository).findById(7L);
@@ -236,14 +236,14 @@ public class AccountServiceTests {
   @Test
   public void testCreateAccount_InsertAsNextSibling_AccountCreateException() {
 
-    CreateAccountDto createAccountDto = new CreateAccountDto();
-    createAccountDto.hidden = false;
-    createAccountDto.mode = "NEXT_SIBLING";
-    createAccountDto.name = "Financial Assets";
-    createAccountDto.parentId = 2L;
-    createAccountDto.placeholder = true;
-    createAccountDto.siblingId = 9L; // invalid value
-    createAccountDto.taxRelated = false;
+    AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
+    accountCreateRequest.hidden = false;
+    accountCreateRequest.mode = "NEXT_SIBLING";
+    accountCreateRequest.name = "Financial Assets";
+    accountCreateRequest.parentId = 2L;
+    accountCreateRequest.placeholder = true;
+    accountCreateRequest.siblingId = 9L; // invalid value
+    accountCreateRequest.taxRelated = false;
 
     when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
     // simulate failure to identify the next sibling of the subject account
@@ -251,7 +251,7 @@ public class AccountServiceTests {
     assertThrows(
         AccountCreateException.class,
         () -> {
-          Account newAccount = accountService.createAccount(createAccountDto);
+          Account newAccount = accountService.createAccount(accountCreateRequest);
         });
 
     // System.out.println(mockingDetails(accountRepository).printInvocations());
@@ -260,18 +260,18 @@ public class AccountServiceTests {
   @Test
   public void testCreateAccount_InsertAsFirstChild() {
 
-    CreateAccountDto createAccountDto = new CreateAccountDto();
-    createAccountDto.hidden = false;
-    createAccountDto.mode = "FIRST_CHILD";
-    createAccountDto.name = "Financial Assets";
-    createAccountDto.parentId = 2L;
-    createAccountDto.placeholder = true;
-    createAccountDto.siblingId = 2L;
-    createAccountDto.taxRelated = false;
+    AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
+    accountCreateRequest.hidden = false;
+    accountCreateRequest.mode = "FIRST_CHILD";
+    accountCreateRequest.name = "Financial Assets";
+    accountCreateRequest.parentId = 2L;
+    accountCreateRequest.placeholder = true;
+    accountCreateRequest.siblingId = 2L;
+    accountCreateRequest.taxRelated = false;
 
     when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
     when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(accountId7()));
-    Account newAccount = accountService.createAccount(createAccountDto);
+    Account newAccount = accountService.createAccount(accountCreateRequest);
 
     verify(accountRepository).findById(2L);
     verify(accountRepository).findByGuid(anyString());
@@ -282,18 +282,18 @@ public class AccountServiceTests {
   @Test
   public void testCreateAccount_InsertAsLastChild() {
 
-    CreateAccountDto createAccountDto = new CreateAccountDto();
-    createAccountDto.hidden = false;
-    createAccountDto.mode = "LAST_CHILD";
-    createAccountDto.name = "Financial Assets";
-    createAccountDto.parentId = 2L;
-    createAccountDto.placeholder = true;
-    createAccountDto.siblingId = 2L;
-    createAccountDto.taxRelated = false;
+    AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
+    accountCreateRequest.hidden = false;
+    accountCreateRequest.mode = "LAST_CHILD";
+    accountCreateRequest.name = "Financial Assets";
+    accountCreateRequest.parentId = 2L;
+    accountCreateRequest.placeholder = true;
+    accountCreateRequest.siblingId = 2L;
+    accountCreateRequest.taxRelated = false;
 
     when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
     when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(accountId7()));
-    Account newAccount = accountService.createAccount(createAccountDto);
+    Account newAccount = accountService.createAccount(accountCreateRequest);
 
     verify(accountRepository).findById(2L);
     verify(accountRepository).findByGuid(anyString());
@@ -304,14 +304,14 @@ public class AccountServiceTests {
   @Test
   public void testCreateAccount_AccountParentIsRoot() {
 
-    CreateAccountDto createAccountDto = new CreateAccountDto();
-    createAccountDto.hidden = false;
-    createAccountDto.mode = "LAST_CHILD";
-    createAccountDto.name = "Any Account Name";
-    createAccountDto.parentId = 2L;
-    createAccountDto.placeholder = true;
-    createAccountDto.siblingId = 2L;
-    createAccountDto.taxRelated = false;
+    AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
+    accountCreateRequest.hidden = false;
+    accountCreateRequest.mode = "LAST_CHILD";
+    accountCreateRequest.name = "Any Account Name";
+    accountCreateRequest.parentId = 2L;
+    accountCreateRequest.placeholder = true;
+    accountCreateRequest.siblingId = 2L;
+    accountCreateRequest.taxRelated = false;
 
     ArgumentCaptor<Account> accountArgumentCaptor = ArgumentCaptor.forClass(Account.class);
 
@@ -320,31 +320,31 @@ public class AccountServiceTests {
     assertThrows(
         AccountCreateException.class,
         () -> {
-          accountService.createAccount(createAccountDto);
+          accountService.createAccount(accountCreateRequest);
         });
     verify(accountRepository, times(1))
         .insertAsLastChildOf(accountArgumentCaptor.capture(), any(Account.class));
-    assertEquals(AccountType.Asset, accountArgumentCaptor.getValue().getType());
+    assertEquals(AccountType.ASSET, accountArgumentCaptor.getValue().getType());
   }
 
   @Test
   public void testCreateAccount_InvalidNestedNodeManipulator() {
 
-    CreateAccountDto createAccountDto = new CreateAccountDto();
-    createAccountDto.mode = "INVALID_NODE_MANIPULATOR";
-    createAccountDto.name = "Any Account Name";
-    createAccountDto.parentId = 2L;
+    AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
+    accountCreateRequest.mode = "INVALID_NODE_MANIPULATOR";
+    accountCreateRequest.name = "Any Account Name";
+    accountCreateRequest.parentId = 2L;
 
     when(accountRepository.findById(anyLong())).thenReturn(Optional.of(accountId1()));
     Exception exception =
         assertThrows(
             AccountCreateException.class,
             () -> {
-              accountService.createAccount(createAccountDto);
+              accountService.createAccount(accountCreateRequest);
             });
     assertEquals(
         "Failed to create account: '"
-            + createAccountDto.name
+            + accountCreateRequest.name
             + "'. A valid nest node manipulator mode was not specified.",
         exception.getLocalizedMessage());
   }
@@ -352,9 +352,9 @@ public class AccountServiceTests {
   @Test
   public void testCreateAccount_AccountNotFoundException() {
 
-    CreateAccountDto createAccountDto = new CreateAccountDto();
-    createAccountDto.name = "Any Account Name";
-    createAccountDto.parentId = 2L;
+    AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
+    accountCreateRequest.name = "Any Account Name";
+    accountCreateRequest.parentId = 2L;
 
     // simulate failure to identify the parent account of the account to be created
     when(accountRepository.findById(anyLong())).thenThrow(AccountNotFoundException.class);
@@ -362,7 +362,7 @@ public class AccountServiceTests {
         assertThrows(
             AccountCreateException.class,
             () -> {
-              accountService.createAccount(createAccountDto);
+              accountService.createAccount(accountCreateRequest);
             });
     verify(accountRepository, times(1)).findById(anyLong());
     assertEquals(
@@ -376,14 +376,14 @@ public class AccountServiceTests {
   @Test
   public void testCreateAccount_AccountCreateException() {
 
-    CreateAccountDto createAccountDto = new CreateAccountDto();
-    createAccountDto.hidden = false;
-    createAccountDto.mode = "LAST_CHILD";
-    createAccountDto.name = "Financial Assets";
-    createAccountDto.parentId = 2L;
-    createAccountDto.placeholder = true;
-    createAccountDto.siblingId = 2L;
-    createAccountDto.taxRelated = false;
+    AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
+    accountCreateRequest.hidden = false;
+    accountCreateRequest.mode = "LAST_CHILD";
+    accountCreateRequest.name = "Financial Assets";
+    accountCreateRequest.parentId = 2L;
+    accountCreateRequest.placeholder = true;
+    accountCreateRequest.siblingId = 2L;
+    accountCreateRequest.taxRelated = false;
 
     when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
     when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId8()));
@@ -392,7 +392,7 @@ public class AccountServiceTests {
     assertThrows(
         AccountCreateException.class,
         () -> {
-          Account newAccount = accountService.createAccount(createAccountDto);
+          Account newAccount = accountService.createAccount(accountCreateRequest);
         });
     // System.out.println(mockingDetails(accountRepository).printInvocations());
   }
@@ -548,7 +548,7 @@ public class AccountServiceTests {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("96333e3dc3c6492e830333366fd5aa05");
     account.setId(1L);
-    account.setType(AccountType.Root);
+    account.setType(AccountType.ROOT);
     account.setCode("account_id_1");
     account.setHidden(false);
     account.setName("Root");
@@ -566,7 +566,7 @@ public class AccountServiceTests {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("595023e2aca5410291b76ce3dc88c0fc");
     account.setId(2L);
-    account.setType(AccountType.Asset);
+    account.setType(AccountType.ASSET);
     account.setCode("account_id_2");
     account.setHidden(false);
     account.setName("Assets");
@@ -585,7 +585,7 @@ public class AccountServiceTests {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("27a81f756013451682b5645c5164fca9");
     account.setId(3L);
-    account.setType(AccountType.Liability);
+    account.setType(AccountType.LIABILITY);
     account.setCode("account_id_3");
     account.setHidden(false);
     account.setName("Liabilities");
@@ -604,7 +604,7 @@ public class AccountServiceTests {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("f7b53c40dab043b398faca7b5a397f84");
     account.setId(4L);
-    account.setType(AccountType.Income);
+    account.setType(AccountType.INCOME);
     account.setCode("account_id_4");
     account.setHidden(false);
     account.setName("Income");
@@ -623,7 +623,7 @@ public class AccountServiceTests {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("707004c44ba44b22b3a0868b747767bb");
     account.setId(5L);
-    account.setType(AccountType.Expense);
+    account.setType(AccountType.EXPENSE);
     account.setCode("account_id_5");
     account.setHidden(false);
     account.setName("Expense");
@@ -642,7 +642,7 @@ public class AccountServiceTests {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("2a6bd9b7521a4458a77d757fb1734c39");
     account.setId(6L);
-    account.setType(AccountType.Equity);
+    account.setType(AccountType.EQUITY);
     account.setCode("account_id_6");
     account.setHidden(false);
     account.setName("Equity");
@@ -661,7 +661,7 @@ public class AccountServiceTests {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("8a142619411849b59e09edde53f1757b");
     account.setId(7L);
-    account.setType(AccountType.Asset);
+    account.setType(AccountType.ASSET);
     account.setCode("account_id_7");
     account.setHidden(false);
     account.setName("Financial Assets");
@@ -680,7 +680,7 @@ public class AccountServiceTests {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("bed4273d24bf4824ba75b7e32c55f30e");
     account.setId(8L);
-    account.setType(AccountType.Asset);
+    account.setType(AccountType.ASSET);
     account.setCode("account_id_8");
     account.setHidden(false);
     account.setName("Fixed Assets");

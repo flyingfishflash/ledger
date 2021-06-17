@@ -13,12 +13,12 @@ public class HttpSessionListenerLogging implements HttpSessionListener {
   private static final Logger logger = LoggerFactory.getLogger(HttpSessionListenerLogging.class);
 
   @Override
-  public void sessionCreated(HttpSessionEvent se) {
-    logger.info("* sessionCreated: sessionId = {}", se.getSession().getId());
+  public void sessionCreated(HttpSessionEvent httpSessionEvent) {
+    logger.info("* sessionCreated: sessionId = {}", httpSessionEvent.getSession().getId());
   }
 
   @Override
-  public void sessionDestroyed(HttpSessionEvent se) {
-    logger.info("* sessionDestroyed: sessionId = {}", se.getSession().getId());
+  public void sessionDestroyed(HttpSessionEvent httpSessionEvent) {
+    logger.info("* sessionDestroyed: sessionId = {}", httpSessionEvent.getSession().getId());
   }
 }

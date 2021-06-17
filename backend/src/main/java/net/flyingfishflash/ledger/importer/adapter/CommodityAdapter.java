@@ -46,14 +46,14 @@ public class CommodityAdapter {
 
     List<Commodity> commodities = new ArrayList<>(gncCommodities.size());
 
-    int templateCount = 0;
-    int currencyCount = 0;
+    var templateCount = 0;
+    var currencyCount = 0;
 
     for (GncCommodity gncCommodity : gncCommodities) {
       /* Exclude template and currency commodities */
       if (!gncCommodity.getNamespace().equalsIgnoreCase("template")
           && !gncCommodity.getNamespace().equalsIgnoreCase("currency")) {
-        Commodity commodity = commodityService.newCommodity();
+        var commodity = commodityService.newCommodity();
         commodity.setMnemonic(gncCommodity.getMnemonic());
         commodity.setFullName(gncCommodity.getFullName());
         commodity.setNamespace(gncCommodity.getNamespace());
@@ -68,11 +68,11 @@ public class CommodityAdapter {
       }
     }
     commodityService.saveAllCommodities(commodities);
-    logger.info(templateCount + " ignored templates");
+    logger.info("{} ignored templates", templateCount);
     gnucashFileImportStatus.setCommoditiesIgnoredTemplates(templateCount);
-    logger.info(currencyCount + " ignored currencies");
+    logger.info("{} ignored currencies", currencyCount);
     gnucashFileImportStatus.setCommoditiesIgnoredCurrencies(currencyCount);
-    logger.info(commodities.size() + " persisted");
+    logger.info("{} persisted", commodities.size());
     gnucashFileImportStatus.setCommoditiesPersisted(commodities.size());
   }
 }

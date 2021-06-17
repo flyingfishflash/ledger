@@ -17,7 +17,7 @@ public class OpenApiConfiguration {
 
   @Bean
   public OpenAPI springShopOpenAPI() {
-    final String securitySchemeName = "basicAuth";
+    final var securitySchemeName = "basicAuth";
     return new OpenAPI()
         .info(
             new Info()

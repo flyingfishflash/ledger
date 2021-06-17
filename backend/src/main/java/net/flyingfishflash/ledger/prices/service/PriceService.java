@@ -2,8 +2,6 @@ package net.flyingfishflash.ledger.prices.service;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,8 +14,6 @@ import net.flyingfishflash.ledger.prices.exceptions.PriceNotFoundException;
 @Transactional
 public class PriceService {
 
-  private static final Logger logger = LoggerFactory.getLogger(PriceService.class);
-
   private final PriceRepository priceRepository;
 
   public PriceService(PriceRepository priceRepository) {
@@ -26,7 +22,7 @@ public class PriceService {
 
   public Price newPrice() {
 
-    return new Price(IdentifierFactory.getInstance().generateIdentifier().toString());
+    return new Price(IdentifierFactory.getInstance().generateIdentifier());
   }
 
   public Price savePrice(Price price) {

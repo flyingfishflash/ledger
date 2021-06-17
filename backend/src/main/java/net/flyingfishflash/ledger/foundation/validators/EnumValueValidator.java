@@ -18,7 +18,7 @@ public class EnumValueValidator implements ConstraintValidator<Enum, String> {
   @Override
   public boolean isValid(
       String valueForValidation, ConstraintValidatorContext constraintValidatorContext) {
-    boolean result = false;
+    var result = false;
 
     Object[] enumValues = this.annotation.enumClass().getEnumConstants();
 

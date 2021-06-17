@@ -183,7 +183,9 @@ public class User implements UserDetails {
   }
 
   public void grantAuthority(Role authority) {
-    if (roles == null) roles = new ArrayList<>();
+    if (roles == null) {
+      roles = new ArrayList<>();
+    }
     roles.add(authority);
   }
 
@@ -222,9 +224,13 @@ public class User implements UserDetails {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    User user = (User) o;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    var user = (User) o;
     return Objects.equals(id, user.id);
   }
 

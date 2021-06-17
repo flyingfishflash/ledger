@@ -2,31 +2,14 @@ package net.flyingfishflash.ledger.commodities.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public abstract class CommodityException extends RuntimeException {
+public interface CommodityException {
+  String ERROR_DOMAIN = "Commodities";
 
-  private HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+  String ERROR_SUBJECT = "Commodity";
 
-  public CommodityException(String message) {
-    super("Commodity" + " " + message);
-  }
+  HttpStatus getHttpStatus();
 
-  public CommodityException(String message, Exception cause) {
-    super("Commodity" + " " + message, cause);
-  }
+  String getErrorDomain();
 
-  public HttpStatus getHttpStatus() {
-    return httpStatus;
-  }
-
-  public void setHttpStatus(HttpStatus httpStatus) {
-    this.httpStatus = httpStatus;
-  }
-
-  public String getErrorDomain() {
-    return "Commodities";
-  }
-
-  public String getErrorSubject() {
-    return "Commodity";
-  }
+  String getErrorSubject();
 }

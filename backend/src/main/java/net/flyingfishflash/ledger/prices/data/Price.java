@@ -138,9 +138,9 @@ public class Price {
     this.numerator = numerator;
     this.denominator = denominator;
     /* Update price */
-    BigDecimal n = new BigDecimal(numerator);
-    BigDecimal d = new BigDecimal(denominator);
-    int scale = Integer.numberOfTrailingZeros(this.getCommodity().getFraction());
+    var n = new BigDecimal(numerator);
+    var d = new BigDecimal(denominator);
+    var scale = Integer.numberOfTrailingZeros(this.getCommodity().getFraction());
     this.price = n.divide(d, scale, RoundingMode.HALF_EVEN);
   }
 

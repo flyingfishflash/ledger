@@ -2,7 +2,7 @@ package net.flyingfishflash.ledger.foundation.response.structure.errors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import net.flyingfishflash.ledger.foundation.response.structure.ResponseApiStatusCode;
+import net.flyingfishflash.ledger.foundation.response.structure.ApiStatusCode;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorResponse<T> {
@@ -11,15 +11,15 @@ public class ErrorResponse<T> {
   // private final String message;
   private ErrorResponseStructure<T> response;
 
-  public ErrorResponse(T object /*, String message*/, ResponseApiStatusCode responseApiStatusCode) {
-    response = new ErrorResponseStructure<T>(object);
-    this.status = responseApiStatusCode.name().toLowerCase();
+  public ErrorResponse(T object /*, String message*/, ApiStatusCode apiStatusCode) {
+    response = new ErrorResponseStructure<>(object);
+    this.status = apiStatusCode.name().toLowerCase();
     // this.message = message;
   }
 
   public ErrorResponse(T object /*, String message*/) {
-    response = new ErrorResponseStructure<T>(object);
-    this.status = ResponseApiStatusCode.Error.name().toLowerCase();
+    response = new ErrorResponseStructure<>(object);
+    this.status = ApiStatusCode.ERROR.name().toLowerCase();
     // this.message = message;
   }
 

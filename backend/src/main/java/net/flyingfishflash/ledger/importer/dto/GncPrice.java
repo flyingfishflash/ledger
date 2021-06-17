@@ -20,8 +20,6 @@ public class GncPrice /*extends BaseModel*/ {
   private String currencyGuid;
   private String currencyNamespace;
 
-  public GncPrice() {}
-
   public String getGuid() {
     return guid;
   }

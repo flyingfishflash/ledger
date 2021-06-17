@@ -2,10 +2,11 @@ package net.flyingfishflash.ledger.foundation;
 
 import static org.apache.commons.validator.routines.UrlValidator.ALLOW_LOCAL_URLS;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Objects;
 
 import javax.sql.DataSource;
 
@@ -30,9 +31,9 @@ public class CustomCommandLineRunner implements CommandLineRunner {
 
   private static final Logger logger = LoggerFactory.getLogger(CustomCommandLineRunner.class);
 
-  private UserRepository userRepository;
-  private DataSource dataSource;
-  private Environment env;
+  private final UserRepository userRepository;
+  private final DataSource dataSource;
+  private final Environment env;
 
   public CustomCommandLineRunner(
       UserRepository userRepository, DataSource dataSource, Environment env) {
@@ -48,7 +49,7 @@ public class CustomCommandLineRunner implements CommandLineRunner {
         .forEach(
             user -> {
               String tenant = user.getUsername();
-              Flyway flyway =
+              var flyway =
                   Flyway.configure()
                       .locations("db/migration/" + TenantIdentifierResolver.USERS)
                       .dataSource(dataSource)
@@ -61,9 +62,9 @@ public class CustomCommandLineRunner implements CommandLineRunner {
   }
 
   private void setApiUrl() throws IOException {
-    String envApiServer = "API_SERVER";
+    var envApiServer = "API_SERVER";
+    var apiUrlPath = env.getProperty("config.server.api.url-path");
     String apiUrl;
-    String apiUrlPath = "/api/v1/ledger";
     String apiServer;
     String apiServerDefault = "http://localhost:" + env.getProperty("server.port");
     String apiUrlDefault = apiServerDefault + apiUrlPath;
@@ -75,10 +76,9 @@ public class CustomCommandLineRunner implements CommandLineRunner {
         || System.getenv(envApiServer).isEmpty()
         || System.getenv(envApiServer).isBlank()) {
       logger.info(
-          "System environment variable "
-              + envApiServer
-              + " not set. Using default value: "
-              + apiUrlDefault);
+          "System environment variable {} not set. Using default value: {}",
+          envApiServer,
+          apiUrlDefault);
       apiUrl = apiUrlDefault;
     } else {
 
@@ -89,38 +89,36 @@ public class CustomCommandLineRunner implements CommandLineRunner {
       }
 
       if (StringUtils.countOccurrencesOf(apiServer, "/") != 2) {
-        logger.error(envApiServer + " from environment is invalid. (" + apiServerOriginal + ")");
-        logger.error(envApiServer + ": using default value");
+        logger.error("{} from environment is invalid. ({})", envApiServer, apiServerOriginal);
+        logger.error("{}: using default value", envApiServer);
         apiServer = apiServerDefault;
       }
 
       apiUrl = apiServer + apiUrlPath;
 
-      String[] schemes = {"http", "https"};
-      UrlValidator urlValidator = new UrlValidator(schemes, ALLOW_LOCAL_URLS);
+      var schemes = new String[] {"http", "https"};
+      var urlValidator = new UrlValidator(schemes, ALLOW_LOCAL_URLS);
 
       if (!urlValidator.isValid(apiUrl)) {
         logger.error(
-            "API URL"
-                + " is invalid. (API_SERVER: "
-                + apiServerOriginal
-                + ", Derived Url: "
-                + apiUrl
-                + ")");
+            "API URL is invalid. (API_SERVER}: {}, Derived Url: {}", apiServerOriginal, apiUrl);
         logger.error("API URL: using default value");
         apiUrl = apiUrlDefault;
       }
     }
 
-    logger.info("API URL: " + apiUrl);
+    logger.info("API URL: {}", apiUrl);
 
-    String path = getClass().getResource("/static/assets").getFile();
-    File f = new File(path + "/config.json");
-    logger.info(f.toString());
+    String path = Objects.requireNonNull(getClass().getResource("/static/assets")).getFile();
+    var file = new File(path + "/config.json");
 
-    FileWriter fw = new FileWriter(f.getAbsoluteFile());
-    BufferedWriter bw = new BufferedWriter(fw);
-    bw.write("{\n\t\"server\": {\n\t\t\"url\": \"" + apiUrl + "\"\n\t}\n}");
-    bw.close();
+    logger.info("{}", file);
+
+    try (var bufferedWriter =
+        Files.newBufferedWriter(Paths.get(String.valueOf(file.getAbsoluteFile())))) {
+      bufferedWriter.write("{\n\t\"server\": {\n\t\t\"url\": \"" + apiUrl + "\"\n\t}\n}");
+    } catch (IOException e) {
+      logger.error("failed to write config.json");
+    }
   }
 }

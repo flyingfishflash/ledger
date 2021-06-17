@@ -25,7 +25,7 @@ import net.flyingfishflash.ledger.accounts.data.AccountType;
       // "spring.jpa.hibernate.ddl-auto=create-drop",
     })
 @WithMockUser(value = "testuser")
-public class AccountRepositoryTests {
+class AccountRepositoryTests {
 
   @Autowired AccountRepository accountRepository;
 
@@ -34,8 +34,8 @@ public class AccountRepositoryTests {
     Optional<Account> account = accountRepository.findRoot();
     assertTrue(account.isPresent());
     assertNull(account.get().getParentId());
-    assertEquals(AccountCategory.Root, account.get().getCategory());
-    assertEquals(AccountType.Root, account.get().getType());
+    assertEquals(AccountCategory.ROOT, account.get().getCategory());
+    assertEquals(AccountType.ROOT, account.get().getType());
   }
 
   @Test

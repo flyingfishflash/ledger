@@ -15,9 +15,7 @@ public class AccountTypeService {
 
   public List<AccountType> findAllAccountTypes() {
 
-    List<AccountType> types = new LinkedList<>(Arrays.asList(AccountType.values()));
-
-    return types;
+    return new LinkedList<>(Arrays.asList(AccountType.values()));
   }
 
   public List<AccountType> findAccountTypesByCategory(String category) {

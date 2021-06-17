@@ -9,5 +9,5 @@ import org.springframework.context.annotation.Configuration;
 public class ApplicationConfiguration {
 
   // future state should have this setting overlaid by a user or book configuration setting
-  public static final CurrencyUnit defaultCurrency = Monetary.getCurrency("USD");
+  public static final CurrencyUnit DEFAULT_CURRENCY = Monetary.getCurrency("USD");
 }

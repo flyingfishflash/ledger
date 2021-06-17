@@ -17,16 +17,16 @@ public class AccountTypeTests {
     assertEquals(11, AccountType.values().length);
     List<AccountType> accountTypeList = Arrays.asList(AccountType.values());
     accountTypeList.sort(Comparator.comparing(AccountType::name));
-    assertEquals(AccountType.Asset, accountTypeList.get(0));
-    assertEquals(AccountType.Bank, accountTypeList.get(1));
-    assertEquals(AccountType.Cash, accountTypeList.get(2));
-    assertEquals(AccountType.Credit, accountTypeList.get(3));
-    assertEquals(AccountType.Equity, accountTypeList.get(4));
-    assertEquals(AccountType.Expense, accountTypeList.get(5));
-    assertEquals(AccountType.Income, accountTypeList.get(6));
-    assertEquals(AccountType.Liability, accountTypeList.get(7));
-    assertEquals(AccountType.Mutual, accountTypeList.get(8));
-    assertEquals(AccountType.Root, accountTypeList.get(9));
-    assertEquals(AccountType.Stock, accountTypeList.get(10));
+    assertEquals(AccountType.ASSET, accountTypeList.get(0));
+    assertEquals(AccountType.BANK, accountTypeList.get(1));
+    assertEquals(AccountType.CASH, accountTypeList.get(2));
+    assertEquals(AccountType.CREDIT, accountTypeList.get(3));
+    assertEquals(AccountType.EQUITY, accountTypeList.get(4));
+    assertEquals(AccountType.EXPENSE, accountTypeList.get(5));
+    assertEquals(AccountType.INCOME, accountTypeList.get(6));
+    assertEquals(AccountType.LIABILITY, accountTypeList.get(7));
+    assertEquals(AccountType.MUTUAL, accountTypeList.get(8));
+    assertEquals(AccountType.ROOT, accountTypeList.get(9));
+    assertEquals(AccountType.STOCK, accountTypeList.get(10));
   }
 }

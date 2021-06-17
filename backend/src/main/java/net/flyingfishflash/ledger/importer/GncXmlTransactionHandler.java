@@ -1,7 +1,5 @@
 package net.flyingfishflash.ledger.importer;
 
-import java.sql.Timestamp;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,11 +29,11 @@ public class GncXmlTransactionHandler extends DefaultHandler {
   private static final Logger logger = LoggerFactory.getLogger(GncXmlTransactionHandler.class);
 
   /** ISO 4217 currency code for "No Currency" */
-  private static final String NO_CURRENCY_CODE = "XXX";
+  // private static final String NO_CURRENCY_CODE = "XXX";
 
-  private TransactionAdapter transactionAdapter;
+  private final TransactionAdapter transactionAdapter;
 
-  private GnucashFileImportStatus gnucashFileImportStatus;
+  private final GnucashFileImportStatus gnucashFileImportStatus;
 
   /** StringBuilder for accumulating characters between XML tags */
   StringBuilder content = new StringBuilder();
@@ -119,13 +117,15 @@ public class GncXmlTransactionHandler extends DefaultHandler {
           inNodeCountDataTransaction = true;
         }
         break;
+
+      default:
     }
   }
 
   @Override
   public void endElement(String uri, String localName, String qualifiedName) throws SAXException {
 
-    String characterString = content.toString().trim();
+    var characterString = content.toString().trim();
 
     if (content.length() == 0) {
       characterString = null;
@@ -168,21 +168,23 @@ public class GncXmlTransactionHandler extends DefaultHandler {
 
       case GncXmlHelper.TAG_TS_DATE:
         /* These dates are zoned UTC in the GnuCash XML */
-        try {
-          if (inNodeTransactionDatePosted && gncTransaction != null) {
-            // gncTransaction.setTime(GncXmlHelper.parseDate(characterString));
+        // try {
+        if (inNodeTransactionDatePosted && gncTransaction != null) {
+          // gncTransaction.setTime(GncXmlHelper.parseDate(characterString));
+          if (characterString != null) {
             gncTransaction.setDatePosted(LocalDate.parse(characterString.substring(0, 10)));
-            inNodeTransactionDatePosted = false;
           }
-          if (inNodeTransactionDateEntered && gncTransaction != null) {
-            Timestamp timestamp = new Timestamp(GncXmlHelper.parseDate(characterString));
-            // gncTransaction.setCreatedTimestamp(timestamp);
-            inNodeTransactionDateEntered = false;
-          }
-        } catch (ParseException e) {
+          inNodeTransactionDatePosted = false;
+        }
+        if (inNodeTransactionDateEntered && gncTransaction != null) {
+          // var timestamp = new Timestamp(GncXmlHelper.parseDate(characterString));
+          // gncTransaction.setCreatedTimestamp(timestamp);
+          inNodeTransactionDateEntered = false;
+        }
+        /*        } catch (ParseException e) {
           String message = "Unable to parse transaction time - " + characterString;
           throw new SAXException(message, e);
-        }
+        }*/
         break;
 
       case GncXmlHelper.TAG_SPLIT_ID:
@@ -228,6 +230,8 @@ public class GncXmlTransactionHandler extends DefaultHandler {
       case GncXmlHelper.TAG_TEMPLATE_TRANSACTIONS:
         inNodeTemplateTransactions = false;
         break;
+
+      default:
     }
 
     content.setLength(0);
@@ -248,9 +252,9 @@ public class GncXmlTransactionHandler extends DefaultHandler {
   private void sendToAdapter() {
 
     logger.info(
-        nodeCountDataTransactionCount + " indicated by gnc:count-data cd:type=\"transaction\"");
-    logger.info(templateTransactions.size() + " template transactions");
-    logger.info(gncTransactions.size() + " sent to the adapter");
+        "{} indicated by gnc:count-data cd:type=\"transaction\"", nodeCountDataTransactionCount);
+    logger.info("{} template transactions", templateTransactions.size());
+    logger.info("{} sent to the adapter", gncTransactions.size());
     gnucashFileImportStatus.setTransactionsGncCount(nodeCountDataTransactionCount);
     gnucashFileImportStatus.setTransactionsTemplates(templateTransactions.size());
     gnucashFileImportStatus.setTransactionsSentToAdapter(gncTransactions.size());

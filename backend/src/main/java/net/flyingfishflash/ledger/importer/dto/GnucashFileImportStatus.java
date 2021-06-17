@@ -35,23 +35,71 @@ public class GnucashFileImportStatus implements Serializable {
 
   private static final Logger logger = LoggerFactory.getLogger(GnucashFileImportStatus.class);
 
-  public class Component implements Serializable {
-    public String component;
-    public Integer gncCount = 0;
-    public Integer sentToAdapter = 0;
-    public Integer persisted = 0;
-    public Integer ignoredTemplates = 0;
-    public Integer ignoredCurrencies = 0;
+  private class Component implements Serializable {
+    private String componentName;
+    private Integer gncCount = 0;
+    private Integer sentToAdapter = 0;
+    private Integer persisted = 0;
+    private Integer ignoredTemplates = 0;
+    private Integer ignoredCurrencies = 0;
 
-    Component(String component) {
-      this.component = component;
+    Component(String componentName) {
+      this.componentName = componentName;
+    }
+
+    public String getComponentName() {
+      return componentName;
+    }
+
+    public void setComponentName(String componentName) {
+      this.componentName = componentName;
+    }
+
+    public Integer getGncCount() {
+      return gncCount;
+    }
+
+    public void setGncCount(Integer gncCount) {
+      this.gncCount = gncCount;
+    }
+
+    public Integer getSentToAdapter() {
+      return sentToAdapter;
+    }
+
+    public void setSentToAdapter(Integer sentToAdapter) {
+      this.sentToAdapter = sentToAdapter;
+    }
+
+    public Integer getPersisted() {
+      return persisted;
+    }
+
+    public void setPersisted(Integer persisted) {
+      this.persisted = persisted;
+    }
+
+    public Integer getIgnoredTemplates() {
+      return ignoredTemplates;
+    }
+
+    public void setIgnoredTemplates(Integer ignoredTemplates) {
+      this.ignoredTemplates = ignoredTemplates;
+    }
+
+    public Integer getIgnoredCurrencies() {
+      return ignoredCurrencies;
+    }
+
+    public void setIgnoredCurrencies(Integer ignoredCurrencies) {
+      this.ignoredCurrencies = ignoredCurrencies;
     }
 
     @Override
     public String toString() {
       return "Component{"
           + "component='"
-          + component
+          + componentName
           + '\''
           + ", gncCount="
           + gncCount
@@ -67,7 +115,7 @@ public class GnucashFileImportStatus implements Serializable {
     }
   }
 
-  List<Component> components = new ArrayList<>(4);
+  private final List<Component> components = new ArrayList<>(4);
 
   String status;
 
@@ -139,8 +187,10 @@ public class GnucashFileImportStatus implements Serializable {
     return 0;
   }
 
-  @JsonIgnore
-  public void setCommoditiesIgnoredTotal(int commoditiesIgnoredTotal) {}
+  /*
+    @JsonIgnore
+    public void setCommoditiesIgnoredTotal(int commoditiesIgnoredTotal) {}
+  */
 
   @JsonIgnore
   public int getCommoditiesIgnoredTemplates() {
@@ -263,9 +313,8 @@ public class GnucashFileImportStatus implements Serializable {
   }
 
   public String toJson() throws JsonProcessingException {
-    ObjectMapper mapper = new ObjectMapper();
-    String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
-    return json;
+    var mapper = new ObjectMapper();
+    return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
   }
 
   @Override

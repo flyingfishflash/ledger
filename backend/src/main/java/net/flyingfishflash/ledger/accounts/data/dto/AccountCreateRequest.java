@@ -25,7 +25,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import net.flyingfishflash.ledger.foundation.validators.Enum;
 
-public class CreateAccountDto {
+public class AccountCreateRequest {
 
   @Size(max = 2048)
   @Pattern(
@@ -74,8 +74,6 @@ public class CreateAccountDto {
   public Long siblingId;
 
   @NotNull public Boolean taxRelated;
-
-  public CreateAccountDto() {}
 
   public String getCode() {
     return code;
@@ -159,7 +157,7 @@ public class CreateAccountDto {
 
   @Override
   public String toString() {
-    return "CreateAccountDto{"
+    return "AccountCreateRequest{"
         + "code='"
         + code
         + '\''
