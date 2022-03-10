@@ -408,7 +408,7 @@ public class AccountServiceTests {
   public void testDeleteAllAccounts() {
     when(accountRepository.findRoot()).thenReturn(Optional.of(new Account()));
     accountService.deleteAllAccounts();
-    verify(accountRepository, times(2)).findRoot();
+    verify(accountRepository, times(1)).findRoot();
     verify(accountRepository, times(1)).removeSubTree(any(Account.class));
   }
 
