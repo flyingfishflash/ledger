@@ -123,9 +123,7 @@ public class AccountService {
 
   public void deleteAllAccounts() {
 
-    if (accountRepository.findRoot().isPresent()) {
-      accountRepository.removeSubTree(accountRepository.findRoot().get());
-    }
+    accountRepository.findRoot().ifPresent(accountRepository::removeSubTree);
   }
 
   public void removeSingle(Account account) {
