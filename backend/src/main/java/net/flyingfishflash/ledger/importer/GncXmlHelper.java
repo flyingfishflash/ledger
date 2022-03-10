@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public abstract class GncXmlHelper {
+public final class GncXmlHelper {
 
   private GncXmlHelper() {
     throw new IllegalStateException("Utility class");
