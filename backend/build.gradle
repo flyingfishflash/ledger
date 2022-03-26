@@ -95,9 +95,9 @@ jacocoTestReport {
     dependsOn test
 
     reports {
-        xml.enabled true
-        csv.enabled false
-        html.enabled true
+        xml.required = true
+        csv.required = false
+        html.required = true
     }
 }
 
