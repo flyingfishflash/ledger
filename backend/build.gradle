@@ -34,7 +34,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.9'
     implementation 'com.github.eXsio:nestedj:5.0.4'
     implementation 'com.h2database:h2:1.4.200'
-    implementation 'org.postgresql:postgresql:42.2.20'
+    implementation 'org.postgresql:postgresql:42.3.3'
     implementation 'org.javamoney:moneta:1.4.2'
     implementation 'javax.interceptor:javax.interceptor-api:1.2.2'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
