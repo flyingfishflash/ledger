@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    String springBootVersion = "2.5.0"
+    String springBootVersion = "2.6.5"
     String springSessionVersion = "2.5.0"
 
     implementation "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
