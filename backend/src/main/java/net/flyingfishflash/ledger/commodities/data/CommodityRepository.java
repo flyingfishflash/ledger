@@ -11,11 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface CommodityRepository extends PagingAndSortingRepository<Commodity, Long> {
 
-  public Optional<Commodity> findByGuid(String guid);
+  Optional<Commodity> findByGuid(String guid);
 
-  public Optional<List<Commodity>> findByMnemonic(String mnemonic);
+  Optional<List<Commodity>> findByMnemonic(String mnemonic);
 
-  public Optional<List<Commodity>> findByNamespace(String namespace);
+  Optional<List<Commodity>> findByNamespace(String namespace);
 
-  public Optional<Commodity> findByNamespaceAndMnemonic(String namespace, String mnemonic);
+  Optional<Commodity> findByNamespaceAndMnemonic(String namespace, String mnemonic);
 }

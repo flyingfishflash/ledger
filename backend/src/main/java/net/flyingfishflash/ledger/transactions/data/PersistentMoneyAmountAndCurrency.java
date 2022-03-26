@@ -36,7 +36,7 @@ public class PersistentMoneyAmountAndCurrency implements CompositeUserType {
       return null;
     }
 
-    final Money money = (Money) component;
+    final var money = (Money) component;
     switch (propertyIndex) {
       case 0:
         return money.getCurrency().getCurrencyCode();
@@ -59,14 +59,17 @@ public class PersistentMoneyAmountAndCurrency implements CompositeUserType {
   public Object nullSafeGet(
       ResultSet resultSet, String[] names, SharedSessionContractImplementor session, Object object)
       throws SQLException {
-    assert names.length == 2;
+
+    if (names.length != 2) {
+      throw new IllegalArgumentException("length of names array is != 2");
+    }
 
     // owner here is of type TestUser or the actual owning Object
     Money money = null;
-    final String currency = resultSet.getString(names[0]);
+    final var currency = resultSet.getString(names[0]);
     // Deferred check after first read
     if (!resultSet.wasNull()) {
-      final BigDecimal amount = resultSet.getBigDecimal(names[1]);
+      final var amount = resultSet.getBigDecimal(names[1]);
       money = Money.of(amount, currency);
     }
     return money;

@@ -19,6 +19,7 @@ import org.hibernate.annotations.TypeDef;
 import org.javamoney.moneta.Money;
 
 import net.flyingfishflash.ledger.accounts.data.Account;
+import net.flyingfishflash.ledger.accounts.data.NormalBalance;
 
 @Entity
 @TypeDef(
@@ -114,17 +115,18 @@ public class Entry {
   public void setQuantity(BigDecimal quantity) {
 
     this.quantity = quantity;
-    switch (this.account.getNormalBalance()) {
-      case DEBIT:
-        if (this.type == EntryType.CREDIT) {
-          this.quantitySigned = this.quantity.negate();
-        } else this.quantitySigned = this.quantity;
-        break;
-      case CREDIT:
-        if (this.type == EntryType.DEBIT) {
-          this.quantitySigned = this.quantity.negate();
-        } else this.quantitySigned = this.quantity;
-        break;
+    if (this.account.getNormalBalance() == NormalBalance.CREDIT) {
+      if (this.type == EntryType.DEBIT) {
+        this.quantitySigned = this.quantity.negate();
+      } else {
+        this.quantitySigned = this.quantity;
+      }
+    } else if (this.account.getNormalBalance() == NormalBalance.DEBIT) {
+      if (this.type == EntryType.CREDIT) {
+        this.quantitySigned = this.quantity.negate();
+      } else {
+        this.quantitySigned = this.quantity;
+      }
     }
   }
 
@@ -134,17 +136,18 @@ public class Entry {
 
   public void setValue(Money value) {
     this.value = value;
-    switch (this.account.getNormalBalance()) {
-      case DEBIT:
-        if (this.type == EntryType.CREDIT) {
-          this.valueSigned = this.value.negate().getNumberStripped();
-        } else this.valueSigned = this.value.getNumberStripped();
-        break;
-      case CREDIT:
-        if (this.type == EntryType.DEBIT) {
-          this.valueSigned = this.value.negate().getNumberStripped();
-        } else this.valueSigned = this.value.getNumberStripped();
-        break;
+    if (this.account.getNormalBalance() == NormalBalance.CREDIT) {
+      if (this.type == EntryType.DEBIT) {
+        this.valueSigned = this.value.negate().getNumberStripped();
+      } else {
+        this.valueSigned = this.value.getNumberStripped();
+      }
+    } else if (this.account.getNormalBalance() == NormalBalance.DEBIT) {
+      if (this.type == EntryType.CREDIT) {
+        this.valueSigned = this.value.negate().getNumberStripped();
+      } else {
+        this.valueSigned = this.value.getNumberStripped();
+      }
     }
   }
 
@@ -168,12 +171,12 @@ public class Entry {
     return quantitySigned;
   }
 
-  public Timestamp getEnter_date() {
+  public Timestamp getEnterDate() {
     return enterDate;
   }
 
-  public void setEnter_date(Timestamp enter_date) {
-    this.enterDate = enter_date;
+  public void setEnterDate(Timestamp enterDate) {
+    this.enterDate = enterDate;
   }
 
   @Override
@@ -202,7 +205,7 @@ public class Entry {
         + value
         + ", valueSigned="
         + valueSigned
-        + ", enter_date="
+        + ", enterDate="
         + enterDate
         + ", account="
         + account

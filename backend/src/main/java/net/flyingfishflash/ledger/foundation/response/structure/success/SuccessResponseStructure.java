@@ -10,7 +10,7 @@ public class SuccessResponseStructure<T> implements java.io.Serializable {
 
   private T body;
   private int length = 1;
-  private String message = null;
+  private String message;
 
   public SuccessResponseStructure(T body, int length, String message) {
     this.body = body;

@@ -2,31 +2,15 @@ package net.flyingfishflash.ledger.books.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public abstract class BookException extends RuntimeException {
+public interface BookException {
 
-  private HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+  String ERROR_DOMAIN = "Books";
 
-  public BookException(String message) {
-    super("Book" + " " + message);
-  }
+  String ERROR_SUBJECT = "Book";
 
-  public BookException(String message, Exception cause) {
-    super("Book" + " " + message, cause);
-  }
+  HttpStatus getHttpStatus();
 
-  public HttpStatus getHttpStatus() {
-    return httpStatus;
-  }
+  String getErrorDomain();
 
-  public void setHttpStatus(HttpStatus httpStatus) {
-    this.httpStatus = httpStatus;
-  }
-
-  public String getErrorDomain() {
-    return "Books";
-  }
-
-  public String getErrorSubject() {
-    return "Book";
-  }
+  String getErrorSubject();
 }

@@ -5,9 +5,6 @@ import java.security.Principal;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.swagger.v3.oas.annotations.Operation;
 
 import org.slf4j.Logger;
@@ -22,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
 
-import net.flyingfishflash.ledger.importer.dto.GnucashFileImportResponse;
 import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
 import net.flyingfishflash.ledger.importer.service.GnucashFileImportService;
 
@@ -49,9 +45,9 @@ public class GnucashFileImportController {
       @RequestParam("file") MultipartFile file, Principal principal)
       throws ParserConfigurationException, SAXException, IOException {
 
-    GnucashFileImportResponse gnucashFileImportResponse = new GnucashFileImportResponse();
+    // GnucashFileImportResponse gnucashFileImportResponse = new GnucashFileImportResponse();
     logger.info(file.getOriginalFilename());
-    logger.info(String.valueOf(principal.getName()));
+    logger.info("principal name: {}", principal.getName());
 
     gnucashFileImportService.process(file.getInputStream());
 
@@ -63,12 +59,12 @@ public class GnucashFileImportController {
   @GetMapping(value = "/gnucashFileImportStatus")
   @Operation(summary = "Status of Gnucash file import")
   public ResponseEntity<GnucashFileImportStatus> gnucashFileImportStatus()
-      throws JsonProcessingException {
+        /*throws JsonProcessingException*/ {
 
-    ObjectMapper mapper = new ObjectMapper();
+    // ObjectMapper mapper = new ObjectMapper();
 
-    String json =
-        mapper.writerWithDefaultPrettyPrinter().writeValueAsString(gnucashFileImportStatus);
+    // String json =
+    //    mapper.writerWithDefaultPrettyPrinter().writeValueAsString(gnucashFileImportStatus);
 
     return new ResponseEntity<>(this.gnucashFileImportStatus, HttpStatus.OK);
   }

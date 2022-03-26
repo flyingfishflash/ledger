@@ -26,8 +26,6 @@ public class UserProfileRequest {
   @Size(max = 50)
   private String lastName;
 
-  public UserProfileRequest() {}
-
   public String getPassword() {
     return password;
   }

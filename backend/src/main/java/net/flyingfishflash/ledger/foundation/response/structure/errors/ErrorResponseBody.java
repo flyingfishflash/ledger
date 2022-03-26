@@ -43,7 +43,7 @@ public class ErrorResponseBody {
   private List<ErrorResponseBodyItem> extractCauses(Throwable exception) {
 
     ErrorResponseBodyItem errorResponseBodyItem;
-    List<ErrorResponseBodyItem> errorResponseBodyItems = new ArrayList<ErrorResponseBodyItem>();
+    List<ErrorResponseBodyItem> errorResponseBodyItems = new ArrayList<>();
 
     if (exception.getCause() != null) {
       Throwable rootCause = exceptionCause(exception);
@@ -58,7 +58,7 @@ public class ErrorResponseBody {
 
   private static Throwable exceptionCause(Throwable throwable) {
     Objects.requireNonNull(throwable);
-    Throwable rootCause = throwable;
+    var rootCause = throwable;
     while (rootCause.getCause() != null && rootCause.getCause() != rootCause) {
       rootCause = rootCause.getCause();
     }

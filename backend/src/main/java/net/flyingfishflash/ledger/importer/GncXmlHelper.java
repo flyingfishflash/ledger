@@ -8,7 +8,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public abstract class GncXmlHelper {
+public final class GncXmlHelper {
+
+  private GncXmlHelper() {
+    throw new IllegalStateException("Utility class");
+  }
 
   public static final String TAG_GNC_PREFIX = "gnc:";
 
@@ -119,8 +123,10 @@ public abstract class GncXmlHelper {
   public static final String BOOK_VERSION = "2.0.0";
   public static final SimpleDateFormat TIME_FORMATTER =
       new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.US);
-  public static final SimpleDateFormat DATE_FORMATTER =
-      new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+  /*
+    public static final SimpleDateFormat DATE_FORMATTER =
+        new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+  */
 
   public static final String KEY_PLACEHOLDER = "placeholder";
   public static final String KEY_COLOR = "color";
@@ -154,7 +160,7 @@ public abstract class GncXmlHelper {
    * @throws ParseException if the date string could not be parsed e.g. because of different format
    */
   public static long parseDate(String dateString) throws ParseException {
-    Date date = TIME_FORMATTER.parse(dateString);
+    var date = TIME_FORMATTER.parse(dateString);
     return date.getTime();
   }
 
@@ -176,9 +182,9 @@ public abstract class GncXmlHelper {
         amountString.length() - pos - 2; // do this before, because we could modify the string
     // String numerator = TransactionFormFragment.stripCurrencyFormatting(amountString.substring(0,
     // pos));
-    String numerator = amountString.substring(0, pos);
+    var numerator = amountString.substring(0, pos);
     numerator = stripCurrencyFormatting(numerator);
-    BigInteger numeratorInt = new BigInteger(numerator);
+    var numeratorInt = new BigInteger(numerator);
     return new BigDecimal(numeratorInt, scale);
   }
 
@@ -224,7 +230,7 @@ public abstract class GncXmlHelper {
   public static String stripCurrencyFormatting(String s) {
     if (s.length() == 0) return s;
     // remove all currency formatting and anything else which is not a number
-    String sign = s.trim().substring(0, 1);
+    var sign = s.trim().substring(0, 1);
     String stripped = s.trim().replaceAll("\\D*", "");
     if (stripped.length() == 0) return "";
     if (sign.equals("+") || sign.equals("-")) {

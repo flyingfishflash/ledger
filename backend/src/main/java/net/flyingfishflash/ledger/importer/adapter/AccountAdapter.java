@@ -52,7 +52,7 @@ public class AccountAdapter {
   public void addRecords(List<GncAccount> gncAccounts) {
 
     Account account;
-    int persistedCount = 0;
+    var persistedCount = 0;
 
     /* Check that the first account in the list is a Root type account */
     if (!gncAccounts.get(0).getGncAccountType().equalsIgnoreCase("root")) {
@@ -93,7 +93,7 @@ public class AccountAdapter {
 
       if (gncAccount.getGncAccountType().equalsIgnoreCase("root")) {
         /* If the gncAccountType is Root set some specific values for our imported type */
-        account.setType(AccountType.Root);
+        account.setType(AccountType.ROOT);
         /* The root account is the only one that will be hidden */
         account.setHidden(true);
         account.setLongName("root");
@@ -112,7 +112,8 @@ public class AccountAdapter {
         account.setName(gncAccount.getName());
         account.setHidden(gncAccount.isHidden());
         account.setPlaceholder(gncAccount.isPlaceholder());
-        account.setType(AccountType.valueOf(prettyAccountType(gncAccount.getGncAccountType())));
+        account.setType(
+            AccountType.valueOf(/*prettyAccountType(*/ gncAccount.getGncAccountType() /*)*/));
         /* Determine the currency and commodity associated with the account
          * TODO: Commodity and Currency are mutually exclusive. Review this situation.
          */
@@ -132,20 +133,20 @@ public class AccountAdapter {
               commodityService.findByNameSpaceAndMnemonic(
                   gncAccount.getGncCommodityNamespace(), gncAccount.getGncCommodity()));
           /* Set the currency to the default currency */
-          account.setCurrency(ApplicationConfiguration.defaultCurrency.getCurrencyCode());
+          account.setCurrency(ApplicationConfiguration.DEFAULT_CURRENCY.getCurrencyCode());
         }
         accountService.insertAsLastChildOf(
             account, accountService.findByGuid(gncAccount.getParentGuid()));
         persistedCount++;
       } // if gncAccountType == ROOT
     }
-    logger.info(persistedCount + " persisted");
+    logger.info("{} persisted", persistedCount);
     gnucashFileImportStatus.setAccountsPersisted(persistedCount);
   }
 
   /** Capitalize the first letter of the account type string */
-  private String prettyAccountType(String accountType) {
+  /*  private String prettyAccountType(String accountType) {
 
     return accountType.substring(0, 1).toUpperCase() + accountType.substring(1).toLowerCase();
-  }
+  }*/
 }

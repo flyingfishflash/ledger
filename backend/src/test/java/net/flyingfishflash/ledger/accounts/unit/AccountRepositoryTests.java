@@ -275,7 +275,7 @@ public class AccountRepositoryTests {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("96333e3dc3c6492e830333366fd5aa05");
     account.setId(1L);
-    account.setType(AccountType.Root);
+    account.setType(AccountType.ROOT);
     account.setCode("account_id_1");
     account.setHidden(false);
     account.setName("Root");
@@ -293,7 +293,7 @@ public class AccountRepositoryTests {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("595023e2aca5410291b76ce3dc88c0fc");
     account.setId(2L);
-    account.setType(AccountType.Asset);
+    account.setType(AccountType.ASSET);
     account.setCode("account_id_2");
     account.setHidden(false);
     account.setName("Assets");
@@ -312,7 +312,7 @@ public class AccountRepositoryTests {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("8a142619411849b59e09edde53f1757b");
     account.setId(7L);
-    account.setType(AccountType.Asset);
+    account.setType(AccountType.ASSET);
     account.setCode("account_id_7");
     account.setHidden(false);
     account.setName("Financial Assets");
@@ -331,7 +331,7 @@ public class AccountRepositoryTests {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("bed4273d24bf4824ba75b7e32c55f30e");
     account.setId(8L);
-    account.setType(AccountType.Asset);
+    account.setType(AccountType.ASSET);
     account.setCode("account_id_8");
     account.setHidden(false);
     account.setName("Fixed Assets");

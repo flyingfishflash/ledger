@@ -2,17 +2,22 @@ package net.flyingfishflash.ledger.foundation.users.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class UserNotFoundException extends UserException {
+public class UserNotFoundException extends GeneralUserException implements UserException {
 
   public UserNotFoundException(String username) {
-    super(HttpStatus.NOT_FOUND, "User not found for user name: " + username);
+    super("User not found for user name: " + username);
   }
 
   public UserNotFoundException(Long id) {
-    super(HttpStatus.NOT_FOUND, "User not found for id: " + id);
+    super("User not found for id: " + id);
   }
 
   public UserNotFoundException(Long id, Exception cause) {
-    super(HttpStatus.NOT_FOUND, "User not found for id: " + id, cause);
+    super("User not found for id: " + id, cause);
+  }
+
+  @Override
+  public HttpStatus getHttpStatus() {
+    return HttpStatus.NOT_FOUND;
   }
 }

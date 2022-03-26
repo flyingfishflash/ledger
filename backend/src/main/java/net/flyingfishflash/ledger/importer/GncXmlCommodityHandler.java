@@ -80,13 +80,15 @@ public class GncXmlCommodityHandler extends DefaultHandler {
       case GncXmlHelper.TAG_SLOT_VALUE:
         slotTagAttribute = attributes.getValue(GncXmlHelper.ATTR_KEY_TYPE);
         break;
+
+      default:
     }
   }
 
   @Override
   public void endElement(String uri, String localName, String qualifiedName) throws SAXException {
 
-    String characterString = stringBuilder.toString().trim();
+    var characterString = stringBuilder.toString().trim();
 
     if (stringBuilder.length() == 0) {
       characterString = null;
@@ -102,8 +104,8 @@ public class GncXmlCommodityHandler extends DefaultHandler {
           nodeCountDataCommodityCount = Integer.parseInt(characterString);
           gnucashFileImportStatus.setCommoditiesGncCount(nodeCountDataCommodityCount);
           logger.info(
-              nodeCountDataCommodityCount
-                  + " indicated by gnc:count-data cd:type=\"commodity\" (does not include templates)");
+              "{} indicated by gnc:count-data cd:type=\"commodity\" (does not include templates)",
+              nodeCountDataCommodityCount);
           if (nodeCountDataCommodityCount > 0) {
             gncCommodities = new ArrayList<>(nodeCountDataCommodityCount);
           }
@@ -145,16 +147,14 @@ public class GncXmlCommodityHandler extends DefaultHandler {
 
       case GncXmlHelper.TAG_COMMODITY_GET_QUOTES:
         /* TODO: Handle potential NullPointerException */
-        if (!characterString.equals("currency")) {
+        if (!"currency".equals(characterString)) {
           gncCommodity.setQuoteRemote(true);
         }
         break;
 
       case GncXmlHelper.TAG_SLOT_KEY:
-        switch (characterString) {
-          case GncXmlHelper.KEY_USER_SYMBOL:
-            inSlotCommodityUserSymbol = true;
-            break;
+        if (GncXmlHelper.KEY_USER_SYMBOL.equals(characterString)) {
+          inSlotCommodityUserSymbol = true;
         }
         break;
 
@@ -169,6 +169,8 @@ public class GncXmlCommodityHandler extends DefaultHandler {
         gncCommodities.add(gncCommodity);
         inNodeCommodity = false;
         break;
+
+      default:
     }
 
     stringBuilder.setLength(0);
@@ -189,7 +191,7 @@ public class GncXmlCommodityHandler extends DefaultHandler {
   private void sendToAdapter() {
 
     gnucashFileImportStatus.setCommoditiesSentToAdapter(gncCommodities.size());
-    logger.info(gncCommodities.size() + " sent to the adapter");
+    logger.info("{} sent to the adapter", gncCommodities.size());
     commodityAdapter.addRecords(gncCommodities);
     gncCommodities = new ArrayList<>();
   }

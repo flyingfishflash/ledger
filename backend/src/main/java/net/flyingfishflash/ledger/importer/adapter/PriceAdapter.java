@@ -32,8 +32,6 @@ public class PriceAdapter {
 
   private GnucashFileImportStatus gnucashFileImportStatus;
 
-  private List<Price> prices;
-
   /**
    * Class constructor.
    *
@@ -62,17 +60,19 @@ public class PriceAdapter {
 
     String currencyMnemonic;
 
+    List<Price> prices;
+
     /* Sort the accumulated prices by timestamp in ascending order */
     Comparator<GncPrice> gncPriceComparator =
         (comparing(GncPrice::getDate, Comparator.nullsFirst(Comparator.naturalOrder())));
 
     gncPrices.sort(gncPriceComparator);
 
-    prices = new ArrayList<Price>(gncPrices.size());
+    prices = new ArrayList<>(gncPrices.size());
 
     for (GncPrice gncPrice : gncPrices) {
 
-      Price price = priceService.newPrice();
+      var price = priceService.newPrice();
       price.setGuid(gncPrice.getGuid());
       price.setDate(gncPrice.getDate());
       price.setSource(gncPrice.getSource());
@@ -85,7 +85,7 @@ public class PriceAdapter {
       /* Attempt to set the currency */
       currencyMnemonic = gncPrice.getCurrencyId();
       try {
-        String currency = Monetary.getCurrency(currencyMnemonic).toString();
+        var currency = Monetary.getCurrency(currencyMnemonic).toString();
         price.setCurrency(currency);
       } catch (UnknownCurrencyException e) {
         /* TODO: Throw GncImportException with UnknownCurrencyException as the cause */
@@ -102,8 +102,9 @@ public class PriceAdapter {
     }
 
     priceService.saveAllPrices(prices);
-    logger.info(prices.size() + " persisted");
+    logger.info("{} persisted", prices.size());
     gnucashFileImportStatus.setPricesPersisted(prices.size());
-    prices = null;
+    // TODO verify if it's neccessary to null out the price list
+    // prices = null;
   }
 }

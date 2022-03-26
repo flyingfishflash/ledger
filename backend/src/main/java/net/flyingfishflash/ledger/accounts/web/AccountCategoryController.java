@@ -6,8 +6,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,8 +23,6 @@ import net.flyingfishflash.ledger.foundation.validators.Enum;
 @RequestMapping("api/v1/ledger/account-categories")
 public class AccountCategoryController {
 
-  private static final Logger logger = LoggerFactory.getLogger(AccountCategoryController.class);
-
   @Autowired AccountCategoryService accountCategoryService;
 
   // Obtain the List of Account Categories
@@ -42,7 +38,6 @@ public class AccountCategoryController {
   @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
   public AccountCategory findAccountCategoriesByType(
       @RequestParam(name = "type") @Enum(enumClass = AccountType.class) String type) {
-    // String z = type.toString();
     return accountCategoryService.findAccountCategoryByType(type);
   }
 }

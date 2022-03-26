@@ -102,12 +102,12 @@ jacocoTestReport {
 }
 
 compileJava {
-    options.release = 15
+    options.release.set(15)
 }
 
 spotless {
     format 'misc', {
-        target '*.gradle', '*.md', '.gitignore'
+        target '*.gradle', '*.md', '*.xml', '.gitignore'
         trimTrailingWhitespace()
         indentWithSpaces()
         endWithNewline()

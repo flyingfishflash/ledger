@@ -1,6 +1,6 @@
 package net.flyingfishflash.ledger.foundation.response.structure.success;
 
-import net.flyingfishflash.ledger.foundation.response.structure.ResponseApiStatusCode;
+import net.flyingfishflash.ledger.foundation.response.structure.ApiStatusCode;
 
 public class SuccessResponse<T> {
 
@@ -9,22 +9,22 @@ public class SuccessResponse<T> {
 
   public SuccessResponse(T object) {
     this.response = new SuccessResponseStructure<>(object);
-    this.status = ResponseApiStatusCode.Success.name().toLowerCase();
+    this.status = ApiStatusCode.SUCCESS.name().toLowerCase();
   }
 
   public SuccessResponse(T object, String message) {
     this.response = new SuccessResponseStructure<>(object, message);
-    this.status = ResponseApiStatusCode.Success.name().toLowerCase();
+    this.status = ApiStatusCode.SUCCESS.name().toLowerCase();
   }
 
   public SuccessResponse(T object, Integer length, String message) {
     this.response = new SuccessResponseStructure<>(object, length, message);
-    this.status = ResponseApiStatusCode.Success.name().toLowerCase();
+    this.status = ApiStatusCode.SUCCESS.name().toLowerCase();
   }
 
   public SuccessResponse(T object, Integer length) {
     this.response = new SuccessResponseStructure<>(object, length);
-    this.status = ResponseApiStatusCode.Success.name().toLowerCase();
+    this.status = ApiStatusCode.SUCCESS.name().toLowerCase();
   }
 
   public SuccessResponseStructure<T> getResponse() {

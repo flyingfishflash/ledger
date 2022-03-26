@@ -13,7 +13,7 @@ public class FlyWayConfiguration {
 
   @Bean
   public Flyway flyway(DataSource dataSource) {
-    Flyway flyway =
+    var flyway =
         Flyway.configure()
             .locations("db/migration/" + TenantIdentifierResolver.COMMON)
             .dataSource(dataSource)

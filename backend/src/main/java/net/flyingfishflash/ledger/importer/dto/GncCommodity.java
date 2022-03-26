@@ -10,8 +10,6 @@ public class GncCommodity {
   private int smallestFraction = 100;
   private boolean quoteRemote = false;
 
-  public GncCommodity() {}
-
   public String getNamespace() {
     return namespace;
   }

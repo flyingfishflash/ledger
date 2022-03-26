@@ -17,11 +17,11 @@ public class AccountCategoryTests {
     assertEquals(6, AccountCategory.values().length);
     List<AccountCategory> accountCategoryList = Arrays.asList(AccountCategory.values());
     accountCategoryList.sort(Comparator.comparing(AccountCategory::name));
-    assertEquals(AccountCategory.Asset, accountCategoryList.get(0));
-    assertEquals(AccountCategory.Equity, accountCategoryList.get(1));
-    assertEquals(AccountCategory.Expense, accountCategoryList.get(2));
-    assertEquals(AccountCategory.Income, accountCategoryList.get(3));
-    assertEquals(AccountCategory.Liability, accountCategoryList.get(4));
-    assertEquals(AccountCategory.Root, accountCategoryList.get(5));
+    assertEquals(AccountCategory.ASSET, accountCategoryList.get(0));
+    assertEquals(AccountCategory.EQUITY, accountCategoryList.get(1));
+    assertEquals(AccountCategory.EXPENSE, accountCategoryList.get(2));
+    assertEquals(AccountCategory.INCOME, accountCategoryList.get(3));
+    assertEquals(AccountCategory.LIABILITY, accountCategoryList.get(4));
+    assertEquals(AccountCategory.ROOT, accountCategoryList.get(5));
   }
 }

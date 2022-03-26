@@ -32,8 +32,6 @@ public class TransactionAdapter {
   private final AccountService accountService;
   private GnucashFileImportStatus gnucashFileImportStatus;
 
-  private List<Transaction> transactions;
-
   public TransactionAdapter(
       TransactionService transactionService,
       AccountService accountService,
@@ -45,11 +43,11 @@ public class TransactionAdapter {
 
   public void addRecords(List<GncTransaction> gncTransactions) {
 
-    transactions = new ArrayList<>(gncTransactions.size());
+    List<Transaction> transactions = new ArrayList<>(gncTransactions.size());
 
     for (GncTransaction gncTransaction : gncTransactions) {
 
-      Transaction transaction = new Transaction();
+      var transaction = new Transaction();
       transaction.setGuid(gncTransaction.getGuid());
       transaction.setDescription(gncTransaction.getDescription());
       transaction.setNum(gncTransaction.getNum());
@@ -57,7 +55,7 @@ public class TransactionAdapter {
 
       /* Set the transaction currency. Only ISO 4217 currencies are permitted */
       try {
-        String currency = Monetary.getCurrency(gncTransaction.getCurrency()).toString();
+        var currency = Monetary.getCurrency(gncTransaction.getCurrency()).toString();
         transaction.setCurrency(currency);
       } catch (UnknownCurrencyException e) {
         /* TODO: Throw GncImportException with UnknownCurrencyException as the cause */
@@ -69,7 +67,7 @@ public class TransactionAdapter {
       gncTransactionSplits = gncTransaction.getSplits();
 
       for (GncSplit gncSplit : gncTransactionSplits) {
-        Entry entry = new Entry();
+        var entry = new Entry();
         entry.setGuid(gncSplit.getGuid());
         entry.setMemo(gncSplit.getMemo());
 
@@ -92,19 +90,19 @@ public class TransactionAdapter {
         try {
           quantity = GncXmlHelper.parseSplitAmount(gncSplit.getQuantity()).abs();
         } catch (ParseException e) {
-          throw new RuntimeException("error parsing: " + gncSplit.getQuantity(), e);
+          throw new IllegalStateException("error parsing: " + gncSplit.getQuantity(), e);
         }
         try {
           value = GncXmlHelper.parseSplitAmount(gncSplit.getValue()).abs();
         } catch (ParseException e) {
-          throw new RuntimeException("error parsing: " + gncSplit.getValue(), e);
+          throw new IllegalStateException("error parsing: " + gncSplit.getValue(), e);
         }
 
         /* Tied to the entry's account commodity */
         entry.setQuantity(quantity);
 
         /* Tied to the transaction currency */
-        Money money = Money.of(value, transaction.getCurrency());
+        var money = Money.of(value, transaction.getCurrency());
         entry.setValue(money);
 
         transaction.addEntry(entry);
@@ -114,14 +112,14 @@ public class TransactionAdapter {
 
       /* Check if transaction is imbalanced */
       /* TODO: Handle imbalanced split, assign to Imbalance account */
-      Entry imbalancedEntry = transaction.createAutoBalanceEntry();
+      var imbalancedEntry = transaction.createAutoBalanceEntry();
       if (imbalancedEntry != null) {
-        throw new RuntimeException("Unbalanced Entry: " + imbalancedEntry.toString());
+        throw new IllegalStateException("Unbalanced Entry: " + imbalancedEntry.toString());
       }
     }
 
     transactionService.saveAllTransactions(transactions);
-    logger.info(transactions.size() + " persisted");
+    logger.info("{} persisted", transactions.size());
     gnucashFileImportStatus.setTransactionsPersisted(transactions.size());
   }
 }

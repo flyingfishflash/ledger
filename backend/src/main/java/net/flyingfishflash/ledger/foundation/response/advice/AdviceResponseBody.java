@@ -30,15 +30,18 @@ public class AdviceResponseBody implements ResponseBodyAdvice<Object> {
       Class aClass,
       ServerHttpRequest serverHttpRequest,
       ServerHttpResponse serverHttpResponse) {
-    if (methodParameter.getContainingClass().isAnnotationPresent(RestController.class)) {
 
-      if (methodParameter.getMethod().isAnnotationPresent(IgnoreResponseBinding.class) == false) {
-        if ((!(o instanceof ErrorResponse)) && (!(o instanceof SuccessResponse))) {
-          SuccessResponse<Object> responseBody = new SuccessResponse<>(o);
-          return responseBody;
-        }
-      }
+    var method = methodParameter.getMethod();
+
+    if (methodParameter.getContainingClass().isAnnotationPresent(RestController.class)
+        && (method != null)
+        && !(method.isAnnotationPresent(IgnoreResponseBinding.class))
+        && !(o instanceof ErrorResponse)
+        && !(o instanceof SuccessResponse)) {
+
+      return new SuccessResponse<>(o);
     }
+
     return o;
   }
 }

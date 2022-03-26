@@ -22,10 +22,9 @@ public class CustomInvalidSessionStrategy implements InvalidSessionStrategy {
       throws IOException, ServletException {
 
     logger.debug(
-        "Invalid session requested ("
-            + request.getRequestedSessionId()
-            + ")detected when requesting URI: "
-            + request.getRequestURI());
+        "Invalid session requested ({})detected when requesting URI: {}",
+        request.getRequestURI(),
+        request.getRequestedSessionId());
 
     throw new InsufficientAuthenticationException(
         "Full authentication is required to access this resource",

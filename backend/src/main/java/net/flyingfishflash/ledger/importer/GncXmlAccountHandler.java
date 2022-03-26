@@ -83,6 +83,7 @@ public class GncXmlAccountHandler extends DefaultHandler {
           inNodeCountDataAccount = true;
         }
         break;
+      default:
     }
   }
 
@@ -144,14 +145,19 @@ public class GncXmlAccountHandler extends DefaultHandler {
         break;
 
       case GncXmlHelper.TAG_SLOT_KEY:
-        switch (elementData) {
-          case GncXmlHelper.KEY_PLACEHOLDER:
-            inPlaceHolderSlot = true;
-            break;
+        if (elementData != null) {
+          switch (elementData) {
+            case GncXmlHelper.KEY_PLACEHOLDER:
+              inPlaceHolderSlot = true;
+              break;
 
-          case GncXmlHelper.KEY_NOTES:
-            inNodeSlot = true;
-            break;
+            case GncXmlHelper.KEY_NOTES:
+              inNodeSlot = true;
+              break;
+            default:
+          }
+        } else {
+          logger.info("when processing TAG_SLOT_KEY, element data was unexpectedly null");
         }
         break;
 
@@ -176,6 +182,7 @@ public class GncXmlAccountHandler extends DefaultHandler {
       case GncXmlHelper.TAG_TEMPLATE_TRANSACTIONS:
         inNodeTemplateTransactions = false;
         break;
+      default:
     }
 
     content.setLength(0);
@@ -197,8 +204,8 @@ public class GncXmlAccountHandler extends DefaultHandler {
 
   private void sendToAdapter() {
 
-    logger.info(nodeCountDataAccountCount + " indicated by gnc:count-data cd:type=\"account\"");
-    logger.info(gncAccounts.size() + " sent to the adapter");
+    logger.info("{} indicated by gnc:count-data cd:type=\"account\"", nodeCountDataAccountCount);
+    logger.info("{} sent to the adapter", gncAccounts.size());
     gnucashFileImportStatus.setAccountsGncCount(gncAccounts.size());
     gnucashFileImportStatus.setAccountsSentToAdapter(nodeCountDataAccountCount);
 

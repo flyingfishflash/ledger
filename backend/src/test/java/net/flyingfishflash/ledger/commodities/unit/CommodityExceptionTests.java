@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import net.flyingfishflash.ledger.commodities.exceptions.CommodityCreateException;
-import net.flyingfishflash.ledger.commodities.exceptions.CommodityException;
 import net.flyingfishflash.ledger.commodities.exceptions.CommodityNotFoundException;
+import net.flyingfishflash.ledger.commodities.exceptions.GeneralCommodityException;
 
 public class CommodityExceptionTests {
 
-  private static class TestCommodityException extends CommodityException {
+  private static class TestCommodityException extends GeneralCommodityException {
 
     private TestCommodityException() {
       super("Test Commodity Exception");

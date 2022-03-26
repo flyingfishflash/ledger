@@ -30,7 +30,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
       HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
       throws IOException, ServletException {
 
-    logger.info("* Authentication Exception: " + exception.getLocalizedMessage());
+    logger.info("* Authentication Exception: {}", exception.getLocalizedMessage());
 
     resolver.resolveException(request, response, null, exception);
   }

@@ -24,75 +24,75 @@ public class AccountTypeServiceTests {
   public void testFindAllAccountTypesContents() {
     List<AccountType> accountTypeList = accountTypeService.findAllAccountTypes();
     accountTypeList.sort(Comparator.comparing(AccountType::name));
-    assertEquals(AccountType.Asset, accountTypeList.get(0));
-    assertEquals(AccountType.Bank, accountTypeList.get(1));
-    assertEquals(AccountType.Cash, accountTypeList.get(2));
-    assertEquals(AccountType.Credit, accountTypeList.get(3));
-    assertEquals(AccountType.Equity, accountTypeList.get(4));
-    assertEquals(AccountType.Expense, accountTypeList.get(5));
-    assertEquals(AccountType.Income, accountTypeList.get(6));
-    assertEquals(AccountType.Liability, accountTypeList.get(7));
-    assertEquals(AccountType.Mutual, accountTypeList.get(8));
-    assertEquals(AccountType.Root, accountTypeList.get(9));
-    assertEquals(AccountType.Stock, accountTypeList.get(10));
+    assertEquals(AccountType.ASSET, accountTypeList.get(0));
+    assertEquals(AccountType.BANK, accountTypeList.get(1));
+    assertEquals(AccountType.CASH, accountTypeList.get(2));
+    assertEquals(AccountType.CREDIT, accountTypeList.get(3));
+    assertEquals(AccountType.EQUITY, accountTypeList.get(4));
+    assertEquals(AccountType.EXPENSE, accountTypeList.get(5));
+    assertEquals(AccountType.INCOME, accountTypeList.get(6));
+    assertEquals(AccountType.LIABILITY, accountTypeList.get(7));
+    assertEquals(AccountType.MUTUAL, accountTypeList.get(8));
+    assertEquals(AccountType.ROOT, accountTypeList.get(9));
+    assertEquals(AccountType.STOCK, accountTypeList.get(10));
   }
 
   @Test
   public void testFindAccountTypesByCategoryWhenCategoryIsAsset() {
     List<AccountType> accountTypeList =
-        accountTypeService.findAccountTypesByCategory(AccountCategory.Asset.toString());
+        accountTypeService.findAccountTypesByCategory(AccountCategory.ASSET.toString());
     assertEquals(5, accountTypeList.size());
     accountTypeList.sort(Comparator.comparing(AccountType::name));
-    assertEquals(AccountType.Asset, accountTypeList.get(0));
-    assertEquals(AccountType.Bank, accountTypeList.get(1));
-    assertEquals(AccountType.Cash, accountTypeList.get(2));
-    assertEquals(AccountType.Mutual, accountTypeList.get(3));
-    assertEquals(AccountType.Stock, accountTypeList.get(4));
+    assertEquals(AccountType.ASSET, accountTypeList.get(0));
+    assertEquals(AccountType.BANK, accountTypeList.get(1));
+    assertEquals(AccountType.CASH, accountTypeList.get(2));
+    assertEquals(AccountType.MUTUAL, accountTypeList.get(3));
+    assertEquals(AccountType.STOCK, accountTypeList.get(4));
   }
 
   @Test
   public void testFindAccountTypesByCategoryWhenCategoryIsEquity() {
     List<AccountType> accountTypeList =
-        accountTypeService.findAccountTypesByCategory(AccountCategory.Equity.toString());
+        accountTypeService.findAccountTypesByCategory(AccountCategory.EQUITY.toString());
     assertEquals(1, accountTypeList.size());
     accountTypeList.sort(Comparator.comparing(AccountType::name));
-    assertEquals(AccountType.Equity, accountTypeList.get(0));
+    assertEquals(AccountType.EQUITY, accountTypeList.get(0));
   }
 
   @Test
   public void testFindAccountTypesByCategoryWhenCategoryIsExpense() {
     List<AccountType> accountTypeList =
-        accountTypeService.findAccountTypesByCategory(AccountCategory.Expense.toString());
+        accountTypeService.findAccountTypesByCategory(AccountCategory.EXPENSE.toString());
     assertEquals(1, accountTypeList.size());
     accountTypeList.sort(Comparator.comparing(AccountType::name));
-    assertEquals(AccountType.Expense, accountTypeList.get(0));
+    assertEquals(AccountType.EXPENSE, accountTypeList.get(0));
   }
 
   @Test
   public void testFindAccountTypesByCategoryWhenCategoryIsIncome() {
     List<AccountType> accountTypeList =
-        accountTypeService.findAccountTypesByCategory(AccountCategory.Income.toString());
+        accountTypeService.findAccountTypesByCategory(AccountCategory.INCOME.toString());
     assertEquals(1, accountTypeList.size());
     accountTypeList.sort(Comparator.comparing(AccountType::name));
-    assertEquals(AccountType.Income, accountTypeList.get(0));
+    assertEquals(AccountType.INCOME, accountTypeList.get(0));
   }
 
   @Test
   public void testFindAccountTypesByCategoryWhenCategoryIsLiability() {
     List<AccountType> accountTypeList =
-        accountTypeService.findAccountTypesByCategory(AccountCategory.Liability.toString());
+        accountTypeService.findAccountTypesByCategory(AccountCategory.LIABILITY.toString());
     assertEquals(2, accountTypeList.size());
     accountTypeList.sort(Comparator.comparing(AccountType::name));
-    assertEquals(AccountType.Credit, accountTypeList.get(0));
-    assertEquals(AccountType.Liability, accountTypeList.get(1));
+    assertEquals(AccountType.CREDIT, accountTypeList.get(0));
+    assertEquals(AccountType.LIABILITY, accountTypeList.get(1));
   }
 
   @Test
   public void testFindAccountTypesByCategoryWhenCategoryIsRoot() {
     List<AccountType> accountTypeList =
-        accountTypeService.findAccountTypesByCategory(AccountCategory.Root.toString());
+        accountTypeService.findAccountTypesByCategory(AccountCategory.ROOT.toString());
     assertEquals(1, accountTypeList.size());
     accountTypeList.sort(Comparator.comparing(AccountType::name));
-    assertEquals(AccountType.Root, accountTypeList.get(0));
+    assertEquals(AccountType.ROOT, accountTypeList.get(0));
   }
 }

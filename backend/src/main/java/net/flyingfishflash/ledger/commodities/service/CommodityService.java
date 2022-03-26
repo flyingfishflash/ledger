@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import net.flyingfishflash.ledger.commodities.data.Commodity;
@@ -16,8 +14,6 @@ import net.flyingfishflash.ledger.foundation.IdentifierFactory;
 @Service
 @Transactional
 public class CommodityService {
-
-  private static final Logger logger = LoggerFactory.getLogger(CommodityService.class);
 
   private final CommodityRepository commodityRepository;
 

@@ -3,7 +3,7 @@ package net.flyingfishflash.ledger.foundation;
 import java.util.UUID;
 
 /** The IdentifierFactory is responsible for generating unique identifiers for domain objects. */
-public class IdentifierFactory {
+public final class IdentifierFactory {
 
   private static final IdentifierFactory INSTANCE;
 

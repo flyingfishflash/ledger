@@ -2,8 +2,6 @@ package net.flyingfishflash.ledger.transactions.service;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,8 +11,6 @@ import net.flyingfishflash.ledger.transactions.data.TransactionRepository;
 @Service
 @Transactional
 public class TransactionService {
-
-  private static final Logger logger = LoggerFactory.getLogger(TransactionService.class);
 
   private TransactionRepository transactionRepository;
 

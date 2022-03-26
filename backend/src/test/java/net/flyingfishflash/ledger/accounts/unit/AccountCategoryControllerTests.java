@@ -74,7 +74,7 @@ public class AccountCategoryControllerTests {
   public void testFindAccountCategoryByType() throws Exception {
 
     given(accountCategoryService.findAccountCategoryByType("Asset"))
-        .willReturn(accountCategoryServiceReal.findAccountCategoryByType(AccountType.Asset.name()));
+        .willReturn(accountCategoryServiceReal.findAccountCategoryByType(AccountType.ASSET.name()));
 
     MockHttpServletResponse response =
         mvc.perform(get("/api/v1/ledger/account-categories/by-type?type=Asset"))
@@ -88,7 +88,7 @@ public class AccountCategoryControllerTests {
             jsonAccountCategory
                 .write(
                     accountCategoryServiceReal.findAccountCategoryByType(
-                        AccountType.Asset.toString()))
+                        AccountType.ASSET.toString()))
                 .getJson());
   }
 }

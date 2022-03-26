@@ -5,26 +5,31 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import net.flyingfishflash.ledger.foundation.users.exceptions.GeneralUserException;
 import net.flyingfishflash.ledger.foundation.users.exceptions.UserCreateException;
-import net.flyingfishflash.ledger.foundation.users.exceptions.UserException;
 import net.flyingfishflash.ledger.foundation.users.exceptions.UserNotFoundException;
 
 public class UserExceptionTests {
 
-  private final UserException userException = new UserNotFoundException(1L);
+  private final GeneralUserException userException = new UserNotFoundException(1L);
 
   @Test
-  public void testUserException_getHttpStatus() {
+  void testUserException_getHttpStatus() {
     assertEquals(HttpStatus.NOT_FOUND, userException.getHttpStatus());
   }
 
   @Test
-  public void testUserException_getErrorDomain() {
-    assertEquals("User", userException.getErrorDomain());
+  void testUserException_getErrorDomain() {
+    assertEquals("Users", userException.getErrorDomain());
   }
 
   @Test
-  public void testUserCreateException() {
+  void testUserException_getErrorSubject() {
+    assertEquals("User", userException.getErrorSubject());
+  }
+
+  @Test
+  void testUserCreateException() {
 
     String expectedMessage = "Expected UserCreateException Message";
 

@@ -115,12 +115,15 @@ public class Transaction {
 
   private Money getImbalance() {
 
-    Money imbalance = Money.of(0, Monetary.getCurrency(this.getCurrency()));
+    var imbalance = Money.of(0, Monetary.getCurrency(this.getCurrency()));
 
     for (Entry entry : entries) {
       Money amount = entry.getValue();
-      if (entry.getType() == EntryType.DEBIT) imbalance = imbalance.subtract(amount);
-      else imbalance = imbalance.add(amount);
+      if (entry.getType() == EntryType.DEBIT) {
+        imbalance = imbalance.subtract(amount);
+      } else {
+        imbalance = imbalance.add(amount);
+      }
     }
     return imbalance;
   }
@@ -129,7 +132,7 @@ public class Transaction {
 
     Money imbalance = getImbalance(); // returns imbalance of 0 for multicurrency transactions
     if (!imbalance.isZero()) {
-      Entry entry = new Entry();
+      var entry = new Entry();
       entry.setType(imbalance.isNegative() ? EntryType.CREDIT : EntryType.DEBIT);
       // addLedgerItem(entry);
       return entry;

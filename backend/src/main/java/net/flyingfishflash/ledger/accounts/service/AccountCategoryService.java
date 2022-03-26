@@ -15,7 +15,7 @@ public class AccountCategoryService {
   public List<AccountCategory> findAllAccountCategories() {
 
     List<AccountCategory> categories = new LinkedList<>(Arrays.asList(AccountCategory.values()));
-    categories.remove(AccountCategory.Root);
+    categories.remove(AccountCategory.ROOT);
 
     return categories;
   }

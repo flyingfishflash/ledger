@@ -10,5 +10,5 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface PriceRepository extends PagingAndSortingRepository<Price, Long> {
 
-  public Optional<Price> findByGuid(String guid);
+  Optional<Price> findByGuid(String guid);
 }

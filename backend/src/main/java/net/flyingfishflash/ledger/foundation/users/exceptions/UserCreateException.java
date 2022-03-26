@@ -2,13 +2,18 @@ package net.flyingfishflash.ledger.foundation.users.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class UserCreateException extends UserException {
+public class UserCreateException extends GeneralUserException implements UserException {
 
   public UserCreateException(String message) {
-    super(HttpStatus.BAD_REQUEST, message);
+    super(message);
   }
 
   public UserCreateException(String message, RuntimeException cause) {
-    super(HttpStatus.BAD_REQUEST, message, cause);
+    super(message, cause);
+  }
+
+  @Override
+  public HttpStatus getHttpStatus() {
+    return HttpStatus.BAD_REQUEST;
   }
 }

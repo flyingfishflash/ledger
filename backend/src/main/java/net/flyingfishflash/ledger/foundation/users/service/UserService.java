@@ -10,10 +10,7 @@ import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
-import javax.validation.Validator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -34,8 +31,6 @@ import net.flyingfishflash.ledger.foundation.users.exceptions.UserNotFoundExcept
 @Service
 @Transactional
 public class UserService implements UserDetailsService {
-
-  private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
   private final UserRepository userRepository;
 
@@ -81,18 +76,18 @@ public class UserService implements UserDetailsService {
 
   public void createUser(UserCreateRequest userSignUpRequest) {
 
-    if (userRepository.existsByUsername(userSignUpRequest.getUsername())) {
+    if (Boolean.TRUE.equals(userRepository.existsByUsername(userSignUpRequest.getUsername()))) {
       throw new UserCreateException(
           "Username " + userSignUpRequest.getUsername() + " is already in use.");
     }
 
-    if (userRepository.existsByEmail(userSignUpRequest.getEmail())) {
+    if (Boolean.TRUE.equals(userRepository.existsByEmail(userSignUpRequest.getEmail()))) {
       throw new UserCreateException(
           "Email " + userSignUpRequest.getEmail() + " is already in use.");
     }
 
     // TODO: should be replaced by form validation
-    if (userSignUpRequest.getRoles() == null || userSignUpRequest.getRoles().size() < 1) {
+    if (userSignUpRequest.getRoles() == null || userSignUpRequest.getRoles().isEmpty()) {
       throw new UserCreateException("At least one role must be assigned to a user.");
     }
 
@@ -101,7 +96,7 @@ public class UserService implements UserDetailsService {
       throw new UserCreateException("Only a single role may be assigned to a user.");
     }
 
-    User user =
+    var user =
         new User(
             userSignUpRequest.getUsername(),
             encoder.encode(userSignUpRequest.getPassword()),
@@ -154,15 +149,14 @@ public class UserService implements UserDetailsService {
 
   public UserProfileResponse profileById(Long userId) {
 
-    User user =
-        userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+    var user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
     return userProfileMapper.mapEntityModelToResponseModel(user);
   }
 
   public UserProfileResponse profileByUsername(String username) {
 
-    User user =
+    var user =
         userRepository
             .findByUsername(username)
             .orElseThrow(() -> new UserNotFoundException(username));
@@ -172,12 +166,11 @@ public class UserService implements UserDetailsService {
 
   public UserProfileResponse profilePatch(Long userId, Map<String, Object> patchRequest) {
 
-    User user =
-        userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+    var user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
-    UserProfileRequest userProfileRequest = userProfileMapper.mapEntityModelToRequestModel(user);
+    var userProfileRequest = userProfileMapper.mapEntityModelToRequestModel(user);
 
-    if (patchRequest.size() > 0) {
+    if (!patchRequest.isEmpty()) {
       for (Entry<String, Object> entry : patchRequest.entrySet()) {
         String change = entry.getKey();
         Object value = entry.getValue();
@@ -186,11 +179,12 @@ public class UserService implements UserDetailsService {
           case "firstName" -> userProfileRequest.setFirstName((String) value);
           case "lastName" -> userProfileRequest.setLastName((String) value);
           case "password" -> userProfileRequest.setPassword(encoder.encode((String) value));
+          default -> throw new IllegalStateException("Unexpected value: " + change);
         }
       }
     }
 
-    Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+    var validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     Set<ConstraintViolation<UserProfileRequest>> violations =
         validator.validate(userProfileRequest);

@@ -12,11 +12,9 @@ import java.util.zip.GZIPInputStream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +22,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 import net.flyingfishflash.ledger.accounts.service.AccountService;
@@ -91,9 +88,17 @@ public class GnucashFileImportService {
     BufferedInputStream bufferedInputStream;
 
     /* Check if the FileInputStream is compressed with gzip */
-    PushbackInputStream pb = new PushbackInputStream(gncFileInputStream, 2);
-    byte[] signature = new byte[2];
-    pb.read(signature);
+    var pb = new PushbackInputStream(gncFileInputStream, 2);
+    var signature = new byte[2];
+    var offset = 0;
+    var bytesRead = 0;
+    while ((bytesRead = pb.read(signature, offset, signature.length - offset)) != -1) {
+      offset += bytesRead;
+      if (offset >= signature.length) {
+        break;
+      }
+    }
+
     pb.unread(signature);
     if (signature[0] == (byte) 0x1f && signature[1] == (byte) 0x8b) {
       bufferedInputStream = new BufferedInputStream(new GZIPInputStream(pb));
@@ -101,10 +106,13 @@ public class GnucashFileImportService {
       bufferedInputStream = new BufferedInputStream(pb);
     }
 
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    byte[] buf = new byte[1024];
-    int n = 0;
-    while ((n = bufferedInputStream.read(buf)) >= 0) baos.write(buf, 0, n);
+    var baos = new ByteArrayOutputStream();
+    var buf = new byte[1024];
+    var n = 0;
+    while ((n = bufferedInputStream.read(buf)) >= 0) {
+      baos.write(buf, 0, n);
+    }
+    bufferedInputStream.close();
     byte[] gncXmlByteArray = baos.toByteArray();
 
     /*
@@ -160,8 +168,7 @@ public class GnucashFileImportService {
     entityManager.clear();
 
     long endTime = System.currentTimeMillis();
-    logger.info(String.format("total import time elapsed: %d s", (endTime - startTime) / 1000));
-    gncXmlByteArray = null;
+    logger.info("total import time elapsed: {}} s", (endTime - startTime) / 1000);
 
     gnucashFileImportStatus.setStatusComplete();
     sendImportStatusMessage("Finished");
@@ -170,21 +177,22 @@ public class GnucashFileImportService {
   private void parse(byte[] gncXmlByteArray, DefaultHandler handler)
       throws ParserConfigurationException, SAXException, IOException {
     long startTime = System.currentTimeMillis();
-    SAXParserFactory spf = SAXParserFactory.newInstance();
-    SAXParser sp = spf.newSAXParser();
-    XMLReader xr = sp.getXMLReader();
+    var spf = SAXParserFactory.newInstance();
+    var sp = spf.newSAXParser();
+    sp.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, ""); // Compliant
+    sp.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, ""); // compliant
+    var xr = sp.getXMLReader();
     InputStream inputStream = new ByteArrayInputStream(gncXmlByteArray);
     xr.setContentHandler(handler);
     xr.parse(new InputSource(inputStream));
     long stopTime = System.currentTimeMillis();
-    logger.info(
-        String.format(handler + " import time elapsed: %d s", (stopTime - startTime) / 1000));
+    logger.info("{} import time elapsed: {}} s", handler, (stopTime - startTime) / 1000);
   }
 
-  private void sendImportStatusMessage(String message) throws JsonProcessingException {
+  private void sendImportStatusMessage(String message) {
 
     // DateTimeFormatter inBuiltFormatter1 = DateTimeFormatter.ISO_DATE_TIME;
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS z");
+    var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS z");
 
     simpMessagingTemplate.convertAndSend(
         "/import/status/messages-user" + webSocketSessionId.getSessionId(),
@@ -192,7 +200,7 @@ public class GnucashFileImportService {
     this.sendImportStatusCounts();
   }
 
-  private void sendImportStatusCounts() throws JsonProcessingException {
+  private void sendImportStatusCounts() {
     simpMessagingTemplate.convertAndSend(
         "/import/status/counts-user" + webSocketSessionId.getSessionId(),
         "{ \"message\" : \"new counts available\" }");

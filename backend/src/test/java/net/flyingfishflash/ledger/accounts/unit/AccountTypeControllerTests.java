@@ -72,7 +72,7 @@ public class AccountTypeControllerTests {
 
     given(accountTypeService.findAccountTypesByCategory("Asset"))
         .willReturn(
-            accountTypeServiceReal.findAccountTypesByCategory(AccountCategory.Asset.name()));
+            accountTypeServiceReal.findAccountTypesByCategory(AccountCategory.ASSET.name()));
 
     MockHttpServletResponse response =
         mvc.perform(get("/api/v1/ledger/account-types/by-category?category=Asset"))
@@ -86,7 +86,7 @@ public class AccountTypeControllerTests {
             jsonAccountTypes
                 .write(
                     accountTypeServiceReal.findAccountTypesByCategory(
-                        AccountCategory.Asset.toString()))
+                        AccountCategory.ASSET.toString()))
                 .getJson());
   }
 }

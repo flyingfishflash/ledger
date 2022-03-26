@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="All Java Rules" xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+  <description>PMD Rules for Ledger</description>
+
+  <rule ref="category/java/bestpractices.xml" />
+
+  <rule ref="category/java/codestyle.xml">
+    <exclude name="AtLeastOneConstructor" />
+    <exclude name="LocalVariableCouldBeFinal" />
+    <exclude name="MethodArgumentCouldBeFinal" />
+  </rule>
+
+  <rule ref="category/java/codestyle.xml/LongVariable">
+    <properties>
+      <property name="minimum" value="32" />
+    </properties>
+  </rule>
+
+  <rule ref="category/java/design.xml">
+    <exclude name="LawOfDemeter" />
+  </rule>
+
+  <rule ref="category/java/design.xml/TooManyFields">
+    <properties>
+      <!-- increased from 15-->
+      <property name="maxfields" value="20" />
+    </properties>
+  </rule>
+
+  <rule ref="category/java/design.xml/UseUtilityClass">
+    <properties>
+      <property name="ignoredAnnotations" value="lombok.experimental.UtilityClass|org.springframework.boot.autoconfigure.SpringBootApplication" />
+    </properties>
+  </rule>
+
+  <rule ref="category/java/documentation.xml">
+    <exclude name="CommentRequired" />
+  </rule>
+
+  <rule ref="category/java/documentation.xml/CommentSize">
+    <properties>
+      <property name="maxLines" value="-1" />
+      <property name="maxLineLength" value="100" />
+    </properties>
+  </rule>
+
+  <rule ref="category/java/errorprone.xml" />
+
+  <rule ref="category/java/errorprone.xml/BeanMembersShouldSerialize">
+    <properties>
+      <property name="ignoredAnnotations" value="lombok.Data|lombok.Getter|lombok.Value|org.springframework.beans.factory.annotation.Autowired|org.springframework.context.annotation.Configuration|org.springframework.stereotype.Service;" />
+      <property name="prefix" value="" />
+    </properties>
+  </rule>
+
+  <rule ref="category/java/multithreading.xml" />
+
+  <rule ref="category/java/performance.xml" />
+
+  <rule ref="category/java/security.xml" />
+
+</ruleset>

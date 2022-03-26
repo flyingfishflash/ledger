@@ -9,10 +9,7 @@ import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
-import javax.validation.Validator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import net.flyingfishflash.ledger.books.data.Book;
@@ -24,8 +21,6 @@ import net.flyingfishflash.ledger.books.exceptions.BookNotFoundException;
 @Service
 @Transactional
 public class BookService {
-
-  private static final Logger logger = LoggerFactory.getLogger(BookService.class);
 
   private final BookRepository bookRepository;
 
@@ -58,22 +53,21 @@ public class BookService {
 
   public Book patchBook(Long bookId, Map<String, Object> patchRequest) {
 
-    Book book =
-        bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId));
+    var book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId));
 
-    BookRequest bookRequest = bookMapper.mapEntityModelToRequestModel(book);
+    var bookRequest = bookMapper.mapEntityModelToRequestModel(book);
 
-    if (patchRequest.size() > 0) {
+    if (!patchRequest.isEmpty()) {
       for (Entry<String, Object> entry : patchRequest.entrySet()) {
         String change = entry.getKey();
         Object value = entry.getValue();
-        switch (change) {
-          case "name" -> bookRequest.setName((String) value);
+        if ("name".equals(change)) {
+          bookRequest.setName((String) value);
         }
       }
     }
 
-    Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+    var validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     Set<ConstraintViolation<BookRequest>> violations = validator.validate(bookRequest);
 
