@@ -42,7 +42,7 @@ dependencies {
     implementation 'org.flywaydb:flyway-core:8.5.4'
     implementation 'commons-validator:commons-validator:1.7'
     runtimeOnly 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
-    testImplementation 'org.springframework.security:spring-security-test:5.5.0'
+    testImplementation 'org.springframework.security:spring-security-test:5.6.2'
     testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
 }
 
