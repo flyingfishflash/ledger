@@ -343,7 +343,7 @@ steps:
         from_secret: ssh_key
       script:
         - cd docker
-        - ansible-playbook dev.yaml -i inventory.yaml -e do=restart --tags=ledger
+        - ansible-playbook docker.yaml -i ansible/inventories/inventory.yaml -e do=restart --tags=ledger-dev
         # otherwise: docker-compose up stacks/ledger/docker-compose.yaml -d --remove-orphans
 
 ---
@@ -377,5 +377,5 @@ steps:
         from_secret: ssh_key
       script:
         - cd docker
-        - ansible-playbook prd.yaml -i inventory.yaml -e do=restart --tags=ledger
+        - ansible-playbook docker.yaml -i ansible/inventories/inventory.yaml -e do=restart --tags=ledger-prd
         # otherwise: docker-compose up stacks/ledger/docker-compose.yaml -d --remove-orphans
