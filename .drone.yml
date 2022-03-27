@@ -190,7 +190,7 @@ steps:
       - "verify postgres"
     commands:
       - >
-        gradle :backend:explodebootjar :backend:testClasses :backend:spotlessCheck
+        gradle :backend:explodebootjar :backend:copyBuildInfo :backend:testClasses :backend:spotlessCheck
       - >
         gradle :backend:test
       - >

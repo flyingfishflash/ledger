@@ -46,10 +46,17 @@ dependencies {
     testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
 }
 
-task explodeBootJar(type: Sync) {
+
+def explodeBootJar = tasks.register('explodeBootJar', Sync) {
     dependsOn bootJar
     into "$buildDir/boot_jar_exploded"
     from project.zipTree(bootJar.archiveFile)
+}
+
+def copyBuildInfo = tasks.register('copyBuildInfo', Copy) {
+    mustRunAfter explodeBootJar
+    from layout.buildDirectory.file("boot_jar_exploded/META-INF/build-info.properties")
+    into layout.buildDirectory.dir("boot_jar_exploded/BOOT-INF/classes/META-INF/")
 }
 
 task integrationTests(type: Test) {
@@ -121,6 +128,7 @@ spotless {
 
     springBoot {
         buildInfo {
+//            destinationDir.getText()
             properties {
                 artifact = 'ledger-backend'
                 name = 'Ledger'
