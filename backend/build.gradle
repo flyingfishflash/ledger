@@ -112,6 +112,21 @@ compileJava {
     options.release.set(15)
 }
 
+springBoot {
+    buildInfo {
+        properties {
+            artifact = 'ledger-backend'
+            name = 'Ledger'
+            version = scmVersion
+            additional = [
+                    'ciPlatform'  : ciPlatform,
+                    'ciPipelineId': ciPipelineId,
+                    'commit'      : scmCommit
+            ]
+        }
+    }
+}
+
 spotless {
     format 'misc', {
         target '*.gradle', '*.md', '*.xml', '.gitignore'
@@ -124,21 +139,5 @@ spotless {
         googleJavaFormat(googleJavaFormatVersion)
         trimTrailingWhitespace()
         importOrder('java', 'javax', 'com', 'org', 'net.flyingfishflash.ledger')
-    }
-
-    springBoot {
-        buildInfo {
-//            destinationDir.getText()
-            properties {
-                artifact = 'ledger-backend'
-                name = 'Ledger'
-                version = scmVersion
-                additional = [
-                        'ciPlatform': ciPlatform,
-                        'ciPipelineId': ciPipelineId,
-                        'commit': scmCommit
-                ]
-            }
-        }
     }
 }
