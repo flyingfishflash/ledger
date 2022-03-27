@@ -120,7 +120,7 @@ spotless {
     }
 
     springBoot {
-        buildInfo() {
+        buildInfo {
             properties {
                 artifact = 'ledger-backend'
                 name = 'Ledger'
