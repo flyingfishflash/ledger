@@ -25,10 +25,9 @@ import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
 @Transactional
 public class AccountRepository {
 
-  private static final Logger logger = LoggerFactory.getLogger(AccountRepository.class);
-
   @PersistenceContext private EntityManager entityManager;
 
+  private static final Logger logger = LoggerFactory.getLogger(AccountRepository.class);
   private final NestedNodeRepository<Long, Account> nodeRepository;
 
   public AccountRepository(NestedNodeRepository<Long, Account> nodeRepository) {
@@ -222,7 +221,9 @@ public class AccountRepository {
     }
   }
 
-  /** @return count of root level nodes in the account hierarchy */
+  /**
+   * @return count of root level nodes in the account hierarchy
+   */
   public Long rootLevelNodeCount() {
 
     try {

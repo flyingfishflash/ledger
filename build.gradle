@@ -8,7 +8,7 @@ ext {
 
 subprojects {
     ext {
-        googleJavaFormatVersion = "1.10.0"
+        googleJavaFormatVersion = "1.15.0"
         scmVersion = "./scripts/version.sh version".execute().text.trim()
         scmCommit = "./scripts/version.sh commit".execute().text.trim()
         ciPlatform = "./scripts/version.sh ci-platform".execute().text.trim()
