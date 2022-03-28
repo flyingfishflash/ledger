@@ -1,7 +1,10 @@
 package net.flyingfishflash.ledger.application.integration;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
@@ -21,7 +24,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 class ApplicationTests {
 
   @Test
-  void applicationContextLoads() {
+  void applicationContextLoads(ApplicationContext applicationContext) {
+    assertThat(applicationContext).isNotNull();
     System.out.println("\nApplication Integration Test\n");
   }
 }

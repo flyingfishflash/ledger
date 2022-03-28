@@ -20,7 +20,7 @@ import net.flyingfishflash.ledger.foundation.users.service.UserService;
       "spring.main.allow-bean-definition-overriding=true",
       // "spring.flyway.enabled=true",
     })
-public class UserControllerTests {
+class UserControllerTests {
 
   @Autowired private TestRestTemplate restTemplate;
 

@@ -29,7 +29,7 @@ import net.flyingfishflash.ledger.accounts.service.AccountCategoryService;
 import net.flyingfishflash.ledger.accounts.web.AccountCategoryController;
 
 @ExtendWith(MockitoExtension.class)
-public class AccountCategoryControllerTests {
+class AccountCategoryControllerTests {
 
   private MockMvc mvc;
 
@@ -53,7 +53,7 @@ public class AccountCategoryControllerTests {
   }
 
   @Test
-  public void testFindAllAccountCategories() throws Exception {
+  void testFindAllAccountCategories() throws Exception {
 
     given(accountCategoryService.findAllAccountCategories())
         .willReturn(accountCategoryServiceReal.findAllAccountCategories());
@@ -71,7 +71,7 @@ public class AccountCategoryControllerTests {
   }
 
   @Test
-  public void testFindAccountCategoryByType() throws Exception {
+  void testFindAccountCategoryByType() throws Exception {
 
     given(accountCategoryService.findAccountCategoryByType("Asset"))
         .willReturn(accountCategoryServiceReal.findAccountCategoryByType(AccountType.ASSET.name()));

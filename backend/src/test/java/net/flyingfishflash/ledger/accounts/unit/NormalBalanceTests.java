@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import net.flyingfishflash.ledger.accounts.data.NormalBalance;
 
-public class NormalBalanceTests {
+class NormalBalanceTests {
 
   @Test
-  public void testNormalBalanceInvert() {
+  void testNormalBalanceInvert() {
     assertEquals(NormalBalance.CREDIT, NormalBalance.DEBIT.invert());
     assertEquals(NormalBalance.DEBIT, NormalBalance.CREDIT.invert());
   }

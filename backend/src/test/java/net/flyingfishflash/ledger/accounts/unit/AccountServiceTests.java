@@ -36,20 +36,20 @@ import net.flyingfishflash.ledger.accounts.exceptions.PrevSiblingAccountNotFound
 import net.flyingfishflash.ledger.accounts.service.AccountService;
 
 @ExtendWith(MockitoExtension.class)
-public class AccountServiceTests {
+class AccountServiceTests {
 
   @Mock private AccountRepository accountRepository;
   @InjectMocks private AccountService accountService;
 
   @Test
-  public void testFindAccountById() {
+  void testFindAccountById() {
     when(accountRepository.findById(anyLong())).thenReturn(Optional.of(new Account()));
     accountService.findById(1L);
     verify(accountRepository).findById(anyLong());
   }
 
   @Test
-  public void testFindAccountById_AccountNotFoundException() {
+  void testFindAccountById_AccountNotFoundException() {
     Throwable exception =
         assertThrows(
             AccountNotFoundException.class,
@@ -61,14 +61,14 @@ public class AccountServiceTests {
   }
 
   @Test
-  public void testFindAccountByGuid() {
+  void testFindAccountByGuid() {
     when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(new Account()));
     accountService.findByGuid("Any Guid");
     verify(accountRepository).findByGuid(anyString());
   }
 
   @Test
-  public void testFindAccountByGuid_AccountNotFoundException() {
+  void testFindAccountByGuid_AccountNotFoundException() {
     Throwable exception =
         assertThrows(
             AccountNotFoundException.class,
@@ -80,7 +80,7 @@ public class AccountServiceTests {
   }
 
   @Test
-  public void testFindAllAccounts() {
+  void testFindAllAccounts() {
 
     when(accountRepository.findRoot()).thenReturn(Optional.of(accountId1()));
     when(accountRepository.getTreeAsList(any(Account.class))).thenReturn(allAccounts());
@@ -98,7 +98,7 @@ public class AccountServiceTests {
   }
 
   @Test
-  public void testGetBaseLevelParent() {
+  void testGetBaseLevelParent() {
 
     when(accountRepository.getParents(any(Account.class))).thenReturn(allAccounts());
     Account baseLevelParent = accountService.getBaseLevelParent(accountId7());
@@ -110,7 +110,7 @@ public class AccountServiceTests {
   }
 
   @Test
-  public void testGetEligibleParentAccounts() {
+  void testGetEligibleParentAccounts() {
 
     when(accountRepository.getTreeAsList(any(Account.class))).thenReturn(treeAsList());
     Iterable<Account> eligbleParents = accountService.getEligibleParentAccounts(accountId7());
@@ -131,20 +131,22 @@ public class AccountServiceTests {
   }
 
   @Test
-  public void testGetEligibleParentAccounts_EligibleParentAccountNotFoundException() {
+  void testGetEligibleParentAccounts_EligibleParentAccountNotFoundException() {
+    var accountId2 = accountId2();
 
     when(accountRepository.getTreeAsList(any(Account.class))).thenReturn(treeAsList());
+
     assertThrows(
         EligibleParentAccountNotFoundException.class,
         () -> {
-          accountService.getEligibleParentAccounts(accountId2());
+          accountService.getEligibleParentAccounts(accountId2);
         });
     // System.out.println(mockingDetails(accountRepository).printInvocations());
 
   }
 
   @Test
-  public void testCreateAccount_ParentAccountTypeIsRoot() {
+  void testCreateAccount_ParentAccountTypeIsRoot() {
     Account parentAccount = accountId2();
     parentAccount.setType(AccountType.ROOT);
     when(accountRepository.newAccount(anyString())).thenReturn(new Account());
@@ -152,7 +154,7 @@ public class AccountServiceTests {
   }
 
   @Test
-  public void testCreateAccount_ParentAccountTypeIsNotRoot() {
+  void testCreateAccount_ParentAccountTypeIsNotRoot() {
     Account parentAccount = accountId2();
     parentAccount.setType(AccountType.LIABILITY);
     when(accountRepository.newAccount(anyString())).thenReturn(new Account());
@@ -160,7 +162,7 @@ public class AccountServiceTests {
   }
 
   @Test
-  public void testCreateAccount_InsertAsPrevSibling() {
+  void testCreateAccount_InsertAsPrevSibling() {
 
     AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
     accountCreateRequest.hidden = false;
@@ -184,7 +186,7 @@ public class AccountServiceTests {
   }
 
   @Test
-  public void testCreateAccount_InsertAsPrevSibling_AccountCreateException() {
+  void testCreateAccount_InsertAsPrevSibling_AccountCreateException() {
 
     AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
     accountCreateRequest.hidden = false;
@@ -208,7 +210,7 @@ public class AccountServiceTests {
   }
 
   @Test
-  public void testCreateAccount_InsertAsNextSibling() {
+  void testCreateAccount_InsertAsNextSibling() {
 
     AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
     accountCreateRequest.hidden = false;
@@ -232,7 +234,7 @@ public class AccountServiceTests {
   }
 
   @Test
-  public void testCreateAccount_InsertAsNextSibling_AccountCreateException() {
+  void testCreateAccount_InsertAsNextSibling_AccountCreateException() {
 
     AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
     accountCreateRequest.hidden = false;
@@ -256,7 +258,7 @@ public class AccountServiceTests {
   }
 
   @Test
-  public void testCreateAccount_InsertAsFirstChild() {
+  void testCreateAccount_InsertAsFirstChild() {
 
     AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
     accountCreateRequest.hidden = false;
@@ -278,7 +280,7 @@ public class AccountServiceTests {
   }
 
   @Test
-  public void testCreateAccount_InsertAsLastChild() {
+  void testCreateAccount_InsertAsLastChild() {
 
     AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
     accountCreateRequest.hidden = false;
@@ -300,7 +302,7 @@ public class AccountServiceTests {
   }
 
   @Test
-  public void testCreateAccount_AccountParentIsRoot() {
+  void testCreateAccount_AccountParentIsRoot() {
 
     AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
     accountCreateRequest.hidden = false;
@@ -326,7 +328,7 @@ public class AccountServiceTests {
   }
 
   @Test
-  public void testCreateAccount_InvalidNestedNodeManipulator() {
+  void testCreateAccount_InvalidNestedNodeManipulator() {
 
     AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
     accountCreateRequest.mode = "INVALID_NODE_MANIPULATOR";
@@ -348,7 +350,7 @@ public class AccountServiceTests {
   }
 
   @Test
-  public void testCreateAccount_AccountNotFoundException() {
+  void testCreateAccount_AccountNotFoundException() {
 
     AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
     accountCreateRequest.name = "Any Account Name";
@@ -372,7 +374,7 @@ public class AccountServiceTests {
   }
 
   @Test
-  public void testCreateAccount_AccountCreateException() {
+  void testCreateAccount_AccountCreateException() {
 
     AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
     accountCreateRequest.hidden = false;
@@ -396,14 +398,14 @@ public class AccountServiceTests {
   }
 
   @Test
-  public void testDeleteAllAccounts_NoRoot() {
+  void testDeleteAllAccounts_NoRoot() {
     accountService.deleteAllAccounts();
     verify(accountRepository, times(1)).findRoot();
     verify(accountRepository, times(0)).removeSubTree(any(Account.class));
   }
 
   @Test
-  public void testDeleteAllAccounts() {
+  void testDeleteAllAccounts() {
     when(accountRepository.findRoot()).thenReturn(Optional.of(new Account()));
     accountService.deleteAllAccounts();
     verify(accountRepository, times(1)).findRoot();
@@ -411,19 +413,19 @@ public class AccountServiceTests {
   }
 
   @Test
-  public void testRemoveSingleAccount() {
+  void testRemoveSingleAccount() {
     accountService.removeSingle(new Account());
     verify(accountRepository, times(1)).removeSingle(any(Account.class));
   }
 
   @Test
-  public void testRemoveSubTree() {
+  void testRemoveSubTree() {
     accountService.removeSubTree(new Account());
     verify(accountRepository, times(1)).removeSubTree(any(Account.class));
   }
 
   @Test
-  public void testFindRoot_NoRoot() {
+  void testFindRoot_NoRoot() {
     assertThrows(
         AccountNotFoundException.class,
         () -> {
@@ -433,24 +435,25 @@ public class AccountServiceTests {
   }
 
   @Test
-  public void testFindRoot() {
+  void testFindRoot() {
     when(accountRepository.findRoot()).thenReturn(Optional.of(new Account()));
     assertNotNull(accountService.findRoot());
     verify(accountRepository, times(1)).findRoot();
   }
 
   @Test
-  public void testGetPrevSibling_NoPrevSibling() {
+  void testGetPrevSibling_NoPrevSibling() {
+    var account = new Account();
     assertThrows(
         PrevSiblingAccountNotFoundException.class,
         () -> {
-          accountService.getPrevSibling(new Account());
+          accountService.getPrevSibling(account);
         });
     verify(accountRepository, times(1)).getPrevSibling(any(Account.class));
   }
 
   @Test
-  public void testFindPrevSibling() {
+  void testFindPrevSibling() {
     when(accountRepository.getPrevSibling(any(Account.class)))
         .thenReturn(Optional.of(new Account()));
     assertNotNull(accountService.getPrevSibling(new Account()));
@@ -458,17 +461,19 @@ public class AccountServiceTests {
   }
 
   @Test
-  public void testGetNextSibling_NoNextSibling() {
+  void testGetNextSibling_NoNextSibling() {
+    var account = new Account();
+
     assertThrows(
         NextSiblingAccountNotFoundException.class,
         () -> {
-          accountService.getNextSibling(new Account());
+          accountService.getNextSibling(account);
         });
     verify(accountRepository, times(1)).getNextSibling(any(Account.class));
   }
 
   @Test
-  public void testNextPrevSibling() {
+  void testNextPrevSibling() {
     when(accountRepository.getNextSibling(any(Account.class)))
         .thenReturn(Optional.of(new Account()));
     assertNotNull(accountService.getNextSibling(new Account()));
@@ -476,39 +481,39 @@ public class AccountServiceTests {
   }
 
   @Test
-  public void testInsertAsFirstRoot() {
+  void testInsertAsFirstRoot() {
     accountService.insertAsFirstRoot(new Account());
     verify(accountRepository, times(1)).insertAsFirstRoot(any(Account.class));
   }
 
   @Test
-  public void testInsertAsLastRoot() {
+  void testInsertAsLastRoot() {
     accountService.insertAsLastRoot(new Account());
     verify(accountRepository, times(1)).insertAsLastRoot(any(Account.class));
   }
 
   @Test
-  public void testInsertAsFirstChildOf() {
+  void testInsertAsFirstChildOf() {
     accountService.insertAsFirstChildOf(new Account(), new Account());
     verify(accountRepository, times(1))
         .insertAsFirstChildOf(any(Account.class), any(Account.class));
   }
 
   @Test
-  public void testInsertAsLastChildOf() {
+  void testInsertAsLastChildOf() {
     accountService.insertAsLastChildOf(new Account(), new Account());
     verify(accountRepository, times(1)).insertAsLastChildOf(any(Account.class), any(Account.class));
   }
 
   @Test
-  public void testInsertAsPrevSiblingOf() {
+  void testInsertAsPrevSiblingOf() {
     accountService.insertAsPrevSiblingOf(new Account(), new Account());
     verify(accountRepository, times(1))
         .insertAsPrevSiblingOf(any(Account.class), any(Account.class));
   }
 
   @Test
-  public void testInsertAsNextSiblingOf() {
+  void testInsertAsNextSiblingOf() {
     accountService.insertAsNextSiblingOf(new Account(), new Account());
     verify(accountRepository, times(1))
         .insertAsNextSiblingOf(any(Account.class), any(Account.class));

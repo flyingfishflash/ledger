@@ -45,48 +45,44 @@ import net.flyingfishflash.ledger.foundation.users.exceptions.UserNotFoundExcept
 import net.flyingfishflash.ledger.foundation.users.service.UserService;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTests {
+class UserServiceTests {
 
   @InjectMocks private UserService userService;
-
   @Mock private UserRepository userRepository;
-
   @Mock private PasswordEncoder encoder;
-
   @Mock private TenantService tenantService;
-
   @Mock private UserProfileMapper userProfileMapper;
 
   @Test
-  public void testExistsByUsername() {
+  void testExistsByUsername() {
     when(userRepository.existsByUsername(anyString())).thenReturn(true);
     userService.existsByUsername("Any User Name");
     verify(userRepository, times(1)).existsByUsername(anyString());
   }
 
   @Test
-  public void testExistsById() {
+  void testExistsById() {
     when(userRepository.existsById(anyLong())).thenReturn(true);
     userService.existsById(1L);
     verify(userRepository, times(1)).existsById(anyLong());
   }
 
   @Test
-  public void testExistsByEmail() {
+  void testExistsByEmail() {
     when(userRepository.existsByEmail(anyString())).thenReturn(true);
     userService.existsByEmail("Any Email Address");
     verify(userRepository, times(1)).existsByEmail(anyString());
   }
 
   @Test
-  public void testSave() {
+  void testSave() {
     when(userRepository.save(any(User.class))).thenReturn(new User());
     userService.saveUser(new User());
     verify(userRepository, times(1)).save(any(User.class));
   }
 
   @Test
-  public void testLoadUserByUserName() {
+  void testLoadUserByUserName() {
     User u = new User();
     Optional<User> ou = Optional.of(u);
     when(userRepository.findByUsername(anyString())).thenReturn(ou);
@@ -95,7 +91,7 @@ public class UserServiceTests {
   }
 
   @Test
-  public void testLoadUserByUserName_EmptyUser() {
+  void testLoadUserByUserName_EmptyUser() {
     String username = "Any User Name";
     when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
     assertThrows(
@@ -107,7 +103,7 @@ public class UserServiceTests {
   }
 
   @Test
-  public void testFindByUserName() {
+  void testFindByUserName() {
     User u = new User();
     Optional<User> ou = Optional.of(u);
     when(userRepository.findByUsername(anyString())).thenReturn(ou);
@@ -116,7 +112,7 @@ public class UserServiceTests {
   }
 
   @Test
-  public void testFindByUserName_EmptyUser() {
+  void testFindByUserName_EmptyUser() {
     String username = "Any User Name";
     when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
     assertThrows(
@@ -128,7 +124,7 @@ public class UserServiceTests {
   }
 
   @Test
-  public void testFindById() {
+  void testFindById() {
     User u = new User();
     Optional<User> ou = Optional.of(u);
     when(userRepository.findById(anyLong())).thenReturn(ou);
@@ -137,7 +133,7 @@ public class UserServiceTests {
   }
 
   @Test
-  public void testFindById_EmptyUser() {
+  void testFindById_EmptyUser() {
     Long userId = 1L;
     when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
     assertThrows(
@@ -149,7 +145,7 @@ public class UserServiceTests {
   }
 
   @Test
-  public void testFindAllUsers() {
+  void testFindAllUsers() {
     List<User> userList = new ArrayList<>(1);
     userList.add(new User());
     when(userRepository.findAll()).thenReturn(userList);
@@ -158,14 +154,14 @@ public class UserServiceTests {
   }
 
   @Test
-  public void testDeleteUser() {
+  void testDeleteUser() {
     doNothing().when(userRepository).deleteById(anyLong());
     userService.deleteById(1L);
     verify(userRepository, times(1)).deleteById(anyLong());
   }
 
   @Test
-  public void testDeleteUser_NonExistentId() {
+  void testDeleteUser_NonExistentId() {
     Long userId = 1L;
     doThrow(IllegalArgumentException.class).when(userRepository).deleteById(anyLong());
     assertThrows(
@@ -177,13 +173,13 @@ public class UserServiceTests {
   }
 
   @Test
-  public void testCreateUser_UsernameExists() {
+  void testCreateUser_UsernameExists() {
+    var userCreateRequest = new UserCreateRequest();
+    userCreateRequest.setUsername("Any Username");
     when(userRepository.existsByUsername(anyString())).thenReturn(true);
     assertThrows(
         UserCreateException.class,
         () -> {
-          UserCreateRequest userCreateRequest = new UserCreateRequest();
-          userCreateRequest.setUsername("Any Username");
           userService.createUser(userCreateRequest);
         });
     verify(userRepository, times(1)).existsByUsername(anyString());
@@ -192,13 +188,13 @@ public class UserServiceTests {
   }
 
   @Test
-  public void testCreateUser_EmailExists() {
+  void testCreateUser_EmailExists() {
+    var userCreateRequest = new UserCreateRequest();
+    userCreateRequest.setEmail("Any Email Address");
     when(userRepository.existsByEmail(anyString())).thenReturn(true);
     assertThrows(
         UserCreateException.class,
         () -> {
-          UserCreateRequest userCreateRequest = new UserCreateRequest();
-          userCreateRequest.setEmail("Any Email Address");
           userService.createUser(userCreateRequest);
         });
     verify(userRepository, times(1)).existsByEmail(anyString());
@@ -207,13 +203,13 @@ public class UserServiceTests {
   }
 
   @Test
-  public void testCreateUser_RolesIsNull() {
+  void testCreateUser_RolesIsNull() {
+    var userCreateRequest = new UserCreateRequest();
+    userCreateRequest.setUsername("Username");
+    userCreateRequest.setEmail("Email Address");
     assertThrows(
         UserCreateException.class,
         () -> {
-          UserCreateRequest userCreateRequest = new UserCreateRequest();
-          userCreateRequest.setUsername("Username");
-          userCreateRequest.setEmail("Email Address");
           userService.createUser(userCreateRequest);
         });
     verify(userRepository, times(1)).existsByUsername(anyString());
@@ -223,17 +219,17 @@ public class UserServiceTests {
   }
 
   @Test
-  public void testCreateUser_RolesGreaterThanOne() {
+  void testCreateUser_RolesGreaterThanOne() {
+    var userCreateRequest = new UserCreateRequest();
+    userCreateRequest.setUsername("Username");
+    userCreateRequest.setEmail("Email Address");
+    Set<String> roles = new HashSet<>(2);
+    roles.add("Role1");
+    roles.add("Role2");
+    userCreateRequest.setRoles(roles);
     assertThrows(
         UserCreateException.class,
         () -> {
-          UserCreateRequest userCreateRequest = new UserCreateRequest();
-          userCreateRequest.setUsername("Username");
-          userCreateRequest.setEmail("Email Address");
-          Set<String> roles = new HashSet<>(2);
-          roles.add("Role1");
-          roles.add("Role2");
-          userCreateRequest.setRoles(roles);
           userService.createUser(userCreateRequest);
         });
     verify(userRepository, times(1)).existsByUsername(anyString());
@@ -243,14 +239,14 @@ public class UserServiceTests {
   }
 
   @Test
-  public void testCreateUser_RolesEmpty() {
+  void testCreateUser_RolesEmpty() {
+    var userCreateRequest = new UserCreateRequest();
+    userCreateRequest.setUsername("Username");
+    userCreateRequest.setEmail("Email Address");
+    userCreateRequest.setRoles(new HashSet<String>(2));
     assertThrows(
         UserCreateException.class,
         () -> {
-          UserCreateRequest userCreateRequest = new UserCreateRequest();
-          userCreateRequest.setUsername("Username");
-          userCreateRequest.setEmail("Email Address");
-          userCreateRequest.setRoles(new HashSet<String>(2));
           userService.createUser(userCreateRequest);
         });
     verify(userRepository, times(1)).existsByUsername(anyString());
@@ -260,7 +256,7 @@ public class UserServiceTests {
   }
 
   @Test
-  public void testCreateUser_DefaultRole() {
+  void testCreateUser_DefaultRole() {
 
     UserCreateRequest userCreateRequest =
         new UserCreateRequest(
@@ -289,7 +285,7 @@ public class UserServiceTests {
   }
 
   @Test
-  public void testCreateUser_EditorRole() {
+  void testCreateUser_EditorRole() {
     UserCreateRequest userCreateRequest =
         new UserCreateRequest(
             "Username",
@@ -317,7 +313,7 @@ public class UserServiceTests {
   }
 
   @Test
-  public void testCreateUser_AdminRole() {
+  void testCreateUser_AdminRole() {
     UserCreateRequest userCreateRequest =
         new UserCreateRequest(
             "Username",
@@ -345,7 +341,7 @@ public class UserServiceTests {
   }
 
   @Test
-  public void testProfileById() {
+  void testProfileById() {
     when(userRepository.findById(anyLong())).thenReturn(Optional.of(new User()));
     when(userProfileMapper.mapEntityModelToResponseModel(any(User.class)))
         .thenReturn(new UserProfileResponse());
@@ -356,7 +352,7 @@ public class UserServiceTests {
   }
 
   @Test
-  public void testProfileByUsername() {
+  void testProfileByUsername() {
     when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(new User()));
     when(userProfileMapper.mapEntityModelToResponseModel(any(User.class)))
         .thenReturn(new UserProfileResponse());
@@ -367,7 +363,7 @@ public class UserServiceTests {
   }
 
   @Test
-  public void testProfilePatch() {
+  void testProfilePatch() {
     when(userProfileMapper.mapEntityModelToRequestModel(any(User.class)))
         .thenReturn(new UserProfileRequest());
 
@@ -387,7 +383,13 @@ public class UserServiceTests {
   }
 
   @Test
-  public void testProfilePatch_ConstraintViolationException() {
+  void testProfilePatch_ConstraintViolationException() {
+    Map<String, Object> patchRequest = new HashMap<>();
+    var userCreateRequest = new UserCreateRequest();
+    userCreateRequest.setUsername("Username");
+    userCreateRequest.setEmail("Invalid Email Address");
+    userCreateRequest.setRoles(new HashSet<String>(2));
+
     when(userProfileMapper.mapEntityModelToRequestModel(any(User.class)))
         .thenReturn(new UserProfileRequest());
 
@@ -397,11 +399,6 @@ public class UserServiceTests {
     assertThrows(
         ConstraintViolationException.class,
         () -> {
-          Map<String, Object> patchRequest = new HashMap<>();
-          UserCreateRequest userCreateRequest = new UserCreateRequest();
-          userCreateRequest.setUsername("Username");
-          userCreateRequest.setEmail("Invalid Email Address");
-          userCreateRequest.setRoles(new HashSet<String>(2));
           userService.profilePatch(1L, patchRequest);
         });
 

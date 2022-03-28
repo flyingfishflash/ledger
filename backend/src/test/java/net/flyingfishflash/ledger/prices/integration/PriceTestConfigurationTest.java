@@ -1,8 +1,9 @@
 package net.flyingfishflash.ledger.prices.integration;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
@@ -13,11 +14,7 @@ import org.springframework.context.ApplicationContext;
       // "spring.flyway.enabled=false",
       // "spring.jpa.hibernate.ddl-auto=create-drop",
     })
-public class PriceTestConfigurationTest {
-
-  @SuppressWarnings("unused")
-  @Autowired
-  private ApplicationContext applicationContext;
+class PriceTestConfigurationTest {
 
   @BeforeEach
   void printApplicationContext() {
@@ -30,7 +27,8 @@ public class PriceTestConfigurationTest {
   }
 
   @Test
-  void priceConfigurationLoads() {
+  void priceConfigurationLoads(ApplicationContext applicationContext) {
+    assertThat(applicationContext).isNotNull();
     System.out.println("\nPrice Integration Test\n");
   }
 }

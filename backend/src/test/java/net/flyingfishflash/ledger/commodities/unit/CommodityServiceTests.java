@@ -26,13 +26,13 @@ import net.flyingfishflash.ledger.commodities.exceptions.CommodityNotFoundExcept
 import net.flyingfishflash.ledger.commodities.service.CommodityService;
 
 @ExtendWith(MockitoExtension.class)
-public class CommodityServiceTests {
+class CommodityServiceTests {
 
   @Mock private CommodityRepository commodityRepositoryMock;
   @InjectMocks private CommodityService commodityService;
 
   @Test
-  public void testNewCommodity() {
+  void testNewCommodity() {
     Commodity commodity = commodityService.newCommodity();
     assertThat(commodity.getGuid()).isNotNull();
     StringBuilder sbr = new StringBuilder(commodity.getGuid());
@@ -41,45 +41,45 @@ public class CommodityServiceTests {
   }
 
   @Test
-  public void testSaveCommodity() {
+  void testSaveCommodity() {
     commodityService.saveCommodity(new Commodity());
     verify(commodityRepositoryMock, times(1)).save(any(Commodity.class));
   }
 
   @Test
-  public void testSaveAllCommodities() {
+  void testSaveAllCommodities() {
     List<Commodity> commodityList = Collections.singletonList(new Commodity());
     commodityService.saveAllCommodities(commodityList);
     verify(commodityRepositoryMock, times(1)).saveAll(anyList());
   }
 
   @Test
-  public void testUpdateCommodity() {
+  void testUpdateCommodity() {
     commodityService.updateCommodity(new Commodity());
     verify(commodityRepositoryMock, times(1)).save(any(Commodity.class));
   }
 
   @Test
-  public void testDeleteCommodity() {
+  void testDeleteCommodity() {
     commodityService.deleteCommodity(1L);
     verify(commodityRepositoryMock, times(1)).deleteById(anyLong());
   }
 
   @Test
-  public void testDeleteAllCommodities() {
+  void testDeleteAllCommodities() {
     commodityService.deleteAllCommodities();
     verify(commodityRepositoryMock, times(1)).deleteAll();
   }
 
   @Test
-  public void testFindById() {
+  void testFindById() {
     given(commodityRepositoryMock.findById(anyLong())).willReturn(Optional.of(new Commodity()));
     commodityService.findById(1L);
     verify(commodityRepositoryMock, times(1)).findById(anyLong());
   }
 
   @Test
-  public void testFindById_CommodityNotFoundException() {
+  void testFindById_CommodityNotFoundException() {
 
     Throwable exception =
         assertThrows(
@@ -93,14 +93,14 @@ public class CommodityServiceTests {
   }
 
   @Test
-  public void testFindByGuid() {
+  void testFindByGuid() {
     given(commodityRepositoryMock.findByGuid(anyString())).willReturn(Optional.of(new Commodity()));
     commodityService.findByGuid("any string");
     verify(commodityRepositoryMock, times(1)).findByGuid(anyString());
   }
 
   @Test
-  public void testFindByGuid_CommodityNotFoundException() {
+  void testFindByGuid_CommodityNotFoundException() {
 
     Throwable exception =
         assertThrows(
@@ -114,7 +114,7 @@ public class CommodityServiceTests {
   }
 
   @Test
-  public void testFindByMnemonic() {
+  void testFindByMnemonic() {
     List<Commodity> commodityList = Collections.singletonList(new Commodity());
     given(commodityRepositoryMock.findByMnemonic(anyString()))
         .willReturn(Optional.of(commodityList));
@@ -123,7 +123,7 @@ public class CommodityServiceTests {
   }
 
   @Test
-  public void testFindByMnemonic_CommodityNotFoundException() {
+  void testFindByMnemonic_CommodityNotFoundException() {
 
     Throwable exception =
         assertThrows(
@@ -137,7 +137,7 @@ public class CommodityServiceTests {
   }
 
   @Test
-  public void testFindByNamespace() {
+  void testFindByNamespace() {
     List<Commodity> commodityList = Collections.singletonList(new Commodity());
     given(commodityRepositoryMock.findByNamespace(anyString()))
         .willReturn(Optional.of(commodityList));
@@ -146,7 +146,7 @@ public class CommodityServiceTests {
   }
 
   @Test
-  public void testFindByNameSpaceAndMnemonic() {
+  void testFindByNameSpaceAndMnemonic() {
     given(commodityRepositoryMock.findByNamespaceAndMnemonic(anyString(), anyString()))
         .willReturn(Optional.of(new Commodity()));
     commodityService.findByNameSpaceAndMnemonic("any string 1", "any string 2");
@@ -154,7 +154,7 @@ public class CommodityServiceTests {
   }
 
   @Test
-  public void testFindAllCommodities() {
+  void testFindAllCommodities() {
     commodityService.findAllCommodities();
     verify(commodityRepositoryMock, times(1)).findAll();
   }

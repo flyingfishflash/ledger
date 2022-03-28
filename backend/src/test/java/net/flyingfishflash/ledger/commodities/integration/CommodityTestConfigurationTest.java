@@ -1,5 +1,7 @@
 package net.flyingfishflash.ledger.commodities.integration;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,7 @@ import org.springframework.context.ApplicationContext;
       // "spring.flyway.enabled=false",
       // "spring.jpa.hibernate.ddl-auto=create-drop",
     })
-public class CommodityTestConfigurationTest {
+class CommodityTestConfigurationTest {
 
   @SuppressWarnings("unused")
   @Autowired
@@ -30,7 +32,8 @@ public class CommodityTestConfigurationTest {
   }
 
   @Test
-  void commodityConfigurationLoads() {
+  void commodityConfigurationLoads(ApplicationContext applicationContext) {
+    assertThat(applicationContext).isNotNull();
     System.out.println("\nCommodity Integration Test\n");
   }
 }

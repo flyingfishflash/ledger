@@ -9,12 +9,12 @@ import net.flyingfishflash.ledger.foundation.users.data.dto.UserProfileMapper;
 import net.flyingfishflash.ledger.foundation.users.data.dto.UserProfileRequest;
 import net.flyingfishflash.ledger.foundation.users.data.dto.UserProfileResponse;
 
-public class UserProfileMapperTests {
+class UserProfileMapperTests {
 
   private final UserProfileMapper userProfileMapper = new UserProfileMapper();
 
   @Test
-  public void testMapEntityModelToRequestModel() {
+  void testMapEntityModelToRequestModel() {
 
     User user = new User("Username", "Password", "Email", "First Name", "Last Name");
 
@@ -27,7 +27,7 @@ public class UserProfileMapperTests {
   }
 
   @Test
-  public void testMapEntityModelToResponseModel() {
+  void testMapEntityModelToResponseModel() {
 
     User user = new User("Username", "Password", "Email", "First Name", "Last Name");
 
@@ -40,7 +40,7 @@ public class UserProfileMapperTests {
   }
 
   @Test
-  public void testMapRequestModelToEntityModel() {
+  void testMapRequestModelToEntityModel() {
 
     UserProfileRequest userProfileRequest = new UserProfileRequest();
     userProfileRequest.setEmail("Email");
@@ -58,7 +58,7 @@ public class UserProfileMapperTests {
   }
 
   @Test
-  public void testMapRequestModelToResponseModel() {
+  void testMapRequestModelToResponseModel() {
 
     UserProfileRequest userProfileRequest = new UserProfileRequest();
     userProfileRequest.setEmail("Email");
