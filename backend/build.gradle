@@ -109,7 +109,7 @@ jacocoTestReport {
 }
 
 compileJava {
-    options.release.set(15)
+    options.release.set(17)
 }
 
 springBoot {
