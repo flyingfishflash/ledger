@@ -89,6 +89,7 @@ public class AccountController {
 
   @DeleteMapping(value = "/delete")
   @Operation(summary = "Delete an account and all of it's descendants")
+  @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "No Content")})
   public ResponseEntity<ApiMessage> deleteAccountAndDescendents(
       @RequestParam(name = "accountId") Long accountId) {
 
