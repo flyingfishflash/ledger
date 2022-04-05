@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '2.6.6'
     id 'com.diffplug.spotless'
     id 'jacoco'
+    id 'net.ltgt.errorprone' version '2.0.2'
 }
 
 //artifactId = 'ledger-backend'
@@ -44,6 +45,7 @@ dependencies {
     runtimeOnly 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
     testImplementation 'org.springframework.security:spring-security-test:5.6.2'
     testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+    errorprone 'com.google.errorprone:error_prone_core:2.12.1'
 }
 
 
@@ -110,6 +112,11 @@ jacocoTestReport {
 
 compileJava {
     options.release.set(17)
+    // Error Prone must be available in the annotation processor path
+    //options.annotationProcessorPath = configurations.errorprone
+    // Enable Error Prone
+    //options.errorprone.enabled = true
+    // It can then be configured for the task
 }
 
 springBoot {
