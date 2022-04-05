@@ -2,8 +2,6 @@ package net.flyingfishflash.ledger.foundation.configuration;
 
 import java.util.List;
 
-import javax.servlet.annotation.WebListener;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +17,6 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.session.Session;
 import org.springframework.session.web.socket.config.annotation.AbstractSessionWebSocketMessageBrokerConfigurer;
-import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -30,6 +27,7 @@ import net.flyingfishflash.ledger.foundation.WebSocketSessionId;
 @Configuration
 @EnableWebSocket
 @EnableWebSocketMessageBroker
+@SuppressWarnings("unused")
 // public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer {
 public class WebSocketConfiguration
     extends AbstractSessionWebSocketMessageBrokerConfigurer<Session> {
@@ -92,6 +90,6 @@ public class WebSocketConfiguration
     webSocketSessionId.setSessionId(sessionId);
   }
 
-  @WebListener
-  public class MyRequestContextListener extends RequestContextListener {}
+  //  @WebListener
+  //  public class MyRequestContextListener extends RequestContextListener {}
 }

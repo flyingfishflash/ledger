@@ -23,6 +23,7 @@ public abstract class GeneralCommodityException extends RuntimeException
     return CommodityException.ERROR_SUBJECT;
   }
 
+  @Override
   public HttpStatus getHttpStatus() {
     return HttpStatus.INTERNAL_SERVER_ERROR;
   }

@@ -15,7 +15,9 @@ import org.springframework.context.ApplicationContext;
     })
 public class CommodityTestConfigurationTest {
 
-  @Autowired private ApplicationContext applicationContext;
+  @SuppressWarnings("unused")
+  @Autowired
+  private ApplicationContext applicationContext;
 
   @BeforeEach
   void printApplicationContext() {

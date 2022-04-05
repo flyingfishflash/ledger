@@ -35,7 +35,7 @@ public class AdviceResponseBody implements ResponseBodyAdvice<Object> {
 
     if (methodParameter.getContainingClass().isAnnotationPresent(RestController.class)
         && (method != null)
-        && !(method.isAnnotationPresent(IgnoreResponseBinding.class))
+        && !method.isAnnotationPresent(IgnoreResponseBinding.class)
         && !(o instanceof ErrorResponse)
         && !(o instanceof SuccessResponse)) {
 

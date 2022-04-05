@@ -22,6 +22,7 @@ public abstract class GeneralAccountException extends RuntimeException implement
     return AccountException.ERROR_SUBJECT;
   }
 
+  @Override
   public HttpStatus getHttpStatus() {
     return HttpStatus.INTERNAL_SERVER_ERROR;
   }

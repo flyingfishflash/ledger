@@ -122,7 +122,7 @@ public class AdviceForStandardExceptions extends ResponseEntityExceptionHandler 
     // remove any nested exception messaging
     if (exception.getLocalizedMessage().contains("nested exception is")) {
 
-      String[] output = exception.getLocalizedMessage().split("; ");
+      String[] output = exception.getLocalizedMessage().split("; ", -1);
       errorMessage = output[0];
     }
 

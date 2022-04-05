@@ -2,7 +2,6 @@ package net.flyingfishflash.ledger.accounts.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -15,7 +14,7 @@ public class AccountTypeService {
 
   public List<AccountType> findAllAccountTypes() {
 
-    return new LinkedList<>(Arrays.asList(AccountType.values()));
+    return new ArrayList<>(Arrays.asList(AccountType.values()));
   }
 
   public List<AccountType> findAccountTypesByCategory(String category) {

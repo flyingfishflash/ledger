@@ -219,7 +219,7 @@ public class GncXmlAccountHandler extends DefaultHandler {
      */
 
     Comparator<GncAccount> gncAccountComparator =
-        (comparing(GncAccount::getAccountCode, Comparator.nullsFirst(Comparator.naturalOrder())));
+        comparing(GncAccount::getAccountCode, Comparator.nullsFirst(Comparator.naturalOrder()));
     gncAccounts.sort(gncAccountComparator);
 
     accountAdapter.addRecords(gncAccounts);

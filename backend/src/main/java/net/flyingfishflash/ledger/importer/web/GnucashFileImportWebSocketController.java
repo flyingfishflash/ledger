@@ -1,5 +1,6 @@
 package net.flyingfishflash.ledger.importer.web;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ public class GnucashFileImportWebSocketController {
   @SendToUser("/import/status/messages")
   public String sendImportStatusMessage(@Payload String message) {
     logger.error("{}", message);
-    return ZonedDateTime.now().toString() + " -- " + message;
+    return ZonedDateTime.now(ZoneId.systemDefault()) + " -- " + message;
   }
 
   @MessageMapping("sendImportStatusCounts")

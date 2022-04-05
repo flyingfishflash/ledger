@@ -39,7 +39,7 @@ public class PriceAdapter {
    *
    * @param priceService Service class for interacting with prices
    * @param commodityService Service class for interacting with commodities
-   * @param gnucashFileImportStatus
+   * @param gnucashFileImportStatus class capturing the gnucash xml import status
    */
   public PriceAdapter(
       PriceService priceService,
@@ -64,7 +64,7 @@ public class PriceAdapter {
 
     /* Sort the accumulated prices by timestamp in ascending order */
     Comparator<GncPrice> gncPriceComparator =
-        (comparing(GncPrice::getDate, Comparator.nullsFirst(Comparator.naturalOrder())));
+        comparing(GncPrice::getDate, Comparator.nullsFirst(Comparator.naturalOrder()));
 
     gncPrices.sort(gncPriceComparator);
 
@@ -95,7 +95,7 @@ public class PriceAdapter {
 
       /* Derive the numerator and denominator fields */
       /* TODO error check splitting this string into an array of strings */
-      String[] value = gncPrice.getPrice().split("/");
+      String[] value = gncPrice.getPrice().split("/", -1);
       price.setFraction(Long.parseLong(value[0]), Long.parseLong(value[1]));
 
       prices.add(price);

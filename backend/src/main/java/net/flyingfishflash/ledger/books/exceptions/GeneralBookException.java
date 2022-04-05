@@ -22,6 +22,7 @@ public abstract class GeneralBookException extends RuntimeException implements B
     return BookException.ERROR_SUBJECT;
   }
 
+  @Override
   public HttpStatus getHttpStatus() {
     return HttpStatus.INTERNAL_SERVER_ERROR;
   }

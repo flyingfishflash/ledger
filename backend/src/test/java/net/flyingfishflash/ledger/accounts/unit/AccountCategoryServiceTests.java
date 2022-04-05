@@ -37,7 +37,7 @@ public class AccountCategoryServiceTests {
   public void testFindAccountCategoryByTypeWhenTypeIsRoot() {
     AccountCategory c =
         accountCategoryService.findAccountCategoryByType(AccountType.ROOT.toString());
-    assertEquals((AccountCategory.ROOT), c);
+    assertEquals(AccountCategory.ROOT, c);
   }
 
   // Account Category should be Asset
@@ -45,35 +45,35 @@ public class AccountCategoryServiceTests {
   public void testFindAccountCategoryByTypeWhenTypeIsAsset() {
     AccountCategory c =
         accountCategoryService.findAccountCategoryByType(AccountType.ASSET.toString());
-    assertEquals((AccountCategory.ASSET), c);
+    assertEquals(AccountCategory.ASSET, c);
   }
 
   @Test
   public void testFindAccountCategoryByTypeWhenTypeIsBank() {
     AccountCategory c =
         accountCategoryService.findAccountCategoryByType(AccountType.BANK.toString());
-    assertEquals((AccountCategory.ASSET), c);
+    assertEquals(AccountCategory.ASSET, c);
   }
 
   @Test
   public void testFindAccountCategoryByTypeWhenTypeIsCash() {
     AccountCategory c =
         accountCategoryService.findAccountCategoryByType(AccountType.CASH.toString());
-    assertEquals((AccountCategory.ASSET), c);
+    assertEquals(AccountCategory.ASSET, c);
   }
 
   @Test
   public void testFindAccountCategoryByTypeWhenTypeIsMutual() {
     AccountCategory c =
         accountCategoryService.findAccountCategoryByType(AccountType.MUTUAL.toString());
-    assertEquals((AccountCategory.ASSET), c);
+    assertEquals(AccountCategory.ASSET, c);
   }
 
   @Test
   public void testFindAccountCategoryByTypeWhenTypeIsStock() {
     AccountCategory c =
         accountCategoryService.findAccountCategoryByType(AccountType.STOCK.toString());
-    assertEquals((AccountCategory.ASSET), c);
+    assertEquals(AccountCategory.ASSET, c);
   }
 
   // Account Category should be Liability
@@ -81,14 +81,14 @@ public class AccountCategoryServiceTests {
   public void testFindAccountCategoryByTypeWhenTypeIsCredit() {
     AccountCategory c =
         accountCategoryService.findAccountCategoryByType(AccountType.CREDIT.toString());
-    assertEquals((AccountCategory.LIABILITY), c);
+    assertEquals(AccountCategory.LIABILITY, c);
   }
 
   @Test
   public void testFindAccountCategoryByTypeWhenTypeIsLiability() {
     AccountCategory c =
         accountCategoryService.findAccountCategoryByType(AccountType.LIABILITY.toString());
-    assertEquals((AccountCategory.LIABILITY), c);
+    assertEquals(AccountCategory.LIABILITY, c);
   }
 
   // Account Category should be Income
@@ -96,7 +96,7 @@ public class AccountCategoryServiceTests {
   public void testFindAccountCategoryByTypeWhenTypeIsIncome() {
     AccountCategory c =
         accountCategoryService.findAccountCategoryByType(AccountType.INCOME.toString());
-    assertEquals((AccountCategory.INCOME), c);
+    assertEquals(AccountCategory.INCOME, c);
   }
 
   // Account Category should be Expense
@@ -104,7 +104,7 @@ public class AccountCategoryServiceTests {
   public void testFindAccountCategoryByTypeWhenTypeIsExpense() {
     AccountCategory c =
         accountCategoryService.findAccountCategoryByType(AccountType.EXPENSE.toString());
-    assertEquals((AccountCategory.EXPENSE), c);
+    assertEquals(AccountCategory.EXPENSE, c);
   }
 
   // Account Category should be Equity
@@ -112,6 +112,6 @@ public class AccountCategoryServiceTests {
   public void testFindAccountCategoryByTypeWhenTypeIsEquity() {
     AccountCategory c =
         accountCategoryService.findAccountCategoryByType(AccountType.EQUITY.toString());
-    assertEquals((AccountCategory.EQUITY), c);
+    assertEquals(AccountCategory.EQUITY, c);
   }
 }

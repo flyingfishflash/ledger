@@ -17,6 +17,7 @@ import javax.validation.Payload;
 @Constraint(validatedBy = {EnumValueValidator.class})
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
+@SuppressWarnings("JavaLangClash")
 public @interface Enum {
   String message() default "must be a value defined in the enumerated list";
 

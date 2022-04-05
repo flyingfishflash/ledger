@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 public class TenantConnectionProvider implements MultiTenantConnectionProvider {
   private DataSource datasource;
 
-  public TenantConnectionProvider(DataSource dataSource) {
-    this.datasource = dataSource;
+  public TenantConnectionProvider(DataSource datasource) {
+    this.datasource = datasource;
   }
 
   @Override

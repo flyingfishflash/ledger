@@ -40,7 +40,7 @@ public class AccountTypeControllerTests {
   AccountTypeService accountTypeServiceReal;
 
   private JacksonTester<List<AccountType>> jsonAccountTypes;
-  private JacksonTester<AccountType> jsonAccountType;
+  // private JacksonTester<AccountType> jsonAccountType;
 
   @BeforeEach
   public void setup() {

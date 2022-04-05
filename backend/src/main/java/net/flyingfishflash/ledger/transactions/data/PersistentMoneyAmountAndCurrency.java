@@ -17,11 +17,13 @@ import org.javamoney.moneta.Money;
 
 public class PersistentMoneyAmountAndCurrency implements CompositeUserType {
 
+  @Override
   public String[] getPropertyNames() {
     // ORDER IS IMPORTANT!  it must match the order the columns are defined in the property mapping
     return new String[] {"currency", "amount"};
   }
 
+  @Override
   public Type[] getPropertyTypes() {
     return new Type[] {StringType.INSTANCE, BigDecimalType.INSTANCE};
   }
@@ -31,6 +33,7 @@ public class PersistentMoneyAmountAndCurrency implements CompositeUserType {
     return Money.class;
   }
 
+  @Override
   public Object getPropertyValue(Object component, int propertyIndex) {
     if (component == null) {
       return null;
@@ -47,6 +50,7 @@ public class PersistentMoneyAmountAndCurrency implements CompositeUserType {
     }
   }
 
+  @Override
   public void setPropertyValue(Object component, int propertyIndex, Object value) {
     if (component == null) {
       return;

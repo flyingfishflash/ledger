@@ -38,6 +38,7 @@ public class AccountRepository {
     return new Account(guid);
   }
 
+  @SuppressWarnings("unused")
   private void save(Account account) {
 
     preventUnsafeChanges(account);
@@ -222,6 +223,8 @@ public class AccountRepository {
   }
 
   /**
+   * Count of root level nodes in the account hierarchy
+   *
    * @return count of root level nodes in the account hierarchy
    */
   public Long rootLevelNodeCount() {
@@ -247,9 +250,6 @@ public class AccountRepository {
    *   <li>1) it meets the definition of root node (isRootNode())
    *   <li>2) there isn't already a root node in our hierarchy
    * </ul>
-   *
-   * @param account - the account to be inserted as a rood node
-   * @return true if the account may be inserted in to the hierarchy as a root node, otherwise false
    */
   private void isRootNodeInsertable(/*Account account*/ ) {
 
