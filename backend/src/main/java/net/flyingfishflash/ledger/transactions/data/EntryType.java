@@ -11,6 +11,8 @@ public enum EntryType {
     CREDIT.opposite = DEBIT;
   }
 
+  EntryType() {}
+
   public EntryType invert() {
     return opposite;
   }

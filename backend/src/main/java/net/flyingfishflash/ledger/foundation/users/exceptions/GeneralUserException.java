@@ -22,6 +22,7 @@ public abstract class GeneralUserException extends RuntimeException implements U
     return UserException.ERROR_SUBJECT;
   }
 
+  @Override
   public HttpStatus getHttpStatus() {
     return HttpStatus.INTERNAL_SERVER_ERROR;
   }

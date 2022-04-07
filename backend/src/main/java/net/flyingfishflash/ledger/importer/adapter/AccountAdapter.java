@@ -37,7 +37,7 @@ public class AccountAdapter {
    *
    * @param accountService Service class for interacting with accounts
    * @param commodityService Service class for interacting with commodities
-   * @param gnucashFileImportStatus
+   * @param gnucashFileImportStatus class capturing status of gnucash xml import
    */
   public AccountAdapter(
       AccountService accountService,

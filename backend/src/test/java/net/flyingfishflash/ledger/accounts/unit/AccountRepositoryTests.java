@@ -171,12 +171,11 @@ public class AccountRepositoryTests {
     newAccount.setName("Prev Sibling Of");
     newAccount.setParentId(99L);
     doReturn(Optional.empty()).when(spyAccountRepository).findById(anyLong());
-    Throwable exception =
-        assertThrows(
-            AccountNotFoundException.class,
-            () -> {
-              spyAccountRepository.insertAsPrevSiblingOf(newAccount, newAccount);
-            });
+    assertThrows(
+        AccountNotFoundException.class,
+        () -> {
+          spyAccountRepository.insertAsPrevSiblingOf(newAccount, newAccount);
+        });
     verify(mockNodeRepository, times(0))
         .insertAsPrevSiblingOf(any(Account.class), any(Account.class));
   }
@@ -202,12 +201,11 @@ public class AccountRepositoryTests {
     newAccount.setName("Next Sibling Of");
     newAccount.setParentId(99L);
     doReturn(Optional.empty()).when(spyAccountRepository).findById(anyLong());
-    Throwable exception =
-        assertThrows(
-            AccountNotFoundException.class,
-            () -> {
-              spyAccountRepository.insertAsNextSiblingOf(newAccount, newAccount);
-            });
+    assertThrows(
+        AccountNotFoundException.class,
+        () -> {
+          spyAccountRepository.insertAsNextSiblingOf(newAccount, newAccount);
+        });
     verify(mockNodeRepository, times(0))
         .insertAsNextSiblingOf(any(Account.class), any(Account.class));
   }
@@ -215,12 +213,11 @@ public class AccountRepositoryTests {
   @Test
   void testUpdate_UnsupportedOperationException() {
     // exception thrown because parent id is null, indirectly testing preventUnsafeOperations()
-    Throwable exception =
-        assertThrows(
-            UnsupportedOperationException.class,
-            () -> {
-              spyAccountRepository.update(new Account());
-            });
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> {
+          spyAccountRepository.update(new Account());
+        });
   }
 
   @Test
@@ -251,12 +248,12 @@ public class AccountRepositoryTests {
   @Test
   void testDeriveLongName_NoParent() {
     doReturn(Optional.empty()).when(spyAccountRepository).findById(anyLong());
-    Throwable exception =
-        assertThrows(
-            AccountNotFoundException.class,
-            () -> {
-              spyAccountRepository.deriveLongName(accountId7());
-            });
+
+    assertThrows(
+        AccountNotFoundException.class,
+        () -> {
+          spyAccountRepository.deriveLongName(accountId7());
+        });
   }
 
   private Iterable<Account> treeAsList() {

@@ -12,6 +12,7 @@ import javax.persistence.UniqueConstraint;
 @Table(
     name = "commodity",
     uniqueConstraints = {@UniqueConstraint(columnNames = {"namespace", "mnemonic"})})
+@SuppressWarnings("unused")
 public class Commodity {
 
   @Id

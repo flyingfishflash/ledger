@@ -11,6 +11,7 @@ import net.flyingfishflash.ledger.prices.service.PriceService;
 @RequestMapping("api/v1/ledger/prices")
 public class PriceController {
 
+  @SuppressWarnings("unused")
   private final PriceService priceService;
 
   public PriceController(PriceService priceService) {

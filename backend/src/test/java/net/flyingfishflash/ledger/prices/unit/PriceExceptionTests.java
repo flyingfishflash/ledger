@@ -44,7 +44,6 @@ class PriceExceptionTests {
   void testPriceException_getCause() {
     Exception illegalState = new IllegalStateException("Illegal State");
     TestPriceException testPriceException = new TestPriceException(illegalState);
-    Throwable throwable = new Throwable(illegalState);
     assertThat(testPriceException).hasCause(illegalState);
   }
 

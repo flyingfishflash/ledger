@@ -13,7 +13,7 @@ public enum AccountType {
   MUTUAL(AccountCategory.ASSET),
   STOCK(AccountCategory.ASSET);
 
-  private AccountCategory accountCategory;
+  private final AccountCategory accountCategory;
 
   AccountType(AccountCategory accountCategory) {
     this.accountCategory = accountCategory;

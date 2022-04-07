@@ -28,7 +28,7 @@ public class CommodityAdapter {
    * <p>Translates GncCommodity objects to Commodity objects and persists the results.
    *
    * @param commodityService Service class for interacting with commodities
-   * @param gnucashFileImportStatus
+   * @param gnucashFileImportStatus Class representing status of Gnucash file import
    */
   public CommodityAdapter(
       CommodityService commodityService, GnucashFileImportStatus gnucashFileImportStatus) {

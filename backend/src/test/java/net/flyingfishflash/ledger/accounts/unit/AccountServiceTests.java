@@ -22,7 +22,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import net.flyingfishflash.ledger.accounts.data.Account;
@@ -39,9 +38,8 @@ import net.flyingfishflash.ledger.accounts.service.AccountService;
 @ExtendWith(MockitoExtension.class)
 public class AccountServiceTests {
 
+  @Mock private AccountRepository accountRepository;
   @InjectMocks private AccountService accountService;
-
-  @Mock private final AccountRepository accountRepository = Mockito.mock(AccountRepository.class);
 
   @Test
   public void testFindAccountById() {
@@ -139,7 +137,7 @@ public class AccountServiceTests {
     assertThrows(
         EligibleParentAccountNotFoundException.class,
         () -> {
-          Iterable<Account> eligbleParents = accountService.getEligibleParentAccounts(accountId2());
+          accountService.getEligibleParentAccounts(accountId2());
         });
     // System.out.println(mockingDetails(accountRepository).printInvocations());
 
@@ -176,7 +174,7 @@ public class AccountServiceTests {
     when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
     when(accountRepository.findById(8L)).thenReturn(Optional.of(accountId8()));
     when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(accountId8()));
-    Account newAccount = accountService.createAccount(accountCreateRequest);
+    accountService.createAccount(accountCreateRequest);
 
     verify(accountRepository).findById(2L);
     verify(accountRepository).findById(8L);
@@ -203,7 +201,7 @@ public class AccountServiceTests {
     assertThrows(
         AccountCreateException.class,
         () -> {
-          Account newAccount = accountService.createAccount(accountCreateRequest);
+          accountService.createAccount(accountCreateRequest);
         });
 
     // System.out.println(mockingDetails(accountRepository).printInvocations());
@@ -224,7 +222,7 @@ public class AccountServiceTests {
     when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
     when(accountRepository.findById(7L)).thenReturn(Optional.of(accountId7()));
     when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(accountId8()));
-    Account newAccount = accountService.createAccount(accountCreateRequest);
+    accountService.createAccount(accountCreateRequest);
 
     verify(accountRepository).findById(2L);
     verify(accountRepository).findById(7L);
@@ -251,7 +249,7 @@ public class AccountServiceTests {
     assertThrows(
         AccountCreateException.class,
         () -> {
-          Account newAccount = accountService.createAccount(accountCreateRequest);
+          accountService.createAccount(accountCreateRequest);
         });
 
     // System.out.println(mockingDetails(accountRepository).printInvocations());
@@ -271,7 +269,7 @@ public class AccountServiceTests {
 
     when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
     when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(accountId7()));
-    Account newAccount = accountService.createAccount(accountCreateRequest);
+    accountService.createAccount(accountCreateRequest);
 
     verify(accountRepository).findById(2L);
     verify(accountRepository).findByGuid(anyString());
@@ -293,7 +291,7 @@ public class AccountServiceTests {
 
     when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
     when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(accountId7()));
-    Account newAccount = accountService.createAccount(accountCreateRequest);
+    accountService.createAccount(accountCreateRequest);
 
     verify(accountRepository).findById(2L);
     verify(accountRepository).findByGuid(anyString());
@@ -392,7 +390,7 @@ public class AccountServiceTests {
     assertThrows(
         AccountCreateException.class,
         () -> {
-          Account newAccount = accountService.createAccount(accountCreateRequest);
+          accountService.createAccount(accountCreateRequest);
         });
     // System.out.println(mockingDetails(accountRepository).printInvocations());
   }

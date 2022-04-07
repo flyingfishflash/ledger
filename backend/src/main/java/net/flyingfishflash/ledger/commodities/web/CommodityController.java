@@ -11,6 +11,7 @@ import net.flyingfishflash.ledger.commodities.service.CommodityService;
 @RequestMapping("api/v1/ledger/commodities")
 public class CommodityController {
 
+  @SuppressWarnings("unused")
   private final CommodityService commodityService;
 
   public CommodityController(CommodityService commodityService) {

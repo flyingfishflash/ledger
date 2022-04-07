@@ -22,6 +22,7 @@ public abstract class GeneralPriceException extends RuntimeException implements 
     return PriceException.ERROR_SUBJECT;
   }
 
+  @Override
   public HttpStatus getHttpStatus() {
     return HttpStatus.INTERNAL_SERVER_ERROR;
   }

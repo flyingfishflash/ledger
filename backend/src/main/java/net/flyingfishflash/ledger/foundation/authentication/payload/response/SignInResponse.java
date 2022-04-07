@@ -33,7 +33,7 @@ public class SignInResponse {
   public void setRoles(List<GrantedAuthority> authorities) {
     List<String> newAuthorities = new ArrayList<>();
     authorities.forEach(
-        role -> newAuthorities.add((authorities.toString().replace("[", "").replace("]", ""))));
+        role -> newAuthorities.add(authorities.toString().replace("[", "").replace("]", "")));
     this.roles = newAuthorities;
   }
 

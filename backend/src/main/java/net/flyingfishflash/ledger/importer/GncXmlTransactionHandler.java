@@ -63,8 +63,8 @@ public class GncXmlTransactionHandler extends DefaultHandler {
   /**
    * Creates a handler for handling XML stream events when parsing the XML backup file
    *
-   * @param transactionAdapter
-   * @param gnucashFileImportStatus
+   * @param transactionAdapter transform gncTransaction to Transaction
+   * @param gnucashFileImportStatus class capturing status of gnucash xml import
    */
   public GncXmlTransactionHandler(
       TransactionAdapter transactionAdapter, GnucashFileImportStatus gnucashFileImportStatus) {

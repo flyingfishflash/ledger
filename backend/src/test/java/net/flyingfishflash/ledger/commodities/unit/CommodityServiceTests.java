@@ -13,13 +13,11 @@ import static org.mockito.Mockito.verify;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import net.flyingfishflash.ledger.commodities.data.Commodity;
@@ -30,11 +28,8 @@ import net.flyingfishflash.ledger.commodities.service.CommodityService;
 @ExtendWith(MockitoExtension.class)
 public class CommodityServiceTests {
 
+  @Mock private CommodityRepository commodityRepositoryMock;
   @InjectMocks private CommodityService commodityService;
-
-  @Mock
-  private final CommodityRepository commodityRepositoryMock =
-      Mockito.mock(CommodityRepository.class);
 
   @Test
   public void testNewCommodity() {
@@ -42,7 +37,7 @@ public class CommodityServiceTests {
     assertThat(commodity.getGuid()).isNotNull();
     StringBuilder sbr = new StringBuilder(commodity.getGuid());
     for (int i = 8, j = 0; i <= 20; i += 4, j++) sbr.insert(i + j, '-');
-    assertThat(UUID.fromString(sbr.toString()));
+    // assertThat(UUID.fromString(sbr.toString()));
   }
 
   @Test

@@ -38,7 +38,6 @@ import net.flyingfishflash.ledger.foundation.users.data.Role;
 import net.flyingfishflash.ledger.foundation.users.data.User;
 import net.flyingfishflash.ledger.foundation.users.data.dto.UserCreateRequest;
 import net.flyingfishflash.ledger.foundation.users.data.dto.UserCreateResponse;
-import net.flyingfishflash.ledger.foundation.users.data.dto.UserDeleteResponse;
 import net.flyingfishflash.ledger.foundation.users.data.dto.UserProfileResponse;
 import net.flyingfishflash.ledger.foundation.users.service.UserService;
 import net.flyingfishflash.ledger.foundation.users.web.UserController;
@@ -48,16 +47,14 @@ public class UserControllerTests {
 
   private MockMvc mvc;
 
-  @InjectMocks UserController userController;
-
   @Mock private UserService userService;
-
   @Mock private Principal mockPrincipal;
+  @InjectMocks UserController userController;
 
   private JacksonTester<UserProfileResponse> jsonUserProfileResponse;
   private JacksonTester<UserCreateRequest> jsonUserCreateRequest;
   private JacksonTester<UserCreateResponse> jsonUserCreateResponse;
-  private JacksonTester<UserDeleteResponse> jsonUserDeleteResponse;
+  //  private JacksonTester<UserDeleteResponse> jsonUserDeleteResponse;
   private JacksonTester<List<User>> jsonUserList;
   private JacksonTester<Map<String, Object>> jsonPatchRequest;
 
@@ -81,7 +78,7 @@ public class UserControllerTests {
     List<User> userList = new ArrayList<>(1);
     userList.add(user);
 
-    given(userService.findAllUsers()).willReturn(((userList)));
+    given(userService.findAllUsers()).willReturn(userList);
 
     MockHttpServletResponse response =
         mvc.perform(get("/api/v1/ledger/users").accept(MediaType.APPLICATION_JSON))

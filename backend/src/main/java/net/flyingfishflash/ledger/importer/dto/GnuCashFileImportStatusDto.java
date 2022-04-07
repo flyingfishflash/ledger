@@ -3,6 +3,7 @@ package net.flyingfishflash.ledger.importer.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class GnuCashFileImportStatusDto {
 
   private class Component {

@@ -105,7 +105,7 @@ public class AccountService {
    * <p>Currently only used by the SSR UI.
    *
    * @param p Parent account
-   * @return
+   * @return Account
    */
   public Account createAccount(Account p) {
 
@@ -261,7 +261,7 @@ public class AccountService {
     while (it.hasNext()) {
       Account a = it.next();
       if ((a.getTreeLeft() > account.getTreeLeft() && a.getTreeLeft() < account.getTreeRight())
-          || (a.getId().equals(account.getId()))) {
+          || a.getId().equals(account.getId())) {
         it.remove();
       }
     }

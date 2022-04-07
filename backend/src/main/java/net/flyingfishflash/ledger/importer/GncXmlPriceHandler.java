@@ -52,7 +52,7 @@ public class GncXmlPriceHandler extends DefaultHandler {
    * Creates a handler for handling XML stream events when parsing the XML file
    *
    * @param priceAdapter Translates GncPrice objects into Price objects and persists the results.
-   * @param gnucashFileImportStatus
+   * @param gnucashFileImportStatus class capturing status of gnucash xml import
    */
   public GncXmlPriceHandler(
       PriceAdapter priceAdapter, GnucashFileImportStatus gnucashFileImportStatus) {

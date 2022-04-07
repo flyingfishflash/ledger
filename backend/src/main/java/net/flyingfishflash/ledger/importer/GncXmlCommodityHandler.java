@@ -51,7 +51,7 @@ public class GncXmlCommodityHandler extends DefaultHandler {
    *
    * @param commodityAdapter translates GncCommodity objects -> Commodity objects and persists the
    *     results.
-   * @param gnucashFileImportStatus
+   * @param gnucashFileImportStatus class capturing status of gnucash xml import
    */
   public GncXmlCommodityHandler(
       CommodityAdapter commodityAdapter, GnucashFileImportStatus gnucashFileImportStatus) {

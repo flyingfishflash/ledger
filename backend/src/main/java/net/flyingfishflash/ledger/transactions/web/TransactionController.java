@@ -11,6 +11,7 @@ import net.flyingfishflash.ledger.transactions.service.TransactionService;
 @RequestMapping("api/v1/ledger/transactions")
 public class TransactionController {
 
+  @SuppressWarnings("unused")
   private TransactionService transactionService;
 
   public TransactionController(TransactionService transactionService) {

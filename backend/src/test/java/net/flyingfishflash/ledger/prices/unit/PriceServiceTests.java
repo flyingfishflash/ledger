@@ -13,13 +13,11 @@ import static org.mockito.Mockito.verify;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import net.flyingfishflash.ledger.prices.data.Price;
@@ -30,9 +28,8 @@ import net.flyingfishflash.ledger.prices.service.PriceService;
 @ExtendWith(MockitoExtension.class)
 public class PriceServiceTests {
 
+  @Mock private PriceRepository priceRepositoryMock;
   @InjectMocks private PriceService priceService;
-
-  @Mock private final PriceRepository priceRepositoryMock = Mockito.mock(PriceRepository.class);
 
   @Test
   public void testNewPrice() {
@@ -40,7 +37,7 @@ public class PriceServiceTests {
     assertThat(price.getGuid()).isNotNull();
     StringBuilder sbr = new StringBuilder(price.getGuid());
     for (int i = 8, j = 0; i <= 20; i += 4, j++) sbr.insert(i + j, '-');
-    assertThat(UUID.fromString(sbr.toString()));
+    // assertThat(UUID.fromString(sbr.toString()));
   }
 
   @Test

@@ -31,6 +31,7 @@ import org.springframework.web.context.annotation.SessionScope;
   "proxiedInterfaces",
   "proxyTargetClass"
 })
+@SuppressWarnings("unused")
 public class GnucashFileImportStatus implements Serializable {
 
   private static final Logger logger = LoggerFactory.getLogger(GnucashFileImportStatus.class);

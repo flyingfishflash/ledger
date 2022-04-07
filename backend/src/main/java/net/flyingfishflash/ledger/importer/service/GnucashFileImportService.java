@@ -189,6 +189,7 @@ public class GnucashFileImportService {
     logger.info("{} import time elapsed: {}} s", handler, (stopTime - startTime) / 1000);
   }
 
+  @SuppressWarnings("JavaTimeDefaultTimeZone")
   private void sendImportStatusMessage(String message) {
 
     // DateTimeFormatter inBuiltFormatter1 = DateTimeFormatter.ISO_DATE_TIME;

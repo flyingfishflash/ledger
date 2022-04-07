@@ -45,7 +45,7 @@ class AccountControllerTests {
   @Mock AccountService accountService;
 
   private JacksonTester<Collection<Account>> jsonAccountCollection;
-  private JacksonTester<Account> jsonAccount;
+  // private JacksonTester<Account> jsonAccount;
   private JacksonTester<AccountDto> jsonAccountDto;
   private JacksonTester<AccountCreateRequest> jsonCreateAccountDto;
 
@@ -139,13 +139,12 @@ class AccountControllerTests {
 
     given(accountService.createAccount(any(AccountCreateRequest.class))).willReturn(account1);
 
-    MockHttpServletResponse response =
-        mvc.perform(
-                post("/api/v1/ledger/accounts")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(jsonCreateAccountDto.write(accountCreateRequest).getJson()))
-            .andReturn()
-            .getResponse();
+    mvc.perform(
+            post("/api/v1/ledger/accounts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonCreateAccountDto.write(accountCreateRequest).getJson()))
+        .andReturn()
+        .getResponse();
   }
 
   @Test

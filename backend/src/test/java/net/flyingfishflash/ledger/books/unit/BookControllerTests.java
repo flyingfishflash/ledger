@@ -111,7 +111,7 @@ public class BookControllerTests {
   @Test
   public void testPatchBook() throws Exception {
 
-    BookRequest bookRequest = new BookRequest("Book Name");
+    // BookRequest bookRequest = new BookRequest("Book Name");
 
     Map<String, Object> patchRequest = new HashMap<>();
     patchRequest.put("Name", "New Book Name");
