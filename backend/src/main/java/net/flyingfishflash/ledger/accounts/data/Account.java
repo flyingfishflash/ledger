@@ -19,6 +19,7 @@ public class Account implements NestedNode<Long> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  @SuppressWarnings("java:S1845")
   private Long id;
 
   @Column(unique = true, updatable = false)

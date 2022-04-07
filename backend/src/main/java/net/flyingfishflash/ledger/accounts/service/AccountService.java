@@ -2,7 +2,6 @@ package net.flyingfishflash.ledger.accounts.service;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.stereotype.Service;
@@ -165,7 +164,7 @@ public class AccountService {
       }
     }
 
-    return StreamSupport.stream(allAccounts.spliterator(), false).collect(Collectors.toList());
+    return StreamSupport.stream(allAccounts.spliterator(), false).toList();
   }
 
   public Account findRoot() {
@@ -270,8 +269,7 @@ public class AccountService {
         StreamSupport.stream(eligibleParentAccounts.spliterator(), false).count();
 
     if (eligibleParentsCount > 0) {
-      return StreamSupport.stream(eligibleParentAccounts.spliterator(), false)
-          .collect(Collectors.toList());
+      return StreamSupport.stream(eligibleParentAccounts.spliterator(), false).toList();
     } else {
       throw new EligibleParentAccountNotFoundException(account.getId());
     }
