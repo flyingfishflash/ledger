@@ -17,15 +17,15 @@ import javax.validation.Payload;
 @Constraint(validatedBy = {EnumValueValidator.class})
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@SuppressWarnings("JavaLangClash")
+@SuppressWarnings({"JavaLangClash", "java:S1452"})
 public @interface Enum {
-  String message() default "must be a value defined in the enumerated list";
+  Class<? extends java.lang.Enum<?>> enumClass();
+
+  String message() default "must be a value defined by {enumClass}";
 
   Class<?>[] groups() default {};
 
   Class<? extends Payload>[] payload() default {};
-
-  Class<? extends java.lang.Enum<?>> enumClass();
 
   boolean ignoreCase() default false;
 }
