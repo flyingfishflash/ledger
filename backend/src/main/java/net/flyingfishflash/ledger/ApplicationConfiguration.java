@@ -5,9 +5,10 @@ import javax.money.Monetary;
 
 import org.springframework.context.annotation.Configuration;
 
+@SuppressWarnings("java:S1118")
 @Configuration
 public class ApplicationConfiguration {
 
-  // future state should have this setting overlaid by a user or book configuration setting
+  // TODO: Deal with configurable application properties
   public static final CurrencyUnit DEFAULT_CURRENCY = Monetary.getCurrency("USD");
 }
