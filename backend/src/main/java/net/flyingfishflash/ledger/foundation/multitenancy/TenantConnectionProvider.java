@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TenantConnectionProvider implements MultiTenantConnectionProvider {
+
+  @SuppressWarnings("java:S1948")
   private DataSource datasource;
 
   public TenantConnectionProvider(DataSource datasource) {
@@ -26,6 +28,7 @@ public class TenantConnectionProvider implements MultiTenantConnectionProvider {
     connection.close();
   }
 
+  @SuppressWarnings("java:S2095")
   @Override
   public Connection getConnection(String tenantIdentifier) throws SQLException {
     final var connection = getAnyConnection();
@@ -33,6 +36,7 @@ public class TenantConnectionProvider implements MultiTenantConnectionProvider {
     return connection;
   }
 
+  @SuppressWarnings("java:S2095")
   @Override
   public void releaseConnection(String tenantIdentifier, Connection connection)
       throws SQLException {
