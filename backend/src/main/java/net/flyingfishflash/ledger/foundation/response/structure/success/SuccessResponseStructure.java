@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+@SuppressWarnings("java:S1948")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SuccessResponseStructure<T> implements java.io.Serializable {
 
@@ -17,12 +18,12 @@ public class SuccessResponseStructure<T> implements java.io.Serializable {
     this.length = length;
     this.message = message;
     if (length == 0) {
-      if (this.body instanceof List) {
-        this.length = ((List) this.body).size();
+      if (this.body instanceof List<?> bodyList) {
+        this.length = bodyList.size();
       }
 
-      if (this.body instanceof Map) {
-        this.length = ((Map) this.body).size();
+      if (this.body instanceof Map<?, ?> bodyMap) {
+        this.length = bodyMap.size();
       }
     }
   }
@@ -31,12 +32,12 @@ public class SuccessResponseStructure<T> implements java.io.Serializable {
     this.body = body;
     this.message = message;
 
-    if (this.body instanceof List) {
-      this.length = ((List) this.body).size();
+    if (this.body instanceof List<?> bodyList) {
+      this.length = bodyList.size();
     }
 
-    if (this.body instanceof Map) {
-      this.length = ((Map) this.body).size();
+    if (this.body instanceof Map<?, ?> bodyMap) {
+      this.length = bodyMap.size();
     }
   }
 
@@ -47,12 +48,12 @@ public class SuccessResponseStructure<T> implements java.io.Serializable {
 
   public SuccessResponseStructure(T body) {
     this.body = body;
-    if (this.body instanceof List) {
-      this.length = ((List) this.body).size();
+    if (this.body instanceof List<?> bodyList) {
+      this.length = bodyList.size();
     }
 
-    if (this.body instanceof Map) {
-      this.length = ((Map) this.body).size();
+    if (this.body instanceof Map<?, ?> bodyMap) {
+      this.length = bodyMap.size();
     }
   }
 
