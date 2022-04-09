@@ -55,7 +55,7 @@ CREATE TABLE entry (
 	,quantitySigned DECIMAL(38, 18)
 	,type VARCHAR(255)
 	,value_currency VARCHAR(3)
-	,value DECIMAL(38, 18)
+	,"value" DECIMAL(38, 18)
 	,valueSigned DECIMAL(38, 18)
 	,account_id BIGINT
 	,transaction_id BIGINT
