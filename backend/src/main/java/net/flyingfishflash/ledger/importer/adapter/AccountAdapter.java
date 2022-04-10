@@ -49,6 +49,7 @@ public class AccountAdapter {
     this.gnucashFileImportStatus = gnucashFileImportStatus;
   }
 
+  @SuppressWarnings("java:S3776")
   public void addRecords(List<GncAccount> gncAccounts) {
 
     Account account;
