@@ -126,6 +126,7 @@ public class AccountController {
   }
 
   // Change the position of an account in the hierarchy within the sibling level (down)
+  @SuppressWarnings("java:S1075") //  URI is handled properly
   @PostMapping(value = "/insert-as-next-sibling")
   @Operation(
       summary =
@@ -147,6 +148,7 @@ public class AccountController {
   }
 
   // Change the position of an account in the hierarchy within the sibling level (up)
+  @SuppressWarnings("java:S1075") //  URI is handled properly
   @PostMapping(value = "/insert-as-prev-sibling")
   @Operation(
       summary =
