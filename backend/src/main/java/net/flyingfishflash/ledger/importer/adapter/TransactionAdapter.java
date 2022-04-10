@@ -41,6 +41,7 @@ public class TransactionAdapter {
     this.gnucashFileImportStatus = gnucashFileImportStatus;
   }
 
+  @SuppressWarnings("java:S3776")
   public void addRecords(List<GncTransaction> gncTransactions) {
 
     List<Transaction> transactions = new ArrayList<>(gncTransactions.size());
