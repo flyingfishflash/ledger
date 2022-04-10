@@ -10,10 +10,10 @@ import org.junit.jupiter.api.Test;
 
 import net.flyingfishflash.ledger.accounts.data.AccountCategory;
 
-public class AccountCategoryTests {
+class AccountCategoryTests {
 
   @Test
-  public void testAccountCategoryEnum() {
+  void testAccountCategoryEnum() {
     assertEquals(6, AccountCategory.values().length);
     List<AccountCategory> accountCategoryList = Arrays.asList(AccountCategory.values());
     accountCategoryList.sort(Comparator.comparing(AccountCategory::name));

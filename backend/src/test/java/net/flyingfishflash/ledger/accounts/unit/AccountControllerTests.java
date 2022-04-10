@@ -12,7 +12,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,11 +37,10 @@ import net.flyingfishflash.ledger.accounts.web.AccountController;
 @ExtendWith(MockitoExtension.class)
 class AccountControllerTests {
 
-  private MockMvc mvc;
-
+  @Mock AccountService accountService;
   @InjectMocks AccountController accountController;
 
-  @Mock AccountService accountService;
+  private MockMvc mvc;
 
   private JacksonTester<Collection<Account>> jsonAccountCollection;
   // private JacksonTester<Account> jsonAccount;
@@ -51,6 +49,7 @@ class AccountControllerTests {
 
   @BeforeEach
   public void setup() {
+
     JacksonTester.initFields(this, new ObjectMapper());
     // MockMvc standalone approach
     mvc =
@@ -64,10 +63,10 @@ class AccountControllerTests {
   }
 
   @Test
-  void testFindAllAccounts() throws Exception {
+  void getAccounts_JsonOfMockedAccountList_WhenRequestIsValid() throws Exception {
 
-    List<Account> accountList = new ArrayList<Account>();
-    Account account1 = new Account();
+    var accountList = new ArrayList<Account>(1);
+    var account1 = new Account();
     account1.setGuid("Any Guid");
     accountList.add(account1);
 
@@ -85,10 +84,11 @@ class AccountControllerTests {
   }
 
   @Test
-  void testFindAccountById() throws Exception {
+  void getAccount_JsonOfMockedAccount_WhenRequestIsValid() throws Exception {
 
-    Account account1 = new Account();
-    AccountDto accountDto1 = new AccountDto(account1);
+    var account1 = new Account();
+    var accountDto1 = new AccountDto(account1);
+
     given(accountService.findById(anyLong())).willReturn(account1);
 
     MockHttpServletResponse response =
@@ -102,9 +102,9 @@ class AccountControllerTests {
   }
 
   @Test
-  void testCreateAccount_BadRequest() throws Exception {
+  void postAccountCreateRequest_Http400_WhenRequestIsInvalid() throws Exception {
 
-    AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
+    var accountCreateRequest = new AccountCreateRequest();
     accountCreateRequest.setCode("string");
     accountCreateRequest.setHidden(true);
     accountCreateRequest.setMode("FIRST_CHILD1"); // invalid value
@@ -126,11 +126,11 @@ class AccountControllerTests {
   }
 
   @Test
-  void testCreateAccount() throws Exception {
+  void postAccountCreateRequest_Http201_WhenRequestIsValid() throws Exception {
 
-    Account account1 = new Account();
-    AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
-    accountCreateRequest.setName("Any Name");
+    var account1 = new Account();
+    var accountCreateRequest = new AccountCreateRequest();
+    accountCreateRequest.setName("Lorem Ipsum");
     accountCreateRequest.setParentId(2L);
     accountCreateRequest.setHidden(false);
     accountCreateRequest.setPlaceholder(false);
@@ -139,22 +139,54 @@ class AccountControllerTests {
 
     given(accountService.createAccount(any(AccountCreateRequest.class))).willReturn(account1);
 
-    mvc.perform(
-            post("/api/v1/ledger/accounts")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonCreateAccountDto.write(accountCreateRequest).getJson()))
-        .andReturn()
-        .getResponse();
+    MockHttpServletResponse response =
+        mvc.perform(
+                post("/api/v1/ledger/accounts")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonCreateAccountDto.write(accountCreateRequest).getJson()))
+            .andReturn()
+            .getResponse();
+
+    assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
   }
 
   @Test
-  void testDeleteAccountAndDescendants() throws Exception {
+  void postAccountCreateRequest_JsonOfMockedAccountDto_WhenRequestIsValid() throws Exception {
 
-    String requestParameter = "1";
+    var account1 = new Account();
+    account1.setName("Lorem Ipsum");
+
+    var accountDto = new AccountDto(account1);
+
+    var accountCreateRequest = new AccountCreateRequest();
+    accountCreateRequest.setName("Lorem Ipsum");
+    accountCreateRequest.setParentId(2L);
+    accountCreateRequest.setHidden(false);
+    accountCreateRequest.setPlaceholder(false);
+    accountCreateRequest.setTaxRelated(false);
+    accountCreateRequest.setMode("PREV_SIBLING");
+
+    given(accountService.createAccount(any(AccountCreateRequest.class))).willReturn(account1);
+
+    MockHttpServletResponse response =
+        mvc.perform(
+                post("/api/v1/ledger/accounts")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonCreateAccountDto.write(accountCreateRequest).getJson()))
+            .andReturn()
+            .getResponse();
+
+    assertThat(response.getContentAsString()).isEqualTo(jsonAccountDto.write(accountDto).getJson());
+  }
+
+  @Test
+  void deleteAccountId_Http204_WhenRequestIsValid() throws Exception {
+
+    var requestParameter = "1";
     var longName = "Lorem Ipsum";
-
-    Account account1 = new Account();
+    var account1 = new Account();
     account1.setLongName(longName);
+
     given(accountService.findById(anyLong())).willReturn(account1);
 
     MockHttpServletResponse response =
@@ -170,9 +202,9 @@ class AccountControllerTests {
   }
 
   @Test
-  void testInsertAsNextSibling() throws Exception {
+  void postInsertAsNextSibling_Http201_WhenRequestIsValid() throws Exception {
 
-    String requestParameter = "1";
+    var requestParameter = "1";
 
     MockHttpServletResponse response =
         mvc.perform(post("/api/v1/ledger/accounts/insert-as-next-sibling?id=" + requestParameter))
@@ -183,9 +215,9 @@ class AccountControllerTests {
   }
 
   @Test
-  void testInsertAsPrevSibling() throws Exception {
+  void postInsertAsPrevSibling_Http201_WhenRequestIsValid() throws Exception {
 
-    String requestParameter = "1";
+    var requestParameter = "1";
 
     MockHttpServletResponse response =
         mvc.perform(post("/api/v1/ledger/accounts/insert-as-prev-sibling?id=" + requestParameter))
@@ -196,12 +228,12 @@ class AccountControllerTests {
   }
 
   @Test
-  void testGetEligibleParentAccountsOf() throws Exception {
+  void getEligibleParentAccounts_JsonOfMockedAccountList_WhenRequestIsValid() throws Exception {
 
-    String requestParameter = "1";
+    var requestParameter = "1";
 
-    List<Account> accountList = new ArrayList<Account>();
-    Account account1 = new Account();
+    var accountList = new ArrayList<Account>(1);
+    var account1 = new Account();
     account1.setGuid("Any Guid");
     accountList.add(account1);
 

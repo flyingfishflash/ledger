@@ -121,8 +121,8 @@ public final class GncXmlHelper {
 
   public static final String RECURRENCE_VERSION = "1.0.0";
   public static final String BOOK_VERSION = "2.0.0";
-  public static final SimpleDateFormat TIME_FORMATTER =
-      new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.US);
+  public static final String TIME_FORMAT = "yyyy-MM-dd HH:mm:ss Z";
+  public static final Locale LOCALE = Locale.US;
   /*
     public static final SimpleDateFormat DATE_FORMATTER =
         new SimpleDateFormat("yyyy-MM-dd", Locale.US);
@@ -149,7 +149,8 @@ public final class GncXmlHelper {
    * @param milliseconds Milliseconds since epoch
    */
   public static String formatDate(long milliseconds) {
-    return TIME_FORMATTER.format(new Date(milliseconds));
+    var timeFormatter = new SimpleDateFormat(TIME_FORMAT, LOCALE);
+    return timeFormatter.format(new Date(milliseconds));
   }
 
   /**
@@ -160,7 +161,8 @@ public final class GncXmlHelper {
    * @throws ParseException if the date string could not be parsed e.g. because of different format
    */
   public static long parseDate(String dateString) throws ParseException {
-    var date = TIME_FORMATTER.parse(dateString);
+    var timeFormatter = new SimpleDateFormat(TIME_FORMAT, LOCALE);
+    var date = timeFormatter.parse(dateString);
     return date.getTime();
   }
 

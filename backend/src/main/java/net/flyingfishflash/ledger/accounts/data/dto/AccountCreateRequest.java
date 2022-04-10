@@ -1,19 +1,5 @@
 package net.flyingfishflash.ledger.accounts.data.dto;
 
-/*
-{
-    "code": "2",
-    "description": "Financial Assets Description",
-    "hidden": true,
-    "mode" : "last_child",
-    "name": "Financial Assets",
-    "parentId": 2,
-    "placeholder": true,
-    "siblingId" : 0,
-    "taxRelated": true
-}
-*/
-
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -25,7 +11,21 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import net.flyingfishflash.ledger.foundation.validators.Enum;
 
+@SuppressWarnings("java:S125")
 public class AccountCreateRequest {
+  /*
+  {
+   "code":"2",
+   "description":"Financial Assets Description",
+   "hidden":true,
+   "mode":"last_child",
+   "name":"Financial Assets",
+   "parentId":2,
+   "placeholder":true,
+   "siblingId":0,
+   "taxRelated":true
+   }
+   */
 
   @Size(max = 2048)
   @Pattern(

@@ -11,17 +11,17 @@ import net.flyingfishflash.ledger.accounts.data.AccountCategory;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
 import net.flyingfishflash.ledger.accounts.service.AccountTypeService;
 
-public class AccountTypeServiceTests {
+class AccountTypeServiceTests {
 
   AccountTypeService accountTypeService = new AccountTypeService();
 
   @Test
-  public void testFindAllAccountTypesSize() {
+  void testFindAllAccountTypesSize() {
     assertEquals(11, accountTypeService.findAllAccountTypes().size());
   }
 
   @Test
-  public void testFindAllAccountTypesContents() {
+  void testFindAllAccountTypesContents() {
     List<AccountType> accountTypeList = accountTypeService.findAllAccountTypes();
     accountTypeList.sort(Comparator.comparing(AccountType::name));
     assertEquals(AccountType.ASSET, accountTypeList.get(0));
@@ -38,7 +38,7 @@ public class AccountTypeServiceTests {
   }
 
   @Test
-  public void testFindAccountTypesByCategoryWhenCategoryIsAsset() {
+  void testFindAccountTypesByCategoryWhenCategoryIsAsset() {
     List<AccountType> accountTypeList =
         accountTypeService.findAccountTypesByCategory(AccountCategory.ASSET.toString());
     assertEquals(5, accountTypeList.size());
@@ -51,7 +51,7 @@ public class AccountTypeServiceTests {
   }
 
   @Test
-  public void testFindAccountTypesByCategoryWhenCategoryIsEquity() {
+  void testFindAccountTypesByCategoryWhenCategoryIsEquity() {
     List<AccountType> accountTypeList =
         accountTypeService.findAccountTypesByCategory(AccountCategory.EQUITY.toString());
     assertEquals(1, accountTypeList.size());
@@ -60,7 +60,7 @@ public class AccountTypeServiceTests {
   }
 
   @Test
-  public void testFindAccountTypesByCategoryWhenCategoryIsExpense() {
+  void testFindAccountTypesByCategoryWhenCategoryIsExpense() {
     List<AccountType> accountTypeList =
         accountTypeService.findAccountTypesByCategory(AccountCategory.EXPENSE.toString());
     assertEquals(1, accountTypeList.size());
@@ -69,7 +69,7 @@ public class AccountTypeServiceTests {
   }
 
   @Test
-  public void testFindAccountTypesByCategoryWhenCategoryIsIncome() {
+  void testFindAccountTypesByCategoryWhenCategoryIsIncome() {
     List<AccountType> accountTypeList =
         accountTypeService.findAccountTypesByCategory(AccountCategory.INCOME.toString());
     assertEquals(1, accountTypeList.size());
@@ -78,7 +78,7 @@ public class AccountTypeServiceTests {
   }
 
   @Test
-  public void testFindAccountTypesByCategoryWhenCategoryIsLiability() {
+  void testFindAccountTypesByCategoryWhenCategoryIsLiability() {
     List<AccountType> accountTypeList =
         accountTypeService.findAccountTypesByCategory(AccountCategory.LIABILITY.toString());
     assertEquals(2, accountTypeList.size());
@@ -88,7 +88,7 @@ public class AccountTypeServiceTests {
   }
 
   @Test
-  public void testFindAccountTypesByCategoryWhenCategoryIsRoot() {
+  void testFindAccountTypesByCategoryWhenCategoryIsRoot() {
     List<AccountType> accountTypeList =
         accountTypeService.findAccountTypesByCategory(AccountCategory.ROOT.toString());
     assertEquals(1, accountTypeList.size());

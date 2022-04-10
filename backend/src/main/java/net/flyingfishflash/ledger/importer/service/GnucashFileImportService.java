@@ -54,6 +54,7 @@ public class GnucashFileImportService {
   private PriceService priceService;
   private TransactionService transactionService;
 
+  @SuppressWarnings("java:S107")
   public GnucashFileImportService(
       WebSocketSessionId webSocketSessionId,
       SimpMessagingTemplate simpMessagingTemplate,

@@ -10,10 +10,10 @@ import org.junit.jupiter.api.Test;
 
 import net.flyingfishflash.ledger.accounts.data.AccountType;
 
-public class AccountTypeTests {
+class AccountTypeTests {
 
   @Test
-  public void testAccountTypeEnum() {
+  void testAccountTypeEnum() {
     assertEquals(11, AccountType.values().length);
     List<AccountType> accountTypeList = Arrays.asList(AccountType.values());
     accountTypeList.sort(Comparator.comparing(AccountType::name));

@@ -35,7 +35,7 @@ import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
 import net.flyingfishflash.ledger.foundation.IdentifierFactory;
 
 @ExtendWith(MockitoExtension.class)
-public class AccountRepositoryTests {
+class AccountRepositoryTests {
 
   @Mock private NestedNodeRepository<Long, Account> mockNodeRepository;
   @Spy @InjectMocks private AccountRepository spyAccountRepository;
@@ -212,11 +212,12 @@ public class AccountRepositoryTests {
 
   @Test
   void testUpdate_UnsupportedOperationException() {
+    var account = new Account();
     // exception thrown because parent id is null, indirectly testing preventUnsafeOperations()
     assertThrows(
         UnsupportedOperationException.class,
         () -> {
-          spyAccountRepository.update(new Account());
+          spyAccountRepository.update(account);
         });
   }
 
@@ -247,12 +248,14 @@ public class AccountRepositoryTests {
 
   @Test
   void testDeriveLongName_NoParent() {
+    var accountId7 = accountId7();
+
     doReturn(Optional.empty()).when(spyAccountRepository).findById(anyLong());
 
     assertThrows(
         AccountNotFoundException.class,
         () -> {
-          spyAccountRepository.deriveLongName(accountId7());
+          spyAccountRepository.deriveLongName(accountId7);
         });
   }
 

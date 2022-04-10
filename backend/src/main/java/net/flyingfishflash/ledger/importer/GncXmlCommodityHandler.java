@@ -85,6 +85,7 @@ public class GncXmlCommodityHandler extends DefaultHandler {
     }
   }
 
+  @SuppressWarnings("java:S3776")
   @Override
   public void endElement(String uri, String localName, String qualifiedName) throws SAXException {
 

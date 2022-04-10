@@ -37,7 +37,7 @@ import net.flyingfishflash.ledger.books.service.BookService;
 import net.flyingfishflash.ledger.books.web.BookController;
 
 @ExtendWith(MockitoExtension.class)
-public class BookControllerTests {
+class BookControllerTests {
 
   private MockMvc mvc;
 
@@ -64,7 +64,7 @@ public class BookControllerTests {
   }
 
   @Test
-  public void testFindById() throws Exception {
+  void testFindById() throws Exception {
 
     String pathVariable = "1";
 
@@ -78,7 +78,7 @@ public class BookControllerTests {
   }
 
   @Test
-  public void testFindAllBooks() throws Exception {
+  void testFindAllBooks() throws Exception {
 
     MockHttpServletResponse response =
         mvc.perform(get("/api/v1/ledger/books").accept(MediaType.APPLICATION_JSON))
@@ -90,7 +90,7 @@ public class BookControllerTests {
   }
 
   @Test
-  public void testCreateBook() throws Exception {
+  void testCreateBook() throws Exception {
 
     BookRequest bookRequest = new BookRequest("Book Name");
 
@@ -109,7 +109,7 @@ public class BookControllerTests {
   }
 
   @Test
-  public void testPatchBook() throws Exception {
+  void testPatchBook() throws Exception {
 
     // BookRequest bookRequest = new BookRequest("Book Name");
 
@@ -129,7 +129,7 @@ public class BookControllerTests {
   }
 
   @Test
-  public void testDeleteBook() throws Exception {
+  void testDeleteBook() throws Exception {
 
     String pathVariable = "1";
 
@@ -141,7 +141,7 @@ public class BookControllerTests {
   }
 
   @Test
-  public void testSetActiveBook() throws Exception {
+  void testSetActiveBook() throws Exception {
 
     SetActiveBookRequest setActiveBookRequest = new SetActiveBookRequest();
     setActiveBookRequest.setId(1L);
@@ -164,7 +164,7 @@ public class BookControllerTests {
   }
 
   @Test
-  public void testGetActiveBook() throws Exception {
+  void testGetActiveBook() throws Exception {
 
     Book activeBook = new Book("Book Name");
     given(bookServiceMock.findById(0L)).willReturn(activeBook);

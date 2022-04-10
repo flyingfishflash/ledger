@@ -23,6 +23,7 @@ import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
  * discovered elements are passed to an adapter class to be translated and persisting in the
  * database.
  */
+@SuppressWarnings("java:S3776")
 @Component
 public class GncXmlTransactionHandler extends DefaultHandler {
 
@@ -86,6 +87,7 @@ public class GncXmlTransactionHandler extends DefaultHandler {
         gncTransaction = new GncTransaction("");
         break;
 
+        // TODO: review this fall through case statement for intentionality
       case GncXmlHelper.TAG_TRX_CURRENCY:
         inNodeTransactionCurrency = true;
 

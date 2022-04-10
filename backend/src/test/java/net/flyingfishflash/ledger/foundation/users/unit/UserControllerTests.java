@@ -43,7 +43,7 @@ import net.flyingfishflash.ledger.foundation.users.service.UserService;
 import net.flyingfishflash.ledger.foundation.users.web.UserController;
 
 @ExtendWith(MockitoExtension.class)
-public class UserControllerTests {
+class UserControllerTests {
 
   private MockMvc mvc;
 
@@ -71,7 +71,7 @@ public class UserControllerTests {
   }
 
   @Test
-  public void testFindAllUsers() throws Exception {
+  void testFindAllUsers() throws Exception {
 
     User user = new User("Username", "Password", "Email@Email", "First Name", "Last Name");
     user.grantAuthority(Role.ROLE_VIEWER);
@@ -91,7 +91,7 @@ public class UserControllerTests {
   }
 
   @Test
-  public void profileByUsername() throws Exception {
+  void profileByUsername() throws Exception {
 
     UserProfileResponse userProfileResponse =
         new UserProfileResponse(2L, "Email", "First Name", "Last Name");
@@ -114,7 +114,7 @@ public class UserControllerTests {
   }
 
   @Test
-  public void testProfileById() throws Exception {
+  void testProfileById() throws Exception {
 
     given(userService.profileById(anyLong()))
         .willReturn(new UserProfileResponse(2L, "Email", "First Name", "Last Name"));
@@ -135,7 +135,7 @@ public class UserControllerTests {
   }
 
   @Test
-  public void testCreateUser() throws Exception {
+  void testCreateUser() throws Exception {
     UserCreateRequest userCreateRequest =
         new UserCreateRequest(
             "Username",
@@ -164,7 +164,7 @@ public class UserControllerTests {
   }
 
   @Test
-  public void testPatchUser() throws Exception {
+  void testPatchUser() throws Exception {
 
     UserProfileResponse expectedUserProfileResponse =
         new UserProfileResponse(2L, "Email", "First Name", "Last Name");
@@ -190,7 +190,7 @@ public class UserControllerTests {
   }
 
   @Test
-  public void testDeleteUser() throws Exception {
+  void testDeleteUser() throws Exception {
 
     String requestParameter = "1";
 

@@ -9,7 +9,7 @@ import net.flyingfishflash.ledger.foundation.users.exceptions.GeneralUserExcepti
 import net.flyingfishflash.ledger.foundation.users.exceptions.UserCreateException;
 import net.flyingfishflash.ledger.foundation.users.exceptions.UserNotFoundException;
 
-public class UserExceptionTests {
+class UserExceptionTests {
 
   private final GeneralUserException userException = new UserNotFoundException(1L);
 

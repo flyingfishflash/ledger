@@ -32,7 +32,7 @@ import net.flyingfishflash.ledger.books.exceptions.BookNotFoundException;
 import net.flyingfishflash.ledger.books.service.BookService;
 
 @ExtendWith(MockitoExtension.class)
-public class BookServiceTests {
+class BookServiceTests {
 
   @InjectMocks private BookService bookServiceMock;
 
@@ -41,34 +41,34 @@ public class BookServiceTests {
   @Mock private BookMapper bookMapperMock;
 
   @Test
-  public void testCreateBook() {
+  void testCreateBook() {
     when(bookRepositoryMock.save(any(Book.class))).thenReturn(new Book());
     bookServiceMock.createBook(new BookRequest());
     verify(bookRepositoryMock, times(1)).save(any(Book.class));
   }
 
   @Test
-  public void testSaveBook() {
+  void testSaveBook() {
     when(bookRepositoryMock.save(any(Book.class))).thenReturn(new Book());
     bookServiceMock.saveBook(new Book());
     verify(bookRepositoryMock, times(1)).save(any(Book.class));
   }
 
   @Test
-  public void testSaveAllBooks() {
+  void testSaveAllBooks() {
     List<Book> bookList = Collections.singletonList(new Book());
     bookServiceMock.saveAllBooks(bookList);
     verify(bookRepositoryMock, times(1)).saveAll(anyList());
   }
 
   @Test
-  public void testUpdateBook() {
+  void testUpdateBook() {
     bookServiceMock.updateBook(new Book());
     verify(bookRepositoryMock, times(1)).save(any(Book.class));
   }
 
   @Test
-  public void testPatchBook() {
+  void testPatchBook() {
     when(bookMapperMock.mapEntityModelToRequestModel(any(Book.class)))
         .thenReturn(new BookRequest());
 
@@ -84,18 +84,17 @@ public class BookServiceTests {
   }
 
   @Test
-  public void testPatchBook_ConstraintViolationException() {
+  void testPatchBook_ConstraintViolationException() {
     when(bookMapperMock.mapEntityModelToRequestModel(any(Book.class)))
         .thenReturn(new BookRequest());
 
     when(bookRepositoryMock.findById(anyLong())).thenReturn(Optional.of(new Book()));
 
+    Map<String, Object> patchRequest = new HashMap<>();
+
     assertThrows(
         ConstraintViolationException.class,
         () -> {
-          Map<String, Object> patchRequest = new HashMap<>();
-          BookRequest bookRequest = new BookRequest();
-          bookRequest.setName("New Book Name");
           bookServiceMock.patchBook(1L, patchRequest);
         });
 
@@ -106,26 +105,26 @@ public class BookServiceTests {
   }
 
   @Test
-  public void testDeleteBook() {
+  void testDeleteBook() {
     bookServiceMock.deleteBook(1L);
     verify(bookRepositoryMock, times(1)).deleteById(anyLong());
   }
 
   @Test
-  public void testDeleteAllCommodities() {
+  void testDeleteAllCommodities() {
     bookServiceMock.deleteAllBooks();
     verify(bookRepositoryMock, times(1)).deleteAll();
   }
 
   @Test
-  public void testFindById() {
+  void testFindById() {
     given(bookRepositoryMock.findById(anyLong())).willReturn(Optional.of(new Book()));
     bookServiceMock.findById(1L);
     verify(bookRepositoryMock, times(1)).findById(anyLong());
   }
 
   @Test
-  public void testFindById_BookNotFoundException() {
+  void testFindById_BookNotFoundException() {
 
     Throwable exception =
         assertThrows(
@@ -139,7 +138,7 @@ public class BookServiceTests {
   }
 
   @Test
-  public void testFindAllBooks() {
+  void testFindAllBooks() {
     List<Book> bookList = new ArrayList<>(1);
     bookList.add(new Book());
     when(bookRepositoryMock.findAll()).thenReturn(bookList);

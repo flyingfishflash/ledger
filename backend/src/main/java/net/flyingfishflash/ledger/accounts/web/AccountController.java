@@ -89,6 +89,7 @@ public class AccountController {
 
   @DeleteMapping(value = "/delete")
   @Operation(summary = "Delete an account and all of it's descendants")
+  @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "No Content")})
   public ResponseEntity<ApiMessage> deleteAccountAndDescendents(
       @RequestParam(name = "accountId") Long accountId) {
 
@@ -125,6 +126,7 @@ public class AccountController {
   }
 
   // Change the position of an account in the hierarchy within the sibling level (down)
+  @SuppressWarnings("java:S1075") //  URI is handled properly
   @PostMapping(value = "/insert-as-next-sibling")
   @Operation(
       summary =
@@ -146,6 +148,7 @@ public class AccountController {
   }
 
   // Change the position of an account in the hierarchy within the sibling level (up)
+  @SuppressWarnings("java:S1075") //  URI is handled properly
   @PostMapping(value = "/insert-as-prev-sibling")
   @Operation(
       summary =

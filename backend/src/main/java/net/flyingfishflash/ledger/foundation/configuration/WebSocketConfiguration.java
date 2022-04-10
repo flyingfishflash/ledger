@@ -85,7 +85,7 @@ public class WebSocketConfiguration
   @EventListener
   private void handleSessionConnected(SessionConnectEvent event) {
     String sessionId = SimpAttributesContextHolder.currentAttributes().getSessionId();
-    logger.info("* Session Connect Event: " + event.getMessage());
+    logger.info("* Session Connect Event: {}", event.getMessage());
     // TODO: Should I add the websocket session id to the http session attributes here?
     webSocketSessionId.setSessionId(sessionId);
   }
