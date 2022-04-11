@@ -1,7 +1,7 @@
 <h1><img src="meta/project-icon.png" alt="logo" width="45" height="45"> Ledger</h1>
 
 [![pipeline status](https://gitlab.com/flyingfishflash/ledger/badges/main/pipeline.svg)](https://gitlab.com/flyingfishflash/ledger/-/pipelines/)
-[![codecov](https://codecov.io/gl/flyingfishflash/ledger/branch/master/graph/badge.svg?token=EU8Y9HRH58)](https://codecov.io/gl/flyingfishflash/ledger/)
+[![codecov](https://codecov.io/gl/flyingfishflash/ledger-ci/branch/main/graph/badge.svg?token=HOCJNHPN6Z)](https://codecov.io/gl/flyingfishflash/ledger-ci)
 ## Description
 
 A Java based bookkeeping engine and API server, along with an Angular based web application for personal finance management.
