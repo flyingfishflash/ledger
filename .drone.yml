@@ -221,6 +221,55 @@ steps:
 
 ---
 kind: pipeline
+name: "sonarqube"
+type: docker
+
+trigger:
+  event:
+    - push
+    - tag
+
+depends_on:
+  - "frontend - build"
+  - "backend - build"
+
+volumes:
+  - name: drone_cache
+    host:
+      path: /var/lib/docker/volumes_managed/drone_cache
+
+steps:
+  - name: cache pull
+    image: alpine/git
+    commands:
+      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-backend
+    volumes:
+      - name: drone_cache
+        path: /drone/drone_cache
+
+  - name: sonarqube analysis
+    failure: ignore
+    image: gradle:7.4.2-jdk17
+    depends_on:
+      - "cache pull"
+    environment:
+      SONAR_PROJECT_KEY:
+        from_secret: sonar_project_key
+      SONAR_HOST:
+        from_secret: sonar_host
+      SONAR_LOGIN:
+        from_secret: sonar_login
+    commands:
+      - >
+        /drone/src/scripts/ci/drone/drone-is-sonarqube-configured.sh &&
+        gradle sonarqube
+        -Dsonar.projectKey=$SONAR_PROJECT_KEY
+        -Dsonar.projectVersion=$(./scripts/version.sh version)
+        -Dsonar.host.url=$SONAR_HOST
+        -Dsonar.login=$SONAR_LOGIN
+
+---
+kind: pipeline
 name: "backend - publish"
 type: docker
 
