@@ -66,7 +66,7 @@ function check_remote_up_to_date() {
 
 function process_semver() {
 	log_ "current git branch: $(git branch | grep '*' | awk '{print $2}')"
-	git branch | grep '\* master' >/dev/null || error "not on master branch"
+	git branch | grep '\* main' >/dev/null || error "not on main branch"
 
 	if output=$(git status --porcelain) && [ "$output" ]; then
 		#log_ "working directory isn't clean, commit any changes"
@@ -75,7 +75,7 @@ function process_semver() {
 	log_ "working directory is clean"
 
 	for o in $(git remote -v | grep fetch | cut -f 1 -); do
-		check_remote_up_to_date "${o}" master
+		check_remote_up_to_date "${o}" main
 	done
 	[ $remotes_up_to_date -eq 1 ] || error "some remotes aren't up to date with the local branch"
 
