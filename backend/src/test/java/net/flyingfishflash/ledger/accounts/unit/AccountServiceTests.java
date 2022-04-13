@@ -1,16 +1,16 @@
 package net.flyingfishflash.ledger.accounts.unit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,6 @@ import java.util.stream.StreamSupport;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -38,516 +37,398 @@ import net.flyingfishflash.ledger.accounts.service.AccountService;
 @ExtendWith(MockitoExtension.class)
 class AccountServiceTests {
 
-  @Mock private AccountRepository accountRepository;
+  @Mock private AccountRepository mockAccountRepository;
   @InjectMocks private AccountService accountService;
 
   @Test
-  void testFindAccountById() {
-    when(accountRepository.findById(anyLong())).thenReturn(Optional.of(new Account()));
-    accountService.findById(1L);
-    verify(accountRepository).findById(anyLong());
+  void findAccountById() {
+    long accountId = 99;
+    given(mockAccountRepository.findById(accountId)).willReturn(Optional.of(new Account()));
+    accountService.findById(accountId);
+    verify(mockAccountRepository, times(1)).findById(accountId);
   }
 
   @Test
-  void testFindAccountById_AccountNotFoundException() {
-    Throwable exception =
-        assertThrows(
-            AccountNotFoundException.class,
-            () -> {
-              accountService.findById(1L);
-            });
-    verify(accountRepository).findById(anyLong());
-    assertEquals("Account not found for id 1", exception.getLocalizedMessage());
+  void findAccountById_whenAccountNotFound_thenAccountNotFoundException() {
+    assertThatExceptionOfType(AccountNotFoundException.class)
+        .isThrownBy(() -> accountService.findById(1L));
   }
 
   @Test
-  void testFindAccountByGuid() {
-    when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(new Account()));
-    accountService.findByGuid("Any Guid");
-    verify(accountRepository).findByGuid(anyString());
+  void findAccountByGuid() {
+    String guid = "Lorem ipsum dolor sit amet";
+    given(mockAccountRepository.findByGuid(guid)).willReturn(Optional.of(new Account()));
+    accountService.findByGuid(guid);
+    verify(mockAccountRepository, times(1)).findByGuid(guid);
   }
 
   @Test
-  void testFindAccountByGuid_AccountNotFoundException() {
-    Throwable exception =
-        assertThrows(
-            AccountNotFoundException.class,
-            () -> {
-              accountService.findByGuid("Any Guid");
-            });
-    verify(accountRepository).findByGuid(anyString());
-    assertEquals("Account not found for guid 'Any Guid'", exception.getLocalizedMessage());
+  void findAccountByGuid_whenAccountNotFound_thenAccountNotFoundException() {
+    String guid = "Lorem ipsum dolor sit amet";
+    assertThatExceptionOfType(AccountNotFoundException.class)
+        .isThrownBy(() -> accountService.findByGuid(guid));
   }
 
   @Test
-  void testFindAllAccounts() {
-
-    when(accountRepository.findRoot()).thenReturn(Optional.of(accountId1()));
-    when(accountRepository.getTreeAsList(any(Account.class))).thenReturn(allAccounts());
-    Iterable<Account> findAllAccounts = accountService.findAllAccounts();
-    long findAllAccountsSize = StreamSupport.stream(findAllAccounts.spliterator(), false).count();
-    long allAccountsSize = StreamSupport.stream(allAccounts().spliterator(), false).count();
-    boolean containsRoot =
-        StreamSupport.stream(findAllAccounts.spliterator(), false)
-            .anyMatch(z -> z.getTreeLeft() == 1L && z.getParentId() == null);
-    // expect the Iterable returned by the service has removed one account from Iterable returned
-    // from the repository (the Root account)
-    assertEquals(findAllAccountsSize, allAccountsSize - 1);
-    assertFalse(containsRoot);
-    verify(accountRepository).getTreeAsList(any(Account.class));
+  void findAllAccounts() {
+    // The collection returned by the service method has removed one account from the collection
+    // returned by the repository: the Root account
+    int allAccountsSize = (int) StreamSupport.stream(allAccounts().spliterator(), false).count();
+    given(mockAccountRepository.findRoot()).willReturn(Optional.of(account1()));
+    given(mockAccountRepository.getTreeAsList(any(Account.class))).willReturn(allAccounts());
+    assertThat(accountService.findAllAccounts())
+        .hasSize(allAccountsSize - 1)
+        .extracting("treeLeft", "parentId")
+        .doesNotContain(tuple(1L, null));
   }
 
   @Test
-  void testGetBaseLevelParent() {
-
-    when(accountRepository.getParents(any(Account.class))).thenReturn(allAccounts());
-    Account baseLevelParent = accountService.getBaseLevelParent(accountId7());
-    verify(accountRepository).getParents(any(Account.class));
-    assertNotNull(baseLevelParent);
-    assertEquals(2L, baseLevelParent.getId().longValue());
-    assertEquals(1L, baseLevelParent.getParentId().longValue());
-    // System.out.println(mockingDetails(accountRepository).printInvocations());
+  void getBaseLevelParent_whenTargetIsAccountId7_thenBaseLevelParentIsAccountId2() {
+    given(mockAccountRepository.getParents(any(Account.class))).willReturn(allAccounts());
+    assertThat(accountService.getBaseLevelParent(account7()))
+        .usingRecursiveComparison()
+        .isEqualTo(account2());
   }
 
   @Test
-  void testGetEligibleParentAccounts() {
-
-    when(accountRepository.getTreeAsList(any(Account.class))).thenReturn(treeAsList());
-    Iterable<Account> eligbleParents = accountService.getEligibleParentAccounts(accountId7());
-    verify(accountRepository).getTreeAsList(any(Account.class));
-    // based on our mocked account structure
-    // expect this to return an Iterable with 2 items: account id 2, and account id 8
-    long elligibleParentsSize = StreamSupport.stream(eligbleParents.spliterator(), false).count();
-    boolean containsId2 =
-        StreamSupport.stream(eligbleParents.spliterator(), false).anyMatch(z -> z.getId() == 2L);
-    boolean containsId8 =
-        StreamSupport.stream(eligbleParents.spliterator(), false).anyMatch(z -> z.getId() == 8L);
-    assertNotNull(eligbleParents);
-    assertEquals(2, elligibleParentsSize);
-    assertTrue(containsId2);
-    assertTrue(containsId8);
-    // System.out.println(mockingDetails(accountRepository).printInvocations());
-
+  void getEligibleParentAccounts_whenAccountId7_thenEligibleParentAccountIds2And8() {
+    // based on the mocked account structure expect this to return an Iterable with 2 items:
+    // account id 2, and account id 8
+    given(mockAccountRepository.getTreeAsList(any(Account.class))).willReturn(treeAsList());
+    assertThat(accountService.getEligibleParentAccounts(account7()))
+        .extracting("id")
+        .containsOnly(2L, 8L);
   }
 
   @Test
-  void testGetEligibleParentAccounts_EligibleParentAccountNotFoundException() {
-    var accountId2 = accountId2();
-
-    when(accountRepository.getTreeAsList(any(Account.class))).thenReturn(treeAsList());
-
-    assertThrows(
-        EligibleParentAccountNotFoundException.class,
-        () -> {
-          accountService.getEligibleParentAccounts(accountId2);
-        });
-    // System.out.println(mockingDetails(accountRepository).printInvocations());
-
+  void getEligibleParentAccounts_throwsEligibleParentAccountNotFoundException() {
+    var accountId2 = account2();
+    given(mockAccountRepository.getTreeAsList(any(Account.class))).willReturn(treeAsList());
+    assertThatExceptionOfType(EligibleParentAccountNotFoundException.class)
+        .isThrownBy(() -> accountService.getEligibleParentAccounts(accountId2));
   }
 
   @Test
-  void testCreateAccount_ParentAccountTypeIsRoot() {
-    Account parentAccount = accountId2();
+  void createAccount_whenParentAccountTypeIsRoot_thenChildAccountTypeIsAsset() {
+    var parentAccount = account2();
     parentAccount.setType(AccountType.ROOT);
-    when(accountRepository.newAccount(anyString())).thenReturn(new Account());
-    assertEquals(AccountType.ASSET, accountService.createAccount(parentAccount).getType());
+    given(mockAccountRepository.newAccount(anyString())).willReturn(new Account());
+    assertThat(accountService.createAccount(parentAccount).getType()).isEqualTo(AccountType.ASSET);
   }
 
   @Test
-  void testCreateAccount_ParentAccountTypeIsNotRoot() {
-    Account parentAccount = accountId2();
+  void createAccount_whenParentAccountTypeIsNotRoot_thenChildAccountTypeIsEqualToParent() {
+    Account parentAccount = account2();
     parentAccount.setType(AccountType.LIABILITY);
-    when(accountRepository.newAccount(anyString())).thenReturn(new Account());
-    assertEquals(AccountType.LIABILITY, accountService.createAccount(parentAccount).getType());
+    given(mockAccountRepository.newAccount(anyString())).willReturn(new Account());
+    assertThat(accountService.createAccount(parentAccount).getType())
+        .isEqualTo(AccountType.LIABILITY);
   }
 
   @Test
-  void testCreateAccount_InsertAsPrevSibling() {
-
-    AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
+  void createAccount_insertAsPrevSibling() {
+    var accountCreateRequest = new AccountCreateRequest();
     accountCreateRequest.hidden = false;
     accountCreateRequest.mode = "PREV_SIBLING";
-    accountCreateRequest.name = "Financial Assets";
+    accountCreateRequest.name = "Lorem ipsum dolor sit amet";
     accountCreateRequest.parentId = 2L;
     accountCreateRequest.placeholder = true;
     accountCreateRequest.siblingId = 8L;
     accountCreateRequest.taxRelated = false;
-
-    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
-    when(accountRepository.findById(8L)).thenReturn(Optional.of(accountId8()));
-    when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(accountId8()));
+    given(mockAccountRepository.findById(2L)).willReturn(Optional.of(account2()));
+    given(mockAccountRepository.findById(8L)).willReturn(Optional.of(account8()));
+    given(mockAccountRepository.findByGuid(anyString())).willReturn(Optional.of(account8()));
     accountService.createAccount(accountCreateRequest);
-
-    verify(accountRepository).findById(2L);
-    verify(accountRepository).findById(8L);
-    verify(accountRepository).findByGuid(anyString());
-    verify(accountRepository).insertAsPrevSiblingOf(any(Account.class), any(Account.class));
-    // System.out.println(mockingDetails(accountRepository).printInvocations());
+    verify(mockAccountRepository).findById(2L);
+    verify(mockAccountRepository).findById(8L);
+    verify(mockAccountRepository).findByGuid(anyString());
+    verify(mockAccountRepository).insertAsPrevSiblingOf(any(Account.class), any(Account.class));
   }
 
   @Test
-  void testCreateAccount_InsertAsPrevSibling_AccountCreateException() {
-
-    AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
+  void createAccount_whenPreviousSiblingAccountNotFound_thenAccountCreateException() {
+    var accountCreateRequest = new AccountCreateRequest();
     accountCreateRequest.hidden = false;
     accountCreateRequest.mode = "PREV_SIBLING";
-    accountCreateRequest.name = "Financial Assets";
+    accountCreateRequest.name = "Lorem ipsum dolor sit amet";
     accountCreateRequest.parentId = 2L;
     accountCreateRequest.placeholder = true;
     accountCreateRequest.siblingId = 8L; // invalid value
     accountCreateRequest.taxRelated = false;
-
-    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
+    given(mockAccountRepository.findById(2L)).willReturn(Optional.of(account2()));
     // simulate failure to identify the previous sibling of the subject account
-    when(accountRepository.findById(8L)).thenReturn(Optional.empty());
-    assertThrows(
-        AccountCreateException.class,
-        () -> {
-          accountService.createAccount(accountCreateRequest);
-        });
-
-    // System.out.println(mockingDetails(accountRepository).printInvocations());
+    given(mockAccountRepository.findById(8L)).willReturn(Optional.empty());
+    assertThatExceptionOfType(AccountCreateException.class)
+        .isThrownBy(() -> accountService.createAccount(accountCreateRequest));
   }
 
   @Test
-  void testCreateAccount_InsertAsNextSibling() {
-
-    AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
+  void createAccount_insertAsNextSibling() {
+    var accountCreateRequest = new AccountCreateRequest();
     accountCreateRequest.hidden = false;
     accountCreateRequest.mode = "NEXT_SIBLING";
-    accountCreateRequest.name = "Fixed Assets";
+    accountCreateRequest.name = "Lorem ipsum dolor sit amet";
     accountCreateRequest.parentId = 2L;
     accountCreateRequest.placeholder = true;
     accountCreateRequest.siblingId = 7L;
     accountCreateRequest.taxRelated = false;
-
-    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
-    when(accountRepository.findById(7L)).thenReturn(Optional.of(accountId7()));
-    when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(accountId8()));
+    given(mockAccountRepository.findById(2L)).willReturn(Optional.of(account2()));
+    given(mockAccountRepository.findById(7L)).willReturn(Optional.of(account7()));
+    given(mockAccountRepository.findByGuid(anyString())).willReturn(Optional.of(account8()));
     accountService.createAccount(accountCreateRequest);
-
-    verify(accountRepository).findById(2L);
-    verify(accountRepository).findById(7L);
-    verify(accountRepository).findByGuid(anyString());
-    verify(accountRepository).insertAsNextSiblingOf(any(Account.class), any(Account.class));
-    // System.out.println(mockingDetails(accountRepository).printInvocations());
+    var inOrder = inOrder(mockAccountRepository);
+    inOrder.verify(mockAccountRepository).findById(2L);
+    inOrder.verify(mockAccountRepository).findById(7L);
+    inOrder
+        .verify(mockAccountRepository)
+        .insertAsNextSiblingOf(any(Account.class), any(Account.class));
+    inOrder.verify(mockAccountRepository).findByGuid(anyString());
   }
 
   @Test
-  void testCreateAccount_InsertAsNextSibling_AccountCreateException() {
-
-    AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
+  void createAccount_whenNextSiblingAccountNotFound_thenAccountCreateException() {
+    var accountCreateRequest = new AccountCreateRequest();
     accountCreateRequest.hidden = false;
     accountCreateRequest.mode = "NEXT_SIBLING";
-    accountCreateRequest.name = "Financial Assets";
+    accountCreateRequest.name = "Lorem ipsum dolor sit amet";
     accountCreateRequest.parentId = 2L;
     accountCreateRequest.placeholder = true;
     accountCreateRequest.siblingId = 9L; // invalid value
     accountCreateRequest.taxRelated = false;
-
-    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
+    given(mockAccountRepository.findById(2L)).willReturn(Optional.of(account2()));
     // simulate failure to identify the next sibling of the subject account
-    when(accountRepository.findById(9L)).thenReturn(Optional.empty());
-    assertThrows(
-        AccountCreateException.class,
-        () -> {
-          accountService.createAccount(accountCreateRequest);
-        });
-
-    // System.out.println(mockingDetails(accountRepository).printInvocations());
+    given(mockAccountRepository.findById(9L)).willReturn(Optional.empty());
+    assertThatExceptionOfType(AccountCreateException.class)
+        .isThrownBy(() -> accountService.createAccount(accountCreateRequest));
   }
 
   @Test
-  void testCreateAccount_InsertAsFirstChild() {
-
-    AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
+  void createAccount_insertAsFirstChild() {
+    var accountCreateRequest = new AccountCreateRequest();
     accountCreateRequest.hidden = false;
     accountCreateRequest.mode = "FIRST_CHILD";
-    accountCreateRequest.name = "Financial Assets";
-    accountCreateRequest.parentId = 2L;
+    accountCreateRequest.name = "Lorem ipsum dolor sit amet";
+    accountCreateRequest.parentId = 9999L;
     accountCreateRequest.placeholder = true;
-    accountCreateRequest.siblingId = 2L;
     accountCreateRequest.taxRelated = false;
-
-    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
-    when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(accountId7()));
+    given(mockAccountRepository.findById(9999L)).willReturn(Optional.of(account2()));
+    given(mockAccountRepository.findByGuid(anyString())).willReturn(Optional.of(account7()));
     accountService.createAccount(accountCreateRequest);
-
-    verify(accountRepository).findById(2L);
-    verify(accountRepository).findByGuid(anyString());
-    verify(accountRepository).insertAsFirstChildOf(any(Account.class), any(Account.class));
-    // System.out.println(mockingDetails(accountRepository).printInvocations());
+    var inOrder = inOrder(mockAccountRepository);
+    inOrder.verify(mockAccountRepository).findById(9999L);
+    inOrder
+        .verify(mockAccountRepository)
+        .insertAsFirstChildOf(any(Account.class), any(Account.class));
+    inOrder.verify(mockAccountRepository).findByGuid(anyString());
   }
 
   @Test
-  void testCreateAccount_InsertAsLastChild() {
-
-    AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
+  void createAccount_insertAsLastChild() {
+    var accountCreateRequest = new AccountCreateRequest();
     accountCreateRequest.hidden = false;
     accountCreateRequest.mode = "LAST_CHILD";
-    accountCreateRequest.name = "Financial Assets";
+    accountCreateRequest.name = "Lorem ipsum dolor sit amet";
     accountCreateRequest.parentId = 2L;
     accountCreateRequest.placeholder = true;
     accountCreateRequest.siblingId = 2L;
     accountCreateRequest.taxRelated = false;
-
-    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
-    when(accountRepository.findByGuid(anyString())).thenReturn(Optional.of(accountId7()));
+    given(mockAccountRepository.findById(2L)).willReturn(Optional.of(account2()));
+    given(mockAccountRepository.findByGuid(anyString())).willReturn(Optional.of(account7()));
     accountService.createAccount(accountCreateRequest);
-
-    verify(accountRepository).findById(2L);
-    verify(accountRepository).findByGuid(anyString());
-    verify(accountRepository).insertAsLastChildOf(any(Account.class), any(Account.class));
-    // System.out.println(mockingDetails(accountRepository).printInvocations());
+    var inOrder = inOrder(mockAccountRepository);
+    inOrder.verify(mockAccountRepository).findById(2L);
+    inOrder
+        .verify(mockAccountRepository)
+        .insertAsLastChildOf(any(Account.class), any(Account.class));
+    inOrder.verify(mockAccountRepository).findByGuid(anyString());
   }
 
   @Test
-  void testCreateAccount_AccountParentIsRoot() {
-
-    AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
+  void createAccount_whenCreatedAccountCantBeFound_thenAccountCreateException() {
+    var accountCreateRequest = new AccountCreateRequest();
     accountCreateRequest.hidden = false;
     accountCreateRequest.mode = "LAST_CHILD";
-    accountCreateRequest.name = "Any Account Name";
-    accountCreateRequest.parentId = 2L;
+    accountCreateRequest.name = "Lorem ipsum dolor sit amet";
+    accountCreateRequest.parentId = 9999L;
     accountCreateRequest.placeholder = true;
-    accountCreateRequest.siblingId = 2L;
+    accountCreateRequest.siblingId = 9999L;
     accountCreateRequest.taxRelated = false;
-
-    ArgumentCaptor<Account> accountArgumentCaptor = ArgumentCaptor.forClass(Account.class);
-
-    when(accountRepository.findById(anyLong())).thenReturn(Optional.of(accountId1()));
-    // expect an AccountCreateException to be thrown because the created account is never persisted
-    assertThrows(
-        AccountCreateException.class,
-        () -> {
-          accountService.createAccount(accountCreateRequest);
-        });
-    verify(accountRepository, times(1))
-        .insertAsLastChildOf(accountArgumentCaptor.capture(), any(Account.class));
-    assertEquals(AccountType.ASSET, accountArgumentCaptor.getValue().getType());
+    // expect an AccountCreateException to be thrown because:
+    // 1) the created account is never persisted due to mock repository
+    // 2) we are not mocking a response from mockAccountRepository.findByGuid()
+    given(mockAccountRepository.findById(anyLong())).willReturn(Optional.of(account1()));
+    assertThatExceptionOfType(AccountCreateException.class)
+        .isThrownBy(() -> accountService.createAccount(accountCreateRequest))
+        .withRootCauseExactlyInstanceOf(AccountNotFoundException.class);
   }
 
   @Test
-  void testCreateAccount_InvalidNestedNodeManipulator() {
-
-    AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
+  void createAccount_whenNestedNodeManipulatorIsInvalid_thenAccountCreateException() {
+    var accountCreateRequest = new AccountCreateRequest();
     accountCreateRequest.mode = "INVALID_NODE_MANIPULATOR";
-    accountCreateRequest.name = "Any Account Name";
-    accountCreateRequest.parentId = 2L;
-
-    when(accountRepository.findById(anyLong())).thenReturn(Optional.of(accountId1()));
-    Exception exception =
-        assertThrows(
-            AccountCreateException.class,
-            () -> {
-              accountService.createAccount(accountCreateRequest);
-            });
-    assertEquals(
-        "Failed to create account: '"
-            + accountCreateRequest.name
-            + "'. A valid nest node manipulator mode was not specified.",
-        exception.getLocalizedMessage());
+    accountCreateRequest.name = "Lorem ipsum dolor sit amet";
+    accountCreateRequest.parentId = 9999L;
+    given(mockAccountRepository.findById(anyLong())).willReturn(Optional.of(account1()));
+    assertThatExceptionOfType(AccountCreateException.class)
+        .isThrownBy(() -> accountService.createAccount(accountCreateRequest))
+        .withMessage(
+            "Failed to create account: '"
+                + accountCreateRequest.name
+                + "'. A valid nest node manipulator mode was not specified.");
   }
 
   @Test
-  void testCreateAccount_AccountNotFoundException() {
-
-    AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
-    accountCreateRequest.name = "Any Account Name";
-    accountCreateRequest.parentId = 2L;
-
+  void createAccount_whenParentAccountNotFound_thenAccountCreateException() {
+    var accountCreateRequest = new AccountCreateRequest();
+    accountCreateRequest.name = "Lorem ipsum dolor sit amet";
+    accountCreateRequest.parentId = 9999L;
     // simulate failure to identify the parent account of the account to be created
-    when(accountRepository.findById(anyLong())).thenThrow(AccountNotFoundException.class);
-    Exception exception =
-        assertThrows(
-            AccountCreateException.class,
-            () -> {
-              accountService.createAccount(accountCreateRequest);
-            });
-    verify(accountRepository, times(1)).findById(anyLong());
-    assertEquals(
-        "Failed to identify the parent account of an account to be created",
-        exception.getLocalizedMessage());
-    assertEquals(
-        "net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException",
-        exception.getCause().toString());
+    given(mockAccountRepository.findById(anyLong())).willThrow(AccountNotFoundException.class);
+    assertThatExceptionOfType(AccountCreateException.class)
+        .isThrownBy(() -> accountService.createAccount(accountCreateRequest))
+        .withRootCauseExactlyInstanceOf(AccountNotFoundException.class)
+        .withMessage("Failed to identify the parent account of an account to be created");
   }
 
   @Test
-  void testCreateAccount_AccountCreateException() {
-
-    AccountCreateRequest accountCreateRequest = new AccountCreateRequest();
-    accountCreateRequest.hidden = false;
-    accountCreateRequest.mode = "LAST_CHILD";
-    accountCreateRequest.name = "Financial Assets";
-    accountCreateRequest.parentId = 2L;
-    accountCreateRequest.placeholder = true;
-    accountCreateRequest.siblingId = 2L;
-    accountCreateRequest.taxRelated = false;
-
-    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId2()));
-    when(accountRepository.findById(2L)).thenReturn(Optional.of(accountId8()));
-    // simulate failure to confirm the newly created account has been persisted to the database
-    when(accountRepository.findByGuid(anyString())).thenReturn(Optional.empty());
-    assertThrows(
-        AccountCreateException.class,
-        () -> {
-          accountService.createAccount(accountCreateRequest);
-        });
-    // System.out.println(mockingDetails(accountRepository).printInvocations());
-  }
-
-  @Test
-  void testDeleteAllAccounts_NoRoot() {
+  void deleteAllAccounts_verifyMethodCalls_whenNoRoot() {
     accountService.deleteAllAccounts();
-    verify(accountRepository, times(1)).findRoot();
-    verify(accountRepository, times(0)).removeSubTree(any(Account.class));
+    verify(mockAccountRepository, times(1)).findRoot();
+    verify(mockAccountRepository, times(0)).removeSubTree(any(Account.class));
+    verifyNoMoreInteractions(mockAccountRepository);
   }
 
   @Test
-  void testDeleteAllAccounts() {
-    when(accountRepository.findRoot()).thenReturn(Optional.of(new Account()));
+  void deleteAllAccounts() {
+    given(mockAccountRepository.findRoot()).willReturn(Optional.of(new Account()));
     accountService.deleteAllAccounts();
-    verify(accountRepository, times(1)).findRoot();
-    verify(accountRepository, times(1)).removeSubTree(any(Account.class));
+    verify(mockAccountRepository, times(1)).findRoot();
+    verify(mockAccountRepository, times(1)).removeSubTree(any(Account.class));
+    verifyNoMoreInteractions(mockAccountRepository);
   }
 
   @Test
-  void testRemoveSingleAccount() {
+  void removeSingleAccount() {
     accountService.removeSingle(new Account());
-    verify(accountRepository, times(1)).removeSingle(any(Account.class));
+    verify(mockAccountRepository, times(1)).removeSingle(any(Account.class));
   }
 
   @Test
-  void testRemoveSubTree() {
+  void removeSubTree() {
     accountService.removeSubTree(new Account());
-    verify(accountRepository, times(1)).removeSubTree(any(Account.class));
+    verify(mockAccountRepository, times(1)).removeSubTree(any(Account.class));
   }
 
   @Test
-  void testFindRoot_NoRoot() {
-    assertThrows(
-        AccountNotFoundException.class,
-        () -> {
-          accountService.findRoot();
-        });
-    verify(accountRepository, times(1)).findRoot();
+  void findRoot_whenRootAccountNotFound_thenAccountNotFoundException() {
+    assertThatExceptionOfType(AccountNotFoundException.class)
+        .isThrownBy(() -> accountService.findRoot());
+    verify(mockAccountRepository, times(1)).findRoot();
   }
 
   @Test
-  void testFindRoot() {
-    when(accountRepository.findRoot()).thenReturn(Optional.of(new Account()));
-    assertNotNull(accountService.findRoot());
-    verify(accountRepository, times(1)).findRoot();
+  void findRoot_whenRepositoryReturnsAccount_thenServiceReturnsItUnaltered() {
+    given(mockAccountRepository.findRoot()).willReturn(Optional.of(new Account()));
+    assertThat(accountService.findRoot()).isNotNull();
+    verify(mockAccountRepository, times(1)).findRoot();
   }
 
   @Test
-  void testGetPrevSibling_NoPrevSibling() {
+  void getPrevSibling_whenSiblingAccountNotFound_thenPrevSiblingAccountNotFoundException() {
     var account = new Account();
-    assertThrows(
-        PrevSiblingAccountNotFoundException.class,
-        () -> {
-          accountService.getPrevSibling(account);
-        });
-    verify(accountRepository, times(1)).getPrevSibling(any(Account.class));
+    assertThatExceptionOfType(PrevSiblingAccountNotFoundException.class)
+        .isThrownBy(() -> accountService.getPrevSibling(account));
+    verify(mockAccountRepository, times(1)).getPrevSibling(any(Account.class));
   }
 
   @Test
-  void testFindPrevSibling() {
-    when(accountRepository.getPrevSibling(any(Account.class)))
-        .thenReturn(Optional.of(new Account()));
-    assertNotNull(accountService.getPrevSibling(new Account()));
-    verify(accountRepository, times(1)).getPrevSibling(any(Account.class));
+  void getPrevSibling_whenRepositoryReturnsPrevSibling_thenServiceReturnItUnaltered() {
+    var account = account2();
+    given(mockAccountRepository.getPrevSibling(any(Account.class)))
+        .willReturn(Optional.of(account));
+    assertThat(accountService.getPrevSibling(new Account())).isEqualTo(account);
+    verify(mockAccountRepository, times(1)).getPrevSibling(any(Account.class));
   }
 
   @Test
-  void testGetNextSibling_NoNextSibling() {
+  void getNextSibling_whenSiblingAccountNotFound_thenNextSiblingNotFoundException() {
     var account = new Account();
-
-    assertThrows(
-        NextSiblingAccountNotFoundException.class,
-        () -> {
-          accountService.getNextSibling(account);
-        });
-    verify(accountRepository, times(1)).getNextSibling(any(Account.class));
+    assertThatExceptionOfType(NextSiblingAccountNotFoundException.class)
+        .isThrownBy(() -> accountService.getNextSibling(account));
+    verify(mockAccountRepository, times(1)).getNextSibling(any(Account.class));
   }
 
   @Test
-  void testNextPrevSibling() {
-    when(accountRepository.getNextSibling(any(Account.class)))
-        .thenReturn(Optional.of(new Account()));
-    assertNotNull(accountService.getNextSibling(new Account()));
-    verify(accountRepository, times(1)).getNextSibling(any(Account.class));
+  void getNextSibling_whenRepositoryReturnsNextSibling_thenServiceReturnItUnaltered() {
+    var account = account2();
+    given(mockAccountRepository.getNextSibling(any(Account.class)))
+        .willReturn(Optional.of(account));
+    assertThat(accountService.getNextSibling(new Account())).isEqualTo(account);
+    verify(mockAccountRepository, times(1)).getNextSibling(any(Account.class));
   }
 
   @Test
-  void testInsertAsFirstRoot() {
+  void insertAsFirstRoot() {
     accountService.insertAsFirstRoot(new Account());
-    verify(accountRepository, times(1)).insertAsFirstRoot(any(Account.class));
+    verify(mockAccountRepository, times(1)).insertAsFirstRoot(any(Account.class));
   }
 
   @Test
-  void testInsertAsLastRoot() {
+  void insertAsLastRoot() {
     accountService.insertAsLastRoot(new Account());
-    verify(accountRepository, times(1)).insertAsLastRoot(any(Account.class));
+    verify(mockAccountRepository, times(1)).insertAsLastRoot(any(Account.class));
   }
 
   @Test
-  void testInsertAsFirstChildOf() {
+  void insertAsFirstChildOf() {
     accountService.insertAsFirstChildOf(new Account(), new Account());
-    verify(accountRepository, times(1))
+    verify(mockAccountRepository, times(1))
         .insertAsFirstChildOf(any(Account.class), any(Account.class));
   }
 
   @Test
-  void testInsertAsLastChildOf() {
+  void insertAsLastChildOf() {
     accountService.insertAsLastChildOf(new Account(), new Account());
-    verify(accountRepository, times(1)).insertAsLastChildOf(any(Account.class), any(Account.class));
+    verify(mockAccountRepository, times(1))
+        .insertAsLastChildOf(any(Account.class), any(Account.class));
   }
 
   @Test
-  void testInsertAsPrevSiblingOf() {
+  void insertAsPrevSiblingOf() {
     accountService.insertAsPrevSiblingOf(new Account(), new Account());
-    verify(accountRepository, times(1))
+    verify(mockAccountRepository, times(1))
         .insertAsPrevSiblingOf(any(Account.class), any(Account.class));
   }
 
   @Test
-  void testInsertAsNextSiblingOf() {
+  void insertAsNextSiblingOf() {
     accountService.insertAsNextSiblingOf(new Account(), new Account());
-    verify(accountRepository, times(1))
+    verify(mockAccountRepository, times(1))
         .insertAsNextSiblingOf(any(Account.class), any(Account.class));
   }
 
   private Iterable<Account> treeAsList() {
-
     List<Account> treeAsList = new ArrayList<>();
-
-    treeAsList.add(accountId2());
-    treeAsList.add(accountId7());
-    treeAsList.add(accountId8());
-
+    treeAsList.add(account2());
+    treeAsList.add(account7());
+    treeAsList.add(account8());
     return treeAsList;
   }
 
   private Iterable<Account> allAccounts() {
-
     List<Account> allAccounts = new ArrayList<>();
-
-    allAccounts.add(accountId1());
-    allAccounts.add(accountId2());
-    allAccounts.add(accountId3());
-    allAccounts.add(accountId4());
-    allAccounts.add(accountId5());
-    allAccounts.add(accountId6());
-    allAccounts.add(accountId7());
-    allAccounts.add(accountId8());
-
+    allAccounts.add(account1());
+    allAccounts.add(account2());
+    allAccounts.add(account3());
+    allAccounts.add(account4());
+    allAccounts.add(account5());
+    allAccounts.add(account6());
+    allAccounts.add(account7());
+    allAccounts.add(account8());
     return allAccounts;
   }
 
-  private Account accountId1() {
-
+  private Account account1() {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("96333e3dc3c6492e830333366fd5aa05");
     account.setId(1L);
@@ -560,12 +441,10 @@ class AccountServiceTests {
     account.setTreeLeft(1L);
     account.setTreeLevel(0L);
     account.setTreeRight(16L);
-
     return account;
   }
 
-  private Account accountId2() {
-
+  private Account account2() {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("595023e2aca5410291b76ce3dc88c0fc");
     account.setId(2L);
@@ -579,12 +458,10 @@ class AccountServiceTests {
     account.setTreeLeft(2L);
     account.setTreeLevel(1L);
     account.setTreeRight(7L);
-
     return account;
   }
 
-  private Account accountId3() {
-
+  private Account account3() {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("27a81f756013451682b5645c5164fca9");
     account.setId(3L);
@@ -598,12 +475,10 @@ class AccountServiceTests {
     account.setTreeLeft(8L);
     account.setTreeLevel(1L);
     account.setTreeRight(9L);
-
     return account;
   }
 
-  private Account accountId4() {
-
+  private Account account4() {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("f7b53c40dab043b398faca7b5a397f84");
     account.setId(4L);
@@ -617,12 +492,10 @@ class AccountServiceTests {
     account.setTreeLeft(10L);
     account.setTreeLevel(1L);
     account.setTreeRight(11L);
-
     return account;
   }
 
-  private Account accountId5() {
-
+  private Account account5() {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("707004c44ba44b22b3a0868b747767bb");
     account.setId(5L);
@@ -636,12 +509,10 @@ class AccountServiceTests {
     account.setTreeLeft(12L);
     account.setTreeLevel(1L);
     account.setTreeRight(13L);
-
     return account;
   }
 
-  private Account accountId6() {
-
+  private Account account6() {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("2a6bd9b7521a4458a77d757fb1734c39");
     account.setId(6L);
@@ -655,12 +526,10 @@ class AccountServiceTests {
     account.setTreeLeft(14L);
     account.setTreeLevel(1L);
     account.setTreeRight(15L);
-
     return account;
   }
 
-  private Account accountId7() {
-
+  private Account account7() {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("8a142619411849b59e09edde53f1757b");
     account.setId(7L);
@@ -674,12 +543,10 @@ class AccountServiceTests {
     account.setTreeLeft(3L);
     account.setTreeLevel(2L);
     account.setTreeRight(4L);
-
     return account;
   }
 
-  private Account accountId8() {
-
+  private Account account8() {
     // account guid is set on instantiation and will be different for each assertion
     Account account = new Account("bed4273d24bf4824ba75b7e32c55f30e");
     account.setId(8L);
@@ -693,7 +560,6 @@ class AccountServiceTests {
     account.setTreeLeft(5L);
     account.setTreeLevel(2L);
     account.setTreeRight(6L);
-
     return account;
   }
 }

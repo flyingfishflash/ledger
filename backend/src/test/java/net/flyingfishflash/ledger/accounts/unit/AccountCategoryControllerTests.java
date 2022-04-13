@@ -1,11 +1,9 @@
 package net.flyingfishflash.ledger.accounts.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
 
@@ -14,12 +12,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.json.JacksonTester;
-import org.springframework.http.HttpStatus;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -31,21 +29,19 @@ import net.flyingfishflash.ledger.accounts.web.AccountCategoryController;
 @ExtendWith(MockitoExtension.class)
 class AccountCategoryControllerTests {
 
-  private MockMvc mvc;
-
+  @Mock AccountCategoryService mockAccountCategoryService;
   @InjectMocks AccountCategoryController accountCategoryController;
 
-  @Mock AccountCategoryService accountCategoryService;
+  AccountCategoryService realAccountCategoryService;
 
-  AccountCategoryService accountCategoryServiceReal;
-
+  private MockMvc mvc;
   private JacksonTester<List<AccountCategory>> jsonAccountCategories;
   private JacksonTester<AccountCategory> jsonAccountCategory;
 
   @BeforeEach
   public void setup() {
 
-    accountCategoryServiceReal = new AccountCategoryService();
+    realAccountCategoryService = new AccountCategoryService();
 
     JacksonTester.initFields(this, new ObjectMapper());
     // MockMvc standalone approach
@@ -53,42 +49,35 @@ class AccountCategoryControllerTests {
   }
 
   @Test
-  void testFindAllAccountCategories() throws Exception {
-
-    given(accountCategoryService.findAllAccountCategories())
-        .willReturn(accountCategoryServiceReal.findAllAccountCategories());
-
-    MockHttpServletResponse response =
-        mvc.perform(get("/api/v1/ledger/account-categories")).andReturn().getResponse();
-
-    verify(accountCategoryService, times(1)).findAllAccountCategories();
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(response.getContentAsString())
+  void getAccountCategories() throws Exception {
+    given(mockAccountCategoryService.findAllAccountCategories())
+        .willReturn(realAccountCategoryService.findAllAccountCategories());
+    assertThat(
+            mvc.perform(get("/api/v1/ledger/account-categories"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString())
         .isEqualTo(
             jsonAccountCategories
-                .write(accountCategoryServiceReal.findAllAccountCategories())
+                .write(realAccountCategoryService.findAllAccountCategories())
                 .getJson());
   }
 
-  @Test
-  void testFindAccountCategoryByType() throws Exception {
-
-    given(accountCategoryService.findAccountCategoryByType("Asset"))
-        .willReturn(accountCategoryServiceReal.findAccountCategoryByType(AccountType.ASSET.name()));
-
-    MockHttpServletResponse response =
-        mvc.perform(get("/api/v1/ledger/account-categories/by-type?type=Asset"))
-            .andReturn()
-            .getResponse();
-
-    verify(accountCategoryService, times(1)).findAccountCategoryByType(anyString());
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(response.getContentAsString())
+  @ParameterizedTest
+  @EnumSource(AccountType.class)
+  void getAccountCategoriesByType(AccountType accountType) throws Exception {
+    given(mockAccountCategoryService.findAccountCategoryByType("LoremIpsum"))
+        .willReturn(realAccountCategoryService.findAccountCategoryByType(accountType.name()));
+    assertThat(
+            mvc.perform(get("/api/v1/ledger/account-categories/by-type?type=LoremIpsum"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString())
         .isEqualTo(
             jsonAccountCategory
-                .write(
-                    accountCategoryServiceReal.findAccountCategoryByType(
-                        AccountType.ASSET.toString()))
+                .write(realAccountCategoryService.findAccountCategoryByType(accountType.toString()))
                 .getJson());
   }
 }

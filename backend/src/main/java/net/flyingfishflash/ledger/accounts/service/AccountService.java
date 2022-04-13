@@ -56,13 +56,9 @@ public class AccountService {
     }
 
     switch (accountCreateRequest.mode.toUpperCase()) {
-      case "FIRST_CHILD":
-        accountRepository.insertAsFirstChildOf(account, parent);
-        break;
-      case "LAST_CHILD":
-        accountRepository.insertAsLastChildOf(account, parent);
-        break;
-      case "PREV_SIBLING":
+      case "FIRST_CHILD" -> accountRepository.insertAsFirstChildOf(account, parent);
+      case "LAST_CHILD" -> accountRepository.insertAsLastChildOf(account, parent);
+      case "PREV_SIBLING" -> {
         try {
           sibling = this.findById(accountCreateRequest.siblingId);
         } catch (AccountNotFoundException e) {
@@ -70,8 +66,8 @@ public class AccountService {
               "Failed to identify the sibling account of an account to be created.", e);
         }
         accountRepository.insertAsPrevSiblingOf(account, sibling);
-        break;
-      case "NEXT_SIBLING":
+      }
+      case "NEXT_SIBLING" -> {
         try {
           sibling = this.findById(accountCreateRequest.siblingId);
         } catch (AccountNotFoundException e) {
@@ -79,12 +75,11 @@ public class AccountService {
               "Failed to identify the sibling account of an account to be created.", e);
         }
         accountRepository.insertAsNextSiblingOf(account, sibling);
-        break;
-      default:
-        throw new AccountCreateException(
-            "Failed to create account: '"
-                + account.getName()
-                + "'. A valid nest node manipulator mode was not specified.");
+      }
+      default -> throw new AccountCreateException(
+          "Failed to create account: '"
+              + account.getName()
+              + "'. A valid nest node manipulator mode was not specified.");
     }
 
     try {

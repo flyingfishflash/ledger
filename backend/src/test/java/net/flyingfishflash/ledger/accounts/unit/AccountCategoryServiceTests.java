@@ -1,11 +1,12 @@
 package net.flyingfishflash.ledger.accounts.unit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Comparator;
-import java.util.List;
+import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import net.flyingfishflash.ledger.accounts.data.AccountCategory;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
@@ -16,102 +17,53 @@ class AccountCategoryServiceTests {
   AccountCategoryService accountCategoryService = new AccountCategoryService();
 
   @Test
-  void testFindAllAccountCategoriesSize() {
-    List<AccountCategory> accountCategoryList = accountCategoryService.findAllAccountCategories();
-    assertEquals(5, accountCategoryList.size());
+  void findAllAccountCategories_returnsAllCategoriesExceptRoot() {
+    assertThat(accountCategoryService.findAllAccountCategories())
+        .contains(
+            Arrays.stream(AccountCategory.values())
+                .filter(e -> !e.equals(AccountCategory.ROOT))
+                .toArray(AccountCategory[]::new));
   }
 
   @Test
-  void testFindAllAccountCategoriesContents() {
-    List<AccountCategory> accountCategoryList = accountCategoryService.findAllAccountCategories();
-    accountCategoryList.sort(Comparator.comparing(AccountCategory::name));
-    assertEquals(AccountCategory.ASSET, accountCategoryList.get(0));
-    assertEquals(AccountCategory.EQUITY, accountCategoryList.get(1));
-    assertEquals(AccountCategory.EXPENSE, accountCategoryList.get(2));
-    assertEquals(AccountCategory.INCOME, accountCategoryList.get(3));
-    assertEquals(AccountCategory.LIABILITY, accountCategoryList.get(4));
+  void findAccountCategoryByType_whenTypeIsRoot_returnRootCategory() {
+    assertThat(accountCategoryService.findAccountCategoryByType(AccountType.ROOT.toString()))
+        .isEqualTo(AccountCategory.ROOT);
   }
 
-  // Account Category should be Root
-  @Test
-  void testFindAccountCategoryByTypeWhenTypeIsRoot() {
-    AccountCategory c =
-        accountCategoryService.findAccountCategoryByType(AccountType.ROOT.toString());
-    assertEquals(AccountCategory.ROOT, c);
+  @ParameterizedTest
+  @EnumSource(
+      value = AccountType.class,
+      names = {"ASSET", "BANK", "CASH", "MUTUAL", "STOCK"})
+  void findAccountCategoryByType_allTypesOfCategoryAsset(AccountType accountType) {
+    assertThat(accountCategoryService.findAccountCategoryByType(accountType.toString()))
+        .isEqualTo(AccountCategory.ASSET);
   }
 
-  // Account Category should be Asset
-  @Test
-  void testFindAccountCategoryByTypeWhenTypeIsAsset() {
-    AccountCategory c =
-        accountCategoryService.findAccountCategoryByType(AccountType.ASSET.toString());
-    assertEquals(AccountCategory.ASSET, c);
+  @ParameterizedTest
+  @EnumSource(
+      value = AccountType.class,
+      names = {"CREDIT", "LIABILITY"})
+  void findAccountCategoryByType_allTypesOfCategoryLiability(AccountType accountType) {
+    assertThat(accountCategoryService.findAccountCategoryByType(accountType.toString()))
+        .isEqualTo(AccountCategory.LIABILITY);
   }
 
   @Test
-  void testFindAccountCategoryByTypeWhenTypeIsBank() {
-    AccountCategory c =
-        accountCategoryService.findAccountCategoryByType(AccountType.BANK.toString());
-    assertEquals(AccountCategory.ASSET, c);
+  void findAccountCategoryByType_whenTypeIsIncome_returnIncomeCategory() {
+    assertThat(accountCategoryService.findAccountCategoryByType(AccountType.INCOME.toString()))
+        .isEqualTo(AccountCategory.INCOME);
   }
 
   @Test
-  void testFindAccountCategoryByTypeWhenTypeIsCash() {
-    AccountCategory c =
-        accountCategoryService.findAccountCategoryByType(AccountType.CASH.toString());
-    assertEquals(AccountCategory.ASSET, c);
+  void findAccountCategoryByType_whenTypeIsExpense_returnExpenseCategory() {
+    assertThat(accountCategoryService.findAccountCategoryByType(AccountType.EXPENSE.toString()))
+        .isEqualTo(AccountCategory.EXPENSE);
   }
 
   @Test
-  void testFindAccountCategoryByTypeWhenTypeIsMutual() {
-    AccountCategory c =
-        accountCategoryService.findAccountCategoryByType(AccountType.MUTUAL.toString());
-    assertEquals(AccountCategory.ASSET, c);
-  }
-
-  @Test
-  void testFindAccountCategoryByTypeWhenTypeIsStock() {
-    AccountCategory c =
-        accountCategoryService.findAccountCategoryByType(AccountType.STOCK.toString());
-    assertEquals(AccountCategory.ASSET, c);
-  }
-
-  // Account Category should be Liability
-  @Test
-  void testFindAccountCategoryByTypeWhenTypeIsCredit() {
-    AccountCategory c =
-        accountCategoryService.findAccountCategoryByType(AccountType.CREDIT.toString());
-    assertEquals(AccountCategory.LIABILITY, c);
-  }
-
-  @Test
-  void testFindAccountCategoryByTypeWhenTypeIsLiability() {
-    AccountCategory c =
-        accountCategoryService.findAccountCategoryByType(AccountType.LIABILITY.toString());
-    assertEquals(AccountCategory.LIABILITY, c);
-  }
-
-  // Account Category should be Income
-  @Test
-  void testFindAccountCategoryByTypeWhenTypeIsIncome() {
-    AccountCategory c =
-        accountCategoryService.findAccountCategoryByType(AccountType.INCOME.toString());
-    assertEquals(AccountCategory.INCOME, c);
-  }
-
-  // Account Category should be Expense
-  @Test
-  void testFindAccountCategoryByTypeWhenTypeIsExpense() {
-    AccountCategory c =
-        accountCategoryService.findAccountCategoryByType(AccountType.EXPENSE.toString());
-    assertEquals(AccountCategory.EXPENSE, c);
-  }
-
-  // Account Category should be Equity
-  @Test
-  void testFindAccountCategoryByTypeWhenTypeIsEquity() {
-    AccountCategory c =
-        accountCategoryService.findAccountCategoryByType(AccountType.EQUITY.toString());
-    assertEquals(AccountCategory.EQUITY, c);
+  void findAccountCategoryByType_whenTypeIsEquity_returnEquityCategory() {
+    assertThat(accountCategoryService.findAccountCategoryByType(AccountType.EQUITY.toString()))
+        .isEqualTo(AccountCategory.EQUITY);
   }
 }
