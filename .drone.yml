@@ -4,6 +4,9 @@
 # repository_frontend = registry.domain.tld/namespace/ledger-frontend
 # repository_backend_development  = registry.domain.tld/namespace/ledger:development
 # repository_frontend_development = registry.domain.tld/namespace/ledger-frontend:development
+# sonar_host
+# sonar_login (user token)
+# sonar_project_key
 # ssh_username
 # ssh_host_dev
 # ssh_host_prd
@@ -64,8 +67,13 @@ trigger:
     - push
     - tag
   ref:
+    - refs/heads/ci-*
+    - refs/heads/docs-*
     - refs/heads/feature-*
     - refs/heads/fix-*
+    - refs/heads/refactor-*
+    - refs/heads/style-*
+    - refs/heads/test-*
     - refs/tags/*
 
 depends_on:
@@ -95,7 +103,7 @@ steps:
       - name: drone_cache
         path: /drone/drone_cache
 
-  - name: publish feature
+  - name: publish branch
     image: plugins/docker
     depends_on:
       - "cache pull"
@@ -112,8 +120,13 @@ steps:
         from_secret: repository_frontend
     when:
       ref:
+        - refs/heads/ci-*
+        - refs/heads/docs-*
         - refs/heads/feature-*
         - refs/heads/fix-*
+        - refs/heads/refactor-*
+        - refs/heads/style-*
+        - refs/heads/test-*
 
   - name: publish release
     image: plugins/docker
@@ -278,8 +291,13 @@ trigger:
     - push
     - tag
   ref:
+    - refs/heads/ci-*
+    - refs/heads/docs-*
     - refs/heads/feature-*
     - refs/heads/fix-*
+    - refs/heads/refactor-*
+    - refs/heads/style-*
+    - refs/heads/test-*
     - refs/tags/*
 
 depends_on:
@@ -309,10 +327,15 @@ steps:
       - cat .tags
     when:
       ref:
+        - refs/heads/ci-*
+        - refs/heads/docs-*
         - refs/heads/feature-*
         - refs/heads/fix-*
+        - refs/heads/refactor-*
+        - refs/heads/style-*
+        - refs/heads/test-*
 
-  - name: publish feature
+  - name: publish branch
     image: plugins/docker
     depends_on:
       - "write docker tag (development)"
@@ -329,8 +352,13 @@ steps:
         from_secret: repository_backend
     when:
       ref:
+        - refs/heads/ci-*
+        - refs/heads/docs-*
         - refs/heads/feature-*
         - refs/heads/fix-*
+        - refs/heads/refactor-*
+        - refs/heads/style-*
+        - refs/heads/test-*
 
   - name: write docker tag (release)
     image: alpine/git
@@ -370,8 +398,13 @@ trigger:
     - push
     - tag
   ref:
+    - refs/heads/ci-*
+    - refs/heads/docs-*
     - refs/heads/feature-*
     - refs/heads/fix-*
+    - refs/heads/refactor-*
+    - refs/heads/style-*
+    - refs/heads/test-*
 
 depends_on:
   - "frontend - publish"
