@@ -36,7 +36,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.7'
     implementation 'com.github.eXsio:nestedj:5.0.4'
     implementation 'com.h2database:h2:2.1.212'
-    implementation 'org.postgresql:postgresql:42.3.3'
+    implementation 'org.postgresql:postgresql:42.3.4'
     implementation 'org.javamoney:moneta:1.4.2'
     implementation 'javax.interceptor:javax.interceptor-api:1.2.2'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2.2'
@@ -46,7 +46,7 @@ dependencies {
     runtimeOnly 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
     testImplementation 'org.springframework.security:spring-security-test:5.6.2'
     testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
-    errorprone 'com.google.errorprone:error_prone_core:2.13.0'
+    errorprone 'com.google.errorprone:error_prone_core:2.13.1'
 }
 
 
