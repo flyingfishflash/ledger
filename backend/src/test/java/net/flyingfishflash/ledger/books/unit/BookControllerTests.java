@@ -1,6 +1,5 @@
 package net.flyingfishflash.ledger.books.unit;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -10,6 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,9 +23,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.json.JacksonTester;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -41,11 +39,9 @@ class BookControllerTests {
 
   private MockMvc mvc;
 
-  @InjectMocks private BookController bookControllerMock;
-
-  @Mock private BookService bookServiceMock;
-
-  @Mock private ActiveBook activeBookMock;
+  @Mock private BookService mockBookService;
+  @Mock private ActiveBook mockActiveBook;
+  @InjectMocks private BookController mockBookController;
 
   private JacksonTester<BookRequest> jsonBookRequest;
   private JacksonTester<SetActiveBookRequest> jsonSetActiveBookRequest;
@@ -56,7 +52,7 @@ class BookControllerTests {
     JacksonTester.initFields(this, new ObjectMapper());
     // MockMvc standalone approach
     mvc =
-        MockMvcBuilders.standaloneSetup(bookControllerMock)
+        MockMvcBuilders.standaloneSetup(mockBookController)
             // .setControllerAdvice(new AdviceForUserExceptions())
             // .setControllerAdvice(new AdviceForStandardExceptions())
             // .addFilters(new SuperHeroFilter())
@@ -64,118 +60,79 @@ class BookControllerTests {
   }
 
   @Test
-  void testFindById() throws Exception {
-
+  void getBook() throws Exception {
+    // TODO: mock return service object and validate its Json representation
     String pathVariable = "1";
-
-    MockHttpServletResponse response =
-        mvc.perform(get("/api/v1/ledger/books/" + pathVariable).accept(MediaType.APPLICATION_JSON))
-            .andReturn()
-            .getResponse();
-
-    verify(bookServiceMock, times(1)).findById(Long.valueOf(pathVariable));
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+    mvc.perform(get("/api/v1/ledger/books/" + pathVariable).accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
+    verify(mockBookService, times(1)).findById(Long.valueOf(pathVariable));
   }
 
   @Test
-  void testFindAllBooks() throws Exception {
-
-    MockHttpServletResponse response =
-        mvc.perform(get("/api/v1/ledger/books").accept(MediaType.APPLICATION_JSON))
-            .andReturn()
-            .getResponse();
-
-    verify(bookServiceMock, times(1)).findAllBooks();
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+  void getBooks() throws Exception {
+    // TODO: mock return service object and validate its Json representation
+    mvc.perform(get("/api/v1/ledger/books").accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
+    verify(mockBookService, times(1)).findAllBooks();
   }
 
   @Test
-  void testCreateBook() throws Exception {
-
+  void postBooks() throws Exception {
+    // TODO: mock return service object and validate its Json representation
     BookRequest bookRequest = new BookRequest("Book Name");
-
-    MockHttpServletResponse response =
-        mvc.perform(
-                post("/api/v1/ledger/books")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(jsonBookRequest.write(bookRequest).getJson()))
-            .andReturn()
-            .getResponse();
-
-    System.out.println(response.getContentAsString());
-
-    verify(bookServiceMock, times(1)).createBook(any(BookRequest.class));
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
+    mvc.perform(
+            post("/api/v1/ledger/books")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonBookRequest.write(bookRequest).getJson()))
+        .andExpect(status().isCreated());
+    verify(mockBookService, times(1)).createBook(any(BookRequest.class));
   }
 
   @Test
-  void testPatchBook() throws Exception {
-
+  void patchBook() throws Exception {
+    // TODO: mock return service object and validate its Json representation
     // BookRequest bookRequest = new BookRequest("Book Name");
-
     Map<String, Object> patchRequest = new HashMap<>();
     patchRequest.put("Name", "New Book Name");
-
-    MockHttpServletResponse response =
-        mvc.perform(
-                patch("/api/v1/ledger/books/2")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(jsonPatchRequest.write(patchRequest).getJson()))
-            .andReturn()
-            .getResponse();
-
-    verify(bookServiceMock, times(1)).patchBook(anyLong(), any());
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+    mvc.perform(
+            patch("/api/v1/ledger/books/2")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonPatchRequest.write(patchRequest).getJson()))
+        .andExpect(status().isOk());
+    verify(mockBookService, times(1)).patchBook(anyLong(), any());
   }
 
   @Test
-  void testDeleteBook() throws Exception {
-
+  void deleteBook() throws Exception {
     String pathVariable = "1";
-
-    MockHttpServletResponse response =
-        mvc.perform(delete("/api/v1/ledger/books/" + pathVariable)).andReturn().getResponse();
-
-    verify(bookServiceMock, times(1)).deleteBook(Long.valueOf(pathVariable));
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    mvc.perform(delete("/api/v1/ledger/books/" + pathVariable)).andExpect(status().isNoContent());
+    verify(mockBookService, times(1)).deleteBook(Long.valueOf(pathVariable));
   }
 
   @Test
-  void testSetActiveBook() throws Exception {
-
+  void postActive() throws Exception {
+    // TODO: mock return service object and validate its Json representation
     SetActiveBookRequest setActiveBookRequest = new SetActiveBookRequest();
     setActiveBookRequest.setId(1L);
-
     Book activeBook = new Book("Book Name");
     activeBook.setId(1L);
-
-    given(bookServiceMock.findById(1L)).willReturn(activeBook);
-
-    MockHttpServletResponse response =
-        mvc.perform(
-                post("/api/v1/ledger/books/active")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(jsonSetActiveBookRequest.write(setActiveBookRequest).getJson()))
-            .andReturn()
-            .getResponse();
-
-    verify(activeBookMock, times(1)).setBookId(setActiveBookRequest.getId());
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+    given(mockBookService.findById(1L)).willReturn(activeBook);
+    mvc.perform(
+            post("/api/v1/ledger/books/active")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonSetActiveBookRequest.write(setActiveBookRequest).getJson()))
+        .andExpect(status().isOk());
+    verify(mockActiveBook, times(1)).setBookId(setActiveBookRequest.getId());
   }
 
   @Test
-  void testGetActiveBook() throws Exception {
-
+  void getActive() throws Exception {
+    // TODO: mock return service object and validate its Json representation
     Book activeBook = new Book("Book Name");
-    given(bookServiceMock.findById(0L)).willReturn(activeBook);
-
-    MockHttpServletResponse response =
-        mvc.perform(get("/api/v1/ledger/books/active").accept(MediaType.APPLICATION_JSON))
-            .andReturn()
-            .getResponse();
-
-    verify(activeBookMock, times(1)).getBookId();
-    verify(bookServiceMock, times(1)).findById(0L);
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+    given(mockBookService.findById(0L)).willReturn(activeBook);
+    mvc.perform(get("/api/v1/ledger/books/active").accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
+    verify(mockActiveBook, times(1)).getBookId();
+    verify(mockBookService, times(1)).findById(0L);
   }
 }
