@@ -1,7 +1,7 @@
 package net.flyingfishflash.ledger.commodities.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -11,7 +11,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -28,134 +27,113 @@ import net.flyingfishflash.ledger.commodities.service.CommodityService;
 @ExtendWith(MockitoExtension.class)
 class CommodityServiceTests {
 
-  @Mock private CommodityRepository commodityRepositoryMock;
+  @Mock private CommodityRepository mockCommodityRepository;
   @InjectMocks private CommodityService commodityService;
 
   @Test
-  void testNewCommodity() {
-    Commodity commodity = commodityService.newCommodity();
+  void newCommodity() {
+    var commodity = commodityService.newCommodity();
     assertThat(commodity.getGuid()).isNotNull();
-    StringBuilder sbr = new StringBuilder(commodity.getGuid());
+    var sbr = new StringBuilder(commodity.getGuid());
     for (int i = 8, j = 0; i <= 20; i += 4, j++) sbr.insert(i + j, '-');
     // assertThat(UUID.fromString(sbr.toString()));
   }
 
   @Test
-  void testSaveCommodity() {
+  void saveCommodity() {
     commodityService.saveCommodity(new Commodity());
-    verify(commodityRepositoryMock, times(1)).save(any(Commodity.class));
+    verify(mockCommodityRepository, times(1)).save(any(Commodity.class));
   }
 
   @Test
-  void testSaveAllCommodities() {
-    List<Commodity> commodityList = Collections.singletonList(new Commodity());
+  void saveAllCommodities() {
+    var commodityList = Collections.singletonList(new Commodity());
     commodityService.saveAllCommodities(commodityList);
-    verify(commodityRepositoryMock, times(1)).saveAll(anyList());
+    verify(mockCommodityRepository, times(1)).saveAll(anyList());
   }
 
   @Test
-  void testUpdateCommodity() {
+  void updateCommodity() {
     commodityService.updateCommodity(new Commodity());
-    verify(commodityRepositoryMock, times(1)).save(any(Commodity.class));
+    verify(mockCommodityRepository, times(1)).save(any(Commodity.class));
   }
 
   @Test
-  void testDeleteCommodity() {
+  void deleteCommodity() {
     commodityService.deleteCommodity(1L);
-    verify(commodityRepositoryMock, times(1)).deleteById(anyLong());
+    verify(mockCommodityRepository, times(1)).deleteById(anyLong());
   }
 
   @Test
-  void testDeleteAllCommodities() {
+  void deleteAllCommodities() {
     commodityService.deleteAllCommodities();
-    verify(commodityRepositoryMock, times(1)).deleteAll();
+    verify(mockCommodityRepository, times(1)).deleteAll();
   }
 
   @Test
-  void testFindById() {
-    given(commodityRepositoryMock.findById(anyLong())).willReturn(Optional.of(new Commodity()));
+  void findById() {
+    given(mockCommodityRepository.findById(anyLong())).willReturn(Optional.of(new Commodity()));
     commodityService.findById(1L);
-    verify(commodityRepositoryMock, times(1)).findById(anyLong());
+    verify(mockCommodityRepository, times(1)).findById(anyLong());
   }
 
   @Test
-  void testFindById_CommodityNotFoundException() {
-
-    Throwable exception =
-        assertThrows(
-            CommodityNotFoundException.class,
-            () -> {
-              commodityService.findById(1L);
-            });
-
-    verify(commodityRepositoryMock, times(1)).findById(anyLong());
-    System.out.println(exception.toString());
+  void findById_whenCommidityNotFound_thenCommodityNotFoundException() {
+    assertThatExceptionOfType(CommodityNotFoundException.class)
+        .isThrownBy(() -> commodityService.findById(1L));
+    verify(mockCommodityRepository, times(1)).findById(anyLong());
   }
 
   @Test
-  void testFindByGuid() {
-    given(commodityRepositoryMock.findByGuid(anyString())).willReturn(Optional.of(new Commodity()));
+  void findByGuid() {
+    given(mockCommodityRepository.findByGuid(anyString())).willReturn(Optional.of(new Commodity()));
     commodityService.findByGuid("any string");
-    verify(commodityRepositoryMock, times(1)).findByGuid(anyString());
+    verify(mockCommodityRepository, times(1)).findByGuid(anyString());
   }
 
   @Test
-  void testFindByGuid_CommodityNotFoundException() {
-
-    Throwable exception =
-        assertThrows(
-            CommodityNotFoundException.class,
-            () -> {
-              commodityService.findByGuid("Any Guid");
-            });
-
-    verify(commodityRepositoryMock, times(1)).findByGuid(anyString());
-    System.out.println(exception.toString());
+  void findByGuid_whenCommodityNotFound_thenCommodityNotFoundException() {
+    assertThatExceptionOfType(CommodityNotFoundException.class)
+        .isThrownBy(() -> commodityService.findByGuid("Any Guid"));
+    verify(mockCommodityRepository, times(1)).findByGuid(anyString());
   }
 
   @Test
-  void testFindByMnemonic() {
-    List<Commodity> commodityList = Collections.singletonList(new Commodity());
-    given(commodityRepositoryMock.findByMnemonic(anyString()))
+  void findByMnemonic() {
+    var commodityList = Collections.singletonList(new Commodity());
+    given(mockCommodityRepository.findByMnemonic(anyString()))
         .willReturn(Optional.of(commodityList));
     commodityService.findByMnemonic("any string");
-    verify(commodityRepositoryMock, times(1)).findByMnemonic(anyString());
+    verify(mockCommodityRepository, times(1)).findByMnemonic(anyString());
   }
 
   @Test
-  void testFindByMnemonic_CommodityNotFoundException() {
-
-    Throwable exception =
-        assertThrows(
-            CommodityNotFoundException.class,
-            () -> {
-              commodityService.findByMnemonic("Any Mnemonic");
-            });
-
-    verify(commodityRepositoryMock, times(1)).findByMnemonic(anyString());
-    System.out.println(exception.toString());
+  void findByMnemonic_whenCommodityNotFound_thenCommodityNotFoundException() {
+    assertThatExceptionOfType(CommodityNotFoundException.class)
+        .isThrownBy(() -> commodityService.findByMnemonic("Any String"));
+    verify(mockCommodityRepository, times(1)).findByMnemonic(anyString());
   }
 
   @Test
-  void testFindByNamespace() {
-    List<Commodity> commodityList = Collections.singletonList(new Commodity());
-    given(commodityRepositoryMock.findByNamespace(anyString()))
+  void findByNamespace() {
+    var commodityList = Collections.singletonList(new Commodity());
+    given(mockCommodityRepository.findByNamespace(anyString()))
         .willReturn(Optional.of(commodityList));
     commodityService.findByNameSpace("any string");
-    verify(commodityRepositoryMock, times(1)).findByNamespace(anyString());
+    verify(mockCommodityRepository, times(1)).findByNamespace(anyString());
   }
 
   @Test
-  void testFindByNameSpaceAndMnemonic() {
-    given(commodityRepositoryMock.findByNamespaceAndMnemonic(anyString(), anyString()))
+  void findByNameSpaceAndMnemonic() {
+    given(mockCommodityRepository.findByNamespaceAndMnemonic(anyString(), anyString()))
         .willReturn(Optional.of(new Commodity()));
     commodityService.findByNameSpaceAndMnemonic("any string 1", "any string 2");
-    verify(commodityRepositoryMock, times(1)).findByNamespaceAndMnemonic(anyString(), anyString());
+    verify(mockCommodityRepository, times(1)).findByNamespaceAndMnemonic(anyString(), anyString());
   }
 
   @Test
-  void testFindAllCommodities() {
+  void findAllCommodities() {
     commodityService.findAllCommodities();
-    verify(commodityRepositoryMock, times(1)).findAll();
+    verify(mockCommodityRepository, times(1)).findAll();
   }
 }
