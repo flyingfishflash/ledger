@@ -1,7 +1,7 @@
 package net.flyingfishflash.ledger.prices.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -28,11 +28,11 @@ import net.flyingfishflash.ledger.prices.service.PriceService;
 @ExtendWith(MockitoExtension.class)
 class PriceServiceTests {
 
-  @Mock private PriceRepository priceRepositoryMock;
+  @Mock private PriceRepository mockPriceRepository;
   @InjectMocks private PriceService priceService;
 
   @Test
-  void testNewPrice() {
+  void newPrice() {
     Price price = priceService.newPrice();
     assertThat(price.getGuid()).isNotNull();
     StringBuilder sbr = new StringBuilder(price.getGuid());
@@ -41,75 +41,61 @@ class PriceServiceTests {
   }
 
   @Test
-  void testSavePrice() {
+  void savePrice() {
     priceService.savePrice(new Price());
-    verify(priceRepositoryMock, times(1)).save(any(Price.class));
+    verify(mockPriceRepository, times(1)).save(any(Price.class));
   }
 
   @Test
-  void testSaveAllPrices() {
+  void saveAllPrices() {
     List<Price> priceList = Collections.singletonList(new Price());
     priceService.saveAllPrices(priceList);
-    verify(priceRepositoryMock, times(1)).saveAll(anyList());
+    verify(mockPriceRepository, times(1)).saveAll(anyList());
   }
 
   @Test
-  void testUpdatePrice() {
+  void updatePrice() {
     priceService.updatePrice(new Price());
-    verify(priceRepositoryMock, times(1)).save(any(Price.class));
+    verify(mockPriceRepository, times(1)).save(any(Price.class));
   }
 
   @Test
-  void testDeletePrice() {
+  void deletePrice() {
     priceService.deletePrice(1L);
-    verify(priceRepositoryMock, times(1)).deleteById(anyLong());
+    verify(mockPriceRepository, times(1)).deleteById(anyLong());
   }
 
   @Test
-  void testDeleteAllCommodities() {
+  void deleteAllCommodities() {
     priceService.deleteAllPrices();
-    verify(priceRepositoryMock, times(1)).deleteAll();
+    verify(mockPriceRepository, times(1)).deleteAll();
   }
 
   @Test
-  void testFindById() {
-    given(priceRepositoryMock.findById(anyLong())).willReturn(Optional.of(new Price()));
+  void findById() {
+    given(mockPriceRepository.findById(anyLong())).willReturn(Optional.of(new Price()));
     priceService.findById(1L);
-    verify(priceRepositoryMock, times(1)).findById(anyLong());
+    verify(mockPriceRepository, times(1)).findById(1L);
   }
 
   @Test
-  void testFindById_PriceNotFoundException() {
-
-    Throwable exception =
-        assertThrows(
-            PriceNotFoundException.class,
-            () -> {
-              priceService.findById(1L);
-            });
-
-    verify(priceRepositoryMock, times(1)).findById(anyLong());
-    System.out.println(exception.toString());
+  void findById_whenPriceNotFound_thenPriceNotFoundException() {
+    assertThatExceptionOfType(PriceNotFoundException.class)
+        .isThrownBy(() -> priceService.findById(1L));
+    verify(mockPriceRepository, times(1)).findById(anyLong());
   }
 
   @Test
-  void testFindByGuid() {
-    given(priceRepositoryMock.findByGuid(anyString())).willReturn(Optional.of(new Price()));
+  void findByGuid() {
+    given(mockPriceRepository.findByGuid(anyString())).willReturn(Optional.of(new Price()));
     priceService.findByGuid("any string");
-    verify(priceRepositoryMock, times(1)).findByGuid(anyString());
+    verify(mockPriceRepository, times(1)).findByGuid(anyString());
   }
 
   @Test
-  void testFindByGuid_PriceNotFoundException() {
-
-    Throwable exception =
-        assertThrows(
-            PriceNotFoundException.class,
-            () -> {
-              priceService.findByGuid("Any Guid");
-            });
-
-    verify(priceRepositoryMock, times(1)).findByGuid(anyString());
-    System.out.println(exception.toString());
+  void findByGuid_whenPriceNotFound_thenPriceNotFoundException() {
+    assertThatExceptionOfType(PriceNotFoundException.class)
+        .isThrownBy(() -> priceService.findByGuid("Any Guid"));
+    verify(mockPriceRepository, times(1)).findByGuid(anyString());
   }
 }
