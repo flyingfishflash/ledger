@@ -1,16 +1,15 @@
 package net.flyingfishflash.ledger.foundation.users.unit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,10 +24,13 @@ import javax.validation.ConstraintViolationException;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -47,179 +49,164 @@ import net.flyingfishflash.ledger.foundation.users.service.UserService;
 @ExtendWith(MockitoExtension.class)
 class UserServiceTests {
 
+  @Mock private UserRepository mockUserRepository;
+  @Mock private PasswordEncoder mockEncoder;
+  @Mock private TenantService mockTenantService;
+  @Mock private UserProfileMapper mockUserProfileMapper;
   @InjectMocks private UserService userService;
-  @Mock private UserRepository userRepository;
-  @Mock private PasswordEncoder encoder;
-  @Mock private TenantService tenantService;
-  @Mock private UserProfileMapper userProfileMapper;
 
   @Test
-  void testExistsByUsername() {
-    when(userRepository.existsByUsername(anyString())).thenReturn(true);
-    userService.existsByUsername("Any User Name");
-    verify(userRepository, times(1)).existsByUsername(anyString());
+  void existsByUsername() {
+    var username = "Lorem Ipsum";
+    given(mockUserRepository.existsByUsername(username)).willReturn(true);
+    userService.existsByUsername(username);
+    verify(mockUserRepository, times(1)).existsByUsername(username);
   }
 
   @Test
-  void testExistsById() {
-    when(userRepository.existsById(anyLong())).thenReturn(true);
-    userService.existsById(1L);
-    verify(userRepository, times(1)).existsById(anyLong());
+  void existsById() {
+    var id = 1L;
+    given(mockUserRepository.existsById(id)).willReturn(true);
+    userService.existsById(id);
+    verify(mockUserRepository, times(1)).existsById(id);
   }
 
   @Test
-  void testExistsByEmail() {
-    when(userRepository.existsByEmail(anyString())).thenReturn(true);
-    userService.existsByEmail("Any Email Address");
-    verify(userRepository, times(1)).existsByEmail(anyString());
+  void existsByEmail() {
+    var email = "Lorem Ipsem";
+    given(mockUserRepository.existsByEmail(email)).willReturn(true);
+    userService.existsByEmail(email);
+    verify(mockUserRepository, times(1)).existsByEmail(email);
   }
 
   @Test
-  void testSave() {
-    when(userRepository.save(any(User.class))).thenReturn(new User());
+  void saveUser() {
+    given(mockUserRepository.save(any(User.class))).willReturn(new User());
     userService.saveUser(new User());
-    verify(userRepository, times(1)).save(any(User.class));
+    verify(mockUserRepository, times(1)).save(any(User.class));
   }
 
   @Test
-  void testLoadUserByUserName() {
+  void loadUserByUsername() {
+    var u = new User();
+    u.setUsername("Lorem Ipsum");
+    Optional<User> ou = Optional.of(u);
+    given(mockUserRepository.findByUsername(u.getUsername())).willReturn(ou);
+    userService.loadUserByUsername(u.getUsername());
+    verify(mockUserRepository, times(1)).findByUsername(u.getUsername());
+  }
+
+  @Test
+  void loadUserByUsername_whenUserNotFound_thenUserNotFoundException() {
+    String username = "Lorem Ipsum";
+    given(mockUserRepository.findByUsername(username)).willReturn(Optional.empty());
+    assertThatExceptionOfType(UsernameNotFoundException.class)
+        .isThrownBy(() -> userService.loadUserByUsername(username));
+    verify(mockUserRepository, times(1)).findByUsername(anyString());
+  }
+
+  @Test
+  void findByUsername() {
+    User u = new User();
+    u.setUsername("Lorem Ipsum");
+    Optional<User> ou = Optional.of(u);
+    given(mockUserRepository.findByUsername(u.getUsername())).willReturn(ou);
+    userService.findByUsername(u.getUsername());
+    verify(mockUserRepository, times(1)).findByUsername(u.getUsername());
+  }
+
+  @Test
+  void findByUsername_whenUserNotFound_thenUserNotFoundException() {
+    var username = "Lorem Ipsum";
+    given(mockUserRepository.findByUsername(username)).willReturn(Optional.empty());
+    assertThatExceptionOfType(UserNotFoundException.class)
+        .isThrownBy(() -> userService.findByUsername(username));
+    verify(mockUserRepository, times(1)).findByUsername(username);
+  }
+
+  @Test
+  void findById() {
     User u = new User();
     Optional<User> ou = Optional.of(u);
-    when(userRepository.findByUsername(anyString())).thenReturn(ou);
-    userService.loadUserByUsername("Any User Name");
-    verify(userRepository, times(1)).findByUsername(anyString());
-  }
-
-  @Test
-  void testLoadUserByUserName_EmptyUser() {
-    String username = "Any User Name";
-    when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
-    assertThrows(
-        UsernameNotFoundException.class,
-        () -> {
-          userService.loadUserByUsername(username);
-        });
-    verify(userRepository, times(1)).findByUsername(anyString());
-  }
-
-  @Test
-  void testFindByUserName() {
-    User u = new User();
-    Optional<User> ou = Optional.of(u);
-    when(userRepository.findByUsername(anyString())).thenReturn(ou);
-    userService.findByUsername("Any User Name");
-    verify(userRepository, times(1)).findByUsername(anyString());
-  }
-
-  @Test
-  void testFindByUserName_EmptyUser() {
-    String username = "Any User Name";
-    when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
-    assertThrows(
-        UserNotFoundException.class,
-        () -> {
-          userService.findByUsername(username);
-        });
-    verify(userRepository, times(1)).findByUsername(anyString());
-  }
-
-  @Test
-  void testFindById() {
-    User u = new User();
-    Optional<User> ou = Optional.of(u);
-    when(userRepository.findById(anyLong())).thenReturn(ou);
+    given(mockUserRepository.findById(anyLong())).willReturn(ou);
     userService.findById(1L);
-    verify(userRepository, times(1)).findById(anyLong());
+    verify(mockUserRepository, times(1)).findById(1L);
   }
 
   @Test
-  void testFindById_EmptyUser() {
-    Long userId = 1L;
-    when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
-    assertThrows(
-        UserNotFoundException.class,
-        () -> {
-          userService.findById(userId);
-        });
-    verify(userRepository, times(1)).findById(anyLong());
+  void findById_whenUserNotFound_thenUserNotFoundException() {
+    var userId = 1L;
+    given(mockUserRepository.findById(userId)).willReturn(Optional.empty());
+    assertThatExceptionOfType(UserNotFoundException.class)
+        .isThrownBy(() -> userService.findById(userId));
+    verify(mockUserRepository, times(1)).findById(userId);
   }
 
   @Test
-  void testFindAllUsers() {
+  void findAllUsers() {
     List<User> userList = new ArrayList<>(1);
     userList.add(new User());
-    when(userRepository.findAll()).thenReturn(userList);
+    given(mockUserRepository.findAll()).willReturn(userList);
     userService.findAllUsers();
-    verify(userRepository, times(1)).findAll();
+    verify(mockUserRepository, times(1)).findAll();
   }
 
   @Test
-  void testDeleteUser() {
-    doNothing().when(userRepository).deleteById(anyLong());
+  void deleteById() {
+    doNothing().when(mockUserRepository).deleteById(anyLong());
     userService.deleteById(1L);
-    verify(userRepository, times(1)).deleteById(anyLong());
+    verify(mockUserRepository, times(1)).deleteById(1L);
   }
 
   @Test
-  void testDeleteUser_NonExistentId() {
-    Long userId = 1L;
-    doThrow(IllegalArgumentException.class).when(userRepository).deleteById(anyLong());
-    assertThrows(
-        UserNotFoundException.class,
-        () -> {
-          userService.deleteById(userId);
-        });
-    verify(userRepository, times(1)).deleteById(anyLong());
+  void deleteById_whenUserNotFound_thenUserNotFoundException() {
+    var userId = 1L;
+    doThrow(IllegalArgumentException.class).when(mockUserRepository).deleteById(anyLong());
+    assertThatExceptionOfType(UserNotFoundException.class)
+        .isThrownBy(() -> userService.deleteById(userId))
+        .withCause(new IllegalArgumentException());
+    verify(mockUserRepository, times(1)).deleteById(anyLong());
   }
 
   @Test
-  void testCreateUser_UsernameExists() {
+  void createUser_whenUsernameExists_thenUserCreateException() {
     var userCreateRequest = new UserCreateRequest();
-    userCreateRequest.setUsername("Any Username");
-    when(userRepository.existsByUsername(anyString())).thenReturn(true);
-    assertThrows(
-        UserCreateException.class,
-        () -> {
-          userService.createUser(userCreateRequest);
-        });
-    verify(userRepository, times(1)).existsByUsername(anyString());
-    verify(userRepository, times(0)).save(any(User.class));
-    verify(tenantService, times(0)).initDatabase(anyString());
+    userCreateRequest.setUsername("Lorem Ipsum");
+    given(mockUserRepository.existsByUsername(userCreateRequest.getUsername())).willReturn(true);
+    assertThatExceptionOfType(UserCreateException.class)
+        .isThrownBy(() -> userService.createUser(userCreateRequest));
+    verify(mockUserRepository, times(1)).existsByUsername(userCreateRequest.getUsername());
+    verify(mockUserRepository, times(0)).save(any(User.class));
+    verify(mockTenantService, times(0)).initDatabase(anyString());
   }
 
   @Test
-  void testCreateUser_EmailExists() {
+  void createUser_whenEmailExists_thenUserCreateException() {
     var userCreateRequest = new UserCreateRequest();
-    userCreateRequest.setEmail("Any Email Address");
-    when(userRepository.existsByEmail(anyString())).thenReturn(true);
-    assertThrows(
-        UserCreateException.class,
-        () -> {
-          userService.createUser(userCreateRequest);
-        });
-    verify(userRepository, times(1)).existsByEmail(anyString());
-    verify(userRepository, times(0)).save(any(User.class));
-    verify(tenantService, times(0)).initDatabase(anyString());
+    userCreateRequest.setEmail("Lorem Ipsum");
+    given(mockUserRepository.existsByEmail(userCreateRequest.getEmail())).willReturn(true);
+    assertThatExceptionOfType(UserCreateException.class)
+        .isThrownBy(() -> userService.createUser(userCreateRequest));
+    verify(mockUserRepository, times(1)).existsByEmail(userCreateRequest.getEmail());
+    verify(mockUserRepository, times(0)).save(any(User.class));
+    verify(mockTenantService, times(0)).initDatabase(anyString());
   }
 
   @Test
-  void testCreateUser_RolesIsNull() {
+  void createUser_whenRolesIsNull_thenUserCreateException() {
     var userCreateRequest = new UserCreateRequest();
     userCreateRequest.setUsername("Username");
     userCreateRequest.setEmail("Email Address");
-    assertThrows(
-        UserCreateException.class,
-        () -> {
-          userService.createUser(userCreateRequest);
-        });
-    verify(userRepository, times(1)).existsByUsername(anyString());
-    verify(userRepository, times(1)).existsByEmail(anyString());
-    verify(userRepository, times(0)).save(any(User.class));
-    verify(tenantService, times(0)).initDatabase(anyString());
+    assertThatExceptionOfType(UserCreateException.class)
+        .isThrownBy(() -> userService.createUser(userCreateRequest));
+    verify(mockUserRepository, times(1)).existsByUsername(userCreateRequest.getUsername());
+    verify(mockUserRepository, times(1)).existsByEmail(userCreateRequest.getEmail());
+    verify(mockUserRepository, times(0)).save(any(User.class));
+    verify(mockTenantService, times(0)).initDatabase(anyString());
   }
 
   @Test
-  void testCreateUser_RolesGreaterThanOne() {
+  void createUser_whenRolesExceedsOne_thenUserCreateException() {
     var userCreateRequest = new UserCreateRequest();
     userCreateRequest.setUsername("Username");
     userCreateRequest.setEmail("Email Address");
@@ -227,37 +214,53 @@ class UserServiceTests {
     roles.add("Role1");
     roles.add("Role2");
     userCreateRequest.setRoles(roles);
-    assertThrows(
-        UserCreateException.class,
-        () -> {
-          userService.createUser(userCreateRequest);
-        });
-    verify(userRepository, times(1)).existsByUsername(anyString());
-    verify(userRepository, times(1)).existsByEmail(anyString());
-    verify(userRepository, times(0)).save(any(User.class));
-    verify(tenantService, times(0)).initDatabase(anyString());
+    assertThatExceptionOfType(UserCreateException.class)
+        .isThrownBy(() -> userService.createUser(userCreateRequest));
+    verify(mockUserRepository, times(1)).existsByUsername(userCreateRequest.getUsername());
+    verify(mockUserRepository, times(1)).existsByEmail(userCreateRequest.getEmail());
+    verify(mockUserRepository, times(0)).save(any(User.class));
+    verify(mockTenantService, times(0)).initDatabase(anyString());
   }
 
   @Test
-  void testCreateUser_RolesEmpty() {
+  void createUser_whenRolesEmpty_thenUserCreateException() {
     var userCreateRequest = new UserCreateRequest();
     userCreateRequest.setUsername("Username");
     userCreateRequest.setEmail("Email Address");
-    userCreateRequest.setRoles(new HashSet<String>(2));
-    assertThrows(
-        UserCreateException.class,
-        () -> {
-          userService.createUser(userCreateRequest);
-        });
-    verify(userRepository, times(1)).existsByUsername(anyString());
-    verify(userRepository, times(1)).existsByEmail(anyString());
-    verify(userRepository, times(0)).save(any(User.class));
-    verify(tenantService, times(0)).initDatabase(anyString());
+    userCreateRequest.setRoles(new HashSet<>(2));
+    assertThatExceptionOfType(UserCreateException.class)
+        .isThrownBy(() -> userService.createUser(userCreateRequest));
+    verify(mockUserRepository, times(1)).existsByUsername(userCreateRequest.getUsername());
+    verify(mockUserRepository, times(1)).existsByEmail(userCreateRequest.getEmail());
+    verify(mockUserRepository, times(0)).save(any(User.class));
+    verify(mockTenantService, times(0)).initDatabase(anyString());
+  }
+
+  @ParameterizedTest
+  @EnumSource(Role.class)
+  void createUser_verifyRoles(Role role) {
+    UserCreateRequest userCreateRequest =
+        new UserCreateRequest(
+            "Username",
+            "Password",
+            "Email Address",
+            "First Name",
+            "Last Name",
+            Collections.singleton(role.name()));
+    given(mockUserRepository.save(any(User.class))).willReturn(new User());
+    given(mockEncoder.encode(anyString())).willReturn("Any Encoded Password");
+    doNothing().when(mockTenantService).initDatabase(anyString());
+    ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
+    userService.createUser(userCreateRequest);
+    verify(mockEncoder, times(1)).encode(anyString());
+    verify(mockUserRepository, times(1)).save(userArgumentCaptor.capture());
+    verify(mockTenantService, times(1)).initDatabase(anyString());
+    assertThat(userArgumentCaptor.getValue().getAuthorities())
+        .containsExactly(new SimpleGrantedAuthority(role.name()));
   }
 
   @Test
-  void testCreateUser_DefaultRole() {
-
+  void createUser_whenInvalidRoleSpecified_thenUserCreateException() {
     UserCreateRequest userCreateRequest =
         new UserCreateRequest(
             "Username",
@@ -266,146 +269,60 @@ class UserServiceTests {
             "First Name",
             "Last Name",
             Collections.singleton("Role"));
-
-    when(userRepository.save(any(User.class))).thenReturn(new User());
-    when(encoder.encode(anyString())).thenReturn("Any Encoded Password");
-    doNothing().when(tenantService).initDatabase(anyString());
-
-    ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
-
-    userService.createUser(userCreateRequest);
-
-    verify(encoder, times(1)).encode(anyString());
-    verify(userRepository, times(1)).save(userArgumentCaptor.capture());
-    verify(tenantService, times(1)).initDatabase(anyString());
-
-    assertEquals(1, userArgumentCaptor.getValue().getAuthorities().size());
-    assertEquals(
-        Role.ROLE_VIEWER.name(), userArgumentCaptor.getValue().getAuthorities().get(0).toString());
+    assertThatExceptionOfType(UserCreateException.class)
+        .isThrownBy(() -> userService.createUser(userCreateRequest));
   }
 
   @Test
-  void testCreateUser_EditorRole() {
-    UserCreateRequest userCreateRequest =
-        new UserCreateRequest(
-            "Username",
-            "Password",
-            "Email Address",
-            "First Name",
-            "Last Name",
-            Collections.singleton(Role.ROLE_EDITOR.name()));
-
-    when(userRepository.save(any(User.class))).thenReturn(new User());
-    when(encoder.encode(anyString())).thenReturn("Any Encoded Password");
-    doNothing().when(tenantService).initDatabase(anyString());
-
-    ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
-
-    userService.createUser(userCreateRequest);
-
-    verify(encoder, times(1)).encode(anyString());
-    verify(userRepository, times(1)).save(userArgumentCaptor.capture());
-    verify(tenantService, times(1)).initDatabase(anyString());
-
-    assertEquals(1, userArgumentCaptor.getValue().getAuthorities().size());
-    assertEquals(
-        Role.ROLE_EDITOR.name(), userArgumentCaptor.getValue().getAuthorities().get(0).toString());
+  void profileById() {
+    given(mockUserRepository.findById(anyLong())).willReturn(Optional.of(new User()));
+    given(mockUserProfileMapper.mapEntityModelToResponseModel(any(User.class)))
+        .willReturn(new UserProfileResponse());
+    var userProfileResponse = userService.profileById(1L);
+    verify(mockUserRepository, times(1)).findById(1L);
+    verify(mockUserProfileMapper, times(1)).mapEntityModelToResponseModel(any(User.class));
+    assertThat(userProfileResponse).isNotNull();
   }
 
   @Test
-  void testCreateUser_AdminRole() {
-    UserCreateRequest userCreateRequest =
-        new UserCreateRequest(
-            "Username",
-            "Password",
-            "Email Address",
-            "First Name",
-            "Last Name",
-            Collections.singleton(Role.ROLE_ADMIN.name()));
-
-    when(userRepository.save(any(User.class))).thenReturn(new User());
-    when(encoder.encode(anyString())).thenReturn("Any Encoded Password");
-    doNothing().when(tenantService).initDatabase(anyString());
-
-    ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
-
-    userService.createUser(userCreateRequest);
-
-    verify(encoder, times(1)).encode(anyString());
-    verify(userRepository, times(1)).save(userArgumentCaptor.capture());
-    verify(tenantService, times(1)).initDatabase(anyString());
-
-    assertEquals(1, userArgumentCaptor.getValue().getAuthorities().size());
-    assertEquals(
-        Role.ROLE_ADMIN.name(), userArgumentCaptor.getValue().getAuthorities().get(0).toString());
+  void profileByUsername() {
+    given(mockUserRepository.findByUsername(anyString())).willReturn(Optional.of(new User()));
+    given(mockUserProfileMapper.mapEntityModelToResponseModel(any(User.class)))
+        .willReturn(new UserProfileResponse());
+    var userProfileResponse = userService.profileByUsername(anyString());
+    verify(mockUserRepository, times(1)).findByUsername(anyString());
+    verify(mockUserProfileMapper, times(1)).mapEntityModelToResponseModel(any(User.class));
+    assertThat(userProfileResponse).isNotNull();
   }
 
   @Test
-  void testProfileById() {
-    when(userRepository.findById(anyLong())).thenReturn(Optional.of(new User()));
-    when(userProfileMapper.mapEntityModelToResponseModel(any(User.class)))
-        .thenReturn(new UserProfileResponse());
-    UserProfileResponse userProfileResponse = userService.profileById(1L);
-    verify(userRepository, times(1)).findById(anyLong());
-    verify(userProfileMapper, times(1)).mapEntityModelToResponseModel(any(User.class));
-    assertNotNull(userProfileResponse);
-  }
-
-  @Test
-  void testProfileByUsername() {
-    when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(new User()));
-    when(userProfileMapper.mapEntityModelToResponseModel(any(User.class)))
-        .thenReturn(new UserProfileResponse());
-    UserProfileResponse userProfileResponse = userService.profileByUsername(anyString());
-    verify(userRepository, times(1)).findByUsername(anyString());
-    verify(userProfileMapper, times(1)).mapEntityModelToResponseModel(any(User.class));
-    assertNotNull(userProfileResponse);
-  }
-
-  @Test
-  void testProfilePatch() {
-    when(userProfileMapper.mapEntityModelToRequestModel(any(User.class)))
-        .thenReturn(new UserProfileRequest());
-
-    when(userRepository.findById(anyLong())).thenReturn(Optional.of(new User()));
-    when(encoder.encode(anyString())).thenReturn("Any Encoded Password");
-
+  void profilePatch() {
+    given(mockUserProfileMapper.mapEntityModelToRequestModel(any(User.class)))
+        .willReturn(new UserProfileRequest());
+    given(mockUserRepository.findById(anyLong())).willReturn(Optional.of(new User()));
+    given(mockEncoder.encode(anyString())).willReturn("Any Encoded Password");
     Map<String, Object> patchRequest = new HashMap<>();
     patchRequest.put("email", "email@email.em");
     patchRequest.put("firstName", "First Name");
     patchRequest.put("lastName", "Last Name");
     patchRequest.put("password", "Password");
-
     userService.profilePatch(1L, patchRequest);
-
-    verify(userRepository, times(1)).findById(anyLong());
-    verify(userProfileMapper, times(1)).mapEntityModelToRequestModel(any(User.class));
+    verify(mockUserRepository, times(1)).findById(anyLong());
+    verify(mockUserProfileMapper, times(1)).mapEntityModelToRequestModel(any(User.class));
   }
 
   @Test
-  void testProfilePatch_ConstraintViolationException() {
+  void profilePatch_whenPatchRequestFailsValidation_thenConstraintViolationException() {
     Map<String, Object> patchRequest = new HashMap<>();
-    var userCreateRequest = new UserCreateRequest();
-    userCreateRequest.setUsername("Username");
-    userCreateRequest.setEmail("Invalid Email Address");
-    userCreateRequest.setRoles(new HashSet<String>(2));
-
-    when(userProfileMapper.mapEntityModelToRequestModel(any(User.class)))
-        .thenReturn(new UserProfileRequest());
-
-    when(userRepository.findById(anyLong())).thenReturn(Optional.of(new User()));
-    //    when(encoder.encode(anyString())).thenReturn("Any Encoded Password");
-
-    assertThrows(
-        ConstraintViolationException.class,
-        () -> {
-          userService.profilePatch(1L, patchRequest);
-        });
-
-    verify(userRepository, times(1)).findById(anyLong());
-    verify(userProfileMapper, times(1)).mapEntityModelToRequestModel(any(User.class));
-    verify(userProfileMapper, times(0))
+    given(mockUserProfileMapper.mapEntityModelToRequestModel(any(User.class)))
+        .willReturn(new UserProfileRequest());
+    given(mockUserRepository.findById(anyLong())).willReturn(Optional.of(new User()));
+    assertThatExceptionOfType(ConstraintViolationException.class)
+        .isThrownBy(() -> userService.profilePatch(1L, patchRequest));
+    verify(mockUserRepository, times(1)).findById(anyLong());
+    verify(mockUserProfileMapper, times(1)).mapEntityModelToRequestModel(any(User.class));
+    verify(mockUserProfileMapper, times(0))
         .mapRequestModelToEntityModel(any(UserProfileRequest.class), any(User.class));
-    verify(userProfileMapper, times(0)).mapEntityModelToResponseModel(any(User.class));
+    verify(mockUserProfileMapper, times(0)).mapEntityModelToResponseModel(any(User.class));
   }
 }

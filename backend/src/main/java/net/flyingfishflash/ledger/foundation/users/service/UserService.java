@@ -111,7 +111,8 @@ public class UserService implements UserDetailsService {
           switch (role) {
             case "ROLE_ADMIN" -> user.grantAuthority(Role.ROLE_ADMIN);
             case "ROLE_EDITOR" -> user.grantAuthority(Role.ROLE_EDITOR);
-            default -> user.grantAuthority(Role.ROLE_VIEWER);
+            case "ROLE_VIEWER" -> user.grantAuthority(Role.ROLE_VIEWER);
+            default -> throw new UserCreateException("Illegal Role specified");
           }
         });
 
