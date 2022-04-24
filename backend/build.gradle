@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '2.6.6'
+    id 'org.springframework.boot' version '2.6.7'
     id 'com.diffplug.spotless'
     id 'jacoco'
     id 'net.ltgt.errorprone' version '2.0.2'
@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    String springBootVersion = "2.6.6"
+    String springBootVersion = "2.6.7"
     String springSessionVersion = "2.6.3"
 
     implementation "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
