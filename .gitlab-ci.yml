@@ -70,7 +70,7 @@ publish-frontend-version-tagged-ref:
       - frontend/dist
 
 build-jar:
-  image: gradle:7.4.2-jdk17
+  image: gradle:7.4.2-jdk18
   stage: build
   script:
     - echo $CI_COMMIT_BRANCH
@@ -90,7 +90,7 @@ build-jar:
       - backend/build
 
 unit-tests:
-  image: gradle:7.4.2-jdk17
+  image: gradle:7.4.2-jdk18
   stage: tests
   needs: ["build-jar"]
   script:
@@ -108,7 +108,7 @@ unit-tests:
       - backend/build
 
 h2-integration-tests:
-  image: gradle:7.4.2-jdk17
+  image: gradle:7.4.2-jdk18
   stage: tests
   needs: ["build-jar"]
   script:
@@ -124,7 +124,7 @@ h2-integration-tests:
       - backend/build
 
 postgres-integration-tests:
-  image: gradle:7.4.2-jdk17
+  image: gradle:7.4.2-jdk18
   stage: tests
   needs: ["build-jar"]
   services:
