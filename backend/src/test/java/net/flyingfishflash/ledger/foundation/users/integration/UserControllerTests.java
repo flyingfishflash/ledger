@@ -1,6 +1,6 @@
 package net.flyingfishflash.ledger.foundation.users.integration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,17 +23,14 @@ import net.flyingfishflash.ledger.foundation.users.service.UserService;
 class UserControllerTests {
 
   @Autowired private TestRestTemplate restTemplate;
-
   @Autowired UserService userService;
 
   @Test
-  void testProfileByUsername() {
-
+  void profileByUsername() {
     ResponseEntity<UserProfileResponse> userProfileResponse =
         restTemplate
             .withBasicAuth("testuser", "TestUser1@")
             .getForEntity("/api/v1/ledger/users/profile", UserProfileResponse.class);
-
-    assertEquals(HttpStatus.OK, userProfileResponse.getStatusCode());
+    assertThat(userProfileResponse).hasFieldOrPropertyWithValue("statusCode", HttpStatus.OK);
   }
 }
