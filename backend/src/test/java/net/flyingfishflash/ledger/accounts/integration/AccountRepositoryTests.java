@@ -1,8 +1,6 @@
 package net.flyingfishflash.ledger.accounts.integration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 
@@ -30,32 +28,33 @@ class AccountRepositoryTests {
   @Autowired AccountRepository accountRepository;
 
   @Test
-  void testFindRoot() {
+  void findRoot() {
     Optional<Account> account = accountRepository.findRoot();
-    assertTrue(account.isPresent());
-    assertNull(account.get().getParentId());
-    assertEquals(AccountCategory.ROOT, account.get().getCategory());
-    assertEquals(AccountType.ROOT, account.get().getType());
+    assertThat(account).isPresent();
+    assertThat(account.get())
+        .hasFieldOrPropertyWithValue("parentId", null)
+        .hasFieldOrPropertyWithValue("category", AccountCategory.ROOT)
+        .hasFieldOrPropertyWithValue("type", AccountType.ROOT);
   }
 
   @Test
-  void testFindById() {
-    Long id = 32L;
+  void findById() {
+    var id = 32L;
     Optional<Account> account = accountRepository.findById(id);
-    assertTrue(account.isPresent());
-    assertEquals(id, account.get().getId());
+    assertThat(account).isPresent();
+    assertThat(account.get()).hasFieldOrPropertyWithValue("id", id);
   }
 
   @Test
-  void testFindByGuid() {
-    String guid = "ea2c06e9dd20e09797b025d24deca332";
+  void findByGuid() {
+    var guid = "ea2c06e9dd20e09797b025d24deca332";
     Optional<Account> account = accountRepository.findByGuid(guid);
-    assertTrue(account.isPresent());
-    assertEquals(guid, account.get().getGuid());
+    assertThat(account).isPresent();
+    assertThat(account.get()).hasFieldOrPropertyWithValue("guid", guid);
   }
 
   @Test
-  void testRootLevelNodeCount() {
-    assertEquals(1L, accountRepository.rootLevelNodeCount());
+  void rootLevelNodeCount() {
+    assertThat(accountRepository.rootLevelNodeCount()).isEqualTo(1L);
   }
 }

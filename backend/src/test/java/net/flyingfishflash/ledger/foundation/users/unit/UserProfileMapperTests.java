@@ -1,6 +1,6 @@
 package net.flyingfishflash.ledger.foundation.users.unit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
@@ -14,63 +14,88 @@ class UserProfileMapperTests {
   private final UserProfileMapper userProfileMapper = new UserProfileMapper();
 
   @Test
-  void testMapEntityModelToRequestModel() {
-
+  void mapEntityModelToRequestModel() {
     User user = new User("Username", "Password", "Email", "First Name", "Last Name");
-
     UserProfileRequest userProfileRequest = userProfileMapper.mapEntityModelToRequestModel(user);
-
-    assertEquals(user.getPassword(), userProfileRequest.getPassword());
-    assertEquals(user.getEmail(), userProfileRequest.getEmail());
-    assertEquals(user.getFirstName(), userProfileRequest.getFirstName());
-    assertEquals(user.getLastName(), userProfileRequest.getLastName());
+    assertThat(user)
+        .usingRecursiveComparison()
+        .comparingOnlyFields("password", "email", "firstName", "lastName")
+        .ignoringFields(
+            "id",
+            "username",
+            "credentialsNonExpired",
+            "roles",
+            "accountNonExpired",
+            "enabled",
+            "accountNonLocked")
+        .isEqualTo(userProfileRequest);
   }
 
   @Test
-  void testMapEntityModelToResponseModel() {
-
+  void mapEntityModelToResponseModel() {
     User user = new User("Username", "Password", "Email", "First Name", "Last Name");
-
     UserProfileResponse userProfileResponse = userProfileMapper.mapEntityModelToResponseModel(user);
-
-    assertEquals("", userProfileResponse.getPassword());
-    assertEquals(user.getEmail(), userProfileResponse.getEmail());
-    assertEquals(user.getFirstName(), userProfileResponse.getFirstName());
-    assertEquals(user.getLastName(), userProfileResponse.getLastName());
+    assertThat(user)
+        .usingRecursiveComparison()
+        .comparingOnlyFields("email", "firstName", "lastName")
+        .ignoringFields(
+            "id",
+            "password",
+            "username",
+            "credentialsNonExpired",
+            "roles",
+            "accountNonExpired",
+            "enabled",
+            "accountNonLocked")
+        .isEqualTo(userProfileResponse);
+    assertThat(userProfileResponse.getPassword()).isEmpty();
   }
 
   @Test
-  void testMapRequestModelToEntityModel() {
-
+  void mapRequestModelToEntityModel() {
     UserProfileRequest userProfileRequest = new UserProfileRequest();
     userProfileRequest.setEmail("Email");
     userProfileRequest.setFirstName("First Name");
     userProfileRequest.setLastName("Last Name");
     userProfileRequest.setPassword("Password");
-
     User user = new User();
-
     userProfileMapper.mapRequestModelToEntityModel(userProfileRequest, user);
-    assertEquals(user.getPassword(), userProfileRequest.getPassword());
-    assertEquals(user.getEmail(), userProfileRequest.getEmail());
-    assertEquals(user.getFirstName(), userProfileRequest.getFirstName());
-    assertEquals(user.getLastName(), userProfileRequest.getLastName());
+    assertThat(user)
+        .usingRecursiveComparison()
+        .comparingOnlyFields("email", "firstName", "lastName", "password")
+        .ignoringFields(
+            "id",
+            "username",
+            "credentialsNonExpired",
+            "roles",
+            "accountNonExpired",
+            "enabled",
+            "accountNonLocked")
+        .isEqualTo(userProfileRequest);
   }
 
   @Test
-  void testMapRequestModelToResponseModel() {
-
+  void mapRequestModelToResponseModel() {
     UserProfileRequest userProfileRequest = new UserProfileRequest();
     userProfileRequest.setEmail("Email");
     userProfileRequest.setFirstName("First Name");
     userProfileRequest.setLastName("Last Name");
     userProfileRequest.setPassword("Password");
-
     UserProfileResponse userProfileResponse =
         userProfileMapper.mapRequestModelToResponseModel(userProfileRequest);
-    assertEquals("", userProfileResponse.getPassword());
-    assertEquals(userProfileRequest.getEmail(), userProfileResponse.getEmail());
-    assertEquals(userProfileRequest.getFirstName(), userProfileResponse.getFirstName());
-    assertEquals(userProfileRequest.getLastName(), userProfileResponse.getLastName());
+    assertThat(userProfileRequest)
+        .usingRecursiveComparison()
+        .comparingOnlyFields("email", "firstName", "lastName")
+        .ignoringFields(
+            "id",
+            "password",
+            "username",
+            "credentialsNonExpired",
+            "roles",
+            "accountNonExpired",
+            "enabled",
+            "accountNonLocked")
+        .isEqualTo(userProfileResponse);
+    assertThat(userProfileResponse.getPassword()).isEmpty();
   }
 }

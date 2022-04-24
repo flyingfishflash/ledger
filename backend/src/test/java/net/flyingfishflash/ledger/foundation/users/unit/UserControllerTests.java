@@ -5,12 +5,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -28,9 +27,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.json.JacksonTester;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -47,7 +44,7 @@ class UserControllerTests {
 
   private MockMvc mvc;
 
-  @Mock private UserService userService;
+  @Mock private UserService mockUserService;
   @Mock private Principal mockPrincipal;
   @InjectMocks UserController userController;
 
@@ -71,63 +68,45 @@ class UserControllerTests {
   }
 
   @Test
-  void testFindAllUsers() throws Exception {
-
+  void getUsers() throws Exception {
     User user = new User("Username", "Password", "Email@Email", "First Name", "Last Name");
     user.grantAuthority(Role.ROLE_VIEWER);
     List<User> userList = new ArrayList<>(1);
     userList.add(user);
-
-    given(userService.findAllUsers()).willReturn(userList);
-
-    MockHttpServletResponse response =
-        mvc.perform(get("/api/v1/ledger/users").accept(MediaType.APPLICATION_JSON))
-            .andReturn()
-            .getResponse();
-
-    verify(userService, times(1)).findAllUsers();
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(response.getContentAsString()).isEqualTo(jsonUserList.write(userList).getJson());
+    given(mockUserService.findAllUsers()).willReturn(userList);
+    assertThat(
+            mvc.perform(get("/api/v1/ledger/users").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString())
+        .isEqualTo(jsonUserList.write(userList).getJson());
   }
 
   @Test
-  void profileByUsername() throws Exception {
-
-    UserProfileResponse userProfileResponse =
-        new UserProfileResponse(2L, "Email", "First Name", "Last Name");
-
+  void getProfileByUsername() throws Exception {
+    var userProfileResponse = new UserProfileResponse(2L, "Email", "First Name", "Last Name");
     given(mockPrincipal.getName()).willReturn("Any Principal");
-
-    given(userService.profileByUsername(anyString())).willReturn(userProfileResponse);
-
-    MockHttpServletResponse response =
-        mvc.perform(get("/api/v1/ledger/users/profile").principal(mockPrincipal))
-            .andReturn()
-            .getResponse();
-
-    verify(userService, times(1)).profileByUsername(anyString());
-
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-
-    assertThat(response.getContentAsString())
+    given(mockUserService.profileByUsername(anyString())).willReturn(userProfileResponse);
+    assertThat(
+            mvc.perform(get("/api/v1/ledger/users/profile").principal(mockPrincipal))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString())
         .isEqualTo(jsonUserProfileResponse.write(userProfileResponse).getJson());
   }
 
   @Test
-  void testProfileById() throws Exception {
-
-    given(userService.profileById(anyLong()))
+  void getProfileById() throws Exception {
+    given(mockUserService.profileById(anyLong()))
         .willReturn(new UserProfileResponse(2L, "Email", "First Name", "Last Name"));
-
-    MockHttpServletResponse response =
-        mvc.perform(get("/api/v1/ledger/users/2/profile").accept(MediaType.APPLICATION_JSON))
-            .andReturn()
-            .getResponse();
-
-    verify(userService, times(1)).profileById(anyLong());
-
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(response.getContentAsString())
+    assertThat(
+            mvc.perform(get("/api/v1/ledger/users/2/profile"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString())
         .isEqualTo(
             jsonUserProfileResponse
                 .write(new UserProfileResponse(2L, "Email", "First Name", "Last Name"))
@@ -135,8 +114,8 @@ class UserControllerTests {
   }
 
   @Test
-  void testCreateUser() throws Exception {
-    UserCreateRequest userCreateRequest =
+  void postUsers() throws Exception {
+    var userCreateRequest =
         new UserCreateRequest(
             "Username",
             "Password",
@@ -144,62 +123,48 @@ class UserControllerTests {
             "First Name",
             "Last Name",
             Collections.singleton(Role.ROLE_ADMIN.name()));
-
-    UserCreateResponse expectedUserCreateResponse =
+    var expectedUserCreateResponse =
         new UserCreateResponse("Created user: " + userCreateRequest.getUsername());
-
-    MockHttpServletResponse response =
-        mvc.perform(
-                post("/api/v1/ledger/users")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(jsonUserCreateRequest.write(userCreateRequest).getJson()))
-            .andReturn()
-            .getResponse();
-
-    verify(userService, times(1)).createUser(any(UserCreateRequest.class));
-
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
-    assertThat(response.getContentAsString())
+    assertThat(
+            mvc.perform(
+                    post("/api/v1/ledger/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonUserCreateRequest.write(userCreateRequest).getJson()))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString())
         .isEqualTo(jsonUserCreateResponse.write(expectedUserCreateResponse).getJson());
   }
 
   @Test
-  void testPatchUser() throws Exception {
-
-    UserProfileResponse expectedUserProfileResponse =
+  void patchUsersById() throws Exception {
+    var expectedUserProfileResponse =
         new UserProfileResponse(2L, "Email", "First Name", "Last Name");
-
-    given(userService.profilePatch(anyLong(), any())).willReturn(expectedUserProfileResponse);
-
+    given(mockUserService.profilePatch(anyLong(), any())).willReturn(expectedUserProfileResponse);
     Map<String, Object> patchRequest = new HashMap<>();
     patchRequest.put("Email", "email@email.net");
-
-    MockHttpServletResponse response =
-        mvc.perform(
-                patch("/api/v1/ledger/users/2")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(jsonPatchRequest.write(patchRequest).getJson()))
-            .andReturn()
-            .getResponse();
-
-    verify(userService, times(1)).profilePatch(anyLong(), any());
-
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(response.getContentAsString())
+    assertThat(
+            mvc.perform(
+                    patch("/api/v1/ledger/users/2")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonPatchRequest.write(patchRequest).getJson()))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString())
         .isEqualTo(jsonUserProfileResponse.write(expectedUserProfileResponse).getJson());
   }
 
   @Test
-  void testDeleteUser() throws Exception {
-
+  void deleteUserById() throws Exception {
     String requestParameter = "1";
-
-    MockHttpServletResponse response =
-        mvc.perform(delete("/api/v1/ledger/users/delete?id=" + requestParameter))
-            .andReturn()
-            .getResponse();
-
-    verify(userService, times(1)).deleteById(anyLong());
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    assertThat(
+            mvc.perform(delete("/api/v1/ledger/users/delete?id=" + requestParameter))
+                .andExpect(status().isNoContent())
+                .andReturn()
+                .getResponse()
+                .getContentAsString())
+        .isEqualTo("{\"message\":\"Deleted user id: " + requestParameter + "\"}");
   }
 }

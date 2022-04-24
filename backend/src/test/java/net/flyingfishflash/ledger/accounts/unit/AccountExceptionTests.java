@@ -21,78 +21,78 @@ class AccountExceptionTests {
   }
 
   @Test
-  void testGeneralAccountException_static_ErrorDomain() {
+  void generalAccountException_staticErrorDomain_isEqualToAccounts() {
     assertThat(TestGeneralAccountException.ERROR_DOMAIN).isEqualTo("Accounts");
   }
 
   @Test
-  void testGeneralAccountException_static_ErrorSubject() {
+  void generalAccountException_staticErrorSubject_isEqualToAccount() {
     assertThat(TestGeneralAccountException.ERROR_SUBJECT).isEqualTo("Account");
   }
 
   @Test
-  void testGeneralAccountException_getErrorDomain() {
+  void generalAccountException_getErrorDomain_isEqualToAccounts() {
     var accountException = new TestGeneralAccountException();
     assertThat(accountException.getErrorDomain()).isEqualTo("Accounts");
   }
 
   @Test
-  void testGeneralAccountException_getErrorSubject() {
+  void generalAccountException_getErrorSubject_isEqualToAccount() {
     var accountException = new TestGeneralAccountException();
     assertThat(accountException.getErrorSubject()).isEqualTo("Account");
   }
 
   @Test
-  void testAccountException_getHttpStatus() {
+  void generalAccountException_getHttpStatus_isEqualTo500() {
     var testGeneralAccountException = new TestGeneralAccountException();
     assertThat(testGeneralAccountException.getHttpStatus())
         .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   @Test
-  void testAccountNotFoundException_getHttpStatus1() {
-    var accountException = new AccountNotFoundException("any guid");
+  void accountNotFoundExceptionWithStringParam_getHttpStatus_isEqualTo404() {
+    var accountException = new AccountNotFoundException("Any Guid");
     assertThat(accountException.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
   }
 
   @Test
-  void testAccountNotFoundException_getHttpStatus2() {
+  void accountNotFoundExceptionWithStringAndLongParams_getHttpStatus_isEqualTo404() {
     var accountException = new AccountNotFoundException(1L, "Exception Context");
     assertThat(accountException.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
   }
 
   @Test
-  void testAccountNotFoundException_getHttpStatus3() {
+  void accountNotFoundExceptionWithTwoStringParams_getHttpStatus_isEqualTo404() {
     var accountException = new AccountNotFoundException("any guid", "Exception Context");
     assertThat(accountException.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
   }
 
   @Test
-  void testEligibleParentAccountNotFoundException_getHttpStatus1() {
+  void eligibleParentAccountNotFoundExceptionWithStringParam_getHttpStatus_isEqualTo404() {
     var accountException = new EligibleParentAccountNotFoundException("guid");
     assertThat(accountException.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
   }
 
   @Test
-  void testEligibleParentAccountNotFoundException_getHttpStatus2() {
+  void eligibleParentAccountNotFoundExceptionWithStringAndLongParams_getHttpStatus_isEqualTo404() {
     var accountException = new EligibleParentAccountNotFoundException(1L, "Exception Context");
     assertThat(accountException.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
   }
 
   @Test
-  void testEligibleParentAccountNotFoundException_getHttpStatus3() {
+  void eligibleParentAccountNotFoundExceptionWithTwoStringParams_getHttpStatus_isEqualTo404() {
     var accountException = new EligibleParentAccountNotFoundException("guid", "Exception Context");
     assertThat(accountException.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
   }
 
   @Test
-  void testNextSiblingAccountNotFoundException_getHttpsStatus1() {
+  void nextSiblingAccountNotFoundExceptionWithStringAndLongParams_getHttpStatus_isEqualTo404() {
     var accountException = new NextSiblingAccountNotFoundException("Account Long Name", 1L);
     assertThat(accountException.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
   }
 
   @Test
-  void testPrevSiblingAccountNotFoundException_getHttpsStatus1() {
+  void prevSiblingAccountNotFoundExceptionWithStringAndLongParams_getHttpStatus_isEqualTo404() {
     var accountException = new PrevSiblingAccountNotFoundException("Account Long Name", 1L);
     assertThat(accountException.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
   }

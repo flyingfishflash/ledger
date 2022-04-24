@@ -1,6 +1,6 @@
 package net.flyingfishflash.ledger.foundation.users.unit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -14,33 +14,27 @@ class UserExceptionTests {
   private final GeneralUserException userException = new UserNotFoundException(1L);
 
   @Test
-  void testUserException_getHttpStatus() {
-    assertEquals(HttpStatus.NOT_FOUND, userException.getHttpStatus());
+  void userException_getErrorDomain_isEqualToUsers() {
+    assertThat(userException.getErrorDomain()).isEqualTo("Users");
   }
 
   @Test
-  void testUserException_getErrorDomain() {
-    assertEquals("Users", userException.getErrorDomain());
+  void userException_getErrorSubject_isEqualToUser() {
+    assertThat(userException.getErrorSubject()).isEqualTo("User");
   }
 
   @Test
-  void testUserException_getErrorSubject() {
-    assertEquals("User", userException.getErrorSubject());
+  void userException_getHttpStatus_isEqualTo404() {
+    assertThat(userException.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
   }
 
   @Test
-  void testUserCreateException() {
-
-    String expectedMessage = "Expected UserCreateException Message";
-
-    RuntimeException runtimeException = new RuntimeException("Root Cause of UserCreateException");
-
-    UserCreateException userCreateException =
-        new UserCreateException(expectedMessage, runtimeException);
-
-    assertEquals(expectedMessage, userCreateException.getLocalizedMessage());
-    assertEquals(
-        runtimeException.getLocalizedMessage(),
-        userCreateException.getCause().getLocalizedMessage());
+  void userCreateException() {
+    var expectedMessage = "Expected UserCreateException Message";
+    var runtimeException = new RuntimeException("Root Cause of UserCreateException");
+    var userCreateException = new UserCreateException(expectedMessage, runtimeException);
+    assertThat(userCreateException.getLocalizedMessage()).isEqualTo(expectedMessage);
+    assertThat(userCreateException.getCause().getLocalizedMessage())
+        .isEqualTo(runtimeException.getLocalizedMessage());
   }
 }
