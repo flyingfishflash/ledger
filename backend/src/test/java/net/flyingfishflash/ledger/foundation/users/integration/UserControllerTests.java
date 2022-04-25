@@ -2,6 +2,7 @@ package net.flyingfishflash.ledger.foundation.users.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import net.flyingfishflash.ledger.foundation.users.data.dto.UserProfileResponse;
 import net.flyingfishflash.ledger.foundation.users.service.UserService;
 
+@Tag("Integration")
 @SpringBootTest(
     classes = UserTestConfiguration.class,
     webEnvironment = WebEnvironment.RANDOM_PORT,

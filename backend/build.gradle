@@ -62,42 +62,54 @@ def copyBuildInfo = tasks.register('copyBuildInfo', Copy) {
     into layout.buildDirectory.dir("boot_jar_exploded/BOOT-INF/classes/META-INF/")
 }
 
-task integrationTests(type: Test) {
-    systemProperties System.properties
-    useJUnitPlatform()
-    mustRunAfter(test)
-
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
-
-    filter {
-        includeTestsMatching "net.flyingfishflash.ledger.*.integration.*"
-    }
-
-    jacoco {
-        enabled = false
-    }
-}
-
 jacoco {
     toolVersion = "0.8.8"
 }
 
-test {
-    useJUnitPlatform()
-
+task integrationTests(type: Test) {
+    mustRunAfter(test)
+    useJUnitPlatform {
+        includeTags 'Integration'
+    }
     testLogging {
         events "passed", "skipped", "failed"
     }
-
     filter {
-        includeTestsMatching "net.flyingfishflash.ledger.*.unit.*"
+        includeTestsMatching "net.flyingfishflash.ledger.*.integration.*"
     }
-
     finalizedBy jacocoTestReport
 }
 
+test {
+    useJUnitPlatform {
+        excludeTags 'Integration'
+    }
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    //dependsOn test
+
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+task combineJacocoReports(type: JacocoReport) {
+    dependsOn test, integrationTests
+    executionData fileTree(project.buildDir.absolutePath).include("jacoco/*.exec")
+    classDirectories.setFrom files(project.sourceSets.main.output)
+    sourceDirectories.setFrom files(project.sourceSets.main.allSource.srcDirs)
+
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
 bootJar {
 }
 
@@ -105,15 +117,7 @@ bootRun {
     jvmArgs = ["-Duser.timezone=UTC"]
 }
 
-jacocoTestReport {
-    dependsOn test
 
-    reports {
-        xml.required = true
-        csv.required = false
-        html.required = true
-    }
-}
 
 compileJava {
     options.release.set(17)
