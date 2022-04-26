@@ -15,7 +15,6 @@ description = 'Ledger'
 
 repositories {
     mavenCentral()
-
     maven {
         url = uri('https://jitpack.io')
     }
@@ -108,20 +107,7 @@ task integrationTests(type: Test) {
     filter {
         includeTestsMatching "net.flyingfishflash.ledger.*.integration.*"
     }
-    finalizedBy jacocoIntegrationTestReport
 }
-
-//task combineJacocoReports(type: JacocoReport) {
-//    dependsOn test, integrationTests
-//    executionData fileTree(project.buildDir.absolutePath).include("jacoco/*.exec")
-//    classDirectories.setFrom files(project.sourceSets.main.output)
-//    sourceDirectories.setFrom files(project.sourceSets.main.allSource.srcDirs)
-//
-//    reports {
-//        xml.required = true
-//        html.required = true
-//    }
-//}
 
 bootJar {
 }
@@ -129,8 +115,6 @@ bootJar {
 bootRun {
     jvmArgs = ["-Duser.timezone=UTC"]
 }
-
-
 
 compileJava {
     options.release.set(17)
