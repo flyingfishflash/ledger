@@ -105,7 +105,7 @@ task integrationTests(type: Test) {
         events "passed", "skipped", "failed"
     }
     filter {
-        includeTestsMatching "net.flyingfishflash.ledger.*.integration.*"
+        excludeTestsMatching "net.flyingfishflash.ledger.*.unit.*"
     }
 }
 
