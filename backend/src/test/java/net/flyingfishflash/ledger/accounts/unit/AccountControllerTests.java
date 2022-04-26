@@ -35,13 +35,14 @@ import net.flyingfishflash.ledger.accounts.web.AccountController;
 class AccountControllerTests {
 
   @Mock AccountService accountService;
+
   @InjectMocks AccountController accountController;
 
   private MockMvc mvc;
 
   private JacksonTester<Collection<Account>> jsonAccountCollection;
   private JacksonTester<AccountDto> jsonAccountDto;
-  private JacksonTester<AccountCreateRequest> jsonCreateAccountDto;
+  private JacksonTester<AccountCreateRequest> jsonCreateAccount;
 
   @BeforeEach
   public void setup() {
@@ -92,19 +93,24 @@ class AccountControllerTests {
     var account1 = new Account();
     account1.setName("Lorem Ipsum");
     var accountDto = new AccountDto(account1);
-    var accountCreateRequest = new AccountCreateRequest();
-    accountCreateRequest.setName("Lorem Ipsum");
-    accountCreateRequest.setParentId(2L);
-    accountCreateRequest.setHidden(false);
-    accountCreateRequest.setPlaceholder(false);
-    accountCreateRequest.setTaxRelated(false);
-    accountCreateRequest.setMode("PREV_SIBLING");
+    var accountCreateRequest =
+        new AccountCreateRequest(
+            null,
+            null,
+            false,
+            "PREV_SIBLING",
+            "Lorem ipsum dolor sit amet",
+            null,
+            2L,
+            false,
+            null,
+            false);
     given(accountService.createAccount(any(AccountCreateRequest.class))).willReturn(account1);
     assertThat(
             mvc.perform(
                     post("/api/v1/ledger/accounts")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonCreateAccountDto.write(accountCreateRequest).getJson()))
+                        .content(jsonCreateAccount.write(accountCreateRequest).getJson()))
                 .andExpect(status().is(201))
                 .andReturn()
                 .getResponse()
@@ -114,19 +120,22 @@ class AccountControllerTests {
 
   @Test
   void postAccounts_whenRequestIsInvalid_returnHttp400() throws Exception {
-    var accountCreateRequest = new AccountCreateRequest();
-    accountCreateRequest.setCode("string");
-    accountCreateRequest.setHidden(true);
-    accountCreateRequest.setMode("FIRST_CHILD1"); // invalid value
-    accountCreateRequest.setName("string");
-    accountCreateRequest.setNote("string");
-    accountCreateRequest.setParentId(0L);
-    accountCreateRequest.setSiblingId(0L);
-    accountCreateRequest.setTaxRelated(true);
+    var accountCreateRequest =
+        new AccountCreateRequest(
+            "Lorem Ipsum",
+            null,
+            true,
+            "FIRST_CHILD1",
+            "Lorem Ipsum",
+            "Lorem Ipsum",
+            0L,
+            null,
+            0L,
+            true);
     mvc.perform(
             post("/api/v1/ledger/accounts")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonCreateAccountDto.write(accountCreateRequest).getJson()))
+                .content(jsonCreateAccount.write(accountCreateRequest).getJson()))
         .andExpect(status().isBadRequest());
   }
 
@@ -164,7 +173,6 @@ class AccountControllerTests {
 
   @Test
   void getEligibleParentAccounts() throws Exception {
-
     var requestParameter = "1";
     var accountList = new ArrayList<Account>(1);
     var account1 = new Account();

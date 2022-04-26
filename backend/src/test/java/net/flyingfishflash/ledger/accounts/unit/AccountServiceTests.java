@@ -127,14 +127,18 @@ class AccountServiceTests {
 
   @Test
   void createAccount_insertAsPrevSibling() {
-    var accountCreateRequest = new AccountCreateRequest();
-    accountCreateRequest.hidden = false;
-    accountCreateRequest.mode = "PREV_SIBLING";
-    accountCreateRequest.name = "Lorem ipsum dolor sit amet";
-    accountCreateRequest.parentId = 2L;
-    accountCreateRequest.placeholder = true;
-    accountCreateRequest.siblingId = 8L;
-    accountCreateRequest.taxRelated = false;
+    var accountCreateRequest =
+        new AccountCreateRequest(
+            null,
+            null,
+            false,
+            "PREV_SIBLING",
+            "Lorem ipsum dolor sit amet",
+            null,
+            2L,
+            true,
+            8L,
+            false);
     given(mockAccountRepository.findById(2L)).willReturn(Optional.of(account2()));
     given(mockAccountRepository.findById(8L)).willReturn(Optional.of(account8()));
     given(mockAccountRepository.findByGuid(anyString())).willReturn(Optional.of(account8()));
@@ -147,14 +151,18 @@ class AccountServiceTests {
 
   @Test
   void createAccount_whenPreviousSiblingAccountNotFound_thenAccountCreateException() {
-    var accountCreateRequest = new AccountCreateRequest();
-    accountCreateRequest.hidden = false;
-    accountCreateRequest.mode = "PREV_SIBLING";
-    accountCreateRequest.name = "Lorem ipsum dolor sit amet";
-    accountCreateRequest.parentId = 2L;
-    accountCreateRequest.placeholder = true;
-    accountCreateRequest.siblingId = 8L; // invalid value
-    accountCreateRequest.taxRelated = false;
+    var accountCreateRequest =
+        new AccountCreateRequest(
+            null,
+            null,
+            false,
+            "PREV_SIBLING",
+            "Lorem ipsum dolor sit amet",
+            null,
+            2L,
+            true,
+            8L, // invalid value
+            false);
     given(mockAccountRepository.findById(2L)).willReturn(Optional.of(account2()));
     // simulate failure to identify the previous sibling of the subject account
     given(mockAccountRepository.findById(8L)).willReturn(Optional.empty());
@@ -164,14 +172,18 @@ class AccountServiceTests {
 
   @Test
   void createAccount_insertAsNextSibling() {
-    var accountCreateRequest = new AccountCreateRequest();
-    accountCreateRequest.hidden = false;
-    accountCreateRequest.mode = "NEXT_SIBLING";
-    accountCreateRequest.name = "Lorem ipsum dolor sit amet";
-    accountCreateRequest.parentId = 2L;
-    accountCreateRequest.placeholder = true;
-    accountCreateRequest.siblingId = 7L;
-    accountCreateRequest.taxRelated = false;
+    var accountCreateRequest =
+        new AccountCreateRequest(
+            null,
+            null,
+            false,
+            "NEXT_SIBLING",
+            "Lorem ipsum dolor sit amet",
+            null,
+            2L,
+            true,
+            7L, // invalid value
+            false);
     given(mockAccountRepository.findById(2L)).willReturn(Optional.of(account2()));
     given(mockAccountRepository.findById(7L)).willReturn(Optional.of(account7()));
     given(mockAccountRepository.findByGuid(anyString())).willReturn(Optional.of(account8()));
@@ -187,14 +199,18 @@ class AccountServiceTests {
 
   @Test
   void createAccount_whenNextSiblingAccountNotFound_thenAccountCreateException() {
-    var accountCreateRequest = new AccountCreateRequest();
-    accountCreateRequest.hidden = false;
-    accountCreateRequest.mode = "NEXT_SIBLING";
-    accountCreateRequest.name = "Lorem ipsum dolor sit amet";
-    accountCreateRequest.parentId = 2L;
-    accountCreateRequest.placeholder = true;
-    accountCreateRequest.siblingId = 9L; // invalid value
-    accountCreateRequest.taxRelated = false;
+    var accountCreateRequest =
+        new AccountCreateRequest(
+            null,
+            null,
+            false,
+            "NEXT_SIBLING",
+            "Lorem ipsum dolor sit amet",
+            null,
+            2L,
+            true,
+            9L,
+            false);
     given(mockAccountRepository.findById(2L)).willReturn(Optional.of(account2()));
     // simulate failure to identify the next sibling of the subject account
     given(mockAccountRepository.findById(9L)).willReturn(Optional.empty());
@@ -204,13 +220,18 @@ class AccountServiceTests {
 
   @Test
   void createAccount_insertAsFirstChild() {
-    var accountCreateRequest = new AccountCreateRequest();
-    accountCreateRequest.hidden = false;
-    accountCreateRequest.mode = "FIRST_CHILD";
-    accountCreateRequest.name = "Lorem ipsum dolor sit amet";
-    accountCreateRequest.parentId = 9999L;
-    accountCreateRequest.placeholder = true;
-    accountCreateRequest.taxRelated = false;
+    var accountCreateRequest =
+        new AccountCreateRequest(
+            null,
+            null,
+            false,
+            "FIRST_CHILD",
+            "Lorem ipsum dolor sit amet",
+            null,
+            9999L,
+            true,
+            null,
+            false);
     given(mockAccountRepository.findById(9999L)).willReturn(Optional.of(account2()));
     given(mockAccountRepository.findByGuid(anyString())).willReturn(Optional.of(account7()));
     accountService.createAccount(accountCreateRequest);
@@ -224,14 +245,18 @@ class AccountServiceTests {
 
   @Test
   void createAccount_insertAsLastChild() {
-    var accountCreateRequest = new AccountCreateRequest();
-    accountCreateRequest.hidden = false;
-    accountCreateRequest.mode = "LAST_CHILD";
-    accountCreateRequest.name = "Lorem ipsum dolor sit amet";
-    accountCreateRequest.parentId = 2L;
-    accountCreateRequest.placeholder = true;
-    accountCreateRequest.siblingId = 2L;
-    accountCreateRequest.taxRelated = false;
+    var accountCreateRequest =
+        new AccountCreateRequest(
+            null,
+            null,
+            false,
+            "LAST_CHILD",
+            "Lorem ipsum dolor sit amet",
+            null,
+            2L,
+            true,
+            2L,
+            false);
     given(mockAccountRepository.findById(2L)).willReturn(Optional.of(account2()));
     given(mockAccountRepository.findByGuid(anyString())).willReturn(Optional.of(account7()));
     accountService.createAccount(accountCreateRequest);
@@ -245,14 +270,18 @@ class AccountServiceTests {
 
   @Test
   void createAccount_whenCreatedAccountCantBeFound_thenAccountCreateException() {
-    var accountCreateRequest = new AccountCreateRequest();
-    accountCreateRequest.hidden = false;
-    accountCreateRequest.mode = "LAST_CHILD";
-    accountCreateRequest.name = "Lorem ipsum dolor sit amet";
-    accountCreateRequest.parentId = 9999L;
-    accountCreateRequest.placeholder = true;
-    accountCreateRequest.siblingId = 9999L;
-    accountCreateRequest.taxRelated = false;
+    var accountCreateRequest =
+        new AccountCreateRequest(
+            null,
+            null,
+            false,
+            "LAST_CHILD",
+            "Lorem ipsum dolor sit amet",
+            null,
+            9999L,
+            true,
+            9999L,
+            false);
     // expect an AccountCreateException to be thrown because:
     // 1) the created account is never persisted due to mock repository
     // 2) we are not mocking a response from mockAccountRepository.findByGuid()
@@ -264,24 +293,42 @@ class AccountServiceTests {
 
   @Test
   void createAccount_whenNestedNodeManipulatorIsInvalid_thenAccountCreateException() {
-    var accountCreateRequest = new AccountCreateRequest();
-    accountCreateRequest.mode = "INVALID_NODE_MANIPULATOR";
-    accountCreateRequest.name = "Lorem ipsum dolor sit amet";
-    accountCreateRequest.parentId = 9999L;
+    var accountCreateRequest =
+        new AccountCreateRequest(
+            null,
+            null,
+            false,
+            "INVALID_NODE_MANIPULATOR",
+            "Lorem ipsum dolor sit amet",
+            null,
+            9999L,
+            true,
+            null,
+            false);
+    //    accountCreateRequest.parentId = 9999L;
     given(mockAccountRepository.findById(anyLong())).willReturn(Optional.of(account1()));
     assertThatExceptionOfType(AccountCreateException.class)
         .isThrownBy(() -> accountService.createAccount(accountCreateRequest))
         .withMessage(
             "Failed to create account: '"
-                + accountCreateRequest.name
+                + accountCreateRequest.name()
                 + "'. A valid nest node manipulator mode was not specified.");
   }
 
   @Test
   void createAccount_whenParentAccountNotFound_thenAccountCreateException() {
-    var accountCreateRequest = new AccountCreateRequest();
-    accountCreateRequest.name = "Lorem ipsum dolor sit amet";
-    accountCreateRequest.parentId = 9999L;
+    var accountCreateRequest =
+        new AccountCreateRequest(
+            null,
+            null,
+            false,
+            "INVALID_NODE_MANIPULATOR",
+            "Lorem ipsum dolor sit amet",
+            null,
+            9999L,
+            true,
+            null,
+            false);
     // simulate failure to identify the parent account of the account to be created
     given(mockAccountRepository.findById(anyLong())).willThrow(AccountNotFoundException.class);
     assertThatExceptionOfType(AccountCreateException.class)
