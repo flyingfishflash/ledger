@@ -67,7 +67,7 @@ def jacocoUnitTestReport = tasks.register('jacocoUnitTestReport', JacocoReport) 
     classDirectories.setFrom files(project.sourceSets.main.output)
     sourceDirectories.setFrom files(project.sourceSets.main.allSource.srcDirs)
     reports {
-        html.required = false
+        html.required = true
         xml.required = true
     }
 }
@@ -78,7 +78,7 @@ def jacocoIntegrationTestReport = tasks.register('jacocoIntegrationTestReport', 
     classDirectories.setFrom files(project.sourceSets.main.output)
     sourceDirectories.setFrom files(project.sourceSets.main.allSource.srcDirs)
     reports {
-        html.required = false
+        html.required = true
         xml.required = true
     }
 }
