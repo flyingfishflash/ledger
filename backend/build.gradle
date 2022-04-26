@@ -62,22 +62,30 @@ def copyBuildInfo = tasks.register('copyBuildInfo', Copy) {
     into layout.buildDirectory.dir("boot_jar_exploded/BOOT-INF/classes/META-INF/")
 }
 
-jacoco {
-    toolVersion = "0.8.8"
+def jacocoUnitTestReport = tasks.register('jacocoUnitTestReport', JacocoReport) {
+    mustRunAfter(test)
+    executionData fileTree(project.buildDir.absolutePath).include("jacoco/test.exec")
+    classDirectories.setFrom files(project.sourceSets.main.output)
+    sourceDirectories.setFrom files(project.sourceSets.main.allSource.srcDirs)
+    reports {
+        html.required = false
+        xml.required = true
+    }
 }
 
-task integrationTests(type: Test) {
-    mustRunAfter(test)
-    useJUnitPlatform {
-        includeTags 'Integration'
+def jacocoIntegrationTestReport = tasks.register('jacocoIntegrationTestReport', JacocoReport) {
+    mustRunAfter(integrationTests)
+    executionData fileTree(project.buildDir.absolutePath).include("jacoco/integrationTests.exec")
+    classDirectories.setFrom files(project.sourceSets.main.output)
+    sourceDirectories.setFrom files(project.sourceSets.main.allSource.srcDirs)
+    reports {
+        html.required = false
+        xml.required = true
     }
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
-    filter {
-        includeTestsMatching "net.flyingfishflash.ledger.*.integration.*"
-    }
-    finalizedBy jacocoTestReport
+}
+
+jacoco {
+    toolVersion = "0.8.8"
 }
 
 test {
@@ -87,29 +95,34 @@ test {
     testLogging {
         events "passed", "skipped", "failed"
     }
-    finalizedBy jacocoTestReport
+    finalizedBy jacocoUnitTestReport
 }
 
-jacocoTestReport {
-    //dependsOn test
-
-    reports {
-        xml.required = true
-        html.required = true
+task integrationTests(type: Test) {
+    useJUnitPlatform {
+        includeTags 'Integration'
     }
-}
-
-task combineJacocoReports(type: JacocoReport) {
-    dependsOn test, integrationTests
-    executionData fileTree(project.buildDir.absolutePath).include("jacoco/*.exec")
-    classDirectories.setFrom files(project.sourceSets.main.output)
-    sourceDirectories.setFrom files(project.sourceSets.main.allSource.srcDirs)
-
-    reports {
-        xml.required = true
-        html.required = true
+    testLogging {
+        events "passed", "skipped", "failed"
     }
+    filter {
+        includeTestsMatching "net.flyingfishflash.ledger.*.integration.*"
+    }
+    finalizedBy jacocoIntegrationTestReport
 }
+
+//task combineJacocoReports(type: JacocoReport) {
+//    dependsOn test, integrationTests
+//    executionData fileTree(project.buildDir.absolutePath).include("jacoco/*.exec")
+//    classDirectories.setFrom files(project.sourceSets.main.output)
+//    sourceDirectories.setFrom files(project.sourceSets.main.allSource.srcDirs)
+//
+//    reports {
+//        xml.required = true
+//        html.required = true
+//    }
+//}
+
 bootJar {
 }
 
