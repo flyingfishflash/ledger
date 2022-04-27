@@ -27,7 +27,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.dto.AccountCreateRequest;
-import net.flyingfishflash.ledger.accounts.data.dto.AccountDto;
+import net.flyingfishflash.ledger.accounts.data.dto.AccountRecord;
 import net.flyingfishflash.ledger.accounts.service.AccountService;
 import net.flyingfishflash.ledger.accounts.web.AccountController;
 
@@ -35,13 +35,12 @@ import net.flyingfishflash.ledger.accounts.web.AccountController;
 class AccountControllerTests {
 
   @Mock AccountService accountService;
-
   @InjectMocks AccountController accountController;
 
   private MockMvc mvc;
 
   private JacksonTester<Collection<Account>> jsonAccountCollection;
-  private JacksonTester<AccountDto> jsonAccountDto;
+  private JacksonTester<AccountRecord> jsonAccountRecord;
   private JacksonTester<AccountCreateRequest> jsonCreateAccount;
 
   @BeforeEach
@@ -58,18 +57,39 @@ class AccountControllerTests {
             .build();
   }
 
+  private AccountRecord prepareAccountRecord() {
+    return new AccountRecord(
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        false,
+        1L,
+        null,
+        "Lorem ipsum",
+        null,
+        9999L,
+        false,
+        false,
+        9999L,
+        9999L,
+        9999L);
+  }
+
   @Test
   void getAccount() throws Exception {
-    var account1 = new Account();
-    var accountDto1 = new AccountDto(account1);
-    given(accountService.findById(anyLong())).willReturn(account1);
+    var accountRecord = prepareAccountRecord();
+    given(accountService.findById(anyLong())).willReturn(new Account());
+    given(accountService.mapEntityToRecord(any(Account.class))).willReturn(accountRecord);
     assertThat(
             mvc.perform(get("/api/v1/ledger/accounts/1").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString())
-        .isEqualTo(jsonAccountDto.write(accountDto1).getJson());
+        .isEqualTo(jsonAccountRecord.write(accountRecord).getJson());
   }
 
   @Test
@@ -90,9 +110,7 @@ class AccountControllerTests {
 
   @Test
   void postAccounts() throws Exception {
-    var account1 = new Account();
-    account1.setName("Lorem Ipsum");
-    var accountDto = new AccountDto(account1);
+    var accountRecord = prepareAccountRecord();
     var accountCreateRequest =
         new AccountCreateRequest(
             null,
@@ -105,7 +123,8 @@ class AccountControllerTests {
             false,
             null,
             false);
-    given(accountService.createAccount(any(AccountCreateRequest.class))).willReturn(account1);
+    given(accountService.createAccount(any(AccountCreateRequest.class))).willReturn(new Account());
+    given(accountService.mapEntityToRecord(any(Account.class))).willReturn(accountRecord);
     assertThat(
             mvc.perform(
                     post("/api/v1/ledger/accounts")
@@ -115,7 +134,7 @@ class AccountControllerTests {
                 .andReturn()
                 .getResponse()
                 .getContentAsString())
-        .isEqualTo(jsonAccountDto.write(accountDto).getJson());
+        .isEqualTo(jsonAccountRecord.write(accountRecord).getJson());
   }
 
   @Test

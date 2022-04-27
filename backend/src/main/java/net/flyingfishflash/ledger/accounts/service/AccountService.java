@@ -11,6 +11,7 @@ import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.AccountRepository;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
 import net.flyingfishflash.ledger.accounts.data.dto.AccountCreateRequest;
+import net.flyingfishflash.ledger.accounts.data.dto.AccountRecord;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountCreateException;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
 import net.flyingfishflash.ledger.accounts.exceptions.EligibleParentAccountNotFoundException;
@@ -267,5 +268,26 @@ public class AccountService {
     } else {
       throw new EligibleParentAccountNotFoundException(account.getId());
     }
+  }
+
+  public AccountRecord mapEntityToRecord(Account account) {
+    return new AccountRecord(
+        account.getCategory(),
+        account.getType(),
+        account.getCode(),
+        account.getDescription(),
+        account.getDiscriminator(),
+        account.getGuid(),
+        account.getHidden(),
+        account.getId(),
+        account.getLongName(),
+        account.getName(),
+        account.getNote(),
+        account.getParentId(),
+        account.getPlaceholder(),
+        account.getTaxRelated(),
+        account.getTreeLeft(),
+        account.getTreeLevel(),
+        account.getTreeRight());
   }
 }

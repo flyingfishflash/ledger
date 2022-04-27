@@ -31,7 +31,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.dto.AccountCreateRequest;
-import net.flyingfishflash.ledger.accounts.data.dto.AccountDto;
+import net.flyingfishflash.ledger.accounts.data.dto.AccountRecord;
 import net.flyingfishflash.ledger.accounts.data.dto.ApiMessage;
 import net.flyingfishflash.ledger.accounts.service.AccountService;
 
@@ -57,23 +57,23 @@ public class AccountController {
 
   @GetMapping(value = "{id}")
   @Operation(summary = "Retrieve a single account")
-  public ResponseEntity<AccountDto> findAccountById(@PathVariable("id") @Min(1) Long id) {
+  public ResponseEntity<AccountRecord> findAccountById(@PathVariable("id") @Min(1) Long id) {
 
     var account = accountService.findById(id);
-    var accountDto = new AccountDto(account);
+    var accountRecord = accountService.mapEntityToRecord(account);
 
-    return new ResponseEntity<>(accountDto, HttpStatus.OK);
+    return new ResponseEntity<>(accountRecord, HttpStatus.OK);
   }
 
   @PostMapping
   @Operation(summary = "Create a new account")
   @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
-  public ResponseEntity<AccountDto> createAccount(
+  public ResponseEntity<AccountRecord> createAccount(
       @RequestHeader(name = "X-COM-LOCATION", required = false) String headerLocation,
       @Valid @RequestBody AccountCreateRequest accountCreateRequest) {
 
     var account = accountService.createAccount(accountCreateRequest);
-    var accountDto = new AccountDto(account);
+    var accountRecord = accountService.mapEntityToRecord(account);
 
     var location =
         ServletUriComponentsBuilder.fromCurrentRequest()
@@ -84,7 +84,7 @@ public class AccountController {
     var headers = new HttpHeaders();
     headers.setLocation(location);
 
-    return new ResponseEntity<>(accountDto, headers, HttpStatus.CREATED);
+    return new ResponseEntity<>(accountRecord, headers, HttpStatus.CREATED);
   }
 
   @DeleteMapping(value = "/delete")
