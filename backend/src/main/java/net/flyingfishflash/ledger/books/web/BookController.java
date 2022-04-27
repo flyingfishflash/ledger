@@ -97,7 +97,7 @@ public class BookController {
   @Operation(summary = "Set the active book for a session")
   @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
   public Book setActiveBook(@RequestBody SetActiveBookRequest setActiveBookRequest) {
-    activeBook.setBookId(bookService.findById(setActiveBookRequest.getId()).getId());
+    activeBook.setBookId(bookService.findById(setActiveBookRequest.id()).getId());
     logger.info("{}", activeBook);
     return bookService.findById(activeBook.getBookId());
   }
