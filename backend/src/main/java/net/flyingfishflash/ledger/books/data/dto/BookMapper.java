@@ -4,13 +4,11 @@ import net.flyingfishflash.ledger.books.data.Book;
 
 public class BookMapper {
 
-  public BookRequest mapEntityModelToRequestModel(Book book) {
-    var bookRequest = new BookRequest();
-    bookRequest.setName(book.getName());
-    return bookRequest;
-  }
-
   /*
+  public BookRequest mapEntityModelToRequestModel(Book book) {
+      return new BookRequest(book.getName());
+    }
+
   public Book mapEntityModelToResponseModel(Book user) {
       BookResponse bookResponse = new BookResponse();
       bookResponse.setId(book.getId());
@@ -23,7 +21,7 @@ public class BookMapper {
   */
 
   public void mapRequestModelToEntityModel(BookRequest bookRequest, Book book) {
-    book.setName(bookRequest.getName());
+    book.setName(bookRequest.name());
     // return book;
   }
 

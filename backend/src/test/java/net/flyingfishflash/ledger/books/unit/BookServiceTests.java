@@ -35,84 +35,80 @@ class BookServiceTests {
 
   @Mock private BookRepository mockBookRepository;
   @Mock private BookMapper mockBookMapper;
-  @InjectMocks private BookService mockBookService;
+  @InjectMocks private BookService bookService;
 
   @Test
   void createBook() {
     given(mockBookRepository.save(any(Book.class))).willReturn(new Book());
-    mockBookService.createBook(new BookRequest());
+    bookService.createBook(new BookRequest("Lorem Ipsum"));
     verify(mockBookRepository, times(1)).save(any(Book.class));
   }
 
   @Test
   void saveBook() {
     given(mockBookRepository.save(any(Book.class))).willReturn(new Book());
-    mockBookService.saveBook(new Book());
+    bookService.saveBook(new Book());
     verify(mockBookRepository, times(1)).save(any(Book.class));
   }
 
   @Test
   void saveAllBooks() {
     var bookList = Collections.singletonList(new Book());
-    mockBookService.saveAllBooks(bookList);
+    bookService.saveAllBooks(bookList);
     verify(mockBookRepository, times(1)).saveAll(anyList());
   }
 
   @Test
   void updateBook() {
-    mockBookService.updateBook(new Book());
+    bookService.updateBook(new Book());
     verify(mockBookRepository, times(1)).save(any(Book.class));
   }
 
   @Test
   void patchBook() {
-    given(mockBookMapper.mapEntityModelToRequestModel(any(Book.class)))
-        .willReturn(new BookRequest());
     given(mockBookRepository.findById(anyLong())).willReturn(Optional.of(new Book()));
     Map<String, Object> patchRequest = new HashMap<>();
     patchRequest.put("name", "New Book Name");
-    mockBookService.patchBook(1L, patchRequest);
+    bookService.patchBook(1L, patchRequest);
     verify(mockBookRepository, times(1)).findById(anyLong());
-    verify(mockBookMapper, times(1)).mapEntityModelToRequestModel(any(Book.class));
+    verify(mockBookMapper, times(1))
+        .mapRequestModelToEntityModel(any(BookRequest.class), any(Book.class));
   }
 
   @Test
   void patchBook_whenBookRequestNameIsNull_thenConstraintViolationException() {
-    given(mockBookMapper.mapEntityModelToRequestModel(any(Book.class)))
-        .willReturn(new BookRequest());
     given(mockBookRepository.findById(anyLong())).willReturn(Optional.of(new Book()));
     Map<String, Object> patchRequest = new HashMap<>();
     assertThatExceptionOfType(ConstraintViolationException.class)
-        .isThrownBy(() -> mockBookService.patchBook(1L, patchRequest));
+        .isThrownBy(() -> bookService.patchBook(1L, patchRequest));
     verify(mockBookRepository, times(1)).findById(anyLong());
-    verify(mockBookMapper, times(1)).mapEntityModelToRequestModel(any(Book.class));
     verify(mockBookMapper, times(0))
         .mapRequestModelToEntityModel(any(BookRequest.class), any(Book.class));
   }
 
   @Test
   void deleteBook() {
-    mockBookService.deleteBook(1L);
+    bookService.deleteBook(1L);
     verify(mockBookRepository, times(1)).deleteById(anyLong());
   }
 
   @Test
   void deleteAllBooks() {
-    mockBookService.deleteAllBooks();
+    bookService.deleteAllBooks();
     verify(mockBookRepository, times(1)).deleteAll();
   }
 
   @Test
   void findById() {
     given(mockBookRepository.findById(anyLong())).willReturn(Optional.of(new Book()));
-    mockBookService.findById(1L);
+    bookService.findById(1L);
     verify(mockBookRepository, times(1)).findById(anyLong());
   }
 
   @Test
   void findById_whenBookNotFound_thenBookNotFoundException() {
     assertThatExceptionOfType(BookNotFoundException.class)
-        .isThrownBy(() -> mockBookService.findById(1L));
+        .isThrownBy(() -> bookService.findById(1L));
     verify(mockBookRepository, times(1)).findById(anyLong());
   }
 
@@ -121,7 +117,7 @@ class BookServiceTests {
     List<Book> bookList = new ArrayList<>(1);
     bookList.add(new Book());
     given(mockBookRepository.findAll()).willReturn(bookList);
-    mockBookService.findAllBooks();
+    bookService.findAllBooks();
     verify(mockBookRepository, times(1)).findAll();
   }
 }

@@ -33,7 +33,7 @@ public class BookService {
 
   public Book createBook(BookRequest bookRequest) {
 
-    return bookRepository.save(new Book(bookRequest.getName()));
+    return bookRepository.save(new Book(bookRequest.name()));
   }
 
   public Book saveBook(Book book) {
@@ -55,17 +55,19 @@ public class BookService {
 
     var book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId));
 
-    var bookRequest = bookMapper.mapEntityModelToRequestModel(book);
+    String newName = null;
 
     if (!patchRequest.isEmpty()) {
       for (Entry<String, Object> entry : patchRequest.entrySet()) {
         String change = entry.getKey();
         Object value = entry.getValue();
         if ("name".equals(change)) {
-          bookRequest.setName((String) value);
+          newName = (String) value;
         }
       }
     }
+
+    var bookRequest = new BookRequest(newName);
 
     var validator = Validation.buildDefaultValidatorFactory().getValidator();
 
