@@ -2,6 +2,7 @@ package net.flyingfishflash.ledger.books.data.dto;
 
 import net.flyingfishflash.ledger.books.data.Book;
 
+/** Collection of methods mapping book related objects from one to another. */
 public class BookMapper {
 
   /*
@@ -20,6 +21,12 @@ public class BookMapper {
   }
   */
 
+  /**
+   * Convert a book request to a book entity
+   *
+   * @param bookRequest Book request
+   * @param book Book entity
+   */
   public void mapRequestModelToEntityModel(BookRequest bookRequest, Book book) {
     book.setName(bookRequest.name());
     // return book;
