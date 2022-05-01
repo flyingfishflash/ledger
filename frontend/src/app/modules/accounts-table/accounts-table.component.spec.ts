@@ -6,13 +6,11 @@ describe("AccountsTableComponent", () => {
   let component: AccountsTableComponent;
   let fixture: ComponentFixture<AccountsTableComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [AccountsTableComponent],
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [AccountsTableComponent],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AccountsTableComponent);

@@ -1,11 +1,12 @@
 package net.flyingfishflash.ledger.foundation.configuration;
 
+// import org.hibernate.MultiTenancyStrategy;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.hibernate.MultiTenancyStrategy;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
@@ -35,7 +36,7 @@ public class HibernateConfiguration {
       CurrentTenantIdentifierResolver tenantIdentifierResolver) {
 
     Map<String, Object> jpaPropertiesMap = new HashMap<>(jpaProperties.getProperties());
-    jpaPropertiesMap.put(AvailableSettings.MULTI_TENANT, MultiTenancyStrategy.SCHEMA);
+    // jpaPropertiesMap.put(AvailableSettings.MULTI_TENANT, MultiTenancyStrategy.SCHEMA);
     jpaPropertiesMap.put(
         AvailableSettings.MULTI_TENANT_CONNECTION_PROVIDER, multiTenantConnectionProvider);
     jpaPropertiesMap.put(

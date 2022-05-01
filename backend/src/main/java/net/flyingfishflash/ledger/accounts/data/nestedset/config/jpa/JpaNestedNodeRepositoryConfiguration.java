@@ -22,7 +22,7 @@ package net.flyingfishflash.ledger.accounts.data.nestedset.config.jpa;
 
 import java.io.Serializable;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 import net.flyingfishflash.ledger.accounts.data.nestedset.config.jpa.discriminator.JpaTreeDiscriminator;
 import net.flyingfishflash.ledger.accounts.data.nestedset.config.jpa.discriminator.MapJpaTreeDiscriminator;

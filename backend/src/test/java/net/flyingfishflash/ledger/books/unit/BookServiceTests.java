@@ -15,13 +15,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.validation.ConstraintViolationException;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import jakarta.validation.ConstraintViolationException;
 
 import net.flyingfishflash.ledger.books.data.Book;
 import net.flyingfishflash.ledger.books.data.BookRepository;

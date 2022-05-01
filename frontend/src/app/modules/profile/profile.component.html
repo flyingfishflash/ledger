@@ -9,17 +9,17 @@
     <h1 class="mat-h1">{{ componentHeading }}</h1>
 
     <mat-card-content>
-      <mat-card class="mat-elevation-z0" style="margin-top: 16px;">
+      <mat-card class="mat-elevation-z0" style="margin-top: 16px">
         <form id="profile-details-form" [formGroup]="userDetailsForm">
           <strong>Details</strong>
           <p>Set a name and an email address for this user.</p>
           <div
-            style="margin-top: 2.5rem;"
+            style="margin-top: 2.5rem"
             fxLayoutGap="16px"
             fxLayoutAlign="space-between"
             fxLayout.sm="column"
           >
-            <input matInput formControlName="id" style="display: none;" />
+            <input matInput formControlName="id" style="display: none" />
             <mat-form-field appearance="outline">
               <mat-label>First Name</mat-label>
               <input matInput formControlName="firstName" />
@@ -98,11 +98,9 @@
           </div>
           <strong>Password</strong>
           <p>Set a password used to log-in to the application.</p>
-          <p>
-            Only fill the below if you would like to change your password.
-          </p>
+          <p>Only fill the below if you would like to change your password.</p>
           <div
-            style="margin-top: 2.5rem;"
+            style="margin-top: 2.5rem"
             fxLayoutGap="16px"
             fxLayout.sm="column"
           >
@@ -121,7 +119,7 @@
               }}</mat-icon>
             </button>
             <div>
-              <ul style="list-style-type: none; margin: 0; padding: 0;">
+              <ul style="list-style-type: none; margin: 0; padding: 0">
                 <li>
                   <label
                     class="col"
@@ -132,7 +130,7 @@
                         : 'text-success'
                     "
                   >
-                    <i class="material-icons" style="font-size: 1.2rem;">{{
+                    <i class="material-icons" style="font-size: 1.2rem">{{
                       userDetailsForm.controls.password.hasError("required") ||
                       userDetailsForm.controls.password.hasError("noWhitespace")
                         ? "cancel"
@@ -151,7 +149,7 @@
                         : 'text-success'
                     "
                   >
-                    <i class="material-icons" style="font-size: 1.2rem;">{{
+                    <i class="material-icons" style="font-size: 1.2rem">{{
                       userDetailsForm.controls.password.hasError("required") ||
                       userDetailsForm.controls.password.hasError("minlength")
                         ? "cancel"
@@ -171,7 +169,7 @@
                         : 'text-success'
                     "
                   >
-                    <i class="material-icons" style="font-size: 1.2rem;">{{
+                    <i class="material-icons" style="font-size: 1.2rem">{{
                       userDetailsForm.controls.password.hasError("required") ||
                       userDetailsForm.controls.password.hasError("hasNumber")
                         ? "cancel"
@@ -190,7 +188,7 @@
                         : 'text-success'
                     "
                   >
-                    <i class="material-icons" style="font-size: 1.2rem;">{{
+                    <i class="material-icons" style="font-size: 1.2rem">{{
                       userDetailsForm.controls.password.hasError("required") ||
                       userDetailsForm.controls.password.hasError("hasLowercase")
                         ? "cancel"
@@ -209,7 +207,7 @@
                         : 'text-success'
                     "
                   >
-                    <i class="material-icons" style="font-size: 1.2rem;">{{
+                    <i class="material-icons" style="font-size: 1.2rem">{{
                       userDetailsForm.controls.password.hasError("required") ||
                       userDetailsForm.controls.password.hasError("hasUppercase")
                         ? "cancel"
@@ -230,7 +228,7 @@
                         : 'text-success'
                     "
                   >
-                    <i class="material-icons" style="font-size: 1.2rem;">{{
+                    <i class="material-icons" style="font-size: 1.2rem">{{
                       userDetailsForm.controls.password.hasError("required") ||
                       userDetailsForm.controls.password.hasError(
                         "hasSpecialCharacters"
@@ -249,7 +247,7 @@
     </mat-card-content>
 
     <mat-card-actions>
-      <div style="margin: 16px;">
+      <div style="margin: 16px">
         <span>
           {{ profileUpdateStatus }}
         </span>
@@ -257,7 +255,7 @@
       <div
         fxLayoutGap="10px"
         class="button-group"
-        style="margin: 16px; float: right;"
+        style="margin: 16px; float: right"
       >
         <span>
           <button

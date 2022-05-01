@@ -6,17 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.money.Monetary;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.money.MonetaryAmount;
 
 import org.javamoney.moneta.Money;
+
+import jakarta.persistence.*;
 
 import net.flyingfishflash.ledger.books.data.Book;
 
@@ -24,7 +18,11 @@ import net.flyingfishflash.ledger.books.data.Book;
 public class Transaction {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  @SequenceGenerator(
+      name = "transaction_id_seq",
+      sequenceName = "transaction_seq",
+      allocationSize = 1)
+  @GeneratedValue(generator = "transaction_id_seq")
   private long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -132,12 +130,12 @@ public class Transaction {
     this.entries = entries;
   }
 
-  private Money getImbalance() {
+  private MonetaryAmount getImbalance() {
 
     var imbalance = Money.of(0, Monetary.getCurrency(this.getCurrency()));
 
     for (Entry entry : entries) {
-      Money amount = entry.getValue();
+      MonetaryAmount amount = entry.getValue();
       if (entry.getType() == EntryType.DEBIT) {
         imbalance = imbalance.subtract(amount);
       } else {
@@ -149,7 +147,8 @@ public class Transaction {
 
   public Entry createAutoBalanceEntry() {
 
-    Money imbalance = getImbalance(); // returns imbalance of 0 for multicurrency transactions
+    MonetaryAmount imbalance =
+        getImbalance(); // returns imbalance of 0 for multicurrency transactions
     if (!imbalance.isZero()) {
       var entry = new Entry(this.book);
       entry.setType(imbalance.isNegative() ? EntryType.CREDIT : EntryType.DEBIT);

@@ -15,7 +15,7 @@ public final class AccountTreeDiscriminatorFactory {
   public static <ID extends Serializable, N extends NestedNode<ID>>
       JpaTreeDiscriminator<ID, N> getDiscriminator(Book book) {
     Map<String, Supplier<Object>> vp = new HashMap<>();
-    vp.put("book", book::getId);
+    vp.put("book", () -> book);
     return new MapJpaTreeDiscriminator<>(vp);
   }
 }

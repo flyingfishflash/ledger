@@ -3,16 +3,12 @@ package net.flyingfishflash.ledger.books.web;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.validation.Valid;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -26,11 +22,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.flyingfishflash.ledger.books.data.ActiveBook;
+import jakarta.validation.Valid;
+
 import net.flyingfishflash.ledger.books.data.Book;
 import net.flyingfishflash.ledger.books.data.dto.ApiMessage;
 import net.flyingfishflash.ledger.books.data.dto.BookRequest;
-import net.flyingfishflash.ledger.books.data.dto.SetActiveBookRequest;
 import net.flyingfishflash.ledger.books.service.BookService;
 
 @Tag(name = "book controller")
@@ -39,15 +35,10 @@ import net.flyingfishflash.ledger.books.service.BookService;
 @RequestMapping("api/v1/ledger/books")
 public class BookController {
 
-  private static final Logger logger = LoggerFactory.getLogger(BookController.class);
-
   private final BookService bookService;
 
-  private final ActiveBook activeBook;
-
-  public BookController(BookService bookService, ActiveBook activeBook) {
+  public BookController(BookService bookService) {
     this.bookService = bookService;
-    this.activeBook = activeBook;
   }
 
   @GetMapping("{id}")
@@ -106,21 +97,23 @@ public class BookController {
     return new ResponseEntity<>(new ApiMessage("Deleted book id: " + id), HttpStatus.NO_CONTENT);
   }
 
-  @PostMapping("/active")
-  @ResponseBody
-  @Operation(summary = "Set the active book for a session")
-  @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
-  public Book setActiveBook(@RequestBody SetActiveBookRequest setActiveBookRequest) {
-    activeBook.setBookId(bookService.findById(setActiveBookRequest.id()).getId());
-    logger.info("{}", activeBook);
-    return bookService.findById(activeBook.getBookId());
-  }
-
-  @GetMapping("/active")
-  @ResponseBody
-  @Operation(summary = "Get the active book for a session")
-  @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
-  public Book getActiveBook() {
-    return bookService.findById(activeBook.getBookId());
-  }
+  //  @PostMapping("/active")
+  //  @ResponseBody
+  //  @Operation(summary = "Set the active book for a session")
+  //  @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
+  //  public Book setActiveBook(@RequestBody SetActiveBookRequest setActiveBookRequest) {
+  //    //    activeBook.setBookId(bookService.findById(setActiveBookRequest.id()).getId());
+  //    //    logger.info("{}", activeBook);
+  //    //    return bookService.findById(activeBook.getBookId());
+  //    return new Book();
+  //  }
+  //
+  //  @GetMapping("/active")
+  //  @ResponseBody
+  //  @Operation(summary = "Get the active book for a session")
+  //  @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
+  //  public Book getActiveBook() {
+  //    // return bookService.findById(activeBook.getBookId());
+  //    return new Book();
+  //  }
 }

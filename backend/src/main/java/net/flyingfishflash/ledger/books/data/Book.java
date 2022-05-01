@@ -2,23 +2,19 @@ package net.flyingfishflash.ledger.books.data;
 
 import java.time.Instant;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
 import org.hibernate.annotations.CreationTimestamp;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "book")
 public class Book {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  @SequenceGenerator(name = "book_id_seq", sequenceName = "book_seq", allocationSize = 1)
+  @GeneratedValue(generator = "book_id_seq")
   private Long id;
 
   @CreationTimestamp

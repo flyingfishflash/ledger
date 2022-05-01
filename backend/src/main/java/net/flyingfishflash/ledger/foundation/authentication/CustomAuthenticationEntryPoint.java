@@ -2,10 +2,6 @@ package net.flyingfishflash.ledger.foundation.authentication;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +11,10 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
@@ -22,8 +22,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
       LoggerFactory.getLogger(CustomAuthenticationEntryPoint.class);
 
   @Autowired
-  @Qualifier("handlerExceptionResolver")
-  private HandlerExceptionResolver resolver;
+  @Qualifier("handlerExceptionResolver") private HandlerExceptionResolver resolver;
 
   @Override
   public void commence(
