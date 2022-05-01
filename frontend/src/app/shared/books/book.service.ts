@@ -20,7 +20,7 @@ export class BookService {
 
   postBook(bookName: string): Observable<any> {
     return this.http
-      .post<any>(this.appConfig.assets.api.server.url + "/books/", {
+      .post<any>(this.appConfig.assets.api.server.url + "/books", {
         name: bookName,
       })
       .pipe(catchError(this.handleError));

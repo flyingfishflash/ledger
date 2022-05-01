@@ -6,13 +6,11 @@ describe("AdminSettingsComponent", () => {
   let component: AdminSettingsComponent;
   let fixture: ComponentFixture<AdminSettingsComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [AdminSettingsComponent],
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [AdminSettingsComponent],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AdminSettingsComponent);

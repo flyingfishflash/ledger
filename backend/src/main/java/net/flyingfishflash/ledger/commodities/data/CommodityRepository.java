@@ -3,7 +3,7 @@ package net.flyingfishflash.ledger.commodities.data;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,7 +11,7 @@ import net.flyingfishflash.ledger.books.data.Book;
 
 @Repository
 @Transactional
-public interface CommodityRepository extends PagingAndSortingRepository<Commodity, Long> {
+public interface CommodityRepository extends JpaRepository<Commodity, Long> {
 
   Optional<Commodity> findByGuid(String guid);
 

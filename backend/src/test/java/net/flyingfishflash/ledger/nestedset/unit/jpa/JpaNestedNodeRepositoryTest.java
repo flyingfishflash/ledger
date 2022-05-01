@@ -23,12 +23,12 @@
  */
 package net.flyingfishflash.ledger.nestedset.unit.jpa;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import net.flyingfishflash.ledger.accounts.data.nestedset.DelegatingNestedNodeRepository;
 import net.flyingfishflash.ledger.nestedset.unit.base.NestedNodeRepositoryTest;

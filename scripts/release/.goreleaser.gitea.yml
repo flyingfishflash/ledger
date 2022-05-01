@@ -1,26 +1,23 @@
-# goreleaser configuration
+---
 before:
-  hooks:
+  hooks: null
 builds:
-  -
-    skip: true
-archives:
+- skip: true
+archives: null
 checksum:
   disable: true
 changelog:
-  sort: asc
+  sort: "asc"
   filters:
     exclude:
-      - Merge pull request
-      - Merge branch
+    - "Merge pull request"
+    - "Merge branch"
 release:
   gitea:
-    owner: flyingfishflash
-    name: ledger
+    owner: "flyingfishflash"
+    name: "ledger"
 gitea_urls:
-  api: https://gitea.flyingfishflash.net/api/v1/
-  download: https://gitea.flyingfishflash.net
+  api: "https://gitea.flyingfishflash.net/api/v1/"
+  download: "https://gitea.flyingfishflash.net"
 env_files:
-  gitea_token: ~/.config/goreleaser/gitea/gitea_token
-#  github_token: ~/.config/goreleaser/github/github_token
-#  gitlab_token: ~/.config/goreleaser/gitlab/gitlab_token
+  gitea_token: "~/.config/goreleaser/gitea/gitea_token"

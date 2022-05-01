@@ -41,8 +41,8 @@
   <table mat-table [dataSource]="filteredAccounts">
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>Name</th>
-      <td mat-cell *matCellDef="let account" style="white-space: pre;">
-        {{ account.name | padWithSpaces: account.treeLevel }}
+      <td mat-cell *matCellDef="let account" style="white-space: pre">
+        {{ account.name | padWithSpaces : account.treeLevel }}
       </td>
     </ng-container>
 

@@ -2,13 +2,14 @@ package net.flyingfishflash.ledger.importer.adapter;
 
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.money.Monetary;
 import javax.money.UnknownCurrencyException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import jakarta.annotation.Resource;
 
 import net.flyingfishflash.ledger.ApplicationConfiguration;
 import net.flyingfishflash.ledger.accounts.data.Account;

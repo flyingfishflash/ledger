@@ -5,12 +5,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.transaction.Transactional;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validation;
-
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validation;
 
 import net.flyingfishflash.ledger.books.data.Book;
 import net.flyingfishflash.ledger.books.data.BookRepository;
@@ -94,7 +94,7 @@ public class BookService {
 
   public List<Book> findAllBooks() {
 
-    return (List<Book>) bookRepository.findAll();
+    return bookRepository.findAll();
   }
 
   public Book findById(Long bookId) {

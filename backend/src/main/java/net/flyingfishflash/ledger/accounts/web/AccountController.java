@@ -5,9 +5,6 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -29,6 +26,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 
 import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.dto.AccountCreateRequest;

@@ -1,4 +1,4 @@
-<div class="container" id="profile-component-content" style="padding: 24px;">
+<div class="container" id="profile-component-content" style="padding: 24px">
   <div
     class="flex-container"
     fxLayout="row"
@@ -9,12 +9,12 @@
       <h1 class="mat-h1">{{ componentHeading }}</h1>
 
       <mat-card-content>
-        <mat-card class="mat-elevation-z0" style="margin-top: 16px;">
+        <mat-card class="mat-elevation-z0" style="margin-top: 16px">
           <form id="profile-details-form" [formGroup]="userForm">
             <strong>User Name</strong>
             <p>Set a name to be user for signing in to the application.</p>
             <div
-              style="margin-top: 2.5rem; margin-bottom: 1.5rem;"
+              style="margin-top: 2.5rem; margin-bottom: 1.5rem"
               fxLayoutGap="16px"
               fxLayoutAlign="space-between"
               fxLayout.sm="column"
@@ -52,7 +52,7 @@
             <strong>Details</strong>
             <p>Set a name and an email address for this user.</p>
             <div
-              style="margin-top: 2.5rem; margin-bottom: 1.5rem;"
+              style="margin-top: 2.5rem; margin-bottom: 1.5rem"
               fxLayoutGap="16px"
               fxLayoutAlign="space-between"
               fxLayout.sm="column"
@@ -125,7 +125,7 @@
             <strong>Role</strong>
             <p>Select a role.</p>
             <div
-              style="margin-top: 2.5rem; margin-bottom: 2.5rem;"
+              style="margin-top: 2.5rem; margin-bottom: 2.5rem"
               fxLayoutGap="16px"
             >
               <mat-radio-group
@@ -145,7 +145,7 @@
             <strong>Password</strong>
             <p>Set a password used to log-in to the application.</p>
             <div
-              style="margin-top: 2.5rem; margin-bottom: 1.5rem;"
+              style="margin-top: 2.5rem; margin-bottom: 1.5rem"
               fxLayoutGap="16px"
             >
               <mat-form-field appearance="outline">
@@ -164,7 +164,7 @@
                 }}</mat-icon>
               </button>
               <div>
-                <ul style="list-style-type: none; margin: 0; padding: 0;">
+                <ul style="list-style-type: none; margin: 0; padding: 0">
                   <li>
                     <label
                       class="col"
@@ -175,7 +175,7 @@
                           : 'text-success'
                       "
                     >
-                      <i class="material-icons" style="font-size: 1.2rem;">
+                      <i class="material-icons" style="font-size: 1.2rem">
                         {{
                           userForm.controls.password.hasError("required") ||
                           userForm.controls.password.hasError("noWhitespace")
@@ -198,7 +198,7 @@
                           : 'text-success'
                       "
                     >
-                      <i class="material-icons" style="font-size: 1.2rem;">
+                      <i class="material-icons" style="font-size: 1.2rem">
                         {{
                           userForm.controls.password.hasError("required") ||
                           userForm.controls.password.hasError("minlength")
@@ -220,7 +220,7 @@
                           : 'text-success'
                       "
                     >
-                      <i class="material-icons" style="font-size: 1.2rem;">
+                      <i class="material-icons" style="font-size: 1.2rem">
                         {{
                           userForm.controls.password.hasError("required") ||
                           userForm.controls.password.hasError("hasNumber")
@@ -241,7 +241,7 @@
                           : 'text-success'
                       "
                     >
-                      <i class="material-icons" style="font-size: 1.2rem;">
+                      <i class="material-icons" style="font-size: 1.2rem">
                         {{
                           userForm.controls.password.hasError("required") ||
                           userForm.controls.password.hasError("hasLowercase")
@@ -262,7 +262,7 @@
                           : 'text-success'
                       "
                     >
-                      <i class="material-icons" style="font-size: 1.2rem;">
+                      <i class="material-icons" style="font-size: 1.2rem">
                         {{
                           userForm.controls.password.hasError("required") ||
                           userForm.controls.password.hasError("hasUppercase")
@@ -285,7 +285,7 @@
                           : 'text-success'
                       "
                     >
-                      <i class="material-icons" style="font-size: 1.2rem;">
+                      <i class="material-icons" style="font-size: 1.2rem">
                         {{
                           userForm.controls.password.hasError("required") ||
                           userForm.controls.password.hasError(
@@ -306,7 +306,7 @@
       </mat-card-content>
 
       <mat-card-actions>
-        <div style="margin: 16px;">
+        <div style="margin: 16px">
           <span>
             {{ (createUserStatusSubject | async)?.message }}
           </span>
@@ -314,7 +314,7 @@
         <div
           fxLayoutGap="10px"
           class="button-group"
-          style="margin: 16px; float: right;"
+          style="margin: 16px; float: right"
         >
           <span>
             <button

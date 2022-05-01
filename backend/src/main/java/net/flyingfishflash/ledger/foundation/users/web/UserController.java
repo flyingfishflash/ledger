@@ -4,8 +4,6 @@ import java.security.Principal;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.validation.Valid;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -25,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.validation.Valid;
 
 import net.flyingfishflash.ledger.foundation.users.data.User;
 import net.flyingfishflash.ledger.foundation.users.data.dto.UserCreateRequest;

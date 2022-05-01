@@ -1,20 +1,17 @@
-# goreleaser configuration
+---
 builds:
-  -
-    skip: true
+- skip: true
 checksum:
   disable: true
 changelog:
-  sort: asc
+  sort: "asc"
   filters:
     exclude:
-      - Merge pull request
-      - Merge branch
+    - "Merge pull request"
+    - "Merge branch"
 release:
   gitlab:
-    owner: flyingfishflash
-    name: ledger
+    owner: "flyingfishflash"
+    name: "ledger"
 env_files:
-#  gitea_token: ~/.config/goreleaser/gitea/gitea_token
-#  github_token: ~/.config/goreleaser/github/github_token
-  gitlab_token: ~/.config/goreleaser/gitlab/gitlab_token
+  gitlab_token: "~/.config/goreleaser/gitlab/gitlab_token"

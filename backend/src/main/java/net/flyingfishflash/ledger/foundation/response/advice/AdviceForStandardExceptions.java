@@ -3,10 +3,7 @@ package net.flyingfishflash.ledger.foundation.response.advice;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.ConstraintViolationException;
-
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -18,9 +15,10 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import jakarta.validation.ConstraintViolationException;
 
 import net.flyingfishflash.ledger.foundation.response.structure.ApiStatusCode;
 import net.flyingfishflash.ledger.foundation.response.structure.errors.ErrorResponse;
@@ -58,12 +56,9 @@ public class AdviceForStandardExceptions extends ResponseEntityExceptionHandler 
         HttpStatus.BAD_REQUEST);
   }
 
-  @Override
+  // @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
-      MethodArgumentNotValidException exception,
-      HttpHeaders headers,
-      HttpStatus status,
-      WebRequest request) {
+      MethodArgumentNotValidException exception) {
 
     String errorMessage;
     List<ErrorResponseBodyItem> responseBodyItemList = new ArrayList<>();
@@ -98,24 +93,18 @@ public class AdviceForStandardExceptions extends ResponseEntityExceptionHandler 
         HttpStatus.BAD_REQUEST);
   }
 
-  @Override
+  // @Override
   protected ResponseEntity<Object> handleNoHandlerFoundException(
-      NoHandlerFoundException exception,
-      HttpHeaders headers,
-      HttpStatus status,
-      WebRequest request) {
+      NoHandlerFoundException exception) {
 
     return new ResponseEntity<>(
         new ErrorResponse<>(new ErrorResponseBody(exception), ApiStatusCode.FAIL),
         HttpStatus.BAD_REQUEST);
   }
 
-  @Override
+  // @Override
   protected ResponseEntity<Object> handleHttpMessageNotReadable(
-      HttpMessageNotReadableException exception,
-      HttpHeaders headers,
-      HttpStatus status,
-      WebRequest request) {
+      HttpMessageNotReadableException exception) {
 
     String errorMessage = exception.getLocalizedMessage();
 

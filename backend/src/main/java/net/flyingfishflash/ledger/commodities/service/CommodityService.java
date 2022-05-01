@@ -2,9 +2,8 @@ package net.flyingfishflash.ledger.commodities.service;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import net.flyingfishflash.ledger.books.data.Book;
 import net.flyingfishflash.ledger.commodities.data.Commodity;
@@ -59,7 +58,7 @@ public class CommodityService {
 
   public List<Commodity> findAllCommodities() {
 
-    return (List<Commodity>) commodityRepository.findAll();
+    return commodityRepository.findAll();
   }
 
   public Commodity findById(Long commodityId) {
