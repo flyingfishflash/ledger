@@ -5,12 +5,12 @@ import net.flyingfishflash.ledger.foundation.users.data.User;
 public class UserProfileMapper {
 
   public UserProfileRequest mapEntityModelToRequestModel(User user) {
-    var userProfileRequest = new UserProfileRequest();
-    userProfileRequest.setEmail(user.getEmail());
-    userProfileRequest.setFirstName(user.getFirstName());
-    userProfileRequest.setLastName(user.getLastName());
-    userProfileRequest.setPassword(user.getPassword()); // encrypt me
-    return userProfileRequest;
+
+    return new UserProfileRequest(
+        user.getEmail(),
+        user.getFirstName(),
+        user.getLastName(),
+        user.getPassword() /* TODO: encrypt this password field */);
   }
 
   public UserProfileResponse mapEntityModelToResponseModel(User user) {
@@ -19,19 +19,19 @@ public class UserProfileMapper {
   }
 
   public void mapRequestModelToEntityModel(UserProfileRequest userProfileRequest, User user) {
-    user.setEmail(userProfileRequest.getEmail());
-    user.setFirstName(userProfileRequest.getFirstName());
-    user.setLastName(userProfileRequest.getLastName());
-    user.setPassword(userProfileRequest.getPassword());
+    user.setEmail(userProfileRequest.email());
+    user.setFirstName(userProfileRequest.firstName());
+    user.setLastName(userProfileRequest.lastName());
+    user.setPassword(userProfileRequest.password());
     // return user;
   }
 
   public UserProfileResponse mapRequestModelToResponseModel(UserProfileRequest userProfileRequest) {
     return new UserProfileResponse(
         null,
-        userProfileRequest.getEmail(),
-        userProfileRequest.getFirstName(),
-        userProfileRequest.getLastName(),
+        userProfileRequest.email(),
+        userProfileRequest.firstName(),
+        userProfileRequest.lastName(),
         null);
   }
 }

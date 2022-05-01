@@ -296,11 +296,13 @@ class UserServiceTests {
   }
 
   @Test
-  void profilePatch() {
-    given(mockUserProfileMapper.mapEntityModelToRequestModel(any(User.class)))
-        .willReturn(new UserProfileRequest());
-    given(mockUserRepository.findById(anyLong())).willReturn(Optional.of(new User()));
-    given(mockEncoder.encode(anyString())).willReturn("Any Encoded Password");
+  void profilePatch_whenPatchedIsFalse() {
+    var user = new User();
+    user.setEmail("email@email.em");
+    user.setFirstName("First Name");
+    user.setLastName("Last Name");
+    user.setPassword("Password");
+    given(mockUserRepository.findById(anyLong())).willReturn(Optional.of(user));
     Map<String, Object> patchRequest = new HashMap<>();
     patchRequest.put("email", "email@email.em");
     patchRequest.put("firstName", "First Name");
@@ -308,21 +310,67 @@ class UserServiceTests {
     patchRequest.put("password", "Password");
     userService.profilePatch(1L, patchRequest);
     verify(mockUserRepository, times(1)).findById(anyLong());
-    verify(mockUserProfileMapper, times(1)).mapEntityModelToRequestModel(any(User.class));
+    verify(mockUserProfileMapper, times(0))
+        .mapRequestModelToEntityModel(any(UserProfileRequest.class), any(User.class));
+    verify(mockUserProfileMapper, times(1)).mapEntityModelToResponseModel(any(User.class));
+  }
+
+  @Test
+  void profilePatch_whenPatchedIsTrue() {
+    var user = new User();
+    user.setEmail("email@email.em");
+    user.setFirstName("First Name");
+    user.setLastName("Last Name");
+    user.setPassword("Password");
+    given(mockUserRepository.findById(anyLong())).willReturn(Optional.of(user));
+    Map<String, Object> patchRequest = new HashMap<>();
+    patchRequest.put("email", "email@email.em1");
+    patchRequest.put("firstName", "First Name1");
+    patchRequest.put("lastName", "Last Name1");
+    patchRequest.put("password", "Password1");
+    userService.profilePatch(1L, patchRequest);
+    verify(mockUserRepository, times(1)).findById(anyLong());
+    verify(mockUserProfileMapper, times(1))
+        .mapRequestModelToEntityModel(any(UserProfileRequest.class), any(User.class));
+    verify(mockUserProfileMapper, times(1)).mapEntityModelToResponseModel(any(User.class));
   }
 
   @Test
   void profilePatch_whenPatchRequestFailsValidation_thenConstraintViolationException() {
+    var user = new User();
+    user.setEmail("email@email.em");
+    user.setFirstName("First Name");
+    user.setLastName("Last Name");
+    user.setPassword("Any Password");
+    given(mockUserRepository.findById(anyLong())).willReturn(Optional.of(user));
     Map<String, Object> patchRequest = new HashMap<>();
-    given(mockUserProfileMapper.mapEntityModelToRequestModel(any(User.class)))
-        .willReturn(new UserProfileRequest());
-    given(mockUserRepository.findById(anyLong())).willReturn(Optional.of(new User()));
+    patchRequest.put("email", "");
+    patchRequest.put("firstName", "");
+    patchRequest.put("lastName", "");
+    patchRequest.put("password", "");
     assertThatExceptionOfType(ConstraintViolationException.class)
         .isThrownBy(() -> userService.profilePatch(1L, patchRequest));
     verify(mockUserRepository, times(1)).findById(anyLong());
-    verify(mockUserProfileMapper, times(1)).mapEntityModelToRequestModel(any(User.class));
     verify(mockUserProfileMapper, times(0))
         .mapRequestModelToEntityModel(any(UserProfileRequest.class), any(User.class));
     verify(mockUserProfileMapper, times(0)).mapEntityModelToResponseModel(any(User.class));
+  }
+
+  @Test
+  void profilePatch_whenPatchRequestContainsUnknownKey_thenIllegalStateException() {
+    given(mockUserRepository.findById(1L)).willReturn(Optional.of(new User()));
+    Map<String, Object> patchRequest = new HashMap<>();
+    patchRequest.put("unknownKey", "");
+    assertThatExceptionOfType(IllegalStateException.class)
+        .isThrownBy(() -> userService.profilePatch(1L, patchRequest));
+  }
+
+  @Test
+  void profilePatch_whenPatchRequestIsEmpty_thenIllegalStateException() {
+    given(mockUserRepository.findById(1L)).willReturn(Optional.of(new User()));
+    Map<String, Object> patchRequest = new HashMap<>();
+    assertThatExceptionOfType(IllegalStateException.class)
+        .isThrownBy(() -> userService.profilePatch(1L, patchRequest))
+        .withMessage("User profile patch request is empty");
   }
 }

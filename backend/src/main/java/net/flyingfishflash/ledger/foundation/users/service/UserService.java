@@ -165,38 +165,66 @@ public class UserService implements UserDetailsService {
     return userProfileMapper.mapEntityModelToResponseModel(user);
   }
 
+  @SuppressWarnings({"java:S6205", "java:S3776"})
   public UserProfileResponse profilePatch(Long userId, Map<String, Object> patchRequest) {
 
+    var patched = false;
     var user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-
-    var userProfileRequest = userProfileMapper.mapEntityModelToRequestModel(user);
+    String newEmail = user.getEmail();
+    String newFirstName = user.getFirstName();
+    String newLastName = user.getLastName();
+    String newPassword = user.getPassword();
 
     if (!patchRequest.isEmpty()) {
       for (Entry<String, Object> entry : patchRequest.entrySet()) {
         String change = entry.getKey();
         Object value = entry.getValue();
         switch (change) {
-          case "email" -> userProfileRequest.setEmail((String) value);
-          case "firstName" -> userProfileRequest.setFirstName((String) value);
-          case "lastName" -> userProfileRequest.setLastName((String) value);
-          case "password" -> userProfileRequest.setPassword(encoder.encode((String) value));
+          case "email" -> {
+            if (!user.getEmail().equals(value)) {
+              newEmail = (String) value;
+              patched = true;
+            }
+          }
+          case "firstName" -> {
+            if (!user.getFirstName().equals(value)) {
+              newFirstName = (String) value;
+              patched = true;
+            }
+          }
+          case "lastName" -> {
+            if (!user.getLastName().equals(value)) {
+              newLastName = (String) value;
+              patched = true;
+            }
+          }
+          case "password" -> {
+            if (!user.getPassword().equals(value)) {
+              newPassword = (String) value;
+              patched = true;
+            }
+          }
           default -> throw new IllegalStateException("Unexpected value: " + change);
         }
       }
+    } else throw new IllegalStateException("User profile patch request is empty");
+
+    if (patched) {
+      var userProfileRequest =
+          new UserProfileRequest(newEmail, newFirstName, newLastName, newPassword);
+
+      var validator = Validation.buildDefaultValidatorFactory().getValidator();
+
+      Set<ConstraintViolation<UserProfileRequest>> violations =
+          validator.validate(userProfileRequest);
+
+      if (!violations.isEmpty()) {
+        throw new ConstraintViolationException(violations);
+      }
+
+      // TODO: find out what exactly is saving the new password here
+      userProfileMapper.mapRequestModelToEntityModel(userProfileRequest, user);
     }
-
-    var validator = Validation.buildDefaultValidatorFactory().getValidator();
-
-    Set<ConstraintViolation<UserProfileRequest>> violations =
-        validator.validate(userProfileRequest);
-
-    if (!violations.isEmpty()) {
-      throw new ConstraintViolationException(violations);
-    }
-
-    userProfileMapper.mapRequestModelToEntityModel(userProfileRequest, user);
-
-    // TODO: find out what exactly is saving the new password here
 
     return userProfileMapper.mapEntityModelToResponseModel(user);
   }

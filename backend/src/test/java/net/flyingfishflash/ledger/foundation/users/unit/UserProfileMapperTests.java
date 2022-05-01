@@ -53,11 +53,8 @@ class UserProfileMapperTests {
 
   @Test
   void mapRequestModelToEntityModel() {
-    UserProfileRequest userProfileRequest = new UserProfileRequest();
-    userProfileRequest.setEmail("Email");
-    userProfileRequest.setFirstName("First Name");
-    userProfileRequest.setLastName("Last Name");
-    userProfileRequest.setPassword("Password");
+    UserProfileRequest userProfileRequest =
+        new UserProfileRequest("Email", "First Name", "Last Name", "Password");
     User user = new User();
     userProfileMapper.mapRequestModelToEntityModel(userProfileRequest, user);
     assertThat(user)
@@ -76,11 +73,8 @@ class UserProfileMapperTests {
 
   @Test
   void mapRequestModelToResponseModel() {
-    UserProfileRequest userProfileRequest = new UserProfileRequest();
-    userProfileRequest.setEmail("Email");
-    userProfileRequest.setFirstName("First Name");
-    userProfileRequest.setLastName("Last Name");
-    userProfileRequest.setPassword("Password");
+    UserProfileRequest userProfileRequest =
+        new UserProfileRequest("Email", "First Name", "Last Name", "Password");
     UserProfileResponse userProfileResponse =
         userProfileMapper.mapRequestModelToResponseModel(userProfileRequest);
     assertThat(userProfileRequest)
