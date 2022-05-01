@@ -277,7 +277,7 @@ class UserServiceTests {
   void profileById() {
     given(mockUserRepository.findById(anyLong())).willReturn(Optional.of(new User()));
     given(mockUserProfileMapper.mapEntityModelToResponseModel(any(User.class)))
-        .willReturn(new UserProfileResponse());
+        .willReturn(new UserProfileResponse(1L, null, null, null, null));
     var userProfileResponse = userService.profileById(1L);
     verify(mockUserRepository, times(1)).findById(1L);
     verify(mockUserProfileMapper, times(1)).mapEntityModelToResponseModel(any(User.class));
@@ -288,7 +288,7 @@ class UserServiceTests {
   void profileByUsername() {
     given(mockUserRepository.findByUsername(anyString())).willReturn(Optional.of(new User()));
     given(mockUserProfileMapper.mapEntityModelToResponseModel(any(User.class)))
-        .willReturn(new UserProfileResponse());
+        .willReturn(new UserProfileResponse(1L, null, null, null, null));
     var userProfileResponse = userService.profileByUsername(anyString());
     verify(mockUserRepository, times(1)).findByUsername(anyString());
     verify(mockUserProfileMapper, times(1)).mapEntityModelToResponseModel(any(User.class));

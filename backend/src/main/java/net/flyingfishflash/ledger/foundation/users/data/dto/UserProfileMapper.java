@@ -14,13 +14,8 @@ public class UserProfileMapper {
   }
 
   public UserProfileResponse mapEntityModelToResponseModel(User user) {
-    var userProfileResponse = new UserProfileResponse();
-    userProfileResponse.setId(user.getId());
-    userProfileResponse.setEmail(user.getEmail());
-    userProfileResponse.setFirstName(user.getFirstName());
-    userProfileResponse.setLastName(user.getLastName());
-    userProfileResponse.setPassword("");
-    return userProfileResponse;
+    return new UserProfileResponse(
+        user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), null);
   }
 
   public void mapRequestModelToEntityModel(UserProfileRequest userProfileRequest, User user) {
@@ -32,10 +27,11 @@ public class UserProfileMapper {
   }
 
   public UserProfileResponse mapRequestModelToResponseModel(UserProfileRequest userProfileRequest) {
-    var userProfileResponse = new UserProfileResponse();
-    userProfileResponse.setEmail(userProfileRequest.getEmail());
-    userProfileResponse.setFirstName(userProfileRequest.getFirstName());
-    userProfileResponse.setLastName(userProfileRequest.getLastName());
-    return userProfileResponse;
+    return new UserProfileResponse(
+        null,
+        userProfileRequest.getEmail(),
+        userProfileRequest.getFirstName(),
+        userProfileRequest.getLastName(),
+        null);
   }
 }

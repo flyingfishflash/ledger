@@ -48,7 +48,7 @@ class UserProfileMapperTests {
             "enabled",
             "accountNonLocked")
         .isEqualTo(userProfileResponse);
-    assertThat(userProfileResponse.getPassword()).isEmpty();
+    assertThat(userProfileResponse.password()).isNull();
   }
 
   @Test
@@ -96,6 +96,6 @@ class UserProfileMapperTests {
             "enabled",
             "accountNonLocked")
         .isEqualTo(userProfileResponse);
-    assertThat(userProfileResponse.getPassword()).isEmpty();
+    assertThat(userProfileResponse.password()).isNull();
   }
 }

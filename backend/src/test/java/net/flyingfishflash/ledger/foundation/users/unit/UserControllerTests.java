@@ -85,7 +85,7 @@ class UserControllerTests {
 
   @Test
   void getProfileByUsername() throws Exception {
-    var userProfileResponse = new UserProfileResponse(2L, "Email", "First Name", "Last Name");
+    var userProfileResponse = new UserProfileResponse(2L, "Email", "First Name", "Last Name", null);
     given(mockPrincipal.getName()).willReturn("Any Principal");
     given(mockUserService.profileByUsername(anyString())).willReturn(userProfileResponse);
     assertThat(
@@ -100,7 +100,7 @@ class UserControllerTests {
   @Test
   void getProfileById() throws Exception {
     given(mockUserService.profileById(anyLong()))
-        .willReturn(new UserProfileResponse(2L, "Email", "First Name", "Last Name"));
+        .willReturn(new UserProfileResponse(2L, "Email", "First Name", "Last Name", null));
     assertThat(
             mvc.perform(get("/api/v1/ledger/users/2/profile"))
                 .andExpect(status().isOk())
@@ -109,7 +109,7 @@ class UserControllerTests {
                 .getContentAsString())
         .isEqualTo(
             jsonUserProfileResponse
-                .write(new UserProfileResponse(2L, "Email", "First Name", "Last Name"))
+                .write(new UserProfileResponse(2L, "Email", "First Name", "Last Name", null))
                 .getJson());
   }
 
@@ -140,7 +140,7 @@ class UserControllerTests {
   @Test
   void patchUsersById() throws Exception {
     var expectedUserProfileResponse =
-        new UserProfileResponse(2L, "Email", "First Name", "Last Name");
+        new UserProfileResponse(2L, "Email", "First Name", "Last Name", null);
     given(mockUserService.profilePatch(anyLong(), any())).willReturn(expectedUserProfileResponse);
     Map<String, Object> patchRequest = new HashMap<>();
     patchRequest.put("Email", "email@email.net");
