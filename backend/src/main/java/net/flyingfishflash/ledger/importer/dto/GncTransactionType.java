@@ -19,8 +19,8 @@ package net.flyingfishflash.ledger.importer.dto;
 /**
  * Type of transaction, a credit or a debit
  *
- * @author Ngewi Fet <ngewif@gmail.com>
- * @author Jesse Shieh <jesse.shieh.pub@gmail.com>
+ * @author Ngewi Fet ngewif@gmail.com
+ * @author Jesse Shieh jesse.shieh.pub@gmail.com
  */
 public enum GncTransactionType {
   DEBIT,

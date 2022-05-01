@@ -48,16 +48,13 @@ class UserProfileMapperTests {
             "enabled",
             "accountNonLocked")
         .isEqualTo(userProfileResponse);
-    assertThat(userProfileResponse.getPassword()).isEmpty();
+    assertThat(userProfileResponse.password()).isNull();
   }
 
   @Test
   void mapRequestModelToEntityModel() {
-    UserProfileRequest userProfileRequest = new UserProfileRequest();
-    userProfileRequest.setEmail("Email");
-    userProfileRequest.setFirstName("First Name");
-    userProfileRequest.setLastName("Last Name");
-    userProfileRequest.setPassword("Password");
+    UserProfileRequest userProfileRequest =
+        new UserProfileRequest("Email", "First Name", "Last Name", "Password");
     User user = new User();
     userProfileMapper.mapRequestModelToEntityModel(userProfileRequest, user);
     assertThat(user)
@@ -76,11 +73,8 @@ class UserProfileMapperTests {
 
   @Test
   void mapRequestModelToResponseModel() {
-    UserProfileRequest userProfileRequest = new UserProfileRequest();
-    userProfileRequest.setEmail("Email");
-    userProfileRequest.setFirstName("First Name");
-    userProfileRequest.setLastName("Last Name");
-    userProfileRequest.setPassword("Password");
+    UserProfileRequest userProfileRequest =
+        new UserProfileRequest("Email", "First Name", "Last Name", "Password");
     UserProfileResponse userProfileResponse =
         userProfileMapper.mapRequestModelToResponseModel(userProfileRequest);
     assertThat(userProfileRequest)
@@ -96,6 +90,6 @@ class UserProfileMapperTests {
             "enabled",
             "accountNonLocked")
         .isEqualTo(userProfileResponse);
-    assertThat(userProfileResponse.getPassword()).isEmpty();
+    assertThat(userProfileResponse.password()).isNull();
   }
 }

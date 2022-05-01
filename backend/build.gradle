@@ -15,7 +15,6 @@ description = 'Ledger'
 
 repositories {
     mavenCentral()
-
     maven {
         url = uri('https://jitpack.io')
     }
@@ -62,21 +61,25 @@ def copyBuildInfo = tasks.register('copyBuildInfo', Copy) {
     into layout.buildDirectory.dir("boot_jar_exploded/BOOT-INF/classes/META-INF/")
 }
 
-task integrationTests(type: Test) {
-    systemProperties System.properties
-    useJUnitPlatform()
+def jacocoUnitTestReport = tasks.register('jacocoUnitTestReport', JacocoReport) {
     mustRunAfter(test)
-
-    testLogging {
-        events "passed", "skipped", "failed"
+    executionData fileTree(project.buildDir.absolutePath).include("jacoco/test.exec")
+    classDirectories.setFrom files(project.sourceSets.main.output)
+    sourceDirectories.setFrom files(project.sourceSets.main.allSource.srcDirs)
+    reports {
+        html.required = true
+        xml.required = true
     }
+}
 
-    filter {
-        includeTestsMatching "net.flyingfishflash.ledger.*.integration.*"
-    }
-
-    jacoco {
-        enabled = false
+def jacocoIntegrationTestReport = tasks.register('jacocoIntegrationTestReport', JacocoReport) {
+    mustRunAfter(integrationTests)
+    executionData fileTree(project.buildDir.absolutePath).include("jacoco/integrationTests.exec")
+    classDirectories.setFrom files(project.sourceSets.main.output)
+    sourceDirectories.setFrom files(project.sourceSets.main.allSource.srcDirs)
+    reports {
+        html.required = true
+        xml.required = true
     }
 }
 
@@ -85,17 +88,25 @@ jacoco {
 }
 
 test {
-    useJUnitPlatform()
-
+    useJUnitPlatform {
+        excludeTags 'Integration'
+    }
     testLogging {
         events "passed", "skipped", "failed"
     }
+    finalizedBy jacocoUnitTestReport
+}
 
-    filter {
-        includeTestsMatching "net.flyingfishflash.ledger.*.unit.*"
+task integrationTests(type: Test) {
+    useJUnitPlatform {
+        includeTags 'Integration'
     }
-
-    finalizedBy jacocoTestReport
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+    filter {
+        excludeTestsMatching "net.flyingfishflash.ledger.*.unit.*"
+    }
 }
 
 bootJar {
@@ -103,16 +114,6 @@ bootJar {
 
 bootRun {
     jvmArgs = ["-Duser.timezone=UTC"]
-}
-
-jacocoTestReport {
-    dependsOn test
-
-    reports {
-        xml.required = true
-        csv.required = false
-        html.required = true
-    }
 }
 
 compileJava {

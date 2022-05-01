@@ -3,10 +3,12 @@ package net.flyingfishflash.ledger.prices.integration;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
+@Tag("Integration")
 @SpringBootTest(
     classes = PriceTestConfiguration.class,
     properties = {

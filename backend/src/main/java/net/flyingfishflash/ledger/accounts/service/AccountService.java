@@ -11,6 +11,7 @@ import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.AccountRepository;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
 import net.flyingfishflash.ledger.accounts.data.dto.AccountCreateRequest;
+import net.flyingfishflash.ledger.accounts.data.dto.AccountRecord;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountCreateException;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
 import net.flyingfishflash.ledger.accounts.exceptions.EligibleParentAccountNotFoundException;
@@ -32,7 +33,7 @@ public class AccountService {
 
     Account parent;
     try {
-      parent = this.findById(accountCreateRequest.parentId);
+      parent = this.findById(accountCreateRequest.parentId());
     } catch (AccountNotFoundException e) {
       throw new AccountCreateException(
           "Failed to identify the parent account of an account to be created", e);
@@ -41,13 +42,13 @@ public class AccountService {
     var account = new Account(IdentifierFactory.getInstance().generateIdentifier());
     Account sibling;
 
-    account.setCode(accountCreateRequest.code);
-    account.setDescription(accountCreateRequest.description);
-    account.setHidden(accountCreateRequest.hidden);
-    account.setName(accountCreateRequest.name);
-    account.setParentId(accountCreateRequest.parentId);
-    account.setPlaceholder(accountCreateRequest.placeholder);
-    account.setTaxRelated(accountCreateRequest.taxRelated);
+    account.setCode(accountCreateRequest.code());
+    account.setDescription(accountCreateRequest.description());
+    account.setHidden(accountCreateRequest.hidden());
+    account.setName(accountCreateRequest.name());
+    account.setParentId(accountCreateRequest.parentId());
+    account.setPlaceholder(accountCreateRequest.placeholder());
+    account.setTaxRelated(accountCreateRequest.taxRelated());
 
     if (parent.getType().equals(AccountType.ROOT)) {
       account.setType(AccountType.ASSET);
@@ -55,12 +56,12 @@ public class AccountService {
       account.setType(parent.getType());
     }
 
-    switch (accountCreateRequest.mode.toUpperCase()) {
+    switch (accountCreateRequest.mode().toUpperCase()) {
       case "FIRST_CHILD" -> accountRepository.insertAsFirstChildOf(account, parent);
       case "LAST_CHILD" -> accountRepository.insertAsLastChildOf(account, parent);
       case "PREV_SIBLING" -> {
         try {
-          sibling = this.findById(accountCreateRequest.siblingId);
+          sibling = this.findById(accountCreateRequest.siblingId());
         } catch (AccountNotFoundException e) {
           throw new AccountCreateException(
               "Failed to identify the sibling account of an account to be created.", e);
@@ -69,7 +70,7 @@ public class AccountService {
       }
       case "NEXT_SIBLING" -> {
         try {
-          sibling = this.findById(accountCreateRequest.siblingId);
+          sibling = this.findById(accountCreateRequest.siblingId());
         } catch (AccountNotFoundException e) {
           throw new AccountCreateException(
               "Failed to identify the sibling account of an account to be created.", e);
@@ -88,7 +89,6 @@ public class AccountService {
       throw new AccountCreateException("Failed to create account: '" + account.getName() + "'", e);
     }
   }
-
   /**
    * Create a new bare account with only the guid, category, and type set.
    *
@@ -268,5 +268,26 @@ public class AccountService {
     } else {
       throw new EligibleParentAccountNotFoundException(account.getId());
     }
+  }
+
+  public AccountRecord mapEntityToRecord(Account account) {
+    return new AccountRecord(
+        account.getCategory(),
+        account.getType(),
+        account.getCode(),
+        account.getDescription(),
+        account.getDiscriminator(),
+        account.getGuid(),
+        account.getHidden(),
+        account.getId(),
+        account.getLongName(),
+        account.getName(),
+        account.getNote(),
+        account.getParentId(),
+        account.getPlaceholder(),
+        account.getTaxRelated(),
+        account.getTreeLeft(),
+        account.getTreeLevel(),
+        account.getTreeRight());
   }
 }

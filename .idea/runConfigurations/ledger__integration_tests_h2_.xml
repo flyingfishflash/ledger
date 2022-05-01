@@ -10,7 +10,9 @@
       </option>
       <option name="taskNames">
         <list>
+          <option value=":backend:clean" />
           <option value=":backend:integrationTests" />
+          <option value=":backend:jacocoIntegrationTestReport" />
         </list>
       </option>
       <option name="vmOptions" value="" />

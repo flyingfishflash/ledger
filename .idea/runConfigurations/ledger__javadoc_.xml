@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="ledger [clean build]" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="ledger [javadoc]" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -10,17 +10,14 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value=":backend:clean" />
-          <option value=":backend:build" />
-          <option value=":backend:test" />
           <option value=":backend:javadoc" />
         </list>
       </option>
-      <option name="vmOptions" value="" />
+      <option name="vmOptions" />
     </ExternalSystemSettings>
     <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
     <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-    <DebugAllEnabled>true</DebugAllEnabled>
+    <DebugAllEnabled>false</DebugAllEnabled>
     <method v="2" />
   </configuration>
 </component>

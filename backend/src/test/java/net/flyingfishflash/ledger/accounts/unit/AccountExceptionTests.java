@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import net.flyingfishflash.ledger.accounts.exceptions.AccountCreateException;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
 import net.flyingfishflash.ledger.accounts.exceptions.EligibleParentAccountNotFoundException;
 import net.flyingfishflash.ledger.accounts.exceptions.GeneralAccountException;
@@ -47,6 +48,12 @@ class AccountExceptionTests {
     var testGeneralAccountException = new TestGeneralAccountException();
     assertThat(testGeneralAccountException.getHttpStatus())
         .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  @Test
+  void accountCreateException_getHttpsStatus_isEqualto400() {
+    var accountCreateException = new AccountCreateException("aaa");
+    assertThat(accountCreateException.getHttpStatus()).isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test

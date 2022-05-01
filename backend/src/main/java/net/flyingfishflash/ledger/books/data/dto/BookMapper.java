@@ -2,15 +2,14 @@ package net.flyingfishflash.ledger.books.data.dto;
 
 import net.flyingfishflash.ledger.books.data.Book;
 
+/** Collection of methods mapping book related objects from one to another. */
 public class BookMapper {
 
-  public BookRequest mapEntityModelToRequestModel(Book book) {
-    var bookRequest = new BookRequest();
-    bookRequest.setName(book.getName());
-    return bookRequest;
-  }
-
   /*
+  public BookRequest mapEntityModelToRequestModel(Book book) {
+      return new BookRequest(book.getName());
+    }
+
   public Book mapEntityModelToResponseModel(Book user) {
       BookResponse bookResponse = new BookResponse();
       bookResponse.setId(book.getId());
@@ -22,8 +21,14 @@ public class BookMapper {
   }
   */
 
+  /**
+   * Convert a book request to a book entity
+   *
+   * @param bookRequest Book request
+   * @param book Book entity
+   */
   public void mapRequestModelToEntityModel(BookRequest bookRequest, Book book) {
-    book.setName(bookRequest.getName());
+    book.setName(bookRequest.name());
     // return book;
   }
 

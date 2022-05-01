@@ -5,37 +5,33 @@ import net.flyingfishflash.ledger.foundation.users.data.User;
 public class UserProfileMapper {
 
   public UserProfileRequest mapEntityModelToRequestModel(User user) {
-    var userProfileRequest = new UserProfileRequest();
-    userProfileRequest.setEmail(user.getEmail());
-    userProfileRequest.setFirstName(user.getFirstName());
-    userProfileRequest.setLastName(user.getLastName());
-    userProfileRequest.setPassword(user.getPassword()); // encrypt me
-    return userProfileRequest;
+
+    return new UserProfileRequest(
+        user.getEmail(),
+        user.getFirstName(),
+        user.getLastName(),
+        user.getPassword() /* TODO: encrypt this password field */);
   }
 
   public UserProfileResponse mapEntityModelToResponseModel(User user) {
-    var userProfileResponse = new UserProfileResponse();
-    userProfileResponse.setId(user.getId());
-    userProfileResponse.setEmail(user.getEmail());
-    userProfileResponse.setFirstName(user.getFirstName());
-    userProfileResponse.setLastName(user.getLastName());
-    userProfileResponse.setPassword("");
-    return userProfileResponse;
+    return new UserProfileResponse(
+        user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), null);
   }
 
   public void mapRequestModelToEntityModel(UserProfileRequest userProfileRequest, User user) {
-    user.setEmail(userProfileRequest.getEmail());
-    user.setFirstName(userProfileRequest.getFirstName());
-    user.setLastName(userProfileRequest.getLastName());
-    user.setPassword(userProfileRequest.getPassword());
+    user.setEmail(userProfileRequest.email());
+    user.setFirstName(userProfileRequest.firstName());
+    user.setLastName(userProfileRequest.lastName());
+    user.setPassword(userProfileRequest.password());
     // return user;
   }
 
   public UserProfileResponse mapRequestModelToResponseModel(UserProfileRequest userProfileRequest) {
-    var userProfileResponse = new UserProfileResponse();
-    userProfileResponse.setEmail(userProfileRequest.getEmail());
-    userProfileResponse.setFirstName(userProfileRequest.getFirstName());
-    userProfileResponse.setLastName(userProfileRequest.getLastName());
-    return userProfileResponse;
+    return new UserProfileResponse(
+        null,
+        userProfileRequest.email(),
+        userProfileRequest.firstName(),
+        userProfileRequest.lastName(),
+        null);
   }
 }

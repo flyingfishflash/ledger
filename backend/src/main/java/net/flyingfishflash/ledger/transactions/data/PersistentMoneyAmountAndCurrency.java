@@ -97,7 +97,7 @@ public class PersistentMoneyAmountAndCurrency implements CompositeUserType {
     }
   }
 
-  /** Used while dirty checking - control passed on to the {@link MonetaryAmount} */
+  /** Used while dirty checking - control passed on to the MonetaryAmount */
   @Override
   public boolean equals(final Object o1, final Object o2) {
     return Objects.equals(o1, o2);

@@ -79,7 +79,7 @@ class BookControllerTests {
   @Test
   void postBooks() throws Exception {
     // TODO: mock return service object and validate its Json representation
-    BookRequest bookRequest = new BookRequest("Book Name");
+    var bookRequest = new BookRequest("Book Name");
     mvc.perform(
             post("/api/v1/ledger/books")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -112,9 +112,8 @@ class BookControllerTests {
   @Test
   void postActive() throws Exception {
     // TODO: mock return service object and validate its Json representation
-    SetActiveBookRequest setActiveBookRequest = new SetActiveBookRequest();
-    setActiveBookRequest.setId(1L);
-    Book activeBook = new Book("Book Name");
+    var setActiveBookRequest = new SetActiveBookRequest(1L);
+    var activeBook = new Book("Book Name");
     activeBook.setId(1L);
     given(mockBookService.findById(1L)).willReturn(activeBook);
     mvc.perform(
@@ -122,13 +121,13 @@ class BookControllerTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonSetActiveBookRequest.write(setActiveBookRequest).getJson()))
         .andExpect(status().isOk());
-    verify(mockActiveBook, times(1)).setBookId(setActiveBookRequest.getId());
+    verify(mockActiveBook, times(1)).setBookId(setActiveBookRequest.id());
   }
 
   @Test
   void getActive() throws Exception {
     // TODO: mock return service object and validate its Json representation
-    Book activeBook = new Book("Book Name");
+    var activeBook = new Book("Book Name");
     given(mockBookService.findById(0L)).willReturn(activeBook);
     mvc.perform(get("/api/v1/ledger/books/active").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
