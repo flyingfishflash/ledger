@@ -64,8 +64,13 @@ def copyBuildInfo = tasks.register('copyBuildInfo', Copy) {
 def jacocoUnitTestReport = tasks.register('jacocoUnitTestReport', JacocoReport) {
     mustRunAfter(test)
     executionData fileTree(project.buildDir.absolutePath).include("jacoco/test.exec")
-    classDirectories.setFrom files(project.sourceSets.main.output)
     sourceDirectories.setFrom files(project.sourceSets.main.allSource.srcDirs)
+    classDirectories.setFrom files(project.sourceSets.main.output)
+    classDirectories.setFrom(files(classDirectories.files.collect {
+        fileTree(dir: it, exclude: [
+                "**/net/flyingfishflash/ledger/foundation/configuration/*"
+        ])
+    }))
     reports {
         html.required = true
         xml.required = true
