@@ -11,6 +11,7 @@ import javax.validation.constraints.Min;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,7 @@ import net.flyingfishflash.ledger.accounts.data.dto.AccountRecord;
 import net.flyingfishflash.ledger.accounts.data.dto.ApiMessage;
 import net.flyingfishflash.ledger.accounts.service.AccountService;
 
+@Tag(name = "account controller")
 @RestController
 @Validated
 @RequestMapping("api/v1/ledger/accounts")

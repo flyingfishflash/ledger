@@ -6,6 +6,7 @@ import java.security.Principal;
 import javax.xml.parsers.ParserConfigurationException;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ import org.xml.sax.SAXException;
 import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
 import net.flyingfishflash.ledger.importer.service.GnucashFileImportService;
 
+@Tag(name = "gnucash file import controller")
 @RestController
 @RequestMapping("api/v1/ledger/import")
 public class GnucashFileImportController {

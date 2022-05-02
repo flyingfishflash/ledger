@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import net.flyingfishflash.ledger.commodities.service.CommodityService;
 
+// @Tag(name = "commodity controller")
 @RestController
 @Validated
 @RequestMapping("api/v1/ledger/commodities")

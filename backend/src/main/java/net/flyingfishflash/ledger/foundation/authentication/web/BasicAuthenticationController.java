@@ -6,6 +6,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +22,7 @@ import net.flyingfishflash.ledger.foundation.authentication.payload.response.Sig
 import net.flyingfishflash.ledger.foundation.authentication.payload.response.SignOutResponse;
 import net.flyingfishflash.ledger.foundation.users.service.UserService;
 
+@Tag(name = "authentication controller - basic")
 @RestController
 @RequestMapping("/api/v1/ledger/auth")
 public class BasicAuthenticationController {

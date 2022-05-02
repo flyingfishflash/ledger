@@ -1,14 +1,21 @@
 package net.flyingfishflash.ledger.foundation.configuration;
 
+import java.util.Comparator;
+import java.util.Map;
+import java.util.TreeMap;
+
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -39,5 +46,23 @@ public class OpenApiConfiguration {
             new ExternalDocumentation()
                 .description("Ledger Wiki Documentation")
                 .url("https://ledger.wiki.github.org/docs"));
+  }
+
+  @Bean
+  public OpenApiCustomiser sortTagsAlphabetically() {
+    return openApi ->
+        openApi.setTags(
+            openApi.getTags().stream()
+                .sorted(Comparator.comparing(tag -> StringUtils.stripAccents(tag.getName())))
+                .toList());
+  }
+
+  @SuppressWarnings("java:S3740")
+  @Bean
+  public OpenApiCustomiser sortSchemasAlphabetically() {
+    return openApi -> {
+      Map<String, Schema> schemas = openApi.getComponents().getSchemas();
+      openApi.getComponents().setSchemas(new TreeMap<>(schemas));
+    };
   }
 }

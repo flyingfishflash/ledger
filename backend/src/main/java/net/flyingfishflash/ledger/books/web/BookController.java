@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,7 @@ import net.flyingfishflash.ledger.books.data.dto.BookRequest;
 import net.flyingfishflash.ledger.books.data.dto.SetActiveBookRequest;
 import net.flyingfishflash.ledger.books.service.BookService;
 
+@Tag(name = "book controller")
 @RestController
 @Validated
 @RequestMapping("api/v1/ledger/books")
