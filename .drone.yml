@@ -280,6 +280,7 @@ steps:
         -Dsonar.projectVersion=$(./scripts/version.sh version)
         -Dsonar.host.url=$SONAR_HOST
         -Dsonar.login=$SONAR_LOGIN
+        -Dsonar.coverage.exclusions=backend/src/main/java/net/flyingfishflash/ledger/foundation/configuration/*.java
 
 ---
 kind: pipeline
