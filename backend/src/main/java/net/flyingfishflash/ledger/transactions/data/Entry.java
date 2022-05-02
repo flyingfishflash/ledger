@@ -55,7 +55,7 @@ public class Entry {
   @Columns(
       columns = {
         @Column(name = "value_currency", length = 3),
-        @Column(name = "value", precision = 38, scale = 18)
+        @Column(name = "`value`", precision = 38, scale = 18)
       })
   @Type(type = "persistentMoneyAmountAndCurrency")
   private Money value;
