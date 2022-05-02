@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
@@ -65,7 +66,14 @@ public class BookController {
 
   @PostMapping
   @Operation(summary = "Create a new book of accounts")
-  @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "201", description = "Successful Book Creation"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = {@Content()}),
+      })
   public ResponseEntity<Book> bookCreate(@Valid @RequestBody BookRequest bookRequest) {
 
     var newBook = bookService.createBook(bookRequest);
@@ -85,6 +93,10 @@ public class BookController {
 
   @DeleteMapping("{id}")
   @Operation(summary = "Delete a book and all its related objects")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "204", description = "Successful Book Deletion"),
+      })
   public ResponseEntity<ApiMessage> bookDelete(@PathVariable("id") Long id) {
 
     bookService.deleteBook(id);
