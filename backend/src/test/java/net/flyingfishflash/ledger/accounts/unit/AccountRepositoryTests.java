@@ -90,7 +90,7 @@ class AccountRepositoryTests {
     String guid = IdentifierFactory.getInstance().generateIdentifier();
     Account newAccount = accountRepository.newAccount(guid);
     newAccount.setName("Root Account First");
-    doReturn(rootLevelNodeCount).when(spyAccountRepository).rootLevelNodeCount();
+    doReturn(rootLevelNodeCount).when(spyAccountRepository).rootLevelNodeCount(newAccount);
     spyAccountRepository.insertAsFirstRoot(newAccount);
     verify(mockNodeRepository, times(1)).insertAsFirstRoot(any(Account.class));
   }
@@ -101,7 +101,7 @@ class AccountRepositoryTests {
     String guid = IdentifierFactory.getInstance().generateIdentifier();
     Account newAccount = accountRepository.newAccount(guid);
     newAccount.setName("Root Account Last");
-    doReturn(rootLevelNodeCount).when(spyAccountRepository).rootLevelNodeCount();
+    doReturn(rootLevelNodeCount).when(spyAccountRepository).rootLevelNodeCount(newAccount);
     spyAccountRepository.insertAsLastRoot(newAccount);
     verify(mockNodeRepository, times(1)).insertAsLastRoot(any(Account.class));
   }
@@ -112,7 +112,7 @@ class AccountRepositoryTests {
     String guid = IdentifierFactory.getInstance().generateIdentifier();
     Account newAccount = accountRepository.newAccount(guid);
     newAccount.setName("Root Account Last");
-    doReturn(rootLevelNodeCount).when(spyAccountRepository).rootLevelNodeCount();
+    doReturn(rootLevelNodeCount).when(spyAccountRepository).rootLevelNodeCount(newAccount);
     assertThatExceptionOfType(AccountCreateException.class)
         .isThrownBy(() -> spyAccountRepository.insertAsLastRoot(newAccount))
         .withMessage(

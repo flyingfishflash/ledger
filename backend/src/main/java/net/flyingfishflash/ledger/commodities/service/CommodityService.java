@@ -6,6 +6,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import net.flyingfishflash.ledger.books.data.Book;
 import net.flyingfishflash.ledger.commodities.data.Commodity;
 import net.flyingfishflash.ledger.commodities.data.CommodityRepository;
 import net.flyingfishflash.ledger.commodities.exceptions.CommodityNotFoundException;
@@ -24,6 +25,11 @@ public class CommodityService {
   public Commodity newCommodity() {
 
     return new Commodity(IdentifierFactory.getInstance().generateIdentifier());
+  }
+
+  public Commodity newCommodity(Book book) {
+
+    return new Commodity(IdentifierFactory.getInstance().generateIdentifier(), book);
   }
 
   public Commodity saveCommodity(Commodity commodity) {
@@ -84,10 +90,10 @@ public class CommodityService {
         .orElseThrow(() -> new CommodityNotFoundException(nameSpace));
   }
 
-  public Commodity findByNameSpaceAndMnemonic(String nameSpace, String mnemonic) {
+  public Commodity findByBookAndNameSpaceAndMnemonic(Book book, String nameSpace, String mnemonic) {
 
     return commodityRepository
-        .findByNamespaceAndMnemonic(nameSpace, mnemonic)
+        .findByBookAndNamespaceAndMnemonic(book, nameSpace, mnemonic)
         .orElseThrow(() -> new CommodityNotFoundException(mnemonic));
   }
 }

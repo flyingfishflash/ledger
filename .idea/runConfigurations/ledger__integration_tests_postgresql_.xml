@@ -4,7 +4,7 @@
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
       <option name="externalSystemIdString" value="GRADLE" />
-      <option name="scriptParameters" value="-Dspring.profiles.active=postgresql -Dspring.datasource.url=jdbc:postgresql://192.168.9.201:52006/ledger -Dspring.datasource.username=ledger -Dspring.datasource.password=ledger -Dspring.datasource.platform=POSTGRESQL" />
+      <option name="scriptParameters" value="-Dspring.profiles.active=postgresql -Dspring.datasource.url=jdbc:postgresql://hv1-database-1:52006/ledger -Dspring.datasource.username=ledger -Dspring.datasource.password=ledger -Dspring.datasource.platform=POSTGRESQL" />
       <option name="taskDescriptions">
         <list />
       </option>

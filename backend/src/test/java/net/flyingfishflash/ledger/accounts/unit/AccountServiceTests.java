@@ -27,7 +27,6 @@ import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.AccountRepository;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
 import net.flyingfishflash.ledger.accounts.data.dto.AccountCreateRequest;
-import net.flyingfishflash.ledger.accounts.data.dto.AccountRecord;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountCreateException;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
 import net.flyingfishflash.ledger.accounts.exceptions.EligibleParentAccountNotFoundException;
@@ -455,14 +454,15 @@ class AccountServiceTests {
         .insertAsNextSiblingOf(any(Account.class), any(Account.class));
   }
 
-  @Test
-  void mapEntityToRecord() {
-    assertThat(
-            new AccountRecord(
-                null, null, null, null, "account", null, false, null, null, null, null, null, false,
-                false, null, null, null))
-        .isEqualTo(accountService.mapEntityToRecord(new Account()));
-  }
+  //  @Test
+  //  void mapEntityToRecord() {
+  //    assertThat(
+  //            new AccountRecord(
+  //                null, null, null, null, "account", null, false, null, null, null, null, null,
+  // false,
+  //                false, null, null, null))
+  //        .isEqualTo(accountService.mapEntityToRecord(new Account()));
+  //  }
 
   private Iterable<Account> treeAsList() {
     List<Account> treeAsList = new ArrayList<>();

@@ -29,11 +29,12 @@ public class AccountConfiguration {
   @PersistenceContext private EntityManager entityManager;
 
   @Bean
-  public NestedNodeRepository<Long, Account> jpaRepository() {
+  public NestedNodeRepository<Long, Account> jpaRepository(
+      AccountTreeDiscriminator<Long, Account> accountTreeDiscriminator) {
 
     JpaNestedNodeRepositoryConfiguration<Long, Account> configuration =
         new JpaNestedNodeRepositoryConfiguration<>(
-            entityManager, Account.class, Long.class, new AccountTreeDiscriminator());
+            entityManager, Account.class, Long.class, accountTreeDiscriminator);
 
     return JpaNestedNodeRepositoryFactory.create(configuration);
   }

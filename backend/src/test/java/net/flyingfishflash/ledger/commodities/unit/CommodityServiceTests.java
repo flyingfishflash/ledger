@@ -19,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import net.flyingfishflash.ledger.books.data.Book;
 import net.flyingfishflash.ledger.commodities.data.Commodity;
 import net.flyingfishflash.ledger.commodities.data.CommodityRepository;
 import net.flyingfishflash.ledger.commodities.exceptions.CommodityNotFoundException;
@@ -124,11 +125,14 @@ class CommodityServiceTests {
   }
 
   @Test
-  void findByNameSpaceAndMnemonic() {
-    given(mockCommodityRepository.findByNamespaceAndMnemonic(anyString(), anyString()))
+  void findByBookAndNameSpaceAndMnemonic() {
+    given(
+            mockCommodityRepository.findByBookAndNamespaceAndMnemonic(
+                any(Book.class), anyString(), anyString()))
         .willReturn(Optional.of(new Commodity()));
-    commodityService.findByNameSpaceAndMnemonic("any string 1", "any string 2");
-    verify(mockCommodityRepository, times(1)).findByNamespaceAndMnemonic(anyString(), anyString());
+    commodityService.findByBookAndNameSpaceAndMnemonic(new Book(), "any string 1", "any string 2");
+    verify(mockCommodityRepository, times(1))
+        .findByBookAndNamespaceAndMnemonic(any(Book.class), anyString(), anyString());
   }
 
   @Test

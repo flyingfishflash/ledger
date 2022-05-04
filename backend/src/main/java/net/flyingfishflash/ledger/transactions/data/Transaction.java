@@ -9,12 +9,16 @@ import javax.money.Monetary;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.javamoney.moneta.Money;
+
+import net.flyingfishflash.ledger.books.data.Book;
 
 @Entity
 public class Transaction {
@@ -22,6 +26,9 @@ public class Transaction {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private long id;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  private Book book;
 
   @Column(unique = true, updatable = false, length = 32)
   private String guid;
@@ -39,6 +46,10 @@ public class Transaction {
   @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Entry> entries = new ArrayList<>();
 
+  public Transaction(Book book) {
+    this.book = book;
+  }
+
   public void addEntry(Entry entry) {
     entries.add(entry);
     entry.setTransaction(this);
@@ -55,6 +66,14 @@ public class Transaction {
 
   public void setId(long id) {
     this.id = id;
+  }
+
+  public Book getBook() {
+    return book;
+  }
+
+  public void setBook(Book book) {
+    this.book = book;
   }
 
   public String getGuid() {
@@ -132,7 +151,7 @@ public class Transaction {
 
     Money imbalance = getImbalance(); // returns imbalance of 0 for multicurrency transactions
     if (!imbalance.isZero()) {
-      var entry = new Entry();
+      var entry = new Entry(this.book);
       entry.setType(imbalance.isNegative() ? EntryType.CREDIT : EntryType.DEBIT);
       // addLedgerItem(entry);
       return entry;

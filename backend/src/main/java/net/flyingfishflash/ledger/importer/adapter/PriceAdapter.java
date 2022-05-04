@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import net.flyingfishflash.ledger.commodities.service.CommodityService;
+import net.flyingfishflash.ledger.importer.ImportingBook;
 import net.flyingfishflash.ledger.importer.dto.GncPrice;
 import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
 import net.flyingfishflash.ledger.prices.data.Price;
@@ -24,13 +25,10 @@ public class PriceAdapter {
 
   private static final Logger logger = LoggerFactory.getLogger(PriceAdapter.class);
 
-  /** Service class for interacting with prices */
-  private final PriceService priceService;
-
-  /** Service class for interacting with commodities */
   private final CommodityService commodityService;
-
   private GnucashFileImportStatus gnucashFileImportStatus;
+  private ImportingBook importingBook;
+  private final PriceService priceService;
 
   /**
    * Class constructor.
@@ -42,13 +40,15 @@ public class PriceAdapter {
    * @param gnucashFileImportStatus class capturing the gnucash xml import status
    */
   public PriceAdapter(
-      PriceService priceService,
       CommodityService commodityService,
-      GnucashFileImportStatus gnucashFileImportStatus) {
+      GnucashFileImportStatus gnucashFileImportStatus,
+      ImportingBook importingBook,
+      PriceService priceService) {
 
-    this.priceService = priceService;
     this.commodityService = commodityService;
     this.gnucashFileImportStatus = gnucashFileImportStatus;
+    this.importingBook = importingBook;
+    this.priceService = priceService;
   }
 
   /**
@@ -72,15 +72,17 @@ public class PriceAdapter {
 
     for (GncPrice gncPrice : gncPrices) {
 
-      var price = priceService.newPrice();
+      var price = priceService.newPrice(importingBook.getBook());
       price.setGuid(gncPrice.getGuid());
       price.setDate(gncPrice.getDate());
       price.setSource(gncPrice.getSource());
       price.setType(gncPrice.getType());
 
       price.setCommodity(
-          commodityService.findByNameSpaceAndMnemonic(
-              gncPrice.getCommodityNamespace(), gncPrice.getCommodityId()));
+          commodityService.findByBookAndNameSpaceAndMnemonic(
+              importingBook.getBook(),
+              gncPrice.getCommodityNamespace(),
+              gncPrice.getCommodityId()));
 
       /* Attempt to set the currency */
       currencyMnemonic = gncPrice.getCurrencyId();
@@ -88,7 +90,7 @@ public class PriceAdapter {
         var currency = Monetary.getCurrency(currencyMnemonic).toString();
         price.setCurrency(currency);
       } catch (UnknownCurrencyException e) {
-        /* TODO: Throw GncImportException with UnknownCurrencyException as the cause */
+        /* TODO: Throw ImportGnucashBookException with UnknownCurrencyException as the cause */
         logger.info(e.getMessage());
         throw new UnknownCurrencyException(currencyMnemonic);
       }

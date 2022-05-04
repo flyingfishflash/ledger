@@ -151,13 +151,13 @@ public class AccountRepository {
 
   public void insertAsFirstRoot(Account account) {
 
-    isRootNodeInsertable(/*account*/ );
+    isRootNodeInsertable(account);
     this.nodeRepository.insertAsFirstRoot(account);
   }
 
   public void insertAsLastRoot(Account account) {
 
-    isRootNodeInsertable(/*account*/ );
+    isRootNodeInsertable(account);
     this.nodeRepository.insertAsLastRoot(account);
   }
 
@@ -227,14 +227,14 @@ public class AccountRepository {
    *
    * @return count of root level nodes in the account hierarchy
    */
-  public Long rootLevelNodeCount() {
+  public Long rootLevelNodeCount(Account account) {
 
     try {
       var cb = entityManager.getCriteriaBuilder();
       CriteriaQuery<Long> cq = cb.createQuery(Long.class);
       Root<Account> root = cq.from(Account.class);
       cq.select(cb.count(root));
-      cq.where(cb.isNull(root.get("parentId")));
+      cq.where(cb.isNull(root.get("parentId")), cb.equal(root.get("book"), account.getBook()));
       return entityManager.createQuery(cq).getSingleResult();
     } catch (NoResultException ex) {
       return 0L;
@@ -251,12 +251,12 @@ public class AccountRepository {
    *   <li>2) there isn't already a root node in our hierarchy
    * </ul>
    */
-  private void isRootNodeInsertable(/*Account account*/ ) {
-
-    if (rootLevelNodeCount() != 0L) {
+  private void isRootNodeInsertable(Account account) {
+    var rootLevelNodeCount = rootLevelNodeCount(account);
+    if (rootLevelNodeCount != 0L) {
       throw new AccountCreateException(
           "A new root level account can't be created. Only one root level account may be present. Current root level node count: "
-              + rootLevelNodeCount());
+              + rootLevelNodeCount);
     }
   }
 }

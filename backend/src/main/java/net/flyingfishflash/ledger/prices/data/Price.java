@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import net.flyingfishflash.ledger.books.data.Book;
 import net.flyingfishflash.ledger.commodities.data.Commodity;
 
 @Entity
@@ -22,6 +24,9 @@ public class Price {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private long id;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  private Book book;
 
   @Column(name = "guid", unique = true, updatable = false, length = 32)
   private String guid;
@@ -61,12 +66,29 @@ public class Price {
     this.guid = guid;
   }
 
+  public Price(Book book) {
+    this.book = book;
+  }
+
+  public Price(String guid, Book book) {
+    this.guid = guid;
+    this.book = book;
+  }
+
   public long getId() {
     return id;
   }
 
   public void setId(long id) {
     this.id = id;
+  }
+
+  public Book getBook() {
+    return book;
+  }
+
+  public void setBook(Book book) {
+    this.book = book;
   }
 
   public String getGuid() {

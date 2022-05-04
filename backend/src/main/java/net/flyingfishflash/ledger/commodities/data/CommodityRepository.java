@@ -7,6 +7,8 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.flyingfishflash.ledger.books.data.Book;
+
 @Repository
 @Transactional
 public interface CommodityRepository extends PagingAndSortingRepository<Commodity, Long> {
@@ -17,5 +19,6 @@ public interface CommodityRepository extends PagingAndSortingRepository<Commodit
 
   Optional<List<Commodity>> findByNamespace(String namespace);
 
-  Optional<Commodity> findByNamespaceAndMnemonic(String namespace, String mnemonic);
+  Optional<Commodity> findByBookAndNamespaceAndMnemonic(
+      Book book, String namespace, String mnemonic);
 }

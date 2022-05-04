@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import net.flyingfishflash.ledger.commodities.data.Commodity;
 import net.flyingfishflash.ledger.commodities.service.CommodityService;
+import net.flyingfishflash.ledger.importer.ImportingBook;
 import net.flyingfishflash.ledger.importer.dto.GncCommodity;
 import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
 
@@ -17,10 +18,9 @@ public class CommodityAdapter {
 
   private static final Logger logger = LoggerFactory.getLogger(CommodityAdapter.class);
 
-  /** Service class for interacting with commodities */
   private final CommodityService commodityService;
-
   private GnucashFileImportStatus gnucashFileImportStatus;
+  private ImportingBook importingBook;
 
   /**
    * Class constructor.
@@ -31,10 +31,13 @@ public class CommodityAdapter {
    * @param gnucashFileImportStatus Class representing status of Gnucash file import
    */
   public CommodityAdapter(
-      CommodityService commodityService, GnucashFileImportStatus gnucashFileImportStatus) {
+      CommodityService commodityService,
+      GnucashFileImportStatus gnucashFileImportStatus,
+      ImportingBook importingBook) {
 
     this.commodityService = commodityService;
     this.gnucashFileImportStatus = gnucashFileImportStatus;
+    this.importingBook = importingBook;
   }
 
   /**
@@ -53,7 +56,7 @@ public class CommodityAdapter {
       /* Exclude template and currency commodities */
       if (!gncCommodity.getNamespace().equalsIgnoreCase("template")
           && !gncCommodity.getNamespace().equalsIgnoreCase("currency")) {
-        var commodity = commodityService.newCommodity();
+        var commodity = commodityService.newCommodity(this.importingBook.getBook());
         commodity.setMnemonic(gncCommodity.getMnemonic());
         commodity.setFullName(gncCommodity.getFullName());
         commodity.setNamespace(gncCommodity.getNamespace());

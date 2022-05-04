@@ -20,7 +20,8 @@ import net.flyingfishflash.ledger.foundation.validators.Enum;
  * <p>Sample JSON:
  *
  * <pre>
- * {"code":"2",
+ * {"bookId":"1",
+ *  "code":"2",
  *  "description":"Financial Assets Description",
  *  "hidden":true,
  *  "mode":"last_child",

@@ -57,6 +57,9 @@ class AccountRepositoryTests {
 
   @Test
   void rootLevelNodeCount() {
-    assertThat(accountRepository.rootLevelNodeCount()).isEqualTo(1L);
+    var id = 32L;
+    Optional<Account> account = accountRepository.findById(id);
+    assertThat(account).isPresent();
+    assertThat(accountRepository.rootLevelNodeCount(account.get())).isEqualTo(1L);
   }
 }
