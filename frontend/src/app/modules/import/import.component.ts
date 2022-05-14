@@ -11,8 +11,11 @@ import { InjectableRxStompConfig, RxStompService } from "@stomp/ng2-stompjs";
 import { environment } from "environments/environment";
 import { ImportService } from "./import.service";
 import { StorageService } from "@core/storage/storage.service";
-import { rxStompConfig } from "@shared/rx-stomp.config";
 import { Logger } from "@core/logging/logger.service";
+import { BookService } from "@shared/books/book.service";
+import { rxStompConfig } from "@shared/rx-stomp.config";
+import { stringify } from "@angular/compiler/src/util";
+import { concatMap } from "rxjs/operators";
 
 const log = new Logger("import.component");
 
@@ -55,6 +58,7 @@ export class ImportComponent implements OnInit, OnDestroy {
   thisdata: Comp[];
 
   constructor(
+    private bookService: BookService,
     private importService: ImportService,
     private storageService: StorageService,
     private rxStompService: RxStompService
@@ -115,19 +119,34 @@ export class ImportComponent implements OnInit, OnDestroy {
 
   onUploadClick(): void {
     if (this.file) {
-      const formData: FormData = new FormData();
-      formData.append("file", this.file);
-
-      this.importService.uploadFile(formData).subscribe(
-        (res) => {
-          log.debug("post completed, should be changing datasource");
-          this.dataSource = res.components;
-          log.debug(res);
-        },
-        (err) => {
-          log.debug(err);
-        }
+      const cleanFileName: string = this.file.name.replace(
+        /[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,
+        ""
       );
+
+      this.bookService
+        .postBook(cleanFileName)
+        .pipe(
+          concatMap((successResponse) => {
+            log.debug(successResponse);
+            var uploadFileForm = new FormData();
+            uploadFileForm.append(
+              "bookId",
+              '{ "bookId":"' + successResponse.response.body.id + '" }'
+            );
+            uploadFileForm.append("file", this.file);
+            return this.importService.uploadFile(uploadFileForm);
+          })
+        )
+        .subscribe(
+          (successReponse) => {
+            log.debug(successReponse);
+            log.debug("import success");
+          },
+          (errorResponse) => {
+            log.debug("import error");
+          }
+        );
     }
   }
 
