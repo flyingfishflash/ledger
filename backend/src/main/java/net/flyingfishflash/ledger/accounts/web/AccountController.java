@@ -35,24 +35,30 @@ import net.flyingfishflash.ledger.accounts.data.dto.AccountCreateRequest;
 import net.flyingfishflash.ledger.accounts.data.dto.AccountRecord;
 import net.flyingfishflash.ledger.accounts.data.dto.ApiMessage;
 import net.flyingfishflash.ledger.accounts.service.AccountService;
+import net.flyingfishflash.ledger.books.service.BookService;
 
 @Tag(name = "account controller")
 @RestController
 @Validated
 @RequestMapping("api/v1/ledger/accounts")
+@ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
 public class AccountController {
 
   private final AccountService accountService;
+  private final BookService bookService;
 
-  public AccountController(AccountService accountService) {
+  public AccountController(AccountService accountService, BookService bookService) {
     this.accountService = accountService;
+    this.bookService = bookService;
   }
 
   @GetMapping
   @Operation(summary = "Retrieve all accounts")
-  public ResponseEntity<Collection<Account>> findAllAccounts() {
+  public ResponseEntity<Collection<Account>> findAllAccounts(
+      @RequestParam(name = "bookId") Long bookId) {
 
-    Collection<Account> allAccounts = accountService.findAllAccounts();
+    var activeBook = bookService.findById(bookId);
+    Collection<Account> allAccounts = accountService.findAllAccounts(activeBook);
 
     return new ResponseEntity<>(allAccounts, HttpStatus.OK);
   }
@@ -69,7 +75,6 @@ public class AccountController {
 
   @PostMapping
   @Operation(summary = "Create a new account")
-  @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
   public ResponseEntity<AccountRecord> createAccount(
       @RequestHeader(name = "X-COM-LOCATION", required = false) String headerLocation,
       @Valid @RequestBody AccountCreateRequest accountCreateRequest) {
@@ -105,7 +110,6 @@ public class AccountController {
   @PatchMapping("{id}")
   @ResponseBody
   @Operation(summary = "Update the details of a single account")
-  @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
   public ResponseEntity<ApiMessage> patchAccount(
       @PathVariable("id") Long id, @RequestBody Map<String, Object> patchRequest) {
 

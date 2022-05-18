@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import net.flyingfishflash.ledger.accounts.data.nestedset.delegate.NestedNodeHierarchyManipulator;
 import net.flyingfishflash.ledger.foundation.validators.Enum;
 
 /**
@@ -33,6 +34,7 @@ import net.flyingfishflash.ledger.foundation.validators.Enum;
  * </pre>
  */
 public record AccountCreateRequest(
+    @NotNull @Positive @Schema(required = true) Long bookId,
     @Size(max = 2048)
         @Pattern(
             regexp = "^(?!\\s*$).+",
@@ -45,9 +47,7 @@ public record AccountCreateRequest(
         String description,
     @NotNull Boolean hidden,
     @NotEmpty
-        @Enum(
-            enumClass = pl.exsio.nestedj.delegate.NestedNodeHierarchyManipulator.Mode.class,
-            ignoreCase = true)
+        @Enum(enumClass = NestedNodeHierarchyManipulator.Mode.class, ignoreCase = true)
         @Schema(
             description = "Node manipulator mode.",
             allowableValues = "FIRST_CHILD, LAST_CHILD, PREV_SIBLING, NEXT_SIBLING",

@@ -10,8 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import pl.exsio.nestedj.model.NestedNode;
-
+import net.flyingfishflash.ledger.accounts.data.nestedset.model.NestedNode;
 import net.flyingfishflash.ledger.books.data.Book;
 import net.flyingfishflash.ledger.commodities.data.Commodity;
 
@@ -265,47 +264,51 @@ public class Account implements NestedNode<Long> {
     return "Account{"
         + "id="
         + id
-        + ", guid='"
-        + guid
-        + '\''
-        + ", name='"
-        + name
-        + '\''
-        + ", longName='"
-        + longName
-        + '\''
+        + ", book="
+        + book
+        + ", category="
+        + category
         + ", code='"
         + code
+        + '\''
+        + ", commodity="
+        + commodity
+        + ", currency='"
+        + currency
         + '\''
         + ", description='"
         + description
         + '\''
+        + ", guid='"
+        + guid
+        + '\''
+        + ", hidden="
+        + hidden
+        + ", longName='"
+        + longName
+        + '\''
+        + ", name='"
+        + name
+        + '\''
+        + ", normalBalance="
+        + normalBalance
         + ", note='"
         + note
         + '\''
-        + ", placeholder="
-        + placeholder
-        + ", hidden="
-        + hidden
-        + ", taxRelated="
-        + taxRelated
-        + ", category="
-        + category
-        + ", type="
-        + type
-        + ", normalBalance="
-        + normalBalance
-        + ", commodity="
-        + commodity
-        + ", treeLeft="
-        + treeLeft
-        + ", treeRight="
-        + treeRight
-        + ", treeLevel="
-        + treeLevel
         + ", parentId="
         + parentId
-        + '\''
+        + ", placeholder="
+        + placeholder
+        + ", taxRelated="
+        + taxRelated
+        + ", treeLeft="
+        + treeLeft
+        + ", treeLevel="
+        + treeLevel
+        + ", treeRight="
+        + treeRight
+        + ", type="
+        + type
         + '}';
   }
 }

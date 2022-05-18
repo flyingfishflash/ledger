@@ -33,7 +33,6 @@ dependencies {
     implementation "org.springframework.session:spring-session-core:$springSessionVersion"
     implementation "org.springframework.session:spring-session-jdbc:$springSessionVersion"
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.8'
-    implementation 'com.github.eXsio:nestedj:5.0.4'
     implementation 'com.h2database:h2:2.1.212'
     implementation 'org.postgresql:postgresql:42.3.4'
     implementation 'org.javamoney:moneta:1.4.2'
@@ -47,7 +46,6 @@ dependencies {
     testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
     errorprone 'com.google.errorprone:error_prone_core:2.13.1'
 }
-
 
 def explodeBootJar = tasks.register('explodeBootJar', Sync) {
     dependsOn bootJar
