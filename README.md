@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gl/flyingfishflash/ledger-ci/branch/main/graph/badge.svg?token=HOCJNHPN6Z)](https://codecov.io/gl/flyingfishflash/ledger-ci)
 ## Description
 
-A Java based bookkeeping engine and API server, along with an Angular based web application for personal finance management.
+A Java based bookkeeping engine and API server with an Angular based web application for personal finance management.
 
 
 ## Run
