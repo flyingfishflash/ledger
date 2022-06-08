@@ -197,7 +197,7 @@ steps:
           -c "select count(*) from pg_catalog.pg_tables;"
 
   - name: build
-    image: gradle:7.4.2-jdk18
+    image: gradle:7.5.1-jdk18
     depends_on:
       - "cache pull"
       - "verify postgres"
@@ -262,7 +262,7 @@ steps:
 
   - name: sonarqube analysis
     failure: ignore
-    image: gradle:7.4.2-jdk18
+    image: gradle:7.5.1-jdk18
     depends_on:
       - "cache pull"
     environment:
@@ -425,9 +425,7 @@ steps:
       key:
         from_secret: ssh_key
       script:
-        - cd docker
-        - ansible-playbook docker.yaml -i ansible/inventories/inventory.yaml -e do=restart --tags=ledger-dev
-        # otherwise: docker-compose up stacks/ledger/docker-compose.yaml -d --remove-orphans
+        - ~/.local/bin/scripts/ledger-dev-redeploy.sh
 
 ---
 kind: pipeline
@@ -459,6 +457,4 @@ steps:
       key:
         from_secret: ssh_key
       script:
-        - cd docker
-        - ansible-playbook docker.yaml -i ansible/inventories/inventory.yaml -e do=restart --tags=ledger-prd
-        # otherwise: docker-compose up stacks/ledger/docker-compose.yaml -d --remove-orphans
+        - ~/.local/bin/scripts/ledger-prd-redeploy.sh
