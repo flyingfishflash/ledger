@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import net.flyingfishflash.ledger.accounts.service.AccountService;
 import net.flyingfishflash.ledger.importer.GncXmlHelper;
+import net.flyingfishflash.ledger.importer.ImportingBook;
 import net.flyingfishflash.ledger.importer.dto.GncSplit;
 import net.flyingfishflash.ledger.importer.dto.GncTransaction;
 import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
@@ -28,17 +29,20 @@ public class TransactionAdapter {
 
   private static final Logger logger = LoggerFactory.getLogger(TransactionAdapter.class);
 
-  private final TransactionService transactionService;
   private final AccountService accountService;
   private GnucashFileImportStatus gnucashFileImportStatus;
+  private ImportingBook importingBook;
+  private final TransactionService transactionService;
 
   public TransactionAdapter(
-      TransactionService transactionService,
       AccountService accountService,
-      GnucashFileImportStatus gnucashFileImportStatus) {
-    this.transactionService = transactionService;
+      GnucashFileImportStatus gnucashFileImportStatus,
+      ImportingBook importingBook,
+      TransactionService transactionService) {
     this.accountService = accountService;
     this.gnucashFileImportStatus = gnucashFileImportStatus;
+    this.importingBook = importingBook;
+    this.transactionService = transactionService;
   }
 
   @SuppressWarnings("java:S3776")
@@ -48,7 +52,7 @@ public class TransactionAdapter {
 
     for (GncTransaction gncTransaction : gncTransactions) {
 
-      var transaction = new Transaction();
+      var transaction = new Transaction(importingBook.getBook());
       transaction.setGuid(gncTransaction.getGuid());
       transaction.setDescription(gncTransaction.getDescription());
       transaction.setNum(gncTransaction.getNum());
@@ -59,7 +63,7 @@ public class TransactionAdapter {
         var currency = Monetary.getCurrency(gncTransaction.getCurrency()).toString();
         transaction.setCurrency(currency);
       } catch (UnknownCurrencyException e) {
-        /* TODO: Throw GncImportException with UnknownCurrencyException as the cause */
+        /* TODO: Throw ImportGnucashBookException with UnknownCurrencyException as the cause */
         logger.info(e.getMessage());
         throw new UnknownCurrencyException(gncTransaction.getCurrency());
       }
@@ -68,7 +72,7 @@ public class TransactionAdapter {
       gncTransactionSplits = gncTransaction.getSplits();
 
       for (GncSplit gncSplit : gncTransactionSplits) {
-        var entry = new Entry();
+        var entry = new Entry(importingBook.getBook());
         entry.setGuid(gncSplit.getGuid());
         entry.setMemo(gncSplit.getMemo());
 

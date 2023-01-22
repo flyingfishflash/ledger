@@ -16,10 +16,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import pl.exsio.nestedj.NestedNodeRepository;
-
+import net.flyingfishflash.ledger.accounts.data.nestedset.NestedNodeRepository;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountCreateException;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
+import net.flyingfishflash.ledger.books.data.Book;
 
 @Repository
 @Transactional
@@ -38,6 +38,13 @@ public class AccountRepository {
     return new Account(guid);
   }
 
+  //  private static <ID extends Serializable, N extends NestedNode<ID>>
+  //      JpaTreeDiscriminator<ID, N> getDiscriminator(Book book) {
+  //    Map<String, Supplier<Object>> vp = new HashMap<>();
+  //    vp.put("book", book::getId);
+  //    return new MapJpaTreeDiscriminator<>(vp);
+  //  }
+
   @SuppressWarnings("unused")
   private void save(Account account) {
 
@@ -45,16 +52,18 @@ public class AccountRepository {
     entityManager.persist(account);
   }
 
-  public void update(Account account) {
+  public void update(Account account, Book book) {
 
     preventUnsafeChanges(account);
 
     // derive and set the longName on all child accounts of the subject account
-    Iterable<Account> t = this.nodeRepository.getTreeAsList(account);
+    Iterable<Account> t =
+        this.nodeRepository.getTreeAsList(
+            account, AccountTreeDiscriminatorFactory.getDiscriminator(book));
     Iterator<Account> it = t.iterator();
     while (it.hasNext()) {
       Account next = it.next();
-      next.setLongName(this.deriveLongName(next));
+      next.setLongName(this.deriveLongName(next, book));
     }
     entityManager.merge(account);
   }
@@ -98,12 +107,13 @@ public class AccountRepository {
     }
   }
 
-  public Iterable<Account> getTreeAsList(Account account) {
+  public Iterable<Account> getTreeAsList(Account account, Book book) {
 
-    return this.nodeRepository.getTreeAsList(account);
+    return this.nodeRepository.getTreeAsList(
+        account, AccountTreeDiscriminatorFactory.getDiscriminator(book));
   }
 
-  public String deriveLongName(Account account) {
+  public String deriveLongName(Account account, Book book) {
 
     Account parent =
         this.findById(account.getParentId())
@@ -117,7 +127,9 @@ public class AccountRepository {
       return account.getName();
     }
 
-    List<Account> parents = this.nodeRepository.getParents(parent);
+    List<Account> parents =
+        this.nodeRepository.getParents(
+            parent, AccountTreeDiscriminatorFactory.getDiscriminator(book));
     var sj = new StringJoiner(":");
     // build the longname by collecting the ancestor account names in reverse
     for (int i = parents.size() - 1; i >= 0; i--) {
@@ -134,50 +146,58 @@ public class AccountRepository {
     return longname;
   }
 
-  public Optional<Account> getPrevSibling(Account account) {
+  public Optional<Account> getPrevSibling(Account account, Book book) {
 
-    return this.nodeRepository.getPrevSibling(account);
+    return this.nodeRepository.getPrevSibling(
+        account, AccountTreeDiscriminatorFactory.getDiscriminator(book));
   }
 
-  public Optional<Account> getNextSibling(Account account) {
+  public Optional<Account> getNextSibling(Account account, Book book) {
 
-    return this.nodeRepository.getNextSibling(account);
+    return this.nodeRepository.getNextSibling(
+        account, AccountTreeDiscriminatorFactory.getDiscriminator(book));
   }
 
-  public Iterable<Account> getParents(Account account) {
+  public Iterable<Account> getParents(Account account, Book book) {
 
-    return this.nodeRepository.getParents(account);
+    return this.nodeRepository.getParents(
+        account, AccountTreeDiscriminatorFactory.getDiscriminator(book));
   }
 
-  public void insertAsFirstRoot(Account account) {
+  public void insertAsFirstRoot(Account account, Book book) {
 
-    isRootNodeInsertable(/*account*/ );
-    this.nodeRepository.insertAsFirstRoot(account);
+    isRootNodeInsertable(account);
+    this.nodeRepository.insertAsFirstRoot(
+        account, AccountTreeDiscriminatorFactory.getDiscriminator(book));
   }
 
-  public void insertAsLastRoot(Account account) {
+  public void insertAsLastRoot(Account account, Book book) {
 
-    isRootNodeInsertable(/*account*/ );
-    this.nodeRepository.insertAsLastRoot(account);
+    isRootNodeInsertable(account);
+    this.nodeRepository.insertAsLastRoot(
+        account, AccountTreeDiscriminatorFactory.getDiscriminator(book));
   }
 
-  public void insertAsLastChildOf(Account account, Account parent) {
+  public void insertAsLastChildOf(Account account, Account parent, Book book) {
 
-    account.setLongName(this.deriveLongName(account));
-    this.nodeRepository.insertAsLastChildOf(account, parent);
+    account.setLongName(this.deriveLongName(account, book));
+    this.nodeRepository.insertAsLastChildOf(
+        account, parent, AccountTreeDiscriminatorFactory.getDiscriminator(book));
   }
 
-  public void insertAsFirstChildOf(Account account, Account parent) {
+  public void insertAsFirstChildOf(Account account, Account parent, Book book) {
 
-    account.setLongName(this.deriveLongName(account));
-    this.nodeRepository.insertAsFirstChildOf(account, parent);
+    account.setLongName(this.deriveLongName(account, book));
+    this.nodeRepository.insertAsFirstChildOf(
+        account, parent, AccountTreeDiscriminatorFactory.getDiscriminator(book));
   }
 
-  public void insertAsPrevSiblingOf(Account account, Account sibling) {
+  public void insertAsPrevSiblingOf(Account account, Account sibling, Book book) {
 
     if (this.findById(account.getParentId()).isPresent()) {
-      account.setLongName(this.deriveLongName(account));
-      this.nodeRepository.insertAsPrevSiblingOf(account, sibling);
+      account.setLongName(this.deriveLongName(account, book));
+      this.nodeRepository.insertAsPrevSiblingOf(
+          account, sibling, AccountTreeDiscriminatorFactory.getDiscriminator(book));
     } else {
       throw new AccountNotFoundException(
           account.getParentId(),
@@ -185,11 +205,12 @@ public class AccountRepository {
     }
   }
 
-  public void insertAsNextSiblingOf(Account account, Account sibling) {
+  public void insertAsNextSiblingOf(Account account, Account sibling, Book book) {
 
     if (this.findById(account.getParentId()).isPresent()) {
-      account.setLongName(this.deriveLongName(account));
-      this.nodeRepository.insertAsNextSiblingOf(account, sibling);
+      account.setLongName(this.deriveLongName(account, book));
+      this.nodeRepository.insertAsNextSiblingOf(
+          account, sibling, AccountTreeDiscriminatorFactory.getDiscriminator(book));
     } else {
       throw new AccountNotFoundException(
           account.getParentId(),
@@ -197,14 +218,16 @@ public class AccountRepository {
     }
   }
 
-  public void removeSingle(Account account) {
+  public void removeSingle(Account account, Book book) {
 
-    this.nodeRepository.removeSingle(account);
+    this.nodeRepository.removeSingle(
+        account, AccountTreeDiscriminatorFactory.getDiscriminator(book));
   }
 
-  public void removeSubTree(Account account) {
+  public void removeSubTree(Account account, Book book) {
 
-    this.nodeRepository.removeSubtree(account);
+    this.nodeRepository.removeSubtree(
+        account, AccountTreeDiscriminatorFactory.getDiscriminator(book));
   }
 
   /**
@@ -227,14 +250,14 @@ public class AccountRepository {
    *
    * @return count of root level nodes in the account hierarchy
    */
-  public Long rootLevelNodeCount() {
+  public Long rootLevelNodeCount(Account account) {
 
     try {
       var cb = entityManager.getCriteriaBuilder();
       CriteriaQuery<Long> cq = cb.createQuery(Long.class);
       Root<Account> root = cq.from(Account.class);
       cq.select(cb.count(root));
-      cq.where(cb.isNull(root.get("parentId")));
+      cq.where(cb.isNull(root.get("parentId")), cb.equal(root.get("book"), account.getBook()));
       return entityManager.createQuery(cq).getSingleResult();
     } catch (NoResultException ex) {
       return 0L;
@@ -251,12 +274,12 @@ public class AccountRepository {
    *   <li>2) there isn't already a root node in our hierarchy
    * </ul>
    */
-  private void isRootNodeInsertable(/*Account account*/ ) {
-
-    if (rootLevelNodeCount() != 0L) {
+  private void isRootNodeInsertable(Account account) {
+    var rootLevelNodeCount = rootLevelNodeCount(account);
+    if (rootLevelNodeCount != 0L) {
       throw new AccountCreateException(
           "A new root level account can't be created. Only one root level account may be present. Current root level node count: "
-              + rootLevelNodeCount());
+              + rootLevelNodeCount);
     }
   }
 }

@@ -30,11 +30,14 @@ import net.flyingfishflash.ledger.accounts.data.dto.AccountCreateRequest;
 import net.flyingfishflash.ledger.accounts.data.dto.AccountRecord;
 import net.flyingfishflash.ledger.accounts.service.AccountService;
 import net.flyingfishflash.ledger.accounts.web.AccountController;
+import net.flyingfishflash.ledger.books.data.Book;
+import net.flyingfishflash.ledger.books.service.BookService;
 
 @ExtendWith(MockitoExtension.class)
 class AccountControllerTests {
 
   @Mock AccountService accountService;
+  @Mock BookService bookService;
   @InjectMocks AccountController accountController;
 
   private MockMvc mvc;
@@ -96,11 +99,15 @@ class AccountControllerTests {
   void getAccounts() throws Exception {
     var accountList = new ArrayList<Account>(1);
     var account1 = new Account();
+    var book = new Book("Lorem Ipsum");
+    book.setId(1L);
     account1.setGuid("Any Guid");
+    account1.setBook(book);
     accountList.add(account1);
-    given(accountService.findAllAccounts()).willReturn(accountList);
+    given(bookService.findById(1L)).willReturn(book);
+    given(accountService.findAllAccounts(any(Book.class))).willReturn(accountList);
     assertThat(
-            mvc.perform(get("/api/v1/ledger/accounts").accept(MediaType.APPLICATION_JSON))
+            mvc.perform(get("/api/v1/ledger/accounts?bookId=1").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -113,6 +120,7 @@ class AccountControllerTests {
     var accountRecord = prepareAccountRecord();
     var accountCreateRequest =
         new AccountCreateRequest(
+            999L,
             null,
             null,
             false,
@@ -141,6 +149,7 @@ class AccountControllerTests {
   void postAccounts_whenRequestIsInvalid_returnHttp400() throws Exception {
     var accountCreateRequest =
         new AccountCreateRequest(
+            999L,
             "Lorem Ipsum",
             null,
             true,

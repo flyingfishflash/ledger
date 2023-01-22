@@ -24,16 +24,12 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import net.flyingfishflash.ledger.accounts.service.AccountService;
-import net.flyingfishflash.ledger.commodities.service.CommodityService;
 import net.flyingfishflash.ledger.foundation.WebSocketSessionId;
 import net.flyingfishflash.ledger.importer.GncXmlAccountHandler;
 import net.flyingfishflash.ledger.importer.GncXmlCommodityHandler;
 import net.flyingfishflash.ledger.importer.GncXmlPriceHandler;
 import net.flyingfishflash.ledger.importer.GncXmlTransactionHandler;
 import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
-import net.flyingfishflash.ledger.prices.service.PriceService;
-import net.flyingfishflash.ledger.transactions.service.TransactionService;
 
 @Service
 public class GnucashFileImportService {
@@ -42,42 +38,29 @@ public class GnucashFileImportService {
 
   @PersistenceContext EntityManager entityManager;
 
-  private WebSocketSessionId webSocketSessionId;
-  private SimpMessagingTemplate simpMessagingTemplate;
-  private GnucashFileImportStatus gnucashFileImportStatus;
-  private GncXmlAccountHandler gncXmlAccountHandler;
-  private GncXmlCommodityHandler gncXmlCommodityHandler;
-  private GncXmlPriceHandler gncXmlPriceHandler;
-  private GncXmlTransactionHandler gncXmlTransactionHandler;
-  private AccountService accountService;
-  private CommodityService commodityService;
-  private PriceService priceService;
-  private TransactionService transactionService;
+  private final GncXmlAccountHandler gncXmlAccountHandler;
+  private final GncXmlCommodityHandler gncXmlCommodityHandler;
+  private final GncXmlPriceHandler gncXmlPriceHandler;
+  private final GncXmlTransactionHandler gncXmlTransactionHandler;
+  private final GnucashFileImportStatus gnucashFileImportStatus;
+  private final SimpMessagingTemplate simpMessagingTemplate;
+  private final WebSocketSessionId webSocketSessionId;
 
-  @SuppressWarnings("java:S107")
   public GnucashFileImportService(
-      WebSocketSessionId webSocketSessionId,
-      SimpMessagingTemplate simpMessagingTemplate,
-      GnucashFileImportStatus gnucashFileImportStatus,
       GncXmlAccountHandler gncXmlAccountHandler,
       GncXmlCommodityHandler gncXmlCommodityHandler,
       GncXmlPriceHandler gncXmlPriceHandler,
       GncXmlTransactionHandler gncXmlTransactionHandler,
-      AccountService accountService,
-      CommodityService commodityService,
-      PriceService priceService,
-      TransactionService transactionService) {
-    this.webSocketSessionId = webSocketSessionId;
-    this.simpMessagingTemplate = simpMessagingTemplate;
-    this.gnucashFileImportStatus = gnucashFileImportStatus;
+      GnucashFileImportStatus gnucashFileImportStatus,
+      SimpMessagingTemplate simpMessagingTemplate,
+      WebSocketSessionId webSocketSessionId) {
     this.gncXmlAccountHandler = gncXmlAccountHandler;
     this.gncXmlCommodityHandler = gncXmlCommodityHandler;
     this.gncXmlPriceHandler = gncXmlPriceHandler;
     this.gncXmlTransactionHandler = gncXmlTransactionHandler;
-    this.accountService = accountService;
-    this.commodityService = commodityService;
-    this.priceService = priceService;
-    this.transactionService = transactionService;
+    this.gnucashFileImportStatus = gnucashFileImportStatus;
+    this.simpMessagingTemplate = simpMessagingTemplate;
+    this.webSocketSessionId = webSocketSessionId;
   }
 
   /** Parse GnuCash XML */
@@ -125,34 +108,15 @@ public class GnucashFileImportService {
 
     /*
      * TODO:
-     *  1) Evaluate how all existing database items are deleted in the context of a book of accounts
-     *     if creating a new book of accounts no deletion will be needed
-     *  2) Investigate resetting the ORM sequence generators
+     *  1) Investigate resetting the ORM sequence generators
+     *
+     * NOTE:
+     *  1) Order is important.
+     *  2) For some reason it's necessary to clear the persistence context after the accounts
+     *  have been imported or else performance degrades significantly. Research this.
      *
      */
 
-    entityManager.clear();
-
-    priceService.deleteAllPrices();
-    logger.info("deleting existing prices...");
-    sendImportStatusMessage("Deleting existing prices");
-
-    transactionService.deleteAllTransactions();
-    logger.info("deleting existing transactions...");
-    sendImportStatusMessage("Deleting existing transactions");
-
-    accountService.deleteAllAccounts();
-    logger.info("deleting existing accounts...");
-    sendImportStatusMessage("Deleting existing accounts");
-
-    commodityService.deleteAllCommodities();
-    logger.info("deleting existing commodities...");
-    sendImportStatusMessage("Deleting existing commodities");
-
-    /*
-     * TODO: For some reason it's necessary to clear the persistence context after the accounts
-     *  have been imported or else performance degrades significantly. Research this.
-     */
     parse(gncXmlByteArray, gncXmlCommodityHandler);
     sendImportStatusMessage("Imported commodities");
 

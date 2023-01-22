@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,7 @@ import net.flyingfishflash.ledger.foundation.users.data.dto.UserDeleteResponse;
 import net.flyingfishflash.ledger.foundation.users.data.dto.UserProfileResponse;
 import net.flyingfishflash.ledger.foundation.users.service.UserService;
 
+@Tag(name = "user controller")
 @RestController
 @Validated
 @RequestMapping("/api/v1/ledger/users")

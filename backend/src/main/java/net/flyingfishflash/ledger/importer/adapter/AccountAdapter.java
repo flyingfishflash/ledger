@@ -2,6 +2,7 @@ package net.flyingfishflash.ledger.importer.adapter;
 
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.money.Monetary;
 import javax.money.UnknownCurrencyException;
 
@@ -14,6 +15,7 @@ import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
 import net.flyingfishflash.ledger.accounts.service.AccountService;
 import net.flyingfishflash.ledger.commodities.service.CommodityService;
+import net.flyingfishflash.ledger.importer.ImportingBook;
 import net.flyingfishflash.ledger.importer.dto.GncAccount;
 import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
 
@@ -22,13 +24,12 @@ public class AccountAdapter {
 
   private static final Logger logger = LoggerFactory.getLogger(AccountAdapter.class);
 
-  /** Service class for interacting with Accounts */
   private final AccountService accountService;
-
-  /** Service class for interacting with Commodities */
   private final CommodityService commodityService;
+  private final GnucashFileImportStatus gnucashFileImportStatus;
 
-  private GnucashFileImportStatus gnucashFileImportStatus;
+  @Resource(name = "importingBook")
+  ImportingBook importingBook;
 
   /**
    * Class constructor.
@@ -87,7 +88,7 @@ public class AccountAdapter {
 
     for (GncAccount gncAccount : gncAccounts) {
       /* Create the new account with the imported guid */
-      account = new Account(gncAccount.getGuid());
+      account = new Account(gncAccount.getGuid(), importingBook.getBook());
       account.setCode(gncAccount.getAccountCode());
       account.setDescription(gncAccount.getDescription());
       account.setNote(gncAccount.getNote());
@@ -124,15 +125,17 @@ public class AccountAdapter {
           try {
             account.setCurrency(currencyMnemonic);
           } catch (UnknownCurrencyException e) {
-            /* TODO: Throw GncImportException with UnknownCurrencyException as the cause or
+            /* TODO: Throw ImportGnucashBookException with UnknownCurrencyException as the cause or
              *  potentially set the currency to 'XXX' */
             logger.info(e.getMessage());
             throw new UnknownCurrencyException(currencyMnemonic);
           }
         } else {
           account.setCommodity(
-              commodityService.findByNameSpaceAndMnemonic(
-                  gncAccount.getGncCommodityNamespace(), gncAccount.getGncCommodity()));
+              commodityService.findByBookAndNameSpaceAndMnemonic(
+                  importingBook.getBook(),
+                  gncAccount.getGncCommodityNamespace(),
+                  gncAccount.getGncCommodity()));
           /* Set the currency to the default currency */
           account.setCurrency(ApplicationConfiguration.DEFAULT_CURRENCY.getCurrencyCode());
         }

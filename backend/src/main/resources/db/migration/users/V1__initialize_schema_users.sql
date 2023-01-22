@@ -2,11 +2,12 @@ CREATE sequence hibernate_sequence START WITH 1 increment BY 1;
 
 CREATE TABLE account (
 	id BIGINT NOT NULL
+	,book_id BIGINT
 	,category VARCHAR(255)
 	,code VARCHAR(128)
+	,commodity_id BIGINT
 	,currency VARCHAR(10)
 	,description VARCHAR(2048)
-	,discriminator VARCHAR(255) NOT NULL
 	,guid VARCHAR(255)
 	,hidden boolean
 	,longName VARCHAR(4096)
@@ -20,7 +21,6 @@ CREATE TABLE account (
 	,treeLevel BIGINT NOT NULL
 	,treeRight BIGINT NOT NULL
 	,type VARCHAR(255)
-	,commodity_id BIGINT
 	,CONSTRAINT account_pk PRIMARY KEY (id)
 	);
 
@@ -33,6 +33,7 @@ CREATE TABLE book (
 
 CREATE TABLE commodity (
 	id BIGINT NOT NULL
+	,book_id BIGINT
 	,cusip VARCHAR(9)
 	,custom_identifier VARCHAR(255)
 	,fraction INTEGER
@@ -47,6 +48,7 @@ CREATE TABLE commodity (
 
 CREATE TABLE entry (
 	id BIGINT NOT NULL
+	,book_id BIGINT
 	,action VARCHAR(255)
 	,enterDate TIMESTAMP
 	,guid VARCHAR(32)
@@ -64,6 +66,7 @@ CREATE TABLE entry (
 
 CREATE TABLE price (
 	id BIGINT NOT NULL
+	,book_id BIGINT
 	,currency VARCHAR(3)
 	,date TIMESTAMP
 	,denominator BIGINT
@@ -78,6 +81,7 @@ CREATE TABLE price (
 
 CREATE TABLE transaction (
 	id BIGINT NOT NULL
+	,book_id BIGINT
 	,currency VARCHAR(255)
 	,description VARCHAR(255)
 	,enterDate TIMESTAMP
@@ -91,18 +95,15 @@ ALTER TABLE account ADD CONSTRAINT account_guid_uk UNIQUE (guid);
 
 ALTER TABLE book ADD CONSTRAINT book_name_uk UNIQUE (name);
 
-ALTER TABLE commodity ADD CONSTRAINT commodity_namespace_mnemonic_uk UNIQUE (
-	namespace
-	,mnemonic
-	);
+ALTER TABLE commodity ADD CONSTRAINT commodity_book_id_namespace_mnemonic_uk UNIQUE (book_id, namespace, mnemonic);
 
-ALTER TABLE commodity ADD CONSTRAINT commodity_guid_uk UNIQUE (guid);
+ALTER TABLE commodity ADD CONSTRAINT commodity_book_id_guid_uk UNIQUE (book_id, guid);
 
-ALTER TABLE entry ADD CONSTRAINT entry_guid_uk UNIQUE (guid);
+ALTER TABLE entry ADD CONSTRAINT entry_book_id_guid_uk UNIQUE (book_id, guid);
 
-ALTER TABLE price ADD CONSTRAINT price_guid_uk UNIQUE (guid);
+ALTER TABLE price ADD CONSTRAINT price_book_id_guid_uk UNIQUE (book_id, guid);
 
-ALTER TABLE transaction ADD CONSTRAINT transaction_guid_uk UNIQUE (guid);
+ALTER TABLE transaction ADD CONSTRAINT transaction_book_id_guid_uk UNIQUE (book_id, guid);
 
 ALTER TABLE account ADD CONSTRAINT account_commodity_id_fk FOREIGN KEY (commodity_id) REFERENCES commodity;
 

@@ -20,6 +20,7 @@ import org.javamoney.moneta.Money;
 
 import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.NormalBalance;
+import net.flyingfishflash.ledger.books.data.Book;
 
 @Entity
 @TypeDef(
@@ -30,6 +31,9 @@ public class Entry {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private long id;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  private Book book;
 
   @Column(unique = true, updatable = false, length = 32)
   private String guid;
@@ -68,12 +72,24 @@ public class Entry {
   @ManyToOne(fetch = FetchType.LAZY)
   private Account account;
 
+  public Entry(Book book) {
+    this.book = book;
+  }
+
   public long getId() {
     return id;
   }
 
   public void setId(long id) {
     this.id = id;
+  }
+
+  public Book getBook() {
+    return book;
+  }
+
+  public void setBook(Book book) {
+    this.book = book;
   }
 
   public String getGuid() {

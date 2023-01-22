@@ -25,13 +25,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import pl.exsio.nestedj.NestedNodeRepository;
-
 import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.AccountRepository;
 import net.flyingfishflash.ledger.accounts.data.AccountType;
+import net.flyingfishflash.ledger.accounts.data.nestedset.NestedNodeRepository;
+import net.flyingfishflash.ledger.accounts.data.nestedset.config.jpa.discriminator.JpaTreeDiscriminator;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountCreateException;
 import net.flyingfishflash.ledger.accounts.exceptions.AccountNotFoundException;
+import net.flyingfishflash.ledger.books.data.Book;
 import net.flyingfishflash.ledger.foundation.IdentifierFactory;
 
 @ExtendWith(MockitoExtension.class)
@@ -50,38 +51,44 @@ class AccountRepositoryTests {
 
   @Test
   void getTreeAsList() {
-    accountRepository.getTreeAsList(new Account());
-    verify(mockNodeRepository, times(1)).getTreeAsList(any(Account.class));
+    accountRepository.getTreeAsList(new Account(), new Book());
+    verify(mockNodeRepository, times(1))
+        .getTreeAsList(any(Account.class), any(JpaTreeDiscriminator.class));
   }
 
   @Test
   void getPrevSibling() {
-    accountRepository.getPrevSibling(new Account());
-    verify(mockNodeRepository, times(1)).getPrevSibling(any(Account.class));
+    accountRepository.getPrevSibling(new Account(), new Book());
+    verify(mockNodeRepository, times(1))
+        .getPrevSibling(any(Account.class), any(JpaTreeDiscriminator.class));
   }
 
   @Test
   void getNextSibling() {
-    accountRepository.getNextSibling(new Account());
-    verify(mockNodeRepository, times(1)).getNextSibling(any(Account.class));
+    accountRepository.getNextSibling(new Account(), new Book());
+    verify(mockNodeRepository, times(1))
+        .getNextSibling(any(Account.class), any(JpaTreeDiscriminator.class));
   }
 
   @Test
   void getParents() {
-    accountRepository.getParents(new Account());
-    verify(mockNodeRepository, times(1)).getParents(any(Account.class));
+    accountRepository.getParents(new Account(), new Book());
+    verify(mockNodeRepository, times(1))
+        .getParents(any(Account.class), any(JpaTreeDiscriminator.class));
   }
 
   @Test
   void removeSingle() {
-    accountRepository.removeSingle(new Account());
-    verify(mockNodeRepository, times(1)).removeSingle(any(Account.class));
+    accountRepository.removeSingle(new Account(), new Book());
+    verify(mockNodeRepository, times(1))
+        .removeSingle(any(Account.class), any(JpaTreeDiscriminator.class));
   }
 
   @Test
   void removeSubTree() {
-    accountRepository.removeSubTree(new Account());
-    verify(mockNodeRepository, times(1)).removeSubtree(any(Account.class));
+    accountRepository.removeSubTree(new Account(), new Book());
+    verify(mockNodeRepository, times(1))
+        .removeSubtree(any(Account.class), any(JpaTreeDiscriminator.class));
   }
 
   @Test
@@ -90,9 +97,10 @@ class AccountRepositoryTests {
     String guid = IdentifierFactory.getInstance().generateIdentifier();
     Account newAccount = accountRepository.newAccount(guid);
     newAccount.setName("Root Account First");
-    doReturn(rootLevelNodeCount).when(spyAccountRepository).rootLevelNodeCount();
-    spyAccountRepository.insertAsFirstRoot(newAccount);
-    verify(mockNodeRepository, times(1)).insertAsFirstRoot(any(Account.class));
+    doReturn(rootLevelNodeCount).when(spyAccountRepository).rootLevelNodeCount(newAccount);
+    spyAccountRepository.insertAsFirstRoot(newAccount, new Book());
+    verify(mockNodeRepository, times(1))
+        .insertAsFirstRoot(any(Account.class), any(JpaTreeDiscriminator.class));
   }
 
   @Test
@@ -101,9 +109,10 @@ class AccountRepositoryTests {
     String guid = IdentifierFactory.getInstance().generateIdentifier();
     Account newAccount = accountRepository.newAccount(guid);
     newAccount.setName("Root Account Last");
-    doReturn(rootLevelNodeCount).when(spyAccountRepository).rootLevelNodeCount();
-    spyAccountRepository.insertAsLastRoot(newAccount);
-    verify(mockNodeRepository, times(1)).insertAsLastRoot(any(Account.class));
+    doReturn(rootLevelNodeCount).when(spyAccountRepository).rootLevelNodeCount(newAccount);
+    spyAccountRepository.insertAsLastRoot(newAccount, new Book());
+    verify(mockNodeRepository, times(1))
+        .insertAsLastRoot(any(Account.class), any(JpaTreeDiscriminator.class));
   }
 
   @Test
@@ -112,13 +121,14 @@ class AccountRepositoryTests {
     String guid = IdentifierFactory.getInstance().generateIdentifier();
     Account newAccount = accountRepository.newAccount(guid);
     newAccount.setName("Root Account Last");
-    doReturn(rootLevelNodeCount).when(spyAccountRepository).rootLevelNodeCount();
+    doReturn(rootLevelNodeCount).when(spyAccountRepository).rootLevelNodeCount(newAccount);
     assertThatExceptionOfType(AccountCreateException.class)
-        .isThrownBy(() -> spyAccountRepository.insertAsLastRoot(newAccount))
+        .isThrownBy(() -> spyAccountRepository.insertAsLastRoot(newAccount, new Book()))
         .withMessage(
             "A new root level account can't be created. Only one root level account may be present. Current root level node count: "
                 + rootLevelNodeCount);
-    verify(mockNodeRepository, times(0)).insertAsLastRoot(any(Account.class));
+    verify(mockNodeRepository, times(0))
+        .insertAsLastRoot(any(Account.class), any(JpaTreeDiscriminator.class));
   }
 
   @Test
@@ -127,10 +137,12 @@ class AccountRepositoryTests {
     String guid = IdentifierFactory.getInstance().generateIdentifier();
     Account newAccount = accountRepository.newAccount(guid);
     newAccount.setName("Last Child Of");
-    doReturn(longName).when(spyAccountRepository).deriveLongName(any(Account.class));
-    spyAccountRepository.insertAsLastChildOf(newAccount, newAccount);
+    doReturn(longName)
+        .when(spyAccountRepository)
+        .deriveLongName(any(Account.class), any(Book.class));
+    spyAccountRepository.insertAsLastChildOf(newAccount, newAccount, new Book());
     verify(mockNodeRepository, times(1))
-        .insertAsLastChildOf(any(Account.class), any(Account.class));
+        .insertAsLastChildOf(any(Account.class), any(Account.class), any());
   }
 
   @Test
@@ -139,10 +151,10 @@ class AccountRepositoryTests {
     String guid = IdentifierFactory.getInstance().generateIdentifier();
     Account newAccount = accountRepository.newAccount(guid);
     newAccount.setName("First Child Of");
-    doReturn(longName).when(spyAccountRepository).deriveLongName(any(Account.class));
-    spyAccountRepository.insertAsFirstChildOf(newAccount, newAccount);
+    doReturn(longName).when(spyAccountRepository).deriveLongName(any(Account.class), any());
+    spyAccountRepository.insertAsFirstChildOf(newAccount, newAccount, new Book());
     verify(mockNodeRepository, times(1))
-        .insertAsFirstChildOf(any(Account.class), any(Account.class));
+        .insertAsFirstChildOf(any(Account.class), any(Account.class), any());
   }
 
   @Test
@@ -153,10 +165,10 @@ class AccountRepositoryTests {
     newAccount.setName("Prev Sibling Of");
     newAccount.setParentId(99L);
     doReturn(Optional.of(newAccount)).when(spyAccountRepository).findById(anyLong());
-    doReturn(longName).when(spyAccountRepository).deriveLongName(any(Account.class));
-    spyAccountRepository.insertAsPrevSiblingOf(newAccount, newAccount);
+    doReturn(longName).when(spyAccountRepository).deriveLongName(any(Account.class), any());
+    spyAccountRepository.insertAsPrevSiblingOf(newAccount, newAccount, new Book());
     verify(mockNodeRepository, times(1))
-        .insertAsPrevSiblingOf(any(Account.class), any(Account.class));
+        .insertAsPrevSiblingOf(any(Account.class), any(Account.class), any());
   }
 
   @Test
@@ -165,11 +177,14 @@ class AccountRepositoryTests {
     Account newAccount = accountRepository.newAccount(guid);
     newAccount.setName("Prev Sibling Of");
     newAccount.setParentId(99L);
+    var newBook = new Book("Lorum Ipsum");
+    newBook.setId(999L);
     doReturn(Optional.empty()).when(spyAccountRepository).findById(anyLong());
     assertThatExceptionOfType(AccountNotFoundException.class)
-        .isThrownBy(() -> spyAccountRepository.insertAsPrevSiblingOf(newAccount, newAccount));
+        .isThrownBy(
+            () -> spyAccountRepository.insertAsPrevSiblingOf(newAccount, newAccount, newBook));
     verify(mockNodeRepository, times(0))
-        .insertAsPrevSiblingOf(any(Account.class), any(Account.class));
+        .insertAsPrevSiblingOf(any(Account.class), any(Account.class), any());
   }
 
   @Test
@@ -179,11 +194,13 @@ class AccountRepositoryTests {
     Account newAccount = accountRepository.newAccount(guid);
     newAccount.setName("Next Sibling Of");
     newAccount.setParentId(99L);
+    var newBook = new Book("Lorum Ipsum");
+    newBook.setId(999L);
     doReturn(Optional.of(newAccount)).when(spyAccountRepository).findById(anyLong());
-    doReturn(longName).when(spyAccountRepository).deriveLongName(any(Account.class));
-    spyAccountRepository.insertAsNextSiblingOf(newAccount, newAccount);
+    doReturn(longName).when(spyAccountRepository).deriveLongName(any(Account.class), any());
+    spyAccountRepository.insertAsNextSiblingOf(newAccount, newAccount, newBook);
     verify(mockNodeRepository, times(1))
-        .insertAsNextSiblingOf(any(Account.class), any(Account.class));
+        .insertAsNextSiblingOf(any(Account.class), any(Account.class), any());
   }
 
   @Test
@@ -192,29 +209,33 @@ class AccountRepositoryTests {
     Account newAccount = accountRepository.newAccount(guid);
     newAccount.setName("Next Sibling Of");
     newAccount.setParentId(99L);
+    var newBook = new Book("Lorum Ipsum");
+    newBook.setId(999L);
     doReturn(Optional.empty()).when(spyAccountRepository).findById(anyLong());
     assertThatExceptionOfType(AccountNotFoundException.class)
-        .isThrownBy(() -> spyAccountRepository.insertAsNextSiblingOf(newAccount, newAccount));
+        .isThrownBy(
+            () -> spyAccountRepository.insertAsNextSiblingOf(newAccount, newAccount, newBook));
     verify(mockNodeRepository, times(0))
-        .insertAsNextSiblingOf(any(Account.class), any(Account.class));
+        .insertAsNextSiblingOf(any(Account.class), any(Account.class), any());
   }
 
   @Test
   void update() {
     Iterable<Account> ia = treeAsList();
-    doReturn(ia).when(mockNodeRepository).getTreeAsList(any(Account.class));
-    doReturn("Any Long Name").when(spyAccountRepository).deriveLongName(any(Account.class));
-    spyAccountRepository.update(account2());
-    verify(spyAccountRepository, times(3)).deriveLongName(any(Account.class));
+    doReturn(ia).when(mockNodeRepository).getTreeAsList(any(Account.class), any());
+    doReturn("Any Long Name").when(spyAccountRepository).deriveLongName(any(Account.class), any());
+    spyAccountRepository.update(account2(), new Book());
+    verify(spyAccountRepository, times(3)).deriveLongName(any(Account.class), any());
     verify(mockEntityManager, times(1)).merge(any(Account.class));
   }
 
   @Test
   void update_whenParentIdIsNull_thenUnsupportedOperationException() {
     var account = new Account();
+    var book = new Book();
     // exception thrown because parent id is null, indirectly testing preventUnsafeOperations()
     assertThatExceptionOfType(UnsupportedOperationException.class)
-        .isThrownBy(() -> spyAccountRepository.update(account));
+        .isThrownBy(() -> spyAccountRepository.update(account, book));
   }
 
   @Test
@@ -222,23 +243,28 @@ class AccountRepositoryTests {
     List<Account> accountList = new ArrayList<>();
     accountList.add(account1());
     doReturn(Optional.of(account2())).when(spyAccountRepository).findById(anyLong());
-    doReturn(accountList).when(mockNodeRepository).getParents(any(Account.class));
-    assertThat(spyAccountRepository.deriveLongName(account7()))
+    doReturn(accountList).when(mockNodeRepository).getParents(any(Account.class), any());
+    assertThat(spyAccountRepository.deriveLongName(account7(), new Book()))
         .isEqualTo(account2().getName() + ':' + account7().getName());
   }
 
   @Test
   void deriveLongName_whenTreeLeftDoesntExceedOne_thenDerivedLongNameisEqualToTheAccountName() {
+    var newBook = new Book();
+    newBook.setId(999L);
     doReturn(Optional.of(account1())).when(spyAccountRepository).findById(anyLong());
-    assertThat(spyAccountRepository.deriveLongName(account7())).isEqualTo(account7().getName());
+    assertThat(spyAccountRepository.deriveLongName(account7(), newBook))
+        .isEqualTo(account7().getName());
   }
 
   @Test
   void deriveLongName_whenParentAccountNotFound_thenAccountNotFoundException() {
     var account7 = account7();
+    var book = new Book();
+    book.setId(999L);
     doReturn(Optional.empty()).when(spyAccountRepository).findById(anyLong());
     assertThatExceptionOfType(AccountNotFoundException.class)
-        .isThrownBy(() -> spyAccountRepository.deriveLongName(account7));
+        .isThrownBy(() -> spyAccountRepository.deriveLongName(account7, book));
   }
 
   private Iterable<Account> treeAsList() {

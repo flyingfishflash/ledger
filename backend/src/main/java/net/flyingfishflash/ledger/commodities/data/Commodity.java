@@ -2,11 +2,15 @@ package net.flyingfishflash.ledger.commodities.data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import net.flyingfishflash.ledger.books.data.Book;
 
 @Entity
 @Table(
@@ -18,6 +22,9 @@ public class Commodity {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private Long id;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  private Book book;
 
   @Column(name = "guid", unique = true, updatable = false, length = 32)
   private String guid;
@@ -50,6 +57,19 @@ public class Commodity {
 
   public Commodity(String guid) {
     this.guid = guid;
+  }
+
+  public Commodity(String guid, Book book) {
+    this.guid = guid;
+    this.book = book;
+  }
+
+  public Book getBook() {
+    return book;
+  }
+
+  public void setBook(Book book) {
+    this.book = book;
   }
 
   public String getGuid() {

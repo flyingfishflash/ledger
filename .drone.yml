@@ -1,16 +1,18 @@
-# drone secrets:
-# registry_mirror = http://registry-mirror.domain.tld
-# repository_backend  = registry.domain.tld/namespace/ledger
-# repository_frontend = registry.domain.tld/namespace/ledger-frontend
-# repository_backend_development  = registry.domain.tld/namespace/ledger:development
-# repository_frontend_development = registry.domain.tld/namespace/ledger-frontend:development
-# sonar_host
-# sonar_login (user token)
-# sonar_project_key
-# ssh_username
-# ssh_host_dev
-# ssh_host_prd
-# ssh_key
+# repository secrets:
+# - repository_backend  = registry.domain.tld/namespace/ledger
+# - repository_frontend = registry.domain.tld/namespace/ledger-frontend
+# - repository_backend_development  = registry.domain.tld/namespace/ledger:development
+# - repository_frontend_development = registry.domain.tld/namespace/ledger-frontend:development
+# - sonar_project_key
+# - ssh_username
+# - ssh_host_dev
+# - ssh_host_prd
+# - ssh_key
+
+# organization secrets:
+# - registry_mirror = http://registry-mirror.domain.tld
+# - sonar_host
+# - sonar_login (user token)
 
 kind: pipeline
 type: docker
@@ -56,95 +58,6 @@ steps:
     volumes:
       - name: drone_cache
         path: /drone/drone_cache
-
----
-kind: pipeline
-name: "frontend - publish"
-type: docker
-
-trigger:
-  event:
-    - push
-    - tag
-  ref:
-    - refs/heads/ci-*
-    - refs/heads/docs-*
-    - refs/heads/feature-*
-    - refs/heads/fix-*
-    - refs/heads/refactor-*
-    - refs/heads/style-*
-    - refs/heads/test-*
-    - refs/tags/*
-
-depends_on:
-  - "frontend - build"
-
-volumes:
-  - name: drone_cache
-    host:
-      path: /var/lib/docker/volumes_managed/drone_cache
-
-steps:
-  - name: fetch git tags
-    image: alpine/git
-    commands:
-      - git fetch --tags
-
-  - name: cache pull
-    image: alpine/git
-    depends_on:
-      - "fetch git tags"
-    commands:
-      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-frontend
-      - pwd
-      - ls -la
-      - ls /drone/src/frontend/dist/ledger-frontend/ -la
-    volumes:
-      - name: drone_cache
-        path: /drone/drone_cache
-
-  - name: publish branch
-    image: plugins/docker
-    depends_on:
-      - "cache pull"
-    settings:
-      auto_tag: false
-      cache_from:
-        from_secret: repository_frontend_development
-      context: /drone/src/frontend/
-      dockerfile: /drone/src/frontend/Dockerfile
-      tags: development
-      mirror:
-        from_secret: registry_mirror
-      repo:
-        from_secret: repository_frontend
-    when:
-      ref:
-        - refs/heads/ci-*
-        - refs/heads/docs-*
-        - refs/heads/feature-*
-        - refs/heads/fix-*
-        - refs/heads/refactor-*
-        - refs/heads/style-*
-        - refs/heads/test-*
-
-  - name: publish release
-    image: plugins/docker
-    depends_on:
-      - "cache pull"
-    settings:
-      auto_tag: false
-      cache_from:
-        from_secret: repository_frontend_development
-      context: /drone/src/frontend/
-      dockerfile: /drone/src/frontend/Dockerfile
-      mirror:
-        from_secret: registry_mirror
-      repo:
-        from_secret: repository_frontend
-    when:
-      ref:
-        - refs/tags/*
 
 ---
 kind: pipeline
@@ -197,7 +110,7 @@ steps:
           -c "select count(*) from pg_catalog.pg_tables;"
 
   - name: build
-    image: gradle:7.4.2-jdk18
+    image: gradle:7.5.1-jdk18
     depends_on:
       - "cache pull"
       - "verify postgres"
@@ -262,7 +175,7 @@ steps:
 
   - name: sonarqube analysis
     failure: ignore
-    image: gradle:7.4.2-jdk18
+    image: gradle:7.5.1-jdk18
     depends_on:
       - "cache pull"
     environment:
@@ -280,6 +193,105 @@ steps:
         -Dsonar.projectVersion=$(./scripts/version.sh version)
         -Dsonar.host.url=$SONAR_HOST
         -Dsonar.login=$SONAR_LOGIN
+        -Dsonar.coverage.exclusions=backend/src/main/java/net/flyingfishflash/ledger/foundation/configuration/*.java
+
+---
+kind: pipeline
+name: "frontend - publish"
+type: docker
+
+trigger:
+  event:
+    - push
+    - tag
+  ref:
+    - refs/heads/ci-*
+    - refs/heads/docs-*
+    - refs/heads/feature-*
+    - refs/heads/fix-*
+    - refs/heads/refactor-*
+    - refs/heads/style-*
+    - refs/heads/test-*
+    - refs/tags/*
+
+depends_on:
+  - "frontend - build"
+  - "backend - build"
+
+volumes:
+  - name: drone_cache
+    host:
+      path: /var/lib/docker/volumes_managed/drone_cache
+
+steps:
+  - name: fetch git tags
+    image: alpine/git
+    commands:
+      - git fetch --tags
+
+  - name: cache pull
+    image: alpine/git
+    depends_on:
+      - "fetch git tags"
+    commands:
+      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-frontend
+      - pwd
+      - ls -la
+      - ls /drone/src/frontend/dist/ledger-frontend/ -la
+    volumes:
+      - name: drone_cache
+        path: /drone/drone_cache
+
+  - name: publish branch
+    image: plugins/docker
+    depends_on:
+      - "cache pull"
+    settings:
+      auto_tag: false
+      cache_from:
+        from_secret: repository_frontend_development
+      context: /drone/src/frontend/
+      dockerfile: /drone/src/frontend/Dockerfile
+      repo:
+        from_secret: repository_frontend
+      tags: development
+      registry:
+        from_secret: registry_hostname
+      username:
+        from_secret: registry_username
+      password:
+        from_secret: registry_password
+    when:
+      ref:
+        - refs/heads/ci-*
+        - refs/heads/docs-*
+        - refs/heads/feature-*
+        - refs/heads/fix-*
+        - refs/heads/refactor-*
+        - refs/heads/style-*
+        - refs/heads/test-*
+
+  - name: publish release
+    image: plugins/docker
+    depends_on:
+      - "cache pull"
+    settings:
+      auto_tag: false
+      cache_from:
+        from_secret: repository_frontend_development
+      context: /drone/src/frontend/
+      dockerfile: /drone/src/frontend/Dockerfile
+      repo:
+        from_secret: repository_frontend
+      registry:
+        from_secret: registry_hostname
+      username:
+        from_secret: registry_username
+      password:
+        from_secret: registry_password
+    when:
+      ref:
+        - refs/tags/*
 
 ---
 kind: pipeline
@@ -302,6 +314,7 @@ trigger:
 
 depends_on:
   - "backend - build"
+  - "frontend - build"
 
 volumes:
   - name: drone_cache
@@ -345,11 +358,15 @@ steps:
         from_secret: repository_backend_development
       context: /drone/src/backend/
       dockerfile: /drone/src/backend/Dockerfile
-      tags: development
-      mirror:
-        from_secret: registry_mirror
       repo:
         from_secret: repository_backend
+      tags: development
+      registry:
+        from_secret: registry_hostname
+      username:
+        from_secret: registry_username
+      password:
+        from_secret: registry_password
     when:
       ref:
         - refs/heads/ci-*
@@ -380,10 +397,14 @@ steps:
         from_secret: repository_backend_development
       context: /drone/src/backend/
       dockerfile: /drone/src/backend/Dockerfile
-      mirror:
-        from_secret: registry_mirror
       repo:
         from_secret: repository_backend
+      registry:
+        from_secret: registry_hostname
+      username:
+        from_secret: registry_username
+      password:
+        from_secret: registry_password
     when:
       ref:
         - refs/tags/*
@@ -424,9 +445,7 @@ steps:
       key:
         from_secret: ssh_key
       script:
-        - cd docker
-        - ansible-playbook docker.yaml -i ansible/inventories/inventory.yaml -e do=restart --tags=ledger-dev
-        # otherwise: docker-compose up stacks/ledger/docker-compose.yaml -d --remove-orphans
+        - ~/.local/bin/scripts/ledger-dev-redeploy.sh
 
 ---
 kind: pipeline
@@ -458,6 +477,4 @@ steps:
       key:
         from_secret: ssh_key
       script:
-        - cd docker
-        - ansible-playbook docker.yaml -i ansible/inventories/inventory.yaml -e do=restart --tags=ledger-prd
-        # otherwise: docker-compose up stacks/ledger/docker-compose.yaml -d --remove-orphans
+        - ~/.local/bin/scripts/ledger-prd-redeploy.sh

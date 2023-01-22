@@ -15,6 +15,7 @@ import net.flyingfishflash.ledger.accounts.AccountConfiguration;
 @EnableJpaRepositories(
     basePackages = {
       "net.flyingfishflash.ledger.accounts",
-      "net.flyingfishflash.ledger.foundation",
+      "net.flyingfishflash.ledger.books",
+      "net.flyingfishflash.ledger.foundation"
     })
 public class AccountTestConfiguration extends AccountConfiguration {}
