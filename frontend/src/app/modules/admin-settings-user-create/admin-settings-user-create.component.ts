@@ -1,6 +1,10 @@
 // angular
 import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from "@angular/forms";
 
 // third party
 import { BehaviorSubject, Observable } from "rxjs";
@@ -23,7 +27,7 @@ interface CreateUserStatus {
 export class AdminSettingsUserCreateComponent implements OnInit {
   componentHeading = "Create User";
 
-  userForm: FormGroup;
+  userForm: UntypedFormGroup;
 
   rolesArray = rolesArray;
 
@@ -36,7 +40,7 @@ export class AdminSettingsUserCreateComponent implements OnInit {
   });
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private userService: UserService
   ) {}
 

@@ -1,6 +1,10 @@
 // angular
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from "@angular/forms";
 
 // third party
 import { Observable } from "rxjs";
@@ -21,7 +25,7 @@ import { UtilitiesService } from "@shared/utilities/utilities.service";
 export class ProfileComponent implements OnInit, OnDestroy {
   componentHeading = "Profile";
 
-  userDetailsForm: FormGroup;
+  userDetailsForm: UntypedFormGroup;
 
   hide = true;
 
@@ -36,7 +40,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private profileService: ProfileService,
     private storageService: StorageService,
     private utilitiesService: UtilitiesService,
-    private formBuilder: FormBuilder
+    private formBuilder: UntypedFormBuilder
   ) {}
 
   ngOnInit() {
