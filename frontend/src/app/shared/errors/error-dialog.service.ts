@@ -1,6 +1,6 @@
 // angular
 import { Injectable } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
 
 // components
 import { ErrorDialogComponent } from "./error-dialog/error-dialog.component";
