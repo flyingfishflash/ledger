@@ -38,7 +38,7 @@ steps:
         path: /drone/drone_cache
 
   - name: build
-    image: node:latest
+    image: node:18-alpine
     depends_on:
       - "cache pull"
     commands:

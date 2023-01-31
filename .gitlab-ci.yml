@@ -14,7 +14,7 @@ stages:
 image: docker:latest
 
 build-dist:
-  image: node:latest
+  image: node:18-alpine
   stage: build
   script:
     - export PATH=$PWD/frontend/node_modules/.bin:$PATH
