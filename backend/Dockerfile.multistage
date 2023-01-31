@@ -4,7 +4,7 @@ WORKDIR /home/gradle/src
 #RUN gradle --no-daemon bootJar
 RUN gradle --no-daemon explodeBootJar
 
-FROM openjdk:18-jdk-alpine
+FROM eclipse-temurin:17-jdk-alpine
 VOLUME /tmp
 EXPOSE 8181
 RUN mkdir /app
