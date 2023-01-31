@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.9"
 
 services:
 
@@ -36,7 +36,7 @@ services:
       timeout: "5s"
       start_period: "15s"
       retries: 3
-    image: registry.gitlab.com/rollenwiese/ledger:backend-development
+    image: registry.gitlab.com/flyingfishflash/ledger:backend-latest
     logging:
       driver: journald
       options:
@@ -53,7 +53,7 @@ services:
       - ledger-backend
     environment:
       UPSTREAM_SERVER: 'ledger-backend:8181'
-    image: registry.gitlab.com/rollenwiese/ledger:frontend-development
+    image: registry.gitlab.com/flyingfishflash/ledger:frontend-latest
     logging:
       driver: journald
       options:
