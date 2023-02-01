@@ -38,7 +38,7 @@ steps:
         path: /drone/drone_cache
 
   - name: build
-    image: node:latest
+    image: node:18-alpine
     depends_on:
       - "cache pull"
     commands:
@@ -110,7 +110,7 @@ steps:
           -c "select count(*) from pg_catalog.pg_tables;"
 
   - name: build
-    image: gradle:7.5.1-jdk18
+    image: gradle:7.6.0-jdk17
     depends_on:
       - "cache pull"
       - "verify postgres"
@@ -147,7 +147,7 @@ steps:
 
 ---
 kind: pipeline
-name: "sonarqube"
+name: "sonar"
 type: docker
 
 trigger:
@@ -173,9 +173,9 @@ steps:
       - name: drone_cache
         path: /drone/drone_cache
 
-  - name: sonarqube analysis
+  - name: sonar analysis
     failure: ignore
-    image: gradle:7.5.1-jdk18
+    image: gradle:7.6.0-jdk17
     depends_on:
       - "cache pull"
     environment:
@@ -187,8 +187,8 @@ steps:
         from_secret: sonar_login
     commands:
       - >
-        /drone/src/scripts/ci/drone/drone-is-sonarqube-configured.sh &&
-        gradle sonarqube
+        /drone/src/scripts/ci/drone/drone-is-sonar-configured.sh &&
+        gradle sonar
         -Dsonar.projectKey=$SONAR_PROJECT_KEY
         -Dsonar.projectVersion=$(./scripts/version.sh version)
         -Dsonar.host.url=$SONAR_HOST

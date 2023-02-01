@@ -1,14 +1,6 @@
 package net.flyingfishflash.ledger.accounts.data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 import net.flyingfishflash.ledger.accounts.data.nestedset.model.NestedNode;
 import net.flyingfishflash.ledger.books.data.Book;
@@ -18,7 +10,8 @@ import net.flyingfishflash.ledger.commodities.data.Commodity;
 public class Account implements NestedNode<Long> {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  @SequenceGenerator(name = "account_id_seq", sequenceName = "account_seq", allocationSize = 1)
+  @GeneratedValue(generator = "account_id_seq")
   @SuppressWarnings("java:S1845")
   private Long id;
 

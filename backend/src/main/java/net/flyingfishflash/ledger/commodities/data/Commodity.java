@@ -1,14 +1,6 @@
 package net.flyingfishflash.ledger.commodities.data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import jakarta.persistence.*;
 
 import net.flyingfishflash.ledger.books.data.Book;
 
@@ -20,7 +12,8 @@ import net.flyingfishflash.ledger.books.data.Book;
 public class Commodity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  @SequenceGenerator(name = "commodity_id_seq", sequenceName = "commodity_seq", allocationSize = 1)
+  @GeneratedValue(generator = "commodity_id_seq")
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)

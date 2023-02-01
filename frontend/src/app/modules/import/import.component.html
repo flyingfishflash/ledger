@@ -1,11 +1,11 @@
-<div id="import-component-content" style="padding: 24px;">
+<div id="import-component-content" style="padding: 24px">
   <!-- <div fxFlex fxLayout="column" style="width:100%;"> -->
-  <div fxFlex fxLayout="column" style="width: 100%;">
+  <div fxFlex fxLayout="column" style="width: 100%">
     <h2 class="mat-headline">{{ componentHeading }}</h2>
     <mat-divider></mat-divider>
 
-    <div style="margin-top: 16px;">
-      <mat-card style="padding: 16px; margin-top: 16px;">
+    <div style="margin-top: 16px">
+      <mat-card style="padding: 16px; margin-top: 16px">
         <mat-card-header>
           <mat-card-title>File Selection</mat-card-title>
         </mat-card-header>
@@ -25,7 +25,7 @@
               name="dataFile"
               onclick="this.value=null"
               #fileInput
-              style="display: none;"
+              style="display: none"
               accept=".gnucash"
               (change)="uploadSelected($event.target.files)"
             />
@@ -68,7 +68,7 @@
         </mat-card-content>
       </mat-card>
 
-      <mat-card class="no-expansion" style="margin-top: 16px;">
+      <mat-card class="no-expansion" style="margin-top: 16px">
         <mat-card-header>
           <!--mat-card-title>Status</mat-card-title-->
         </mat-card-header>
@@ -126,7 +126,7 @@
           </table>
 
           <h3>Messages</h3>
-          <mat-card class="no-expansion" style="margin-top: 16px;">
+          <mat-card class="no-expansion" style="margin-top: 16px">
             <mat-card-content>
               <ul>
                 <!-- we will use Angular binding to populate list of messages -->

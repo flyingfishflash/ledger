@@ -248,7 +248,7 @@ The following is the list of supported scopes:
 * `gitlab`
 * `gradle`
 * `dev-infra`: used for dev-infra related changes within the directories /scripts, /release
-* none/empty string: useful for `test` and `refactor` changes that are done across all packages (e.g. `test: add missing unit tests`) and for docs changes that are not related to a specific package (e.g. `docs: fix typo in tutorial`).
+* none/empty string: useful for `test`,`refactor` and `docs` changes that are done across all packages (e.g. `test: add missing unit tests`) and for docs changes that are not related to a specific package (e.g. `docs: fix typo in tutorial`).
 
 ##### Summary
 

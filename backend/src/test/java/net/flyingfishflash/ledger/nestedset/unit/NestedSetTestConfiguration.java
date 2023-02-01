@@ -2,7 +2,6 @@ package net.flyingfishflash.ledger.nestedset.unit;
 
 import java.util.Properties;
 
-import javax.persistence.EntityManager;
 import javax.sql.DataSource;
 
 import org.springframework.boot.SpringBootConfiguration;
@@ -10,6 +9,8 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+
+import jakarta.persistence.EntityManager;
 
 import net.flyingfishflash.ledger.accounts.data.nestedset.NestedNodeRepository;
 import net.flyingfishflash.ledger.accounts.data.nestedset.config.jpa.JpaNestedNodeRepositoryConfiguration;

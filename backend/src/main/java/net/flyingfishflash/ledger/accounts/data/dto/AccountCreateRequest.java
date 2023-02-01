@@ -1,13 +1,15 @@
 package net.flyingfishflash.ledger.accounts.data.dto;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 import net.flyingfishflash.ledger.accounts.data.nestedset.delegate.NestedNodeHierarchyManipulator;
 import net.flyingfishflash.ledger.foundation.validators.Enum;
@@ -34,7 +36,7 @@ import net.flyingfishflash.ledger.foundation.validators.Enum;
  * </pre>
  */
 public record AccountCreateRequest(
-    @NotNull @Positive @Schema(required = true) Long bookId,
+    @NotNull @Positive @Schema(requiredMode = REQUIRED) Long bookId,
     @Size(max = 2048)
         @Pattern(
             regexp = "^(?!\\s*$).+",
@@ -51,15 +53,15 @@ public record AccountCreateRequest(
         @Schema(
             description = "Node manipulator mode.",
             allowableValues = "FIRST_CHILD, LAST_CHILD, PREV_SIBLING, NEXT_SIBLING",
-            required = true)
+            requiredMode = REQUIRED)
         String mode,
-    @Size(max = 2048) @NotEmpty @Schema(required = true) String name,
+    @Size(max = 2048) @NotEmpty @Schema(requiredMode = REQUIRED) String name,
     @Size(max = 4096)
         @Pattern(
             regexp = "^(?!\\s*$).+",
             message = "may be null, must not be an empty string, must not consist only of spaces")
         String note,
-    @NotNull @Positive @Schema(required = true) Long parentId,
+    @NotNull @Positive @Schema(requiredMode = REQUIRED) Long parentId,
     @NotNull Boolean placeholder,
     @Min(2) @Schema(description = "Required if mode is PREV_SIBLING or NEXT_SIBLING. Must be > 1.")
         Long siblingId,

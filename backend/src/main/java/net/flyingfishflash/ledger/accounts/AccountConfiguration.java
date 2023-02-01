@@ -1,12 +1,12 @@
 package net.flyingfishflash.ledger.accounts;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.nestedset.NestedNodeRepository;

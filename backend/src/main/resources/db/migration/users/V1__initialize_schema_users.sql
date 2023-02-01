@@ -1,4 +1,9 @@
-CREATE sequence hibernate_sequence START WITH 1 increment BY 1;
+CREATE sequence account_seq START WITH 1 increment BY 1;
+CREATE sequence book_seq START WITH 1 increment BY 1;
+CREATE sequence commodity_seq START WITH 1 increment BY 1;
+CREATE sequence price_seq START WITH 1 increment BY 1;
+CREATE sequence entry_seq START WITH 1 increment BY 1;
+CREATE sequence transaction_seq START WITH 1 increment BY 1;
 
 CREATE TABLE account (
 	id BIGINT NOT NULL

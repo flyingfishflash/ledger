@@ -1,4 +1,4 @@
-FROM openjdk:18-jdk-alpine
+FROM eclipse-temurin:17-jdk-alpine
 VOLUME /tmp
 EXPOSE 8181
 RUN mkdir /app

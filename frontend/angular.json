@@ -123,5 +123,7 @@
       }
     }
   },
-  "defaultProject": "ledger-frontend"
+  "cli": {
+    "analytics": false
+  }
 }

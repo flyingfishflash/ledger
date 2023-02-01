@@ -11,16 +11,16 @@
         />
         <h2 class="mat-h2">Ledger</h2>
         <div *ngIf="!isLoginDisabled">
-          <h3 class="mat-h3" style="margin: 0.8rem;">
+          <h3 class="mat-h3" style="margin: 0.8rem">
             {{ appConfigInfoBuild.version }}
           </h3>
-          <p class="mat-small" style="margin: 0.1rem;">
-            {{ appConfigInfoBuild.time | date: "mediumDate":"UTC" }}
+          <p class="mat-small" style="margin: 0.1rem">
+            {{ appConfigInfoBuild.time | date : "mediumDate" : "UTC" }}
           </p>
-          <p class="mat-small" style="margin: 0.1rem;">
-            {{ appConfigInfoBuild.time | date: "longTime":"UTC" }}
+          <p class="mat-small" style="margin: 0.1rem">
+            {{ appConfigInfoBuild.time | date : "longTime" : "UTC" }}
           </p>
-          <p class="mat-small" style="margin: 0.1rem;">
+          <p class="mat-small" style="margin: 0.1rem">
             <br />
             {{ appConfigInfoBuild.ciPlatform }} |
             {{ appConfigInfoBuild.ciPipelineId }} |
@@ -50,7 +50,7 @@
             />
           </mat-form-field>
           <div fxLayoutGap="16px" fxLayoutAlign="none">
-            <mat-form-field style="width: 88%;">
+            <mat-form-field style="width: 88%">
               <input
                 matInput
                 type="password"
@@ -69,21 +69,21 @@
               class="show-hide-password-button"
               (click)="hide = !hide"
             >
-              <mat-icon matSuffix style="font-size: 18px;">{{
+              <mat-icon matSuffix style="font-size: 18px">{{
                 this.hide ? "visibility_off" : "visibility"
               }}</mat-icon>
             </button>
           </div>
           <button
             type="submit"
-            style="margin-top: 32px;"
+            style="margin-top: 32px"
             mat-flat-button
             color="primary"
             [disabled]="isLoginDisabled"
           >
             Login
           </button>
-          <div style="margin-top: 32px;">
+          <div style="margin-top: 32px">
             <div *ngIf="(f.submitted && isLoginFailed) || this.isLoginDisabled">
               <mat-error
                 ><span>{{ errorMessage }}</span></mat-error
@@ -91,7 +91,7 @@
             </div>
             <div
               *ngIf="f.submitted && username.invalid && password.invalid"
-              style="word-wrap: break-word; margin: 16px;"
+              style="word-wrap: break-word; margin: 16px"
             >
               <mat-error
                 *ngIf="username.errors.required && password.errors.required"
@@ -100,7 +100,7 @@
             </div>
             <div
               *ngIf="f.submitted && username.invalid && !password.invalid"
-              style="margin: 16px;"
+              style="margin: 16px"
             >
               <mat-error *ngIf="username.errors.required"
                 >Username is a required field</mat-error
@@ -108,7 +108,7 @@
             </div>
             <div
               *ngIf="f.submitted && !username.invalid && password.invalid"
-              style="margin: 16px;"
+              style="margin: 16px"
             >
               <mat-error *ngIf="password.errors.required"
                 >Password is a required field</mat-error

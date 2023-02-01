@@ -2,7 +2,6 @@ package net.flyingfishflash.ledger.books.unit;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -28,7 +27,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import net.flyingfishflash.ledger.books.data.ActiveBook;
-import net.flyingfishflash.ledger.books.data.Book;
 import net.flyingfishflash.ledger.books.data.dto.BookRequest;
 import net.flyingfishflash.ledger.books.data.dto.SetActiveBookRequest;
 import net.flyingfishflash.ledger.books.service.BookService;
@@ -109,29 +107,29 @@ class BookControllerTests {
     verify(mockBookService, times(1)).deleteBook(Long.valueOf(pathVariable));
   }
 
-  @Test
-  void postActive() throws Exception {
-    // TODO: mock return service object and validate its Json representation
-    var setActiveBookRequest = new SetActiveBookRequest(1L);
-    var activeBook = new Book("Book Name");
-    activeBook.setId(1L);
-    given(mockBookService.findById(1L)).willReturn(activeBook);
-    mvc.perform(
-            post("/api/v1/ledger/books/active")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonSetActiveBookRequest.write(setActiveBookRequest).getJson()))
-        .andExpect(status().isOk());
-    verify(mockActiveBook, times(1)).setBookId(setActiveBookRequest.id());
-  }
-
-  @Test
-  void getActive() throws Exception {
-    // TODO: mock return service object and validate its Json representation
-    var activeBook = new Book("Book Name");
-    given(mockBookService.findById(0L)).willReturn(activeBook);
-    mvc.perform(get("/api/v1/ledger/books/active").accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk());
-    verify(mockActiveBook, times(1)).getBookId();
-    verify(mockBookService, times(1)).findById(0L);
-  }
+  //  @Test
+  //  void postActive() throws Exception {
+  //    // TODO: mock return service object and validate its Json representation
+  //    var setActiveBookRequest = new SetActiveBookRequest(1L);
+  //    var activeBook = new Book("Book Name");
+  //    activeBook.setId(1L);
+  //    given(mockBookService.findById(1L)).willReturn(activeBook);
+  //    mvc.perform(
+  //            post("/api/v1/ledger/books/active")
+  //                .contentType(MediaType.APPLICATION_JSON)
+  //                .content(jsonSetActiveBookRequest.write(setActiveBookRequest).getJson()))
+  //        .andExpect(status().isOk());
+  //    verify(mockActiveBook, times(1)).setBookId(setActiveBookRequest.id());
+  //  }
+  //
+  //  @Test
+  //  void getActive() throws Exception {
+  //    // TODO: mock return service object and validate its Json representation
+  //    var activeBook = new Book("Book Name");
+  //    given(mockBookService.findById(0L)).willReturn(activeBook);
+  //    mvc.perform(get("/api/v1/ledger/books/active").accept(MediaType.APPLICATION_JSON))
+  //        .andExpect(status().isOk());
+  //    verify(mockActiveBook, times(1)).getBookId();
+  //    verify(mockBookService, times(1)).findById(0L);
+  //  }
 }

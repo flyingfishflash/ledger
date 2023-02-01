@@ -4,15 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import jakarta.persistence.*;
 
 import net.flyingfishflash.ledger.books.data.Book;
 import net.flyingfishflash.ledger.commodities.data.Commodity;
@@ -22,7 +14,8 @@ import net.flyingfishflash.ledger.commodities.data.Commodity;
 public class Price {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  @SequenceGenerator(name = "price_id_seq", sequenceName = "price_seq", allocationSize = 1)
+  @GeneratedValue(generator = "price_id_seq")
   private long id;
 
   @ManyToOne(fetch = FetchType.LAZY)

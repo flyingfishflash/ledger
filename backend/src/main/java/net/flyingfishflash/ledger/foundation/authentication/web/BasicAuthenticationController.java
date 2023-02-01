@@ -2,10 +2,6 @@ package net.flyingfishflash.ledger.foundation.authentication.web;
 
 import java.security.Principal;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.slf4j.Logger;
@@ -17,6 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import net.flyingfishflash.ledger.foundation.authentication.payload.response.SignInResponse;
 import net.flyingfishflash.ledger.foundation.authentication.payload.response.SignOutResponse;

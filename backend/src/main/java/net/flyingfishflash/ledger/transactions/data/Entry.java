@@ -3,33 +3,24 @@ package net.flyingfishflash.ledger.transactions.data;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.money.MonetaryAmount;
 
-import org.hibernate.annotations.Columns;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.javamoney.moneta.Money;
+import com.vladmihalcea.hibernate.type.money.MonetaryAmountType;
+
+import org.hibernate.annotations.CompositeType;
+
+import jakarta.persistence.*;
 
 import net.flyingfishflash.ledger.accounts.data.Account;
 import net.flyingfishflash.ledger.accounts.data.NormalBalance;
 import net.flyingfishflash.ledger.books.data.Book;
 
 @Entity
-@TypeDef(
-    name = "persistentMoneyAmountAndCurrency",
-    typeClass = PersistentMoneyAmountAndCurrency.class)
 public class Entry {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  @SequenceGenerator(name = "entry_id_seq", sequenceName = "entry_seq", allocationSize = 1)
+  @GeneratedValue(generator = "entry_id_seq")
   private long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -55,14 +46,12 @@ public class Entry {
   @Column(precision = 38, scale = 18)
   private BigDecimal quantitySigned;
 
-  /* Value is tied to the transaction currency */
-  @Columns(
-      columns = {
-        @Column(name = "value_currency", length = 3),
-        @Column(name = "`value`", precision = 38, scale = 18)
-      })
-  @Type(type = "persistentMoneyAmountAndCurrency")
-  private Money value;
+  @AttributeOverride(
+      name = "amount",
+      column = @Column(name = "`value`", precision = 38, scale = 18))
+  @AttributeOverride(name = "currency", column = @Column(name = "value_currency", length = 3))
+  @CompositeType(MonetaryAmountType.class)
+  private MonetaryAmount value;
 
   @Column(precision = 38, scale = 18)
   private BigDecimal valueSigned;
@@ -146,23 +135,23 @@ public class Entry {
     }
   }
 
-  public Money getValue() {
+  public MonetaryAmount getValue() {
     return value;
   }
 
-  public void setValue(Money value) {
+  public void setValue(MonetaryAmount value) {
     this.value = value;
     if (this.account.getNormalBalance() == NormalBalance.CREDIT) {
       if (this.type == EntryType.DEBIT) {
-        this.valueSigned = this.value.negate().getNumberStripped();
+        this.valueSigned = this.value.getNumber().numberValue(BigDecimal.class).negate();
       } else {
-        this.valueSigned = this.value.getNumberStripped();
+        this.valueSigned = this.value.getNumber().numberValue(BigDecimal.class);
       }
     } else if (this.account.getNormalBalance() == NormalBalance.DEBIT) {
       if (this.type == EntryType.CREDIT) {
-        this.valueSigned = this.value.negate().getNumberStripped();
+        this.valueSigned = this.value.getNumber().numberValue(BigDecimal.class).negate();
       } else {
-        this.valueSigned = this.value.getNumberStripped();
+        this.valueSigned = this.value.getNumber().numberValue(BigDecimal.class);
       }
     }
   }
