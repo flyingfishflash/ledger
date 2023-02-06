@@ -44,9 +44,10 @@ export class AccountsTableComponent implements OnInit {
       next: (res) => {
         this.accounts = res;
         this.filteredAccounts = this.accounts;
-      },
-      error: (err) => {
-        this.handleError(err);
+        // },
+        // error: (err) => {
+        //   log.debug(`zzz: ${err}`);
+        //   this.handleError(err);
       },
     });
 
@@ -61,6 +62,7 @@ export class AccountsTableComponent implements OnInit {
   }
 
   handleError(error: any) {
+    log.debug(error);
     let errorMessage = "";
     if (error.error instanceof ErrorEvent) {
       errorMessage = `A client internal error occurred:\nError Message: ${error.error.message}`;

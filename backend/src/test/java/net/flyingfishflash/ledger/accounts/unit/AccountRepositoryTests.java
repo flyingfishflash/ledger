@@ -94,7 +94,7 @@ class AccountRepositoryTests {
   @Test
   void insertAsFirstRoot() {
     Long rootLevelNodeCount = 0L;
-    String guid = IdentifierFactory.getInstance().generateIdentifier();
+    String guid = IdentifierFactory.getInstance().identifierWithHyphens();
     Account newAccount = accountRepository.newAccount(guid);
     newAccount.setName("Root Account First");
     doReturn(rootLevelNodeCount).when(spyAccountRepository).rootLevelNodeCount(newAccount);
@@ -106,7 +106,7 @@ class AccountRepositoryTests {
   @Test
   void insertAsLastRoot() {
     Long rootLevelNodeCount = 0L;
-    String guid = IdentifierFactory.getInstance().generateIdentifier();
+    String guid = IdentifierFactory.getInstance().identifierWithHyphens();
     Account newAccount = accountRepository.newAccount(guid);
     newAccount.setName("Root Account Last");
     doReturn(rootLevelNodeCount).when(spyAccountRepository).rootLevelNodeCount(newAccount);
@@ -118,13 +118,13 @@ class AccountRepositoryTests {
   @Test
   void insertAsLastRoot_whenRootLevelNodeCountExceedsZero_thenAccountCreateException() {
     Long rootLevelNodeCount = 1L;
-    String guid = IdentifierFactory.getInstance().generateIdentifier();
+    String guid = IdentifierFactory.getInstance().identifierWithHyphens();
     Account newAccount = accountRepository.newAccount(guid);
     newAccount.setName("Root Account Last");
     doReturn(rootLevelNodeCount).when(spyAccountRepository).rootLevelNodeCount(newAccount);
     assertThatExceptionOfType(AccountCreateException.class)
         .isThrownBy(() -> spyAccountRepository.insertAsLastRoot(newAccount, new Book()))
-        .withMessage(
+        .withMessageContaining(
             "A new root level account can't be created. Only one root level account may be present. Current root level node count: "
                 + rootLevelNodeCount);
     verify(mockNodeRepository, times(0))
@@ -134,7 +134,7 @@ class AccountRepositoryTests {
   @Test
   void insertAsLastChildOf() {
     String longName = "Dummy Long Name - Last Child Of";
-    String guid = IdentifierFactory.getInstance().generateIdentifier();
+    String guid = IdentifierFactory.getInstance().identifierWithHyphens();
     Account newAccount = accountRepository.newAccount(guid);
     newAccount.setName("Last Child Of");
     doReturn(longName)
@@ -148,7 +148,7 @@ class AccountRepositoryTests {
   @Test
   void insertAsFirstChildOf() {
     String longName = "Dummy Long Name - First Child Of";
-    String guid = IdentifierFactory.getInstance().generateIdentifier();
+    String guid = IdentifierFactory.getInstance().identifierWithHyphens();
     Account newAccount = accountRepository.newAccount(guid);
     newAccount.setName("First Child Of");
     doReturn(longName).when(spyAccountRepository).deriveLongName(any(Account.class), any());
@@ -160,7 +160,7 @@ class AccountRepositoryTests {
   @Test
   void insertAsPrevSiblingOf() {
     String longName = "Dummy Long Name - Prev Sibling Of";
-    String guid = IdentifierFactory.getInstance().generateIdentifier();
+    String guid = IdentifierFactory.getInstance().identifierWithHyphens();
     Account newAccount = accountRepository.newAccount(guid);
     newAccount.setName("Prev Sibling Of");
     newAccount.setParentId(99L);
@@ -173,7 +173,7 @@ class AccountRepositoryTests {
 
   @Test
   void insertAsPrevSiblingOf_whenParentAccountNotFound_thenAccountNotFoundException() {
-    String guid = IdentifierFactory.getInstance().generateIdentifier();
+    String guid = IdentifierFactory.getInstance().identifierWithHyphens();
     Account newAccount = accountRepository.newAccount(guid);
     newAccount.setName("Prev Sibling Of");
     newAccount.setParentId(99L);
@@ -190,7 +190,7 @@ class AccountRepositoryTests {
   @Test
   void insertAsNextSiblingOf() {
     String longName = "Dummy Long Name - Next Sibling Of";
-    String guid = IdentifierFactory.getInstance().generateIdentifier();
+    String guid = IdentifierFactory.getInstance().identifierWithHyphens();
     Account newAccount = accountRepository.newAccount(guid);
     newAccount.setName("Next Sibling Of");
     newAccount.setParentId(99L);
@@ -205,7 +205,7 @@ class AccountRepositoryTests {
 
   @Test
   void insertAsNextSiblingOf_whenParentAccountNotFound_thenAccountNotFoundException() {
-    String guid = IdentifierFactory.getInstance().generateIdentifier();
+    String guid = IdentifierFactory.getInstance().identifierWithHyphens();
     Account newAccount = accountRepository.newAccount(guid);
     newAccount.setName("Next Sibling Of");
     newAccount.setParentId(99L);

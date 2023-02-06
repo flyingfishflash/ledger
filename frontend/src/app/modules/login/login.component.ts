@@ -90,13 +90,13 @@ export class LoginComponent implements OnInit {
     log.debug(error);
     let errorMessage = null;
     if (error.error instanceof ErrorEvent) {
-      errorMessage = `A client internal error occurred:\nError Message: ${error.error.message}`;
+      errorMessage = `A client internal error occurred:\nError Message: ${error.error.detail}`;
     } else if (error instanceof HttpErrorResponse) {
       log.debug("httperror");
       if (error.error.status) {
         log.debug("api error");
         if (error.error.status === "fail") {
-          errorMessage = error.error.response.body.message;
+          errorMessage = error.error.response.body.detail;
         }
       } else {
         log.debug("non-api error");

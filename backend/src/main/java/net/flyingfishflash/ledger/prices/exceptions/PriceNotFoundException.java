@@ -2,25 +2,17 @@ package net.flyingfishflash.ledger.prices.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class PriceNotFoundException extends GeneralPriceException implements PriceException {
+import net.flyingfishflash.ledger.foundation.exceptions.AbstractApiException;
+
+public class PriceNotFoundException extends AbstractApiException {
+
+  private static final String TITLE = "Price Not Found";
+
   public PriceNotFoundException(String guid) {
-    super("not found for guid '" + guid + "'");
+    super(HttpStatus.NOT_FOUND, TITLE, "not found for guid '" + guid + "'");
   }
 
   public PriceNotFoundException(Long id) {
-    super("not found for id " + id + "'");
-  }
-
-  public PriceNotFoundException(Long id, String context) {
-    super("not found for id " + id + ". Context if available: " + context);
-  }
-
-  public PriceNotFoundException(String guid, String context) {
-    super("not found for guid " + guid + ". Context if available: " + context);
-  }
-
-  @Override
-  public HttpStatus getHttpStatus() {
-    return HttpStatus.NOT_FOUND;
+    super(HttpStatus.NOT_FOUND, TITLE, "not found for id " + id + "'");
   }
 }

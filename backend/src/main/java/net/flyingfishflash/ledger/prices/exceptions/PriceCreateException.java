@@ -2,17 +2,17 @@ package net.flyingfishflash.ledger.prices.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class PriceCreateException extends GeneralPriceException {
-  public PriceCreateException(String message) {
-    super(message);
+import net.flyingfishflash.ledger.foundation.exceptions.AbstractApiException;
+
+public class PriceCreateException extends AbstractApiException {
+
+  private static final String TITLE = "Problem Creating a Price";
+
+  public PriceCreateException(String detail) {
+    super(HttpStatus.BAD_REQUEST, TITLE, detail);
   }
 
-  public PriceCreateException(String message, Exception cause) {
-    super(message, cause);
-  }
-
-  @Override
-  public HttpStatus getHttpStatus() {
-    return HttpStatus.BAD_REQUEST;
+  public PriceCreateException(String detail, Exception cause) {
+    super(HttpStatus.BAD_REQUEST, TITLE, detail, cause);
   }
 }

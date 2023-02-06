@@ -23,12 +23,12 @@ public class CommodityService {
 
   public Commodity newCommodity() {
 
-    return new Commodity(IdentifierFactory.getInstance().generateIdentifier());
+    return new Commodity(IdentifierFactory.getInstance().identifierWithHyphens());
   }
 
   public Commodity newCommodity(Book book) {
 
-    return new Commodity(IdentifierFactory.getInstance().generateIdentifier(), book);
+    return new Commodity(IdentifierFactory.getInstance().identifierWithHyphens(), book);
   }
 
   public Commodity saveCommodity(Commodity commodity) {

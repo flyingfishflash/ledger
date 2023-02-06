@@ -24,6 +24,7 @@ export class GlobalErrorHandler implements ErrorHandler {
 
     //this.router.navigate(["/error"]);
     log.debug("global error handler triggered:");
+    log.debug(error);
     log.error(`\nError Message: ${error.message}`);
     this.zone.run(() =>
       this.errorDialogService.openDialog(

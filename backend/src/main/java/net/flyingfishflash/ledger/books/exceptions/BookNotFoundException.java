@@ -2,18 +2,13 @@ package net.flyingfishflash.ledger.books.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class BookNotFoundException extends GeneralBookException implements BookException {
+import net.flyingfishflash.ledger.foundation.exceptions.AbstractApiException;
+
+public final class BookNotFoundException extends AbstractApiException {
+
+  private static final String TITLE = "Book Not Found";
 
   public BookNotFoundException(Long id) {
-    super("not found for id " + id + "'");
-  }
-
-  public BookNotFoundException(Long id, String context) {
-    super("not found for id " + id + ". Context if available: " + context);
-  }
-
-  @Override
-  public HttpStatus getHttpStatus() {
-    return HttpStatus.NOT_FOUND;
+    super(HttpStatus.NOT_FOUND, TITLE, "Book not found for id " + id + ".");
   }
 }

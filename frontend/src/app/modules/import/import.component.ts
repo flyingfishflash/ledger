@@ -38,6 +38,7 @@ export class ImportComponent implements OnInit, OnDestroy {
 
   uploadFileName = "";
   file: File;
+  activeBookId: Number;
 
   importMessagesSubscription: Subscription;
   importCountsSubscription: Subscription;
@@ -129,6 +130,7 @@ export class ImportComponent implements OnInit, OnDestroy {
         .pipe(
           concatMap((successResponse) => {
             log.debug(successResponse);
+            this.activeBookId = successResponse.response.body.id;
             var uploadFileForm = new FormData();
             uploadFileForm.append(
               "bookId",
@@ -142,8 +144,9 @@ export class ImportComponent implements OnInit, OnDestroy {
           (successReponse) => {
             log.debug(successReponse);
             log.debug("import success");
+            this.storageService.saveActiveBookId(this.activeBookId);
           },
-          (errorResponse) => {
+          (ledgerErrorResponse) => {
             log.debug("import error");
           }
         );

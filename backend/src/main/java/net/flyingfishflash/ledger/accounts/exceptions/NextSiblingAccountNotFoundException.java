@@ -2,15 +2,16 @@ package net.flyingfishflash.ledger.accounts.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class NextSiblingAccountNotFoundException extends GeneralAccountException
-    implements AccountException {
+import net.flyingfishflash.ledger.foundation.exceptions.AbstractApiException;
+
+public class NextSiblingAccountNotFoundException extends AbstractApiException {
+
+  private static final String TITLE = "Next Sibling Account Not Found";
 
   public NextSiblingAccountNotFoundException(String accountLongName, Long accountId) {
-    super("Account id " + accountId + " (" + accountLongName + ") has no next sibling account.");
-  }
-
-  @Override
-  public HttpStatus getHttpStatus() {
-    return HttpStatus.NOT_FOUND;
+    super(
+        HttpStatus.NOT_FOUND,
+        TITLE,
+        "Account id " + accountId + " (" + accountLongName + ") has no next sibling account.");
   }
 }

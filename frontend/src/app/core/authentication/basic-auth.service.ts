@@ -59,6 +59,8 @@ export class BasicAuthService {
       .pipe(
         tap((res: HttpResponse<any>) => {
           const u = new BasicAuthUser(res);
+          // TODO: remove me
+          this.storageService.saveActiveBookId(48748);
           this.storageService.saveAuthenticatedUser(u);
           this.userSubject.next(u);
           return u;

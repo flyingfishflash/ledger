@@ -2,19 +2,21 @@ package net.flyingfishflash.ledger.importer.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class ImportGnucashBookException extends GeneralImporterException
-    implements ImporterException {
+import net.flyingfishflash.ledger.foundation.exceptions.AbstractApiException;
 
-  public ImportGnucashBookException(String message) {
-    super(message);
+public class ImportGnucashBookException extends AbstractApiException {
+
+  private static final String TITLE = "Problem Importing a Gnucash Book";
+
+  public ImportGnucashBookException(String detail) {
+    super(HttpStatus.BAD_REQUEST, TITLE, detail);
   }
 
-  public ImportGnucashBookException(String message, Exception cause) {
-    super(message, cause);
+  public ImportGnucashBookException(String detail, Exception cause) {
+    super(HttpStatus.BAD_REQUEST, TITLE, detail, cause);
   }
 
-  @Override
-  public HttpStatus getHttpStatus() {
-    return HttpStatus.BAD_REQUEST;
+  public ImportGnucashBookException(String detail, Exception cause, HttpStatus httpStatus) {
+    super(httpStatus, TITLE, detail, cause);
   }
 }

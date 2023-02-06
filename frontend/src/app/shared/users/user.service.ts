@@ -103,8 +103,8 @@ export class UserService {
           // const ps = new Date().toLocaleTimeString() + ': ' + 'Updated profile (' + fields.toString().replace(/,/g, ', ').split(/(?=[A-Z])/).map(s => s.toLowerCase()).join(' ') + ')';
           // this.profileUpdateStatus.next(ps);
         },
-        (errorResponse) => {
-          this.handleError(errorResponse);
+        (ledgerErrorResponse) => {
+          this.handleError(ledgerErrorResponse);
         }
       );
   }

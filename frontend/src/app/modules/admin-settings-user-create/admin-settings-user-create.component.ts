@@ -103,13 +103,13 @@ export class AdminSettingsUserCreateComponent implements OnInit {
           successResponse.response.body.message;
         this.createUserStatusSubject.next(ps);
       },
-      (errorResponse) => {
+      (ledgerErrorResponse) => {
         const ps: CreateUserStatus = this.createUserStatusSubject.getValue();
         ps.userDetailsOK = false;
         ps.message =
           new Date().toLocaleTimeString() +
           ": " +
-          errorResponse.error.response.body.message;
+          ledgerErrorResponse.error.response.body.message;
         this.createUserStatusSubject.next(ps);
       }
     );

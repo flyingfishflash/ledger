@@ -6,6 +6,7 @@ import { BasicAuthUser } from "@core/authentication/basic-auth-user";
 import { Logger } from "@core/logging/logger.service";
 
 const STORAGE_KEY_AUTHENTICATED_USER = "authenticated-user";
+const STORAGE_KEY_ACTIVE_BOOK_ID = "active-book-id";
 const log = new Logger("storage.service");
 
 @Injectable({
@@ -52,6 +53,22 @@ export class StorageService {
       return userName;
     } catch (err) {
       //this.redirectToLogin();
+    }
+  }
+
+  public saveActiveBookId(bookId: Number) {
+    window.sessionStorage.removeItem(STORAGE_KEY_ACTIVE_BOOK_ID);
+    window.sessionStorage.setItem(
+      STORAGE_KEY_ACTIVE_BOOK_ID,
+      bookId.toString()
+    );
+  }
+
+  public getActiveBookId() {
+    try {
+      return sessionStorage.getItem(STORAGE_KEY_ACTIVE_BOOK_ID);
+    } catch (err) {
+      log.debug("couldn't retrieve active book id from session storage");
     }
   }
 }

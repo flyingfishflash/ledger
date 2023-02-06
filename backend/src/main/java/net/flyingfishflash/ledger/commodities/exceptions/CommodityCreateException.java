@@ -2,19 +2,17 @@ package net.flyingfishflash.ledger.commodities.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class CommodityCreateException extends GeneralCommodityException
-    implements CommodityException {
+import net.flyingfishflash.ledger.foundation.exceptions.AbstractApiException;
 
-  public CommodityCreateException(String message) {
-    super(message);
+public class CommodityCreateException extends AbstractApiException {
+
+  private static final String TITLE = "Problem Creating Commodity";
+
+  public CommodityCreateException(String detail) {
+    super(HttpStatus.BAD_REQUEST, TITLE, detail);
   }
 
-  public CommodityCreateException(String message, Exception cause) {
-    super(message, cause);
-  }
-
-  @Override
-  public HttpStatus getHttpStatus() {
-    return HttpStatus.BAD_REQUEST;
+  public CommodityCreateException(String detail, Exception cause) {
+    super(HttpStatus.BAD_REQUEST, TITLE, detail, cause);
   }
 }

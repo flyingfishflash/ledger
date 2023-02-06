@@ -23,12 +23,12 @@ public class PriceService {
 
   public Price newPrice() {
 
-    return new Price(IdentifierFactory.getInstance().generateIdentifier());
+    return new Price(IdentifierFactory.getInstance().identifierWithHyphens());
   }
 
   public Price newPrice(Book book) {
 
-    return new Price(IdentifierFactory.getInstance().generateIdentifier(), book);
+    return new Price(IdentifierFactory.getInstance().identifierWithHyphens(), book);
   }
 
   public Price savePrice(Price price) {

@@ -28,7 +28,17 @@ public final class IdentifierFactory {
    *
    * @return a String representation of a unique identifier.
    */
-  public String generateIdentifier() {
+  public String identifierWithoutHyphens() {
     return UUID.randomUUID().toString().replace("-", "");
+  }
+
+  /**
+   * Generate a unique identifier for use by domain objects providing randomly chosen <code>
+   * java.util.UUID</code>s.
+   *
+   * @return a String representation of a unique identifier.
+   */
+  public String identifierWithHyphens() {
+    return UUID.randomUUID().toString();
   }
 }
