@@ -94,7 +94,8 @@ public class ApplicationErrorResponse {
   }
 
   private static void populateProperties(ProblemDetail problemDetail, Exception exception) {
-    problemDetail.setProperty("uniqueId", IdentifierFactory.getInstance().identifierWithHyphens());
+    problemDetail.setProperty(
+        "uniqueId", IdentifierFactory.getInstance().identifierWithoutHyphens());
     problemDetail.setProperty("exception", exception.getClass().getSimpleName());
     problemDetail.setProperty("causes", extractCauses(exception));
   }

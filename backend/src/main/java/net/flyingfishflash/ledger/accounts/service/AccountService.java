@@ -43,7 +43,7 @@ public class AccountService {
           "Failed to identify the parent account of an account to be created", e);
     }
 
-    var account = new Account(IdentifierFactory.getInstance().identifierWithHyphens());
+    var account = new Account(IdentifierFactory.getInstance().identifierWithoutHyphens());
     Account sibling;
 
     var book = bookRepository.findById(accountCreateRequest.bookId());
@@ -113,7 +113,7 @@ public class AccountService {
   public Account createAccount(Account p) {
 
     var account =
-        accountRepository.newAccount(IdentifierFactory.getInstance().identifierWithHyphens());
+        accountRepository.newAccount(IdentifierFactory.getInstance().identifierWithoutHyphens());
 
     if (p.getType().equals(AccountType.ROOT)) {
       account.setType(AccountType.ASSET);
