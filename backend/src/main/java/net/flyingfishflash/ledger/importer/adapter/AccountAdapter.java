@@ -7,6 +7,7 @@ import javax.money.UnknownCurrencyException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.Resource;
@@ -19,6 +20,7 @@ import net.flyingfishflash.ledger.commodities.service.CommodityService;
 import net.flyingfishflash.ledger.importer.ImportingBook;
 import net.flyingfishflash.ledger.importer.dto.GncAccount;
 import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
+import net.flyingfishflash.ledger.importer.exceptions.ImportGnucashBookException;
 
 @Component
 public class AccountAdapter {
@@ -102,8 +104,13 @@ public class AccountAdapter {
         account.setLongName("root");
         account.setName("root");
         account.setPlaceholder(true);
-        accountService.insertAsFirstRoot(account);
-        persistedCount++;
+        try {
+          accountService.insertAsFirstRoot(account);
+          persistedCount++;
+        } catch (Exception exception) {
+          throw new ImportGnucashBookException(
+              "Error While Saving Root Account", exception, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
       } else {
 
@@ -140,9 +147,14 @@ public class AccountAdapter {
           /* Set the currency to the default currency */
           account.setCurrency(ApplicationConfiguration.DEFAULT_CURRENCY.getCurrencyCode());
         }
-        accountService.insertAsLastChildOf(
-            account, accountService.findByGuid(gncAccount.getParentGuid()));
-        persistedCount++;
+        try {
+          var parentAccount = accountService.findByGuid(gncAccount.getParentGuid());
+          accountService.insertAsLastChildOf(account, parentAccount);
+          persistedCount++;
+        } catch (Exception exception) {
+          throw new ImportGnucashBookException(
+              "Error While Saving Accounts", exception, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
       } // if gncAccountType == ROOT
     }
     logger.info("{} persisted", persistedCount);

@@ -11,12 +11,14 @@ import javax.money.UnknownCurrencyException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import net.flyingfishflash.ledger.commodities.service.CommodityService;
 import net.flyingfishflash.ledger.importer.ImportingBook;
 import net.flyingfishflash.ledger.importer.dto.GncPrice;
 import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
+import net.flyingfishflash.ledger.importer.exceptions.ImportGnucashBookException;
 import net.flyingfishflash.ledger.prices.data.Price;
 import net.flyingfishflash.ledger.prices.service.PriceService;
 
@@ -103,9 +105,18 @@ public class PriceAdapter {
       prices.add(price);
     }
 
-    priceService.saveAllPrices(prices);
-    logger.info("{} persisted", prices.size());
-    gnucashFileImportStatus.setPricesPersisted(prices.size());
+    var priceCount = prices.size();
+
+    try {
+      priceService.saveAllPrices(prices);
+    } catch (Exception exception) {
+      priceCount = 0;
+      throw new ImportGnucashBookException(
+          "Error While Saving Prices", exception, HttpStatus.INTERNAL_SERVER_ERROR);
+    } finally {
+      gnucashFileImportStatus.setPricesPersisted(priceCount);
+      logger.info("{} persisted", gnucashFileImportStatus.getPricesPersisted());
+    }
     // TODO verify if it's neccessary to null out the price list
     // prices = null;
   }

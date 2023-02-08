@@ -11,6 +11,7 @@ import javax.money.UnknownCurrencyException;
 import org.javamoney.moneta.Money;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import net.flyingfishflash.ledger.accounts.service.AccountService;
@@ -19,6 +20,7 @@ import net.flyingfishflash.ledger.importer.ImportingBook;
 import net.flyingfishflash.ledger.importer.dto.GncSplit;
 import net.flyingfishflash.ledger.importer.dto.GncTransaction;
 import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
+import net.flyingfishflash.ledger.importer.exceptions.ImportGnucashBookException;
 import net.flyingfishflash.ledger.transactions.data.Entry;
 import net.flyingfishflash.ledger.transactions.data.EntryType;
 import net.flyingfishflash.ledger.transactions.data.Transaction;
@@ -123,8 +125,16 @@ public class TransactionAdapter {
       }
     }
 
-    transactionService.saveAllTransactions(transactions);
-    logger.info("{} persisted", transactions.size());
-    gnucashFileImportStatus.setTransactionsPersisted(transactions.size());
+    gnucashFileImportStatus.setTransactionsPersisted(0);
+
+    try {
+      transactionService.saveAllTransactions(transactions);
+      gnucashFileImportStatus.setTransactionsPersisted(transactions.size());
+    } catch (Exception exception) {
+      throw new ImportGnucashBookException(
+          "Error While Saving Transactions", exception, HttpStatus.INTERNAL_SERVER_ERROR);
+    } finally {
+      logger.info("{} persisted", transactions.size());
+    }
   }
 }

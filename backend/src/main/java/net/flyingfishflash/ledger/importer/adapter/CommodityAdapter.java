@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import net.flyingfishflash.ledger.commodities.data.Commodity;
@@ -12,6 +13,7 @@ import net.flyingfishflash.ledger.commodities.service.CommodityService;
 import net.flyingfishflash.ledger.importer.ImportingBook;
 import net.flyingfishflash.ledger.importer.dto.GncCommodity;
 import net.flyingfishflash.ledger.importer.dto.GnucashFileImportStatus;
+import net.flyingfishflash.ledger.importer.exceptions.ImportGnucashBookException;
 
 @Component
 public class CommodityAdapter {
@@ -70,12 +72,25 @@ public class CommodityAdapter {
         if (gncCommodity.getNamespace().equalsIgnoreCase("currency")) currencyCount++;
       }
     }
-    commodityService.saveAllCommodities(commodities);
-    logger.info("{} ignored templates", templateCount);
+
     gnucashFileImportStatus.setCommoditiesIgnoredTemplates(templateCount);
-    logger.info("{} ignored currencies", currencyCount);
     gnucashFileImportStatus.setCommoditiesIgnoredCurrencies(currencyCount);
-    logger.info("{} persisted", commodities.size());
-    gnucashFileImportStatus.setCommoditiesPersisted(commodities.size());
+    gnucashFileImportStatus.setCommoditiesPersisted(0);
+
+    logger.info("{} ignored templates", gnucashFileImportStatus.getCommoditiesIgnoredTemplates());
+    logger.info("{} ignored currencies", gnucashFileImportStatus.getCommoditiesIgnoredCurrencies());
+
+    var commodityCount = commodities.size();
+
+    try {
+      commodityService.saveAllCommodities(commodities);
+    } catch (Exception exception) {
+      commodityCount = 0;
+      throw new ImportGnucashBookException(
+          "Error While Saving Commodities", exception, HttpStatus.INTERNAL_SERVER_ERROR);
+    } finally {
+      gnucashFileImportStatus.setCommoditiesPersisted(commodityCount);
+      logger.info("{} persisted", gnucashFileImportStatus.getCommoditiesPersisted());
+    }
   }
 }
