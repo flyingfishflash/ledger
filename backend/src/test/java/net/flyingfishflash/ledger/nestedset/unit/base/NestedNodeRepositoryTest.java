@@ -34,9 +34,9 @@ import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.flyingfishflash.ledger.accounts.data.nestedset.config.jpa.discriminator.JpaTreeDiscriminator;
-import net.flyingfishflash.ledger.accounts.data.nestedset.config.jpa.discriminator.MapJpaTreeDiscriminator;
-import net.flyingfishflash.ledger.accounts.data.nestedset.model.NestedNode;
+import net.flyingfishflash.ledger.domain.accounts.data.nestedset.config.jpa.discriminator.JpaTreeDiscriminator;
+import net.flyingfishflash.ledger.domain.accounts.data.nestedset.config.jpa.discriminator.MapJpaTreeDiscriminator;
+import net.flyingfishflash.ledger.domain.accounts.data.nestedset.model.NestedNode;
 import net.flyingfishflash.ledger.nestedset.unit.model.TestNode;
 
 @Transactional

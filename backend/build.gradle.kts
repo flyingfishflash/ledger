@@ -89,7 +89,7 @@ tasks {
   register<Test>("integrationTests") {
     useJUnitPlatform {
       includeTags("Integration")
-      filter { excludeTestsMatching("net.flyingfishflash.ledger.*.unit.*") }
+      filter { excludeTestsMatching("net.flyingfishflash.ledger.*.*.unit.*") }
     }
   }
 
@@ -100,7 +100,7 @@ tasks {
     classDirectories.setFrom(
         files(
             project.sourceSets.main.get().output.asFileTree.filter { f: File ->
-              !f.path.contains("/net/flyingfishflash/ledger/foundation/configuration/")
+              !f.path.contains("/net/flyingfishflash/ledger/core/configuration/")
             }))
     reports {
       html.required.set(true)

@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
-import net.flyingfishflash.ledger.accounts.data.nestedset.DelegatingNestedNodeRepository;
+import net.flyingfishflash.ledger.domain.accounts.data.nestedset.DelegatingNestedNodeRepository;
 import net.flyingfishflash.ledger.nestedset.unit.base.NestedNodeRepositoryRemovingTest;
 import net.flyingfishflash.ledger.nestedset.unit.model.TestNode;
 import net.flyingfishflash.ledger.nestedset.unit.qualifier.Jpa;

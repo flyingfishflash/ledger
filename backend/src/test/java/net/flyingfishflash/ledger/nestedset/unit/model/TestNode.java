@@ -35,11 +35,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
+import net.flyingfishflash.ledger.domain.accounts.data.nestedset.model.NestedNode;
+
 @Entity
 @Table(name = "nested_nodes")
 @SequenceGenerator(name = "seq", initialValue = 1, allocationSize = 1)
-public class TestNode
-    implements net.flyingfishflash.ledger.accounts.data.nestedset.model.NestedNode<Long> {
+public class TestNode implements NestedNode<Long> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")

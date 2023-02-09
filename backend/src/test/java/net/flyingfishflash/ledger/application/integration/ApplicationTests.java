@@ -16,8 +16,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
       // "spring.flyway.enabled=false",
       // "spring.jpa.hibernate.ddl-auto=create-drop",
     })
-// @SpringBootConfiguration
-// @EnableAutoConfiguration
 class ApplicationTests {
 
   @Test

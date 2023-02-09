@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
-import net.flyingfishflash.ledger.accounts.data.nestedset.DelegatingNestedNodeRepository;
+import net.flyingfishflash.ledger.domain.accounts.data.nestedset.DelegatingNestedNodeRepository;
 import net.flyingfishflash.ledger.nestedset.unit.NestedSetTestConfiguration;
 import net.flyingfishflash.ledger.nestedset.unit.model.TestNode;
 

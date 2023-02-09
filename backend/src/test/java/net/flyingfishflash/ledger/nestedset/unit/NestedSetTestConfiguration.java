@@ -12,9 +12,9 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 import jakarta.persistence.EntityManager;
 
-import net.flyingfishflash.ledger.accounts.data.nestedset.NestedNodeRepository;
-import net.flyingfishflash.ledger.accounts.data.nestedset.config.jpa.JpaNestedNodeRepositoryConfiguration;
-import net.flyingfishflash.ledger.accounts.data.nestedset.config.jpa.factory.JpaNestedNodeRepositoryFactory;
+import net.flyingfishflash.ledger.domain.accounts.data.nestedset.NestedNodeRepository;
+import net.flyingfishflash.ledger.domain.accounts.data.nestedset.config.jpa.JpaNestedNodeRepositoryConfiguration;
+import net.flyingfishflash.ledger.domain.accounts.data.nestedset.config.jpa.factory.JpaNestedNodeRepositoryFactory;
 import net.flyingfishflash.ledger.nestedset.unit.config.jpa.discriminator.TestJpaTreeDiscriminator;
 import net.flyingfishflash.ledger.nestedset.unit.model.TestNode;
 import net.flyingfishflash.ledger.nestedset.unit.qualifier.Jpa;
