@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger.foundation.response.structure.errors;
+package net.flyingfishflash.ledger.foundation.response.structure;
 
 import java.net.URI;
 import java.util.*;
@@ -10,7 +10,6 @@ import org.springframework.http.ProblemDetail;
 
 import net.flyingfishflash.ledger.foundation.IdentifierFactory;
 import net.flyingfishflash.ledger.foundation.exceptions.AbstractApiException;
-import net.flyingfishflash.ledger.foundation.response.structure.ApiStatus;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApplicationErrorResponse {

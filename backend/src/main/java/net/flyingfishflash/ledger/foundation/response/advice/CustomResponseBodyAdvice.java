@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import net.flyingfishflash.ledger.foundation.response.structure.ApplicationErrorResponse;
+import net.flyingfishflash.ledger.foundation.response.structure.ApplicationSuccessResponse;
 import net.flyingfishflash.ledger.foundation.response.structure.IgnoreResponseBinding;
-import net.flyingfishflash.ledger.foundation.response.structure.errors.ApplicationErrorResponse;
-import net.flyingfishflash.ledger.foundation.response.structure.success.ApplicationSuccessResponse;
 
 @RestControllerAdvice
 public class CustomResponseBodyAdvice implements ResponseBodyAdvice<Object> {

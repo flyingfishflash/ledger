@@ -1,11 +1,9 @@
-package net.flyingfishflash.ledger.foundation.response.structure.success;
+package net.flyingfishflash.ledger.foundation.response.structure;
 
 import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
-import net.flyingfishflash.ledger.foundation.response.structure.ApiStatus;
 
 @SuppressWarnings("java:S1948")
 @JsonInclude(JsonInclude.Include.NON_NULL)

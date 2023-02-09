@@ -11,7 +11,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import jakarta.servlet.http.HttpServletRequest;
 
 import net.flyingfishflash.ledger.foundation.response.structure.ApiStatus;
-import net.flyingfishflash.ledger.foundation.response.structure.errors.ApplicationErrorResponse;
+import net.flyingfishflash.ledger.foundation.response.structure.ApplicationErrorResponse;
 
 @RestControllerAdvice
 public class AdviceForMethodArgumentTypeMismatchException {

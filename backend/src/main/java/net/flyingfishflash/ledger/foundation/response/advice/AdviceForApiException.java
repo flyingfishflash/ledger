@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import jakarta.servlet.http.HttpServletRequest;
 
 import net.flyingfishflash.ledger.foundation.exceptions.AbstractApiException;
-import net.flyingfishflash.ledger.foundation.response.structure.errors.ApplicationErrorResponse;
+import net.flyingfishflash.ledger.foundation.response.structure.ApplicationErrorResponse;
 
 @RestControllerAdvice
 public class AdviceForApiException {
