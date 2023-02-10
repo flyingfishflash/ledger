@@ -1,0 +1,86 @@
+---
+
+config:
+  server:
+    api:
+      url-path: "/api/v1/ledger"
+
+debug: "false"
+
+jackson:
+  serialization:
+    WRITE_DATES_AS_TIMESTAMPS: "false"
+
+logging:
+  level:
+    org:
+      flywaydb: info
+      hibernate: info
+
+management:
+  endpoints:
+    web:
+      base-path: "/api/v1/ledger/actuator"
+      cors:
+        allowed-origins: "*"
+        allowed-methods: "OPTIONS, GET"
+      exposure:
+        include: "info"
+
+server:
+  error:
+    whitelabel:
+      enabled: "false"
+  port: "8181"
+  servlet:
+    session:
+      cookie:
+        secure: "true"
+        http-only: "true"
+      timeout: "5m"
+  tomcat:
+    remoteip:
+      protocol-header: "x-forwarded-proto"
+      remote-ip-header: "x-forwarded-for"
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: "none"
+    properties:
+      hibernate:
+        cache:
+          use_second_level_cache: "false"
+        format_sql: "false"
+        generate_statistics: "false"
+        jdbc:
+          batch_size: "20"
+        order_inserts: "true"
+        query:
+          plan_cache_max_size: "16"
+          plan_parameter_metadata_max_size: "32"
+      jakarta:
+        persistence:
+          sharedCache:
+            mode: "UNSPECIFIED"
+    show-sql: "true"
+  mvc:
+    throw-exception-if-no-handler-found: "true"
+  output:
+    ansi:
+      enabled: "always"
+  profiles:
+    active: "h2"
+  servlet:
+    multipart:
+      max-file-size: "50MB"
+      max-request-size: "50MB"
+  session:
+    jdbc:
+      initialize-schema: "never"
+      table-name: "public.SPRING_SESSION"
+  sql:
+    init:
+      mode: "never"
+
+trace: "false"

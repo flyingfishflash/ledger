@@ -26,7 +26,7 @@ import net.flyingfishflash.ledger.core.users.data.UserRepository;
 
 @Component
 @Order(1)
-@PropertySource("classpath:application.properties")
+@PropertySource("classpath:application.yaml")
 public class CustomCommandLineRunner implements CommandLineRunner {
 
   private static final Logger logger = LoggerFactory.getLogger(CustomCommandLineRunner.class);
