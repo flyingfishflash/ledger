@@ -42,18 +42,16 @@ export class AppConfigRuntime implements IAppConfigRuntime {
     return this.http.get("assets/config.json").pipe(
       mergeMap((server: any) => {
         this.assets.api.server = server.server;
-        return this.http
-          .get(this.assets.api.server.url + "/actuator/info")
-          .pipe(
-            map((build: any) => {
-              this.api.actuator.info.build = build.build;
-              return build;
-            }),
-            catchError((err) => {
-              this.handleError(err);
-              return EMPTY;
-            })
-          );
+        return this.http.get(this.assets.api.server.url + "/info").pipe(
+          map((build: any) => {
+            this.api.actuator.info.build = build.build;
+            return build;
+          }),
+          catchError((err) => {
+            this.handleError(err);
+            return EMPTY;
+          })
+        );
       }),
       catchError((err) => {
         this.handleError(err);

@@ -1,5 +1,7 @@
 package net.flyingfishflash.ledger.core.response.advice;
 
+import java.util.Map;
+
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
@@ -45,6 +47,11 @@ public class CustomResponseBodyAdvice implements ResponseBodyAdvice<Object> {
       return new ApplicationSuccessResponse<>(o);
     } else if (o instanceof Exception exception && !(o instanceof ErrorResponseException)) {
       return new ApplicationErrorResponse(exception);
+      // Map should be coming from CustomErrorController, where a ProblemDetail entry was created
+    } else if (o instanceof Map<?, ?> hashmap) {
+      if (hashmap.containsKey("problemDetail")) {
+        return new ApplicationErrorResponse((ProblemDetail) hashmap.get("problemDetail"));
+      } else return o;
     } else return o;
   }
 }

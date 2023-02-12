@@ -37,6 +37,13 @@ public class ApplicationErrorResponse {
   }
 
   // -> CustomResponseBodyAdvice.beforeBodyWrite
+  public ApplicationErrorResponse(ProblemDetail problemDetail) {
+    populateProperties(problemDetail);
+    this.response = new ErrorResponseStructure(problemDetail);
+    this.status = ApiStatus.ERROR.name().toLowerCase();
+  }
+
+  // -> CustomResponseBodyAdvice.beforeBodyWrite
   public ApplicationErrorResponse(Exception exception) {
 
     var problemDetail = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -92,9 +99,13 @@ public class ApplicationErrorResponse {
     return status;
   }
 
-  private static void populateProperties(ProblemDetail problemDetail, Exception exception) {
+  private static void populateProperties(ProblemDetail problemDetail) {
     problemDetail.setProperty(
         "uniqueId", IdentifierFactory.getInstance().identifierWithoutHyphens());
+  }
+
+  private static void populateProperties(ProblemDetail problemDetail, Exception exception) {
+    populateProperties(problemDetail);
     problemDetail.setProperty("exception", exception.getClass().getSimpleName());
     problemDetail.setProperty("causes", extractCauses(exception));
   }

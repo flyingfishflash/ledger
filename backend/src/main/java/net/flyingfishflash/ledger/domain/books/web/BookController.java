@@ -32,7 +32,7 @@ import net.flyingfishflash.ledger.domain.books.service.BookService;
 @Tag(name = "book controller")
 @RestController
 @Validated
-@RequestMapping("api/v1/ledger/books")
+@RequestMapping("${config.application.api-v1-url-path}/books")
 public class BookController {
 
   private final BookService bookService;

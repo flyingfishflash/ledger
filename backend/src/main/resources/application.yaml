@@ -1,9 +1,10 @@
 ---
 
 config:
-  server:
-    api:
-      url-path: "/api/v1/ledger"
+  application:
+    name: &application-name "Ledger"
+    documentation: "https://ledger.wiki.github.org/docs"
+    api-v1-url-path: &api-v1-url-path "/api/v1"
 
 debug: "false"
 
@@ -20,7 +21,7 @@ logging:
 management:
   endpoints:
     web:
-      base-path: "/api/v1/ledger/actuator"
+      base-path: *api-v1-url-path
       cors:
         allowed-origins: "*"
         allowed-methods: "OPTIONS, GET"

@@ -41,9 +41,9 @@ public class WebSecurityConfiguration {
         .and()
         .authorizeHttpRequests()
         .requestMatchers(
-            "/api/v1/ledger/auth/signin",
-            "/api/v1/ledger/auth/signup",
-            "/api/v1/ledger/actuator/info",
+            "/api/v1/auth/signin",
+            "/api/v1/auth/signup",
+            "/api/v1/info",
             "/assets/config.json",
             "/h2-console",
             "/h2-console/**",

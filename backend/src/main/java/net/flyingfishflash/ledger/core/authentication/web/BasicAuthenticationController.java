@@ -24,7 +24,7 @@ import net.flyingfishflash.ledger.core.users.service.UserService;
 
 @Tag(name = "authentication controller - basic")
 @RestController
-@RequestMapping("/api/v1/ledger/auth")
+@RequestMapping("${config.application.api-v1-url-path}/auth")
 public class BasicAuthenticationController {
 
   private static final Logger logger = LoggerFactory.getLogger(BasicAuthenticationController.class);

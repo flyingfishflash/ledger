@@ -18,9 +18,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 
 @Configuration
+@PropertySource("classpath:application.yaml")
 public class OpenApiConfiguration {
+
+  private Environment environment;
+
+  public OpenApiConfiguration(Environment environment) {
+    this.environment = environment;
+  }
 
   @Bean
   public OpenAPI springShopOpenAPI() {
@@ -28,8 +37,8 @@ public class OpenApiConfiguration {
     return new OpenAPI()
         .info(
             new Info()
-                .title("Ledger REST API")
-                // .description("API Description")
+                .title(environment.getProperty("${config.application.name}"))
+                .description("API Description")
                 .version("v1.0.0")
                 .license(new License().name("MIT License").url("https://mit-license.org/")))
         .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
@@ -44,8 +53,8 @@ public class OpenApiConfiguration {
                         .scheme("basic")))
         .externalDocs(
             new ExternalDocumentation()
-                .description("Ledger Wiki Documentation")
-                .url("https://ledger.wiki.github.org/docs"));
+                .description("Documentation")
+                .url(environment.getProperty("${config.application.name}")));
   }
 
   @Bean

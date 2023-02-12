@@ -22,7 +22,7 @@ import net.flyingfishflash.ledger.domain.accounts.service.AccountTypeService;
 @Tag(name = "account type controller")
 @RestController
 @Validated
-@RequestMapping("api/v1/ledger/account-types")
+@RequestMapping("${config.application.api-v1-url-path}/account-types")
 public class AccountTypeController {
 
   @Autowired private AccountTypeService accountTypeService;

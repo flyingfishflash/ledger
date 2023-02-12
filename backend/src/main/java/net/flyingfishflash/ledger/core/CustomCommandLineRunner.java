@@ -63,14 +63,12 @@ public class CustomCommandLineRunner implements CommandLineRunner {
 
   private void setApiUrl() throws IOException {
     var envApiServer = "API_SERVER";
-    var apiUrlPath = env.getProperty("config.server.api.url-path");
+    var apiUrlPath = env.getProperty("config.application.api-v1-url-path");
+    var apiServerDefault = String.format("http://localhost:%s", env.getProperty("server.port"));
+    var apiUrlDefault = apiServerDefault + apiUrlPath;
+    var apiServerOriginal = System.getenv(envApiServer);
     String apiUrl;
     String apiServer;
-    String apiServerDefault = "http://localhost:" + env.getProperty("server.port");
-    String apiUrlDefault = apiServerDefault + apiUrlPath;
-    String apiServerOriginal;
-
-    apiServerOriginal = System.getenv(envApiServer);
 
     if (System.getenv(envApiServer) == null
         || System.getenv(envApiServer).isEmpty()
