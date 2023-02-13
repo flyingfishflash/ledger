@@ -4,13 +4,17 @@ import javax.sql.DataSource;
 
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 
 @Tag("Integration")
+// @Component
 public class IntegrationTestCommandLineRunner implements CommandLineRunner {
 
-  @Autowired DataSource dataSource;
+  private final DataSource dataSource;
+
+  public IntegrationTestCommandLineRunner(DataSource dataSource) {
+    this.dataSource = dataSource;
+  }
 
   @Override
   public void run(String... args) throws Exception {

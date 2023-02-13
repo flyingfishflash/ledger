@@ -2,25 +2,32 @@ package net.flyingfishflash.ledger.core.multitenancy;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TenantConnectionProvider implements MultiTenantConnectionProvider {
+public class TenantConnectionProvider
+    implements MultiTenantConnectionProvider, HibernatePropertiesCustomizer {
 
   @SuppressWarnings("java:S1948")
-  private DataSource datasource;
+  private final DataSource datasource;
 
   public TenantConnectionProvider(DataSource datasource) {
     this.datasource = datasource;
   }
 
   @Override
+  @SuppressWarnings("java:S2095")
   public Connection getAnyConnection() throws SQLException {
-    return datasource.getConnection();
+    var connection = datasource.getConnection();
+    connection.setSchema(TenantIdentifierResolver.COMMON);
+    return connection;
   }
 
   @Override
@@ -28,11 +35,13 @@ public class TenantConnectionProvider implements MultiTenantConnectionProvider {
     connection.close();
   }
 
-  @SuppressWarnings("java:S2095")
   @Override
+  @SuppressWarnings("java:S2095")
   public Connection getConnection(String tenantIdentifier) throws SQLException {
-    final var connection = getAnyConnection();
-    connection.createStatement().execute(String.format("SET search_path TO %s", tenantIdentifier));
+    var connection = datasource.getConnection();
+    if (!tenantIdentifier.equals(TenantIdentifierResolver.UNDEFINED)) {
+      connection.setSchema(tenantIdentifier);
+    }
     return connection;
   }
 
@@ -40,10 +49,11 @@ public class TenantConnectionProvider implements MultiTenantConnectionProvider {
   @Override
   public void releaseConnection(String tenantIdentifier, Connection connection)
       throws SQLException {
-    connection
-        .createStatement()
-        .execute(String.format("SET search_path TO %s", TenantIdentifierResolver.COMMON));
-    releaseAnyConnection(connection);
+    if (!(tenantIdentifier.equals(TenantIdentifierResolver.UNDEFINED)
+        || tenantIdentifier.equals(TenantIdentifierResolver.COMMON))) {
+      connection.setSchema(TenantIdentifierResolver.COMMON);
+    }
+    connection.close();
   }
 
   @Override
@@ -59,5 +69,10 @@ public class TenantConnectionProvider implements MultiTenantConnectionProvider {
   @Override
   public <T> T unwrap(Class<T> unwrapType) {
     return null;
+  }
+
+  @Override
+  public void customize(Map<String, Object> hibernateProperties) {
+    hibernateProperties.put(AvailableSettings.MULTI_TENANT_CONNECTION_PROVIDER, this);
   }
 }

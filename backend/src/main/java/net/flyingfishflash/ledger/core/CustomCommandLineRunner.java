@@ -15,13 +15,14 @@ import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringBootVersion;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import net.flyingfishflash.ledger.core.multitenancy.TenantIdentifierResolver;
+import net.flyingfishflash.ledger.ApplicationConfiguration;
 import net.flyingfishflash.ledger.core.users.data.UserRepository;
 
 @Component
@@ -43,7 +44,18 @@ public class CustomCommandLineRunner implements CommandLineRunner {
   }
 
   @Override
-  public void run(String... args) throws Exception {
+  public void run(String... args) {
+    logger.info(
+        "{} Spring Boot version: {}",
+        ApplicationConfiguration.LOGGER_PREFIX,
+        SpringBootVersion.getVersion());
+    migrateUserSchemas();
+    setApiUrl();
+  }
+
+  private void migrateUserSchemas() {
+    logger.info(
+        "{} Migrating database schemas for each user...", ApplicationConfiguration.LOGGER_PREFIX);
     userRepository
         .findAll()
         .forEach(
@@ -51,17 +63,15 @@ public class CustomCommandLineRunner implements CommandLineRunner {
               String tenant = user.getUsername();
               var flyway =
                   Flyway.configure()
-                      .locations("db/migration/" + TenantIdentifierResolver.USERS)
+                      .locations("db/migration/users")
                       .dataSource(dataSource)
                       .schemas(tenant)
                       .load();
               flyway.migrate();
             });
-
-    setApiUrl();
   }
 
-  private void setApiUrl() throws IOException {
+  private void setApiUrl() {
     var envApiServer = "API_SERVER";
     var apiUrlPath = env.getProperty("config.application.api-v1-url-path");
     var apiServerDefault = String.format("http://localhost:%s", env.getProperty("server.port"));
@@ -74,7 +84,8 @@ public class CustomCommandLineRunner implements CommandLineRunner {
         || System.getenv(envApiServer).isEmpty()
         || System.getenv(envApiServer).isBlank()) {
       logger.info(
-          "System environment variable {} not set. Using default value: {}",
+          "{} System environment variable {} not set. Using default value: {}",
+          ApplicationConfiguration.LOGGER_PREFIX,
           envApiServer,
           apiUrlDefault);
       apiUrl = apiUrlDefault;
@@ -99,18 +110,21 @@ public class CustomCommandLineRunner implements CommandLineRunner {
 
       if (!urlValidator.isValid(apiUrl)) {
         logger.error(
-            "API URL is invalid. (API_SERVER}: {}, Derived Url: {}", apiServerOriginal, apiUrl);
-        logger.error("API URL: using default value");
+            "{} API URL is invalid. (API_SERVER}: {}, Derived Url: {}",
+            ApplicationConfiguration.LOGGER_PREFIX,
+            apiServerOriginal,
+            apiUrl);
+        logger.error("{} URL: using default value", ApplicationConfiguration.LOGGER_PREFIX);
         apiUrl = apiUrlDefault;
       }
     }
 
-    logger.info("API URL: {}", apiUrl);
+    logger.info("{} API URL: {}", ApplicationConfiguration.LOGGER_PREFIX, apiUrl);
 
     String path = Objects.requireNonNull(getClass().getResource("/static/assets")).getFile();
     var file = new File(path + "/config.json");
 
-    logger.info("{}", file);
+    logger.info("{} {}", ApplicationConfiguration.LOGGER_PREFIX, file);
 
     try (var bufferedWriter =
         Files.newBufferedWriter(Paths.get(String.valueOf(file.getAbsoluteFile())))) {
