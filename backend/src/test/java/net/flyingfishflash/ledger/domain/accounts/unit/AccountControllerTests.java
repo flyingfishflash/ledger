@@ -87,7 +87,7 @@ class AccountControllerTests {
     given(accountService.findById(anyLong())).willReturn(new Account());
     given(accountService.mapEntityToRecord(any(Account.class))).willReturn(accountRecord);
     assertThat(
-            mvc.perform(get("/api/v1/ledger/accounts/1").accept(MediaType.APPLICATION_JSON))
+            mvc.perform(get("/accounts/1").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -107,7 +107,7 @@ class AccountControllerTests {
     given(bookService.findById(1L)).willReturn(book);
     given(accountService.findAllAccounts(any(Book.class))).willReturn(accountList);
     assertThat(
-            mvc.perform(get("/api/v1/ledger/accounts?bookId=1").accept(MediaType.APPLICATION_JSON))
+            mvc.perform(get("/accounts?bookId=1").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -135,7 +135,7 @@ class AccountControllerTests {
     given(accountService.mapEntityToRecord(any(Account.class))).willReturn(accountRecord);
     assertThat(
             mvc.perform(
-                    post("/api/v1/ledger/accounts")
+                    post("/accounts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonCreateAccount.write(accountCreateRequest).getJson()))
                 .andExpect(status().is(201))
@@ -161,7 +161,7 @@ class AccountControllerTests {
             0L,
             true);
     mvc.perform(
-            post("/api/v1/ledger/accounts")
+            post("/accounts")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonCreateAccount.write(accountCreateRequest).getJson()))
         .andExpect(status().isBadRequest());
@@ -176,7 +176,7 @@ class AccountControllerTests {
     given(accountService.findById(anyLong())).willReturn(account1);
     assertThat(
             mvc.perform(
-                    delete("/api/v1/ledger/accounts/delete?accountId=" + requestParameter)
+                    delete("/accounts/delete?accountId=" + requestParameter)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andReturn()
@@ -188,14 +188,14 @@ class AccountControllerTests {
   @Test
   void postInsertAsNextSibling() throws Exception {
     var requestParameter = "1";
-    mvc.perform(post("/api/v1/ledger/accounts/insert-as-next-sibling?id=" + requestParameter))
+    mvc.perform(post("/accounts/insert-as-next-sibling?id=" + requestParameter))
         .andExpect(status().isCreated());
   }
 
   @Test
   void postInsertAsPrevSibling() throws Exception {
     var requestParameter = "1";
-    mvc.perform(post("/api/v1/ledger/accounts/insert-as-prev-sibling?id=" + requestParameter))
+    mvc.perform(post("/accounts/insert-as-prev-sibling?id=" + requestParameter))
         .andExpect(status().isCreated());
   }
 
@@ -210,7 +210,7 @@ class AccountControllerTests {
     given(accountService.getEligibleParentAccounts(any(Account.class))).willReturn(accountList);
     assertThat(
             mvc.perform(
-                    get("/api/v1/ledger/accounts/" + requestParameter + "/eligible-parent-accounts")
+                    get("/accounts/" + requestParameter + "/eligible-parent-accounts")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()

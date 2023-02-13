@@ -48,20 +48,14 @@ class BookControllerTests {
   @BeforeEach
   public void setup() {
     JacksonTester.initFields(this, new ObjectMapper());
-    // MockMvc standalone approach
-    mvc =
-        MockMvcBuilders.standaloneSetup(mockBookController)
-            // .setControllerAdvice(new AdviceForUserExceptions())
-            // .setControllerAdvice(new AdviceForStandardExceptions())
-            // .addFilters(new SuperHeroFilter())
-            .build();
+    mvc = MockMvcBuilders.standaloneSetup(mockBookController).build();
   }
 
   @Test
   void getBook() throws Exception {
     // TODO: mock return service object and validate its Json representation
     String pathVariable = "1";
-    mvc.perform(get("/api/v1/ledger/books/" + pathVariable).accept(MediaType.APPLICATION_JSON))
+    mvc.perform(get("/books/" + pathVariable).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
     verify(mockBookService, times(1)).findById(Long.valueOf(pathVariable));
   }
@@ -69,8 +63,7 @@ class BookControllerTests {
   @Test
   void getBooks() throws Exception {
     // TODO: mock return service object and validate its Json representation
-    mvc.perform(get("/api/v1/ledger/books").accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk());
+    mvc.perform(get("/books").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     verify(mockBookService, times(1)).findAllBooks();
   }
 
@@ -79,7 +72,7 @@ class BookControllerTests {
     // TODO: mock return service object and validate its Json representation
     var bookRequest = new BookRequest("Book Name");
     mvc.perform(
-            post("/api/v1/ledger/books")
+            post("/books")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBookRequest.write(bookRequest).getJson()))
         .andExpect(status().isCreated());
@@ -93,7 +86,7 @@ class BookControllerTests {
     Map<String, Object> patchRequest = new HashMap<>();
     patchRequest.put("Name", "New Book Name");
     mvc.perform(
-            patch("/api/v1/ledger/books/2")
+            patch("/books/2")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonPatchRequest.write(patchRequest).getJson()))
         .andExpect(status().isOk());
@@ -103,7 +96,7 @@ class BookControllerTests {
   @Test
   void deleteBook() throws Exception {
     String pathVariable = "1";
-    mvc.perform(delete("/api/v1/ledger/books/" + pathVariable)).andExpect(status().isNoContent());
+    mvc.perform(delete("/books/" + pathVariable)).andExpect(status().isNoContent());
     verify(mockBookService, times(1)).deleteBook(Long.valueOf(pathVariable));
   }
 

@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -23,6 +24,9 @@ import net.flyingfishflash.ledger.core.users.service.UserService;
     })
 class UserControllerTests {
 
+  @Value("${config.application.api-v1-url-path}")
+  private String apiPrefix;
+
   @Autowired private TestRestTemplate restTemplate;
   @Autowired UserService userService;
 
@@ -31,7 +35,7 @@ class UserControllerTests {
     ResponseEntity<UserProfileResponse> userProfileResponse =
         restTemplate
             .withBasicAuth("testuser", "TestUser1@")
-            .getForEntity("/api/v1/ledger/users/profile", UserProfileResponse.class);
+            .getForEntity(String.format("%s/users/profile", apiPrefix), UserProfileResponse.class);
     assertThat(userProfileResponse).hasFieldOrPropertyWithValue("statusCode", HttpStatus.OK);
   }
 }

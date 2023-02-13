@@ -9,7 +9,7 @@ import net.flyingfishflash.ledger.domain.commodities.service.CommodityService;
 // @Tag(name = "commodity controller")
 @RestController
 @Validated
-@RequestMapping("${config.application.api-v1-url-path}/commodities")
+@RequestMapping("/commodities")
 public class CommodityController {
 
   @SuppressWarnings("unused")

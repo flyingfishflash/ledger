@@ -8,7 +8,7 @@ import net.flyingfishflash.ledger.domain.prices.service.PriceService;
 
 @RestController
 @Validated
-@RequestMapping("${config.application.api-v1-url-path}/prices")
+@RequestMapping("/prices")
 public class PriceController {
 
   @SuppressWarnings("unused")

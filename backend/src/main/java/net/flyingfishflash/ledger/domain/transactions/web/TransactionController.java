@@ -8,7 +8,7 @@ import net.flyingfishflash.ledger.domain.transactions.service.TransactionService
 
 @RestController
 @Validated
-@RequestMapping("${config.application.api-v1-url-path}/transactions")
+@RequestMapping("/transactions")
 public class TransactionController {
 
   @SuppressWarnings("unused")

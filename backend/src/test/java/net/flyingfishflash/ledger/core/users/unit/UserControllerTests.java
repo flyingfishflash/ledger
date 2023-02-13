@@ -75,7 +75,7 @@ class UserControllerTests {
     userList.add(user);
     given(mockUserService.findAllUsers()).willReturn(userList);
     assertThat(
-            mvc.perform(get("/api/v1/ledger/users").accept(MediaType.APPLICATION_JSON))
+            mvc.perform(get("/users").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -89,7 +89,7 @@ class UserControllerTests {
     given(mockPrincipal.getName()).willReturn("Any Principal");
     given(mockUserService.profileByUsername(anyString())).willReturn(userProfileResponse);
     assertThat(
-            mvc.perform(get("/api/v1/ledger/users/profile").principal(mockPrincipal))
+            mvc.perform(get("/users/profile").principal(mockPrincipal))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -102,7 +102,7 @@ class UserControllerTests {
     given(mockUserService.profileById(anyLong()))
         .willReturn(new UserProfileResponse(2L, "Email", "First Name", "Last Name", null));
     assertThat(
-            mvc.perform(get("/api/v1/ledger/users/2/profile"))
+            mvc.perform(get("/users/2/profile"))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -127,7 +127,7 @@ class UserControllerTests {
         new UserCreateResponse("Created user: " + userCreateRequest.getUsername());
     assertThat(
             mvc.perform(
-                    post("/api/v1/ledger/users")
+                    post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonUserCreateRequest.write(userCreateRequest).getJson()))
                 .andExpect(status().isCreated())
@@ -146,7 +146,7 @@ class UserControllerTests {
     patchRequest.put("Email", "email@email.net");
     assertThat(
             mvc.perform(
-                    patch("/api/v1/ledger/users/2")
+                    patch("/users/2")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonPatchRequest.write(patchRequest).getJson()))
                 .andExpect(status().isOk())
@@ -160,7 +160,7 @@ class UserControllerTests {
   void deleteUserById() throws Exception {
     String requestParameter = "1";
     assertThat(
-            mvc.perform(delete("/api/v1/ledger/users/delete?id=" + requestParameter))
+            mvc.perform(delete("/users/delete?id=" + requestParameter))
                 .andExpect(status().isNoContent())
                 .andReturn()
                 .getResponse()

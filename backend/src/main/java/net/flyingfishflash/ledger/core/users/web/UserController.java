@@ -36,7 +36,7 @@ import net.flyingfishflash.ledger.core.users.service.UserService;
 @Tag(name = "user controller")
 @RestController
 @Validated
-@RequestMapping("/api/v1/ledger/users")
+@RequestMapping("/users")
 public class UserController {
 
   private final UserService userService;

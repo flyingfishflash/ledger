@@ -53,7 +53,7 @@ class AccountCategoryControllerTests {
     given(mockAccountCategoryService.findAllAccountCategories())
         .willReturn(realAccountCategoryService.findAllAccountCategories());
     assertThat(
-            mvc.perform(get("/api/v1/ledger/account-categories"))
+            mvc.perform(get("/account-categories"))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -70,7 +70,7 @@ class AccountCategoryControllerTests {
     given(mockAccountCategoryService.findAccountCategoryByType("LoremIpsum"))
         .willReturn(realAccountCategoryService.findAccountCategoryByType(accountType.name()));
     assertThat(
-            mvc.perform(get("/api/v1/ledger/account-categories/by-type?type=LoremIpsum"))
+            mvc.perform(get("/account-categories/by-type?type=LoremIpsum"))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()

@@ -40,7 +40,7 @@ import net.flyingfishflash.ledger.domain.books.service.BookService;
 @Tag(name = "account controller")
 @RestController
 @Validated
-@RequestMapping("${config.application.api-v1-url-path}/accounts")
+@RequestMapping("/accounts")
 @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
 public class AccountController {
 

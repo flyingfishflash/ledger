@@ -33,7 +33,7 @@ import net.flyingfishflash.ledger.domain.importer.service.GnucashFileImportServi
 
 @Tag(name = "gnucash file import controller")
 @RestController
-@RequestMapping("${config.application.api-v1-url-path}/import")
+@RequestMapping("/import")
 public class GnucashFileImportController {
 
   private final BookService bookService;
