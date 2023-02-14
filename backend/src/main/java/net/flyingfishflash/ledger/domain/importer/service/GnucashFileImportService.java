@@ -6,8 +6,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.zip.GZIPInputStream;
 
 import javax.xml.XMLConstants;
@@ -16,7 +14,6 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -25,7 +22,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
-import net.flyingfishflash.ledger.core.WebSocketSessionId;
 import net.flyingfishflash.ledger.domain.importer.GncXmlAccountHandler;
 import net.flyingfishflash.ledger.domain.importer.GncXmlCommodityHandler;
 import net.flyingfishflash.ledger.domain.importer.GncXmlPriceHandler;
@@ -44,31 +40,23 @@ public class GnucashFileImportService {
   private final GncXmlPriceHandler gncXmlPriceHandler;
   private final GncXmlTransactionHandler gncXmlTransactionHandler;
   private final GnucashFileImportStatus gnucashFileImportStatus;
-  private final SimpMessagingTemplate simpMessagingTemplate;
-  private final WebSocketSessionId webSocketSessionId;
 
   public GnucashFileImportService(
       GncXmlAccountHandler gncXmlAccountHandler,
       GncXmlCommodityHandler gncXmlCommodityHandler,
       GncXmlPriceHandler gncXmlPriceHandler,
       GncXmlTransactionHandler gncXmlTransactionHandler,
-      GnucashFileImportStatus gnucashFileImportStatus,
-      SimpMessagingTemplate simpMessagingTemplate,
-      WebSocketSessionId webSocketSessionId) {
+      GnucashFileImportStatus gnucashFileImportStatus) {
     this.gncXmlAccountHandler = gncXmlAccountHandler;
     this.gncXmlCommodityHandler = gncXmlCommodityHandler;
     this.gncXmlPriceHandler = gncXmlPriceHandler;
     this.gncXmlTransactionHandler = gncXmlTransactionHandler;
     this.gnucashFileImportStatus = gnucashFileImportStatus;
-    this.simpMessagingTemplate = simpMessagingTemplate;
-    this.webSocketSessionId = webSocketSessionId;
   }
 
   /** Parse GnuCash XML */
   public void process(InputStream gncFileInputStream)
       throws ParserConfigurationException, SAXException, IOException {
-
-    sendImportStatusMessage("Begin Processing Gnucash XML file");
 
     BufferedInputStream bufferedInputStream;
 
@@ -119,25 +107,20 @@ public class GnucashFileImportService {
      */
 
     parse(gncXmlByteArray, gncXmlCommodityHandler);
-    sendImportStatusMessage("Imported commodities");
 
     parse(gncXmlByteArray, gncXmlAccountHandler);
-    sendImportStatusMessage("Imported accounts");
     entityManager.clear();
 
     parse(gncXmlByteArray, gncXmlTransactionHandler);
-    sendImportStatusMessage("Imported transactions");
     entityManager.clear();
 
     parse(gncXmlByteArray, gncXmlPriceHandler);
-    sendImportStatusMessage("Imported prices");
     entityManager.clear();
 
     long endTime = System.currentTimeMillis();
     logger.info("total import time elapsed: {}} s", (endTime - startTime) / 1000);
 
     gnucashFileImportStatus.setStatusComplete();
-    sendImportStatusMessage("Finished");
   }
 
   private void parse(byte[] gncXmlByteArray, DefaultHandler handler)
@@ -153,30 +136,5 @@ public class GnucashFileImportService {
     xr.parse(new InputSource(inputStream));
     long stopTime = System.currentTimeMillis();
     logger.info("{} import time elapsed: {}} s", handler, (stopTime - startTime) / 1000);
-  }
-
-  @SuppressWarnings("JavaTimeDefaultTimeZone")
-  private void sendImportStatusMessage(String message) {
-
-    // DateTimeFormatter inBuiltFormatter1 = DateTimeFormatter.ISO_DATE_TIME;
-    var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS z");
-
-    simpMessagingTemplate.convertAndSend(
-        "/import/status/messages-user" + webSocketSessionId.getSessionId(),
-        formatter.format(ZonedDateTime.now()) + " -- " + message);
-    this.sendImportStatusCounts();
-  }
-
-  private void sendImportStatusCounts() {
-    simpMessagingTemplate.convertAndSend(
-        "/import/status/counts-user" + webSocketSessionId.getSessionId(),
-        "{ \"message\" : \"new counts available\" }");
-
-    // ObjectMapper mapper = new ObjectMapper();
-    // String json =
-    // mapper.writerWithDefaultPrettyPrinter().writeValueAsString(gnucashFileImportStatus);
-
-    // simpMessagingTemplate.convertAndSend(
-    //    "/import/status/counts-user" + webSocketSessionId.getSessionId(), json);
   }
 }
