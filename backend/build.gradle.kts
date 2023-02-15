@@ -84,12 +84,15 @@ tasks {
     useJUnitPlatform { excludeTags("Integration") }
     testLogging { events("passed", "skipped", "failed") }
     finalizedBy("jacocoUnitTestReport")
+    filter { excludeTestsMatching("net.flyingfishflash.ledger.integration*") }
   }
 
   register<Test>("integrationTests") {
     useJUnitPlatform {
-      includeTags("Integration")
-      filter { excludeTestsMatching("net.flyingfishflash.ledger.*.*.unit.*") }
+      filter { excludeTestsMatching("net.flyingfishflash.ledger.unit*") }
+      filter {
+        excludeTestsMatching("net.flyingfishflash.ledger.integration.domain.accounts*nestedset*")
+      }
     }
   }
 

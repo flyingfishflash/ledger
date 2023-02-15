@@ -2,7 +2,7 @@
   <configuration default="false" name="unit tests" type="JUnit" factoryName="JUnit" activateToolWindowBeforeRun="false" singleton="false">
     <extension name="coverage" runner="jacoco">
       <pattern>
-        <option name="PATTERN" value="net.flyingfishflash.ledger.*" />
+        <option name="PATTERN" value="net.flyingfishflash.ledger.integration.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

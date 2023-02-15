@@ -3,7 +3,7 @@
     <module name="ledger.backend.test" />
     <extension name="coverage" runner="jacoco">
       <pattern>
-        <option name="PATTERN" value="net.flyingfishflash.ledger.*" />
+        <option name="PATTERN" value="net.flyingfishflash.ledger.integration.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
