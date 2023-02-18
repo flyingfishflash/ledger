@@ -8,6 +8,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.session.InvalidSessionStrategy;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import net.flyingfishflash.ledger.core.authentication.CustomAuthenticationEntryPoint;
 import net.flyingfishflash.ledger.core.authentication.CustomInvalidSessionStrategy;
@@ -41,16 +42,15 @@ public class WebSecurityConfiguration {
         .and()
         .authorizeHttpRequests()
         .requestMatchers(
-            "/api/v1/auth/signin",
-            "/api/v1/auth/signup",
-            "/api/v1/info",
-            "/assets/config.json",
-            "/h2-console",
-            "/h2-console/**",
-            "/swagger-ui.html",
-            "/swagger-ui/**",
-            "/v3/api-docs/**",
-            "/ws*")
+            AntPathRequestMatcher.antMatcher("/api/v1/auth/signin"),
+            AntPathRequestMatcher.antMatcher("/api/v1/auth/signup"),
+            AntPathRequestMatcher.antMatcher("/api/v1/info"),
+            AntPathRequestMatcher.antMatcher("/assets/config.json"),
+            AntPathRequestMatcher.antMatcher("/h2-console"),
+            AntPathRequestMatcher.antMatcher("/h2-console/**"),
+            AntPathRequestMatcher.antMatcher("/swagger-ui.html"),
+            AntPathRequestMatcher.antMatcher("/swagger-ui/**"),
+            AntPathRequestMatcher.antMatcher("/v3/api-docs/**"))
         .permitAll()
         .anyRequest()
         .authenticated()

@@ -1,74 +1,38 @@
 package net.flyingfishflash.ledger.core.configuration;
 
-import java.util.Comparator;
+import static io.swagger.v3.oas.annotations.enums.SecuritySchemeType.HTTP;
+
 import java.util.Map;
 import java.util.TreeMap;
 
-import io.swagger.v3.oas.models.Components;
-import io.swagger.v3.oas.models.ExternalDocumentation;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.security.SecurityRequirement;
-import io.swagger.v3.oas.models.security.SecurityScheme;
-import io.swagger.v3.oas.models.servers.Server;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springdoc.core.customizers.OpenApiCustomiser;
+import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 
+// https://github.com/swagger-api/swagger-core/wiki/Swagger-2.X---Annotations
+
+@OpenAPIDefinition(
+    info =
+        @Info(
+            title = "${config.application.name}",
+            version = "1.0.0",
+            description = "${config.application.description}"),
+    security = @SecurityRequirement(name = "basicAuthentication"),
+    servers = {@Server(description = "server 1", url = "/")})
+@SecurityScheme(name = "basicAuthentication", type = HTTP, scheme = "basic")
 @Configuration
-@PropertySource("classpath:application.yaml")
 public class OpenApiConfiguration {
-
-  private Environment environment;
-
-  public OpenApiConfiguration(Environment environment) {
-    this.environment = environment;
-  }
-
-  @Bean
-  public OpenAPI springShopOpenAPI() {
-    final var securitySchemeName = "basicAuth";
-    return new OpenAPI()
-        .info(
-            new Info()
-                .title(environment.getProperty("${config.application.name}"))
-                .description("API Description")
-                .version("v1.0.0")
-                .license(new License().name("MIT License").url("https://mit-license.org/")))
-        .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
-        .addServersItem(new Server().url("/"))
-        .components(
-            new Components()
-                .addSecuritySchemes(
-                    securitySchemeName,
-                    new SecurityScheme()
-                        .name(securitySchemeName)
-                        .type(SecurityScheme.Type.HTTP)
-                        .scheme("basic")))
-        .externalDocs(
-            new ExternalDocumentation()
-                .description("Documentation")
-                .url(environment.getProperty("${config.application.name}")));
-  }
-
-  @Bean
-  public OpenApiCustomiser sortTagsAlphabetically() {
-    return openApi ->
-        openApi.setTags(
-            openApi.getTags().stream()
-                .sorted(Comparator.comparing(tag -> StringUtils.stripAccents(tag.getName())))
-                .toList());
-  }
 
   @SuppressWarnings("java:S3740")
   @Bean
-  public OpenApiCustomiser sortSchemasAlphabetically() {
+  public OpenApiCustomizer sortSchemasAlphabetically() {
     return openApi -> {
       Map<String, Schema> schemas = openApi.getComponents().getSchemas();
       openApi.getComponents().setSchemas(new TreeMap<>(schemas));

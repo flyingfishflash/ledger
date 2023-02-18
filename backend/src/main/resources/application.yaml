@@ -3,6 +3,7 @@
 config:
   application:
     name: &application-name "Ledger"
+    description: &application-description "A Java based bookkeeping engine and API server"
     documentation: "https://ledger.wiki.github.org/docs"
     api-v1-url-path: &api-v1-url-path "/api/v1"
 
@@ -50,7 +51,7 @@ spring:
       ddl-auto: "none"
       # https://stackoverflow.com/questions/29087626/entity-class-name-is-transformed-into-sql-table-name-with-underscores
       naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        physical-strategy: "org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl"
     properties:
       hibernate:
         cache:
@@ -67,7 +68,7 @@ spring:
         persistence:
           sharedCache:
             mode: "UNSPECIFIED"
-    show-sql: "false"
+    show-sql: "true"
   main:
     banner-mode: "off"
   mvc:
@@ -90,3 +91,8 @@ spring:
       mode: "never"
 
 trace: "false"
+
+springdoc:
+  swagger-ui:
+    operationsSorter: "alpha"
+    tagsSorter: "alpha"

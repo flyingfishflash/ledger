@@ -1,6 +1,7 @@
 package net.flyingfishflash.ledger.core.response.advice;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -42,8 +43,10 @@ public class CustomResponseBodyAdvice implements ResponseBodyAdvice<Object> {
         && !method.isAnnotationPresent(IgnoreResponseBinding.class)
         && !(o instanceof ApplicationSuccessResponse)
         && !(o instanceof ApplicationErrorResponse)
+        && !(o instanceof Exception)
         && !(o instanceof ProblemDetail)
-        && !(o instanceof Exception)) {
+        && !(o instanceof String)
+        && !(o instanceof TreeMap)) {
       return new ApplicationSuccessResponse<>(o);
     } else if (o instanceof Exception exception && !(o instanceof ErrorResponseException)) {
       return new ApplicationErrorResponse(exception);
