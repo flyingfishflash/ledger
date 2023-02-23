@@ -1,6 +1,6 @@
 plugins {
   java
-  id("org.springframework.boot") version "3.0.2"
+  id("org.springframework.boot") version "3.0.5"
   id("com.diffplug.spotless")
   id("jacoco")
   id("net.ltgt.errorprone") version "3.0.1"
@@ -18,7 +18,7 @@ val ciPlatform: String by rootProject.extra
 val ciPipelineId: String by rootProject.extra
 
 dependencies {
-  val springBootVersion = "3.0.2"
+  val springBootVersion = "3.0.5"
   val springSessionVersion = "3.0.0"
 
   implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
