@@ -115,7 +115,12 @@ tasks {
     classDirectories.setFrom(
         files(
             project.sourceSets.main.get().output.asFileTree.filter { f: File ->
-              !f.path.contains("/net/flyingfishflash/ledger/core/configuration/")
+              !(f.path.contains("/java/main/net/flyingfishflash/ledger") &&
+                  (f.name.equals("Application") ||
+                      f.name.contains("ApplicationConfiguration") ||
+                      f.name.contains("Configuration") ||
+                      f.path.contains("dto/") ||
+                      f.path.contains("configuration/")))
             }))
     reports {
       html.required.set(true)
