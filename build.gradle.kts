@@ -2,7 +2,7 @@ import java.io.ByteArrayOutputStream
 
 plugins {
   id("com.diffplug.spotless") version "6.15.0"
-  id("com.github.ben-manes.versions") version "0.45.0"
+  id("com.github.ben-manes.versions") version "0.46.0"
   id("org.sonarqube") version "4.0.0.2929"
 }
 
