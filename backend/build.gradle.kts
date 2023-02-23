@@ -42,7 +42,7 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4")
   implementation("org.zalando:jackson-datatype-money:1.3.0")
   runtimeOnly("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
-  testImplementation("org.springframework.security:spring-security-test:6.0.1")
+  testImplementation("org.springframework.security:spring-security-test:6.0.2")
   testImplementation("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
   errorprone("com.google.errorprone:error_prone_core:2.18.0")
 }
