@@ -49,6 +49,18 @@ dependencies {
 
 jacoco { toolVersion = "0.8.8" }
 
+sonarqube {
+  properties {
+    property(
+        "sonar.coverage.exclusions",
+        "src/main/java/net/flyingfishflash/ledger/core/CustomCommandLineRunner.java," +
+            "src/main/java/net/flyingfishflash/ledger/core/configuration/**," +
+            "src/main/java/net/flyingfishflash/ledger/core/multitenancy/TenantService.java," +
+            "src/main/java/net/flyingfishflash/ledger/**/dto/*," +
+            "src/main/java/net/flyingfishflash/ledger/*/*/*Configuration.java")
+  }
+}
+
 springBoot {
   buildInfo {
     properties {
