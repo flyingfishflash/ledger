@@ -68,7 +68,7 @@ spring:
         persistence:
           sharedCache:
             mode: "UNSPECIFIED"
-    show-sql: "true"
+    show-sql: "false"
   main:
     banner-mode: "off"
   mvc:
