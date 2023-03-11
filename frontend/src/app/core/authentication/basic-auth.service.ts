@@ -79,7 +79,7 @@ export class BasicAuthService {
       })
       .subscribe(
         (result) => {
-          if (result.response.body.message === "Logged Out") {
+          if (result.message === "Successful sign-out") {
             window.sessionStorage.clear();
             this.userSubject.next(null);
             this.router.navigate(["/login"]);
@@ -103,7 +103,7 @@ export class BasicAuthService {
     if (error.error instanceof ErrorEvent) {
       errorMessage = `A client internal error occurred:\nError Message: ${error.error.message}`;
     } else {
-      errorMessage = `A server-side error occured:\nError Status: ${error.status}\nError Message: ${error.message}`;
+      errorMessage = `A server-side error occured on SIGN-OUT:\nError Status: ${error.status}\nError Message: ${error.message}`;
     }
     log.error(errorMessage);
     return throwError(error);

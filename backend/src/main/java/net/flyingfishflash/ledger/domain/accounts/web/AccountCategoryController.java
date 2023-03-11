@@ -1,5 +1,6 @@
 package net.flyingfishflash.ledger.domain.accounts.web;
 
+import java.net.URI;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,11 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletRequest;
+
+import net.flyingfishflash.ledger.core.response.structure.Response;
 import net.flyingfishflash.ledger.core.validators.Enum;
 import net.flyingfishflash.ledger.domain.accounts.data.AccountCategory;
 import net.flyingfishflash.ledger.domain.accounts.data.AccountType;
 import net.flyingfishflash.ledger.domain.accounts.service.AccountCategoryService;
 
+/** Account Category Controller */
 @Tag(name = "account category controller")
 @RestController
 @Validated
@@ -27,19 +32,37 @@ public class AccountCategoryController {
 
   @Autowired AccountCategoryService accountCategoryService;
 
-  // Obtain the List of Account Categories
+  /**
+   * Retrieve list of all account categories
+   *
+   * @return List of all Account Categories
+   */
   @GetMapping
-  @Operation(summary = "Retrieve all account categories")
-  public List<AccountCategory> findAllAccountCategories() {
-    return accountCategoryService.findAllAccountCategories();
+  @Operation(summary = "Retrieve list of all account categories")
+  public Response<List<AccountCategory>> findAllAccountCategories(HttpServletRequest request) {
+    return new Response<>(
+        accountCategoryService.findAllAccountCategories(),
+        "Retrieve list of all account categories",
+        request.getMethod(),
+        URI.create(request.getRequestURI()));
   }
 
-  // Obtain the List of Account Categories associated with an Account Type
+  /**
+   * Retrieve the account category associated with an account type
+   *
+   * @param type Account type
+   * @return Account category associated with supplied account type
+   */
   @GetMapping(value = "by-type")
   @Operation(summary = "Retrieve the account category associated with an account type")
   @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
-  public AccountCategory findAccountCategoriesByType(
+  public Response<AccountCategory> findAccountCategoriesByType(
+      HttpServletRequest request,
       @RequestParam(name = "type") @Enum(enumClass = AccountType.class) String type) {
-    return accountCategoryService.findAccountCategoryByType(type);
+    return new Response<>(
+        accountCategoryService.findAccountCategoryByType(type),
+        "Retrieve the account category associated with an account type",
+        request.getMethod(),
+        URI.create(request.getRequestURI()));
   }
 }

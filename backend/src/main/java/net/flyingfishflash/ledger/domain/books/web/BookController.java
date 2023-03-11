@@ -92,7 +92,7 @@ public class BookController {
   //  @PostMapping("/active")
   //  @ResponseBody
   //  @Operation(summary = "Set the active book for a session")
-  //  @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
+  //  @ApiResponses(value = {@Response(responseCode = "400", description = "Bad Request")})
   //  public Book setActiveBook(@RequestBody SetActiveBookRequest setActiveBookRequest) {
   //    //    activeBook.setBookId(bookService.findById(setActiveBookRequest.id()).getId());
   //    //    logger.info("{}", activeBook);
@@ -103,7 +103,7 @@ public class BookController {
   //  @GetMapping("/active")
   //  @ResponseBody
   //  @Operation(summary = "Get the active book for a session")
-  //  @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad Request")})
+  //  @ApiResponses(value = {@Response(responseCode = "400", description = "Bad Request")})
   //  public Book getActiveBook() {
   //    // return bookService.findById(activeBook.getBookId());
   //    return new Book();

@@ -50,6 +50,7 @@ public class WebSecurityConfiguration {
             AntPathRequestMatcher.antMatcher("/h2-console/**"),
             AntPathRequestMatcher.antMatcher("/swagger-ui.html"),
             AntPathRequestMatcher.antMatcher("/swagger-ui/**"),
+            AntPathRequestMatcher.antMatcher("/v3/api-docs"),
             AntPathRequestMatcher.antMatcher("/v3/api-docs/**"))
         .permitAll()
         .anyRequest()

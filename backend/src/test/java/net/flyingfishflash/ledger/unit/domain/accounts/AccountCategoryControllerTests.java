@@ -2,12 +2,8 @@ package net.flyingfishflash.ledger.unit.domain.accounts;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.List;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.URI;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,15 +13,19 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.json.JacksonTester;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.mock.web.MockHttpServletRequest;
 
-import net.flyingfishflash.ledger.domain.accounts.data.AccountCategory;
+import net.flyingfishflash.ledger.core.response.structure.Response;
 import net.flyingfishflash.ledger.domain.accounts.data.AccountType;
 import net.flyingfishflash.ledger.domain.accounts.service.AccountCategoryService;
 import net.flyingfishflash.ledger.domain.accounts.web.AccountCategoryController;
 
+/**
+ * Unit tests for {@link AccountCategoryController}
+ *
+ * <p>Testing the various method response objects directly without filtering through controller
+ * advice or serialization
+ */
 @ExtendWith(MockitoExtension.class)
 class AccountCategoryControllerTests {
 
@@ -34,50 +34,39 @@ class AccountCategoryControllerTests {
 
   AccountCategoryService realAccountCategoryService;
 
-  private MockMvc mvc;
-  private JacksonTester<List<AccountCategory>> jsonAccountCategories;
-  private JacksonTester<AccountCategory> jsonAccountCategory;
+  private static final MockHttpServletRequest mockRequest =
+      new MockHttpServletRequest("Lorem Ipsum", "lorem/ipsum");
 
   @BeforeEach
   public void setup() {
-
     realAccountCategoryService = new AccountCategoryService();
-
-    JacksonTester.initFields(this, new ObjectMapper());
-    // MockMvc standalone approach
-    mvc = MockMvcBuilders.standaloneSetup(accountCategoryController).build();
   }
 
   @Test
-  void getAccountCategories() throws Exception {
-    given(mockAccountCategoryService.findAllAccountCategories())
-        .willReturn(realAccountCategoryService.findAllAccountCategories());
-    assertThat(
-            mvc.perform(get("/account-categories"))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString())
+  void getAccountCategories() {
+    var content = realAccountCategoryService.findAllAccountCategories();
+    given(mockAccountCategoryService.findAllAccountCategories()).willReturn(content);
+
+    assertThat(accountCategoryController.findAllAccountCategories(mockRequest))
+        .usingRecursiveComparison()
+        .comparingOnlyFields("size", "content")
         .isEqualTo(
-            jsonAccountCategories
-                .write(realAccountCategoryService.findAllAccountCategories())
-                .getJson());
+            new Response<>(content, "Lorem Ipsum", "Lorem Ipsum", URI.create("lorem/ipsum")));
   }
 
-  @ParameterizedTest
+  @ParameterizedTest(name = "{0}")
   @EnumSource(AccountType.class)
-  void getAccountCategoriesByType(AccountType accountType) throws Exception {
-    given(mockAccountCategoryService.findAccountCategoryByType("LoremIpsum"))
-        .willReturn(realAccountCategoryService.findAccountCategoryByType(accountType.name()));
+  void getAccountCategoriesByType(AccountType accountType) {
+    var content = realAccountCategoryService.findAccountCategoryByType(accountType.toString());
+    given(mockAccountCategoryService.findAccountCategoryByType(accountType.toString()))
+        .willReturn(content);
+
     assertThat(
-            mvc.perform(get("/account-categories/by-type?type=LoremIpsum"))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString())
+            accountCategoryController.findAccountCategoriesByType(
+                mockRequest, accountType.toString()))
+        .usingRecursiveComparison()
+        .comparingOnlyFields("size", "content")
         .isEqualTo(
-            jsonAccountCategory
-                .write(realAccountCategoryService.findAccountCategoryByType(accountType.toString()))
-                .getJson());
+            new Response<>(content, "Lorem Ipsum", "Lorem Ipsum", URI.create("lorem/ipsum")));
   }
 }

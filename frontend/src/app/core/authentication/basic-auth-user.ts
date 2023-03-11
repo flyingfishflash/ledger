@@ -8,9 +8,9 @@ export class BasicAuthUser {
   readonly sessionId?: string;
 
   constructor(response: HttpResponse<any>) {
-    this.id = response.body.response.body.id;
-    this.username = response.body.response.body.username;
-    this.roles = response.body.response.body.roles;
+    this.id = response.body.content.id;
+    this.username = response.body.content.username;
+    this.roles = response.body.content.roles;
     this.sessionId = response.headers.get("x-auth-token");
   }
 }

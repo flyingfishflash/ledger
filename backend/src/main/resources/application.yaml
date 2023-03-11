@@ -9,10 +9,6 @@ config:
 
 debug: "false"
 
-jackson:
-  serialization:
-    WRITE_DATES_AS_TIMESTAMPS: "false"
-
 logging:
   level:
     org:
@@ -46,6 +42,10 @@ server:
       remote-ip-header: "x-forwarded-for"
 
 spring:
+  jackson:
+    serialization:
+      write-dates-as-timestamps: 'false'
+#      write-enums-to-lowercase: true
   jpa:
     hibernate:
       ddl-auto: "none"
@@ -94,5 +94,6 @@ trace: "false"
 
 springdoc:
   swagger-ui:
+    defaultModelsExpandDepth: -1
     operationsSorter: "alpha"
     tagsSorter: "alpha"

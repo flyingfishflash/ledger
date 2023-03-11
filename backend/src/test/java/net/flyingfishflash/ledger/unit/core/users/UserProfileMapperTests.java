@@ -2,6 +2,7 @@ package net.flyingfishflash.ledger.unit.core.users;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import net.flyingfishflash.ledger.core.users.data.User;
@@ -9,6 +10,8 @@ import net.flyingfishflash.ledger.core.users.data.dto.UserProfileMapper;
 import net.flyingfishflash.ledger.core.users.data.dto.UserProfileRequest;
 import net.flyingfishflash.ledger.core.users.data.dto.UserProfileResponse;
 
+/** Unit tests for {@link net.flyingfishflash.ledger.core.users.data.dto.UserProfileMapper} */
+@DisplayName("UserProfileMapper")
 class UserProfileMapperTests {
 
   private final UserProfileMapper userProfileMapper = new UserProfileMapper();

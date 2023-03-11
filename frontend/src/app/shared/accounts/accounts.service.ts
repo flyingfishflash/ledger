@@ -46,7 +46,7 @@ export class AccountsService {
       })
       .pipe(
         map((res) => {
-          return res.response.body;
+          return res.content;
         }) //,
         //catchError(this.handleError)
       );
@@ -72,7 +72,7 @@ export class AccountsService {
       })
       .pipe(
         map((res) => {
-          return this.treeUtilitiesService.listToTreeSorted(res.response.body);
+          return this.treeUtilitiesService.listToTreeSorted(res.content);
         }),
         catchError(this.handleError)
       );
@@ -91,7 +91,7 @@ export class AccountsService {
       .get<any>(`${this.appConfig.assets.api.server.url}/account-categories`)
       .pipe(
         map((res) => {
-          return res.response.body;
+          return res.content;
         }),
         catchError(this.handleError)
       );

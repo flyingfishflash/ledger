@@ -6,10 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,6 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -46,6 +44,8 @@ import net.flyingfishflash.ledger.core.users.exceptions.UserCreateException;
 import net.flyingfishflash.ledger.core.users.exceptions.UserNotFoundException;
 import net.flyingfishflash.ledger.core.users.service.UserService;
 
+/** Unit tests for {@link net.flyingfishflash.ledger.core.users.service.UserService} */
+@DisplayName("UserService")
 @ExtendWith(MockitoExtension.class)
 class UserServiceTests {
 
@@ -58,25 +58,46 @@ class UserServiceTests {
   @Test
   void existsByUsername() {
     var username = "Lorem Ipsum";
-    given(mockUserRepository.existsByUsername(username)).willReturn(true);
-    userService.existsByUsername(username);
-    verify(mockUserRepository, times(1)).existsByUsername(username);
+    var existsByUsername = false;
+    given(mockUserRepository.existsByUsername(anyString())).willReturn(true);
+    existsByUsername = userService.existsByUsername(username);
+    verify(mockUserRepository, times(1)).existsByUsername(anyString());
+    assertThat(existsByUsername).isTrue();
+    reset(mockUserRepository);
+    given(mockUserRepository.existsByUsername(anyString())).willReturn(false);
+    existsByUsername = userService.existsByUsername(username);
+    verify(mockUserRepository, times(1)).existsByUsername(anyString());
+    assertThat(existsByUsername).isFalse();
   }
 
   @Test
   void existsById() {
     var id = 1L;
-    given(mockUserRepository.existsById(id)).willReturn(true);
-    userService.existsById(id);
-    verify(mockUserRepository, times(1)).existsById(id);
+    var existsById = false;
+    given(mockUserRepository.existsById(anyLong())).willReturn(true);
+    existsById = userService.existsById(id);
+    verify(mockUserRepository, times(1)).existsById(anyLong());
+    assertThat(existsById).isTrue();
+    reset(mockUserRepository);
+    given(mockUserRepository.existsById(anyLong())).willReturn(false);
+    existsById = userService.existsById(id);
+    verify(mockUserRepository, times(1)).existsById(anyLong());
+    assertThat(existsById).isFalse();
   }
 
   @Test
   void existsByEmail() {
     var email = "Lorem Ipsem";
-    given(mockUserRepository.existsByEmail(email)).willReturn(true);
-    userService.existsByEmail(email);
-    verify(mockUserRepository, times(1)).existsByEmail(email);
+    var existsByEmail = false;
+    given(mockUserRepository.existsByEmail(anyString())).willReturn(true);
+    existsByEmail = userService.existsByEmail(email);
+    verify(mockUserRepository, times(1)).existsByEmail(anyString());
+    assertThat(existsByEmail).isTrue();
+    reset(mockUserRepository);
+    given(mockUserRepository.existsByEmail(anyString())).willReturn(false);
+    existsByEmail = userService.existsByEmail(email);
+    verify(mockUserRepository, times(1)).existsByEmail(anyString());
+    assertThat(existsByEmail).isFalse();
   }
 
   @Test
@@ -84,6 +105,7 @@ class UserServiceTests {
     given(mockUserRepository.save(any(User.class))).willReturn(new User());
     userService.saveUser(new User());
     verify(mockUserRepository, times(1)).save(any(User.class));
+    assertThat(userService.saveUser(new User())).isEqualTo(new User());
   }
 
   @Test
@@ -92,12 +114,13 @@ class UserServiceTests {
     u.setUsername("Lorem Ipsum");
     Optional<User> ou = Optional.of(u);
     given(mockUserRepository.findByUsername(u.getUsername())).willReturn(ou);
-    userService.loadUserByUsername(u.getUsername());
+    var loadedUser = userService.loadUserByUsername(u.getUsername());
     verify(mockUserRepository, times(1)).findByUsername(u.getUsername());
+    assertThat(loadedUser).isEqualTo(u);
   }
 
   @Test
-  void loadUserByUsername_whenUserNotFound_thenUserNotFoundException() {
+  void loadUserByUsernameWhenUserNotFoundThenUserNotFoundException() {
     String username = "Lorem Ipsum";
     given(mockUserRepository.findByUsername(username)).willReturn(Optional.empty());
     assertThatExceptionOfType(UsernameNotFoundException.class)
@@ -107,16 +130,17 @@ class UserServiceTests {
 
   @Test
   void findByUsername() {
-    User u = new User();
+    var u = new User();
     u.setUsername("Lorem Ipsum");
     Optional<User> ou = Optional.of(u);
     given(mockUserRepository.findByUsername(u.getUsername())).willReturn(ou);
-    userService.findByUsername(u.getUsername());
+    var foundUser = userService.findByUsername(u.getUsername());
     verify(mockUserRepository, times(1)).findByUsername(u.getUsername());
+    assertThat(foundUser).isEqualTo(u);
   }
 
   @Test
-  void findByUsername_whenUserNotFound_thenUserNotFoundException() {
+  void findByUsernameWhenUserNotFoundThenUserNotFoundException() {
     var username = "Lorem Ipsum";
     given(mockUserRepository.findByUsername(username)).willReturn(Optional.empty());
     assertThatExceptionOfType(UserNotFoundException.class)
@@ -126,15 +150,16 @@ class UserServiceTests {
 
   @Test
   void findById() {
-    User u = new User();
+    var u = new User();
     Optional<User> ou = Optional.of(u);
     given(mockUserRepository.findById(anyLong())).willReturn(ou);
-    userService.findById(1L);
+    var foundUser = userService.findById(1L);
     verify(mockUserRepository, times(1)).findById(1L);
+    assertThat(foundUser).isEqualTo(u);
   }
 
   @Test
-  void findById_whenUserNotFound_thenUserNotFoundException() {
+  void findByIdWhenUserNotFoundThenUserNotFoundException() {
     var userId = 1L;
     given(mockUserRepository.findById(userId)).willReturn(Optional.empty());
     assertThatExceptionOfType(UserNotFoundException.class)
@@ -159,7 +184,7 @@ class UserServiceTests {
   }
 
   @Test
-  void deleteById_whenUserNotFound_thenUserNotFoundException() {
+  void deleteByIdWhenUserNotFoundThenUserNotFoundException() {
     var userId = 1L;
     doThrow(IllegalArgumentException.class).when(mockUserRepository).deleteById(anyLong());
     assertThatExceptionOfType(UserNotFoundException.class)
@@ -169,7 +194,7 @@ class UserServiceTests {
   }
 
   @Test
-  void createUser_whenUsernameExists_thenUserCreateException() {
+  void createUserWhenUsernameExistsThenUserCreateException() {
     var userCreateRequest = new UserCreateRequest();
     userCreateRequest.setUsername("Lorem Ipsum");
     given(mockUserRepository.existsByUsername(userCreateRequest.getUsername())).willReturn(true);
@@ -181,7 +206,7 @@ class UserServiceTests {
   }
 
   @Test
-  void createUser_whenEmailExists_thenUserCreateException() {
+  void createUserWhenEmailExistsThenUserCreateException() {
     var userCreateRequest = new UserCreateRequest();
     userCreateRequest.setEmail("Lorem Ipsum");
     given(mockUserRepository.existsByEmail(userCreateRequest.getEmail())).willReturn(true);
@@ -193,7 +218,7 @@ class UserServiceTests {
   }
 
   @Test
-  void createUser_whenRolesIsNull_thenUserCreateException() {
+  void createUserWhenRolesIsNullThenUserCreateException() {
     var userCreateRequest = new UserCreateRequest();
     userCreateRequest.setUsername("Username");
     userCreateRequest.setEmail("Email Address");
@@ -206,7 +231,7 @@ class UserServiceTests {
   }
 
   @Test
-  void createUser_whenRolesExceedsOne_thenUserCreateException() {
+  void createUserWhenRolesExceedsOneThenUserCreateException() {
     var userCreateRequest = new UserCreateRequest();
     userCreateRequest.setUsername("Username");
     userCreateRequest.setEmail("Email Address");
@@ -223,7 +248,7 @@ class UserServiceTests {
   }
 
   @Test
-  void createUser_whenRolesEmpty_thenUserCreateException() {
+  void createUserWhenRolesEmptyThenUserCreateException() {
     var userCreateRequest = new UserCreateRequest();
     userCreateRequest.setUsername("Username");
     userCreateRequest.setEmail("Email Address");
@@ -238,7 +263,7 @@ class UserServiceTests {
 
   @ParameterizedTest
   @EnumSource(Role.class)
-  void createUser_verifyRoles(Role role) {
+  void createUserVerifyRoles(Role role) {
     UserCreateRequest userCreateRequest =
         new UserCreateRequest(
             "Username",
@@ -260,7 +285,7 @@ class UserServiceTests {
   }
 
   @Test
-  void createUser_whenInvalidRoleSpecified_thenUserCreateException() {
+  void createUserWhenInvalidRoleSpecifiedThenUserCreateException() {
     UserCreateRequest userCreateRequest =
         new UserCreateRequest(
             "Username",
@@ -282,6 +307,7 @@ class UserServiceTests {
     verify(mockUserRepository, times(1)).findById(1L);
     verify(mockUserProfileMapper, times(1)).mapEntityModelToResponseModel(any(User.class));
     assertThat(userProfileResponse).isNotNull();
+    assertThat(userProfileResponse.id()).isEqualTo(1L);
   }
 
   @Test
@@ -293,10 +319,11 @@ class UserServiceTests {
     verify(mockUserRepository, times(1)).findByUsername(anyString());
     verify(mockUserProfileMapper, times(1)).mapEntityModelToResponseModel(any(User.class));
     assertThat(userProfileResponse).isNotNull();
+    assertThat(userProfileResponse.id()).isEqualTo(1L);
   }
 
   @Test
-  void profilePatch_whenPatchedIsFalse() {
+  void profilePatchWhenPatchedIsFalse() {
     var user = new User();
     user.setEmail("email@email.em");
     user.setFirstName("First Name");
@@ -316,7 +343,7 @@ class UserServiceTests {
   }
 
   @Test
-  void profilePatch_whenPatchedIsTrue() {
+  void profilePatchWhenPatchedIsTrue() {
     var user = new User();
     user.setEmail("email@email.em");
     user.setFirstName("First Name");
@@ -357,7 +384,7 @@ class UserServiceTests {
   }
 
   @Test
-  void profilePatch_whenPatchRequestContainsUnknownKey_thenIllegalStateException() {
+  void profilePatchWhenPatchRequestContainsUnknownKeyThenIllegalStateException() {
     given(mockUserRepository.findById(1L)).willReturn(Optional.of(new User()));
     Map<String, Object> patchRequest = new HashMap<>();
     patchRequest.put("unknownKey", "");
@@ -366,7 +393,7 @@ class UserServiceTests {
   }
 
   @Test
-  void profilePatch_whenPatchRequestIsEmpty_thenIllegalStateException() {
+  void profilePatchWhenPatchRequestIsEmptyThenIllegalStateException() {
     given(mockUserRepository.findById(1L)).willReturn(Optional.of(new User()));
     Map<String, Object> patchRequest = new HashMap<>();
     assertThatExceptionOfType(IllegalStateException.class)

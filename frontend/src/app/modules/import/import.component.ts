@@ -93,11 +93,11 @@ export class ImportComponent implements OnInit, OnDestroy {
         .pipe(
           concatMap((successResponse) => {
             log.debug(successResponse);
-            this.activeBookId = successResponse.response.body.id;
+            this.activeBookId = successResponse.content.id;
             var uploadFileForm = new FormData();
             uploadFileForm.append(
               "bookId",
-              '{ "bookId":"' + successResponse.response.body.id + '" }'
+              '{ "bookId":"' + successResponse.content.id + '" }'
             );
             uploadFileForm.append("file", this.file);
             return this.importService.uploadFile(uploadFileForm);

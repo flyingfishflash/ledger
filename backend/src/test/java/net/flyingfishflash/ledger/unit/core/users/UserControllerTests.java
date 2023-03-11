@@ -1,120 +1,89 @@
 package net.flyingfishflash.ledger.unit.core.users;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.net.URI;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.json.JacksonTester;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.http.HttpStatus;
+import org.springframework.mock.web.MockHttpServletRequest;
 
+import net.flyingfishflash.ledger.core.response.structure.Response;
 import net.flyingfishflash.ledger.core.users.data.Role;
 import net.flyingfishflash.ledger.core.users.data.User;
-import net.flyingfishflash.ledger.core.users.data.dto.UserCreateRequest;
-import net.flyingfishflash.ledger.core.users.data.dto.UserCreateResponse;
-import net.flyingfishflash.ledger.core.users.data.dto.UserProfileResponse;
+import net.flyingfishflash.ledger.core.users.data.dto.*;
 import net.flyingfishflash.ledger.core.users.service.UserService;
 import net.flyingfishflash.ledger.core.users.web.UserController;
 
+/**
+ * Unit tests for {@link UserController}
+ *
+ * <p>Testing the various method response objects directly without filtering through controller
+ * advice or serialization
+ */
+@DisplayName("UserController")
 @ExtendWith(MockitoExtension.class)
 class UserControllerTests {
-
-  private MockMvc mvc;
 
   @Mock private UserService mockUserService;
   @Mock private Principal mockPrincipal;
   @InjectMocks UserController userController;
 
-  private JacksonTester<UserProfileResponse> jsonUserProfileResponse;
-  private JacksonTester<UserCreateRequest> jsonUserCreateRequest;
-  private JacksonTester<UserCreateResponse> jsonUserCreateResponse;
-  //  private JacksonTester<UserDeleteResponse> jsonUserDeleteResponse;
-  private JacksonTester<List<User>> jsonUserList;
-  private JacksonTester<Map<String, Object>> jsonPatchRequest;
-
-  @BeforeEach
-  public void setup() {
-    JacksonTester.initFields(this, new ObjectMapper());
-    // MockMvc standalone approach
-    mvc =
-        MockMvcBuilders.standaloneSetup(userController)
-            // .setControllerAdvice(new AdviceForUserExceptions())
-            // .setControllerAdvice(new AdviceForStandardExceptions())
-            // .addFilters(new SuperHeroFilter())
-            .build();
-  }
+  private static final MockHttpServletRequest mockRequest =
+      new MockHttpServletRequest("Lorem Ipsum", "lorem/ipsum");
 
   @Test
-  void getUsers() throws Exception {
-    User user = new User("Username", "Password", "Email@Email", "First Name", "Last Name");
+  void getUsers() {
+    var user = new User("Username", "Password", "Email@Email", "First Name", "Last Name");
     user.grantAuthority(Role.ROLE_VIEWER);
-    List<User> userList = new ArrayList<>(1);
-    userList.add(user);
+    List<User> userList = List.of(user);
     given(mockUserService.findAllUsers()).willReturn(userList);
-    assertThat(
-            mvc.perform(get("/users").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString())
-        .isEqualTo(jsonUserList.write(userList).getJson());
+
+    assertThat(userController.findAll(mockRequest))
+        .usingRecursiveComparison()
+        .comparingOnlyFields("size", "content")
+        .isEqualTo(new Response<>(userList, "Ignored", "Ignored", URI.create("Ignored")));
   }
 
   @Test
-  void getProfileByUsername() throws Exception {
+  void getProfileByUsername() {
     var userProfileResponse = new UserProfileResponse(2L, "Email", "First Name", "Last Name", null);
     given(mockPrincipal.getName()).willReturn("Any Principal");
     given(mockUserService.profileByUsername(anyString())).willReturn(userProfileResponse);
-    assertThat(
-            mvc.perform(get("/users/profile").principal(mockPrincipal))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString())
-        .isEqualTo(jsonUserProfileResponse.write(userProfileResponse).getJson());
-  }
 
-  @Test
-  void getProfileById() throws Exception {
-    given(mockUserService.profileById(anyLong()))
-        .willReturn(new UserProfileResponse(2L, "Email", "First Name", "Last Name", null));
-    assertThat(
-            mvc.perform(get("/users/2/profile"))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString())
+    assertThat(userController.profileByUsername(mockPrincipal, mockRequest))
+        .usingRecursiveComparison()
+        .comparingOnlyFields("size", "content")
         .isEqualTo(
-            jsonUserProfileResponse
-                .write(new UserProfileResponse(2L, "Email", "First Name", "Last Name", null))
-                .getJson());
+            new Response<>(userProfileResponse, "Ignored", "Ignored", URI.create("Ignored")));
   }
 
   @Test
-  void postUsers() throws Exception {
+  void getProfileById() {
+    var userProfileResponse = new UserProfileResponse(2L, "Email", "First Name", "Last Name", null);
+    given(mockUserService.profileById(anyLong())).willReturn(userProfileResponse);
+
+    assertThat(userController.profileById(9999L, mockRequest))
+        .usingRecursiveComparison()
+        .comparingOnlyFields("size", "content")
+        .isEqualTo(
+            new Response<>(userProfileResponse, "Ignored", "Ignored", URI.create("Ignored")));
+  }
+
+  @Test
+  void postUsers() {
     var userCreateRequest =
         new UserCreateRequest(
             "Username",
@@ -123,48 +92,42 @@ class UserControllerTests {
             "First Name",
             "Last Name",
             Collections.singleton(Role.ROLE_ADMIN.name()));
-    var expectedUserCreateResponse =
-        new UserCreateResponse("Created user: " + userCreateRequest.getUsername());
-    assertThat(
-            mvc.perform(
-                    post("/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonUserCreateRequest.write(userCreateRequest).getJson()))
-                .andExpect(status().isCreated())
-                .andReturn()
-                .getResponse()
-                .getContentAsString())
-        .isEqualTo(jsonUserCreateResponse.write(expectedUserCreateResponse).getJson());
+    var userCreateResponse = "Created user: " + userCreateRequest.getUsername();
+
+    assertThat(userController.signUp(userCreateRequest, mockRequest).getStatusCode())
+        .isEqualTo(HttpStatus.CREATED);
+
+    assertThat(userController.signUp(userCreateRequest, mockRequest).getBody())
+        .usingRecursiveComparison()
+        .comparingOnlyFields("size", "content")
+        .isEqualTo(new Response<>(userCreateResponse, "Ignored", "Ignored", URI.create("Ignored")));
   }
 
   @Test
-  void patchUsersById() throws Exception {
-    var expectedUserProfileResponse =
-        new UserProfileResponse(2L, "Email", "First Name", "Last Name", null);
-    given(mockUserService.profilePatch(anyLong(), any())).willReturn(expectedUserProfileResponse);
+  void patchUsersById() {
+    var userProfileResponse = new UserProfileResponse(2L, "Email", "First Name", "Last Name", null);
+    given(mockUserService.profilePatch(anyLong(), any())).willReturn(userProfileResponse);
     Map<String, Object> patchRequest = new HashMap<>();
     patchRequest.put("Email", "email@email.net");
-    assertThat(
-            mvc.perform(
-                    patch("/users/2")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonPatchRequest.write(patchRequest).getJson()))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString())
-        .isEqualTo(jsonUserProfileResponse.write(expectedUserProfileResponse).getJson());
+
+    assertThat(userController.profilePatch(999L, patchRequest, mockRequest))
+        .usingRecursiveComparison()
+        .comparingOnlyFields("size", "content")
+        .isEqualTo(
+            new Response<>(userProfileResponse, "Ignored", "Ignored", URI.create("Ignored")));
   }
 
   @Test
-  void deleteUserById() throws Exception {
+  void deleteUserById() {
     String requestParameter = "1";
-    assertThat(
-            mvc.perform(delete("/users/delete?id=" + requestParameter))
-                .andExpect(status().isNoContent())
-                .andReturn()
-                .getResponse()
-                .getContentAsString())
-        .isEqualTo("{\"message\":\"Deleted user id: " + requestParameter + "\"}");
+    var userDeleteResponse = "Deleted user id: " + requestParameter;
+
+    assertThat(userController.deleteById(1L, mockRequest).getStatusCode())
+        .isEqualTo(HttpStatus.NO_CONTENT);
+
+    assertThat(userController.deleteById(1L, mockRequest).getBody())
+        .usingRecursiveComparison()
+        .comparingOnlyFields("size", "content")
+        .isEqualTo(new Response<>(userDeleteResponse, "Ignored", "Ignored", URI.create("Ignored")));
   }
 }

@@ -1,4 +1,4 @@
-package net.flyingfishflash.ledger.core.authentication.payload.response;
+package net.flyingfishflash.ledger.core.authentication.data.dto;
 
 import java.util.ArrayList;
 import java.util.List;

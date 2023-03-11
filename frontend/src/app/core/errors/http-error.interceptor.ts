@@ -92,11 +92,11 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         break;
       case 400:
       case 500:
-        log.info(error.error.response.body.title);
+        log.info(error.error.content.title);
         this.errorDialogService.openDialog(
-          error.error.response.body.detail ?? JSON.stringify(error),
+          error.error.content.detail ?? JSON.stringify(error),
           error.status,
-          error.error.response.body.title
+          error.error.content.title
         );
         handled = true;
         log.debug("init1");
@@ -105,9 +105,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         if (error.url.indexOf("signin") < 0) {
           this.authenticationService.redirectToLogin();
           this.errorDialogService.openDialog(
-            error.error.response.body.detail ?? JSON.stringify(error),
+            error.error.content.detail ?? JSON.stringify(error),
             error.status,
-            error.error.response.body.title
+            error.error.content.title
           );
           handled = true;
         }
@@ -116,9 +116,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         if (error.url.indexOf("signin") < 0) {
           this.authenticationService.redirectToLogin();
           this.errorDialogService.openDialog(
-            error.error.response.body.detail ?? JSON.stringify(error),
+            error.error.content.detail ?? JSON.stringify(error),
             error.status,
-            error.error.response.body.title
+            error.error.content.title
           );
           handled = true;
         }
@@ -126,9 +126,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
       case 404:
         if (error.url.indexOf("config.json") < 0) {
           this.errorDialogService.openDialog(
-            error.error.response.body.detail ?? JSON.stringify(error),
+            error.error.content.detail ?? JSON.stringify(error),
             error.status,
-            error.error.response.body.title
+            error.error.content.title
           );
           handled = true;
         }

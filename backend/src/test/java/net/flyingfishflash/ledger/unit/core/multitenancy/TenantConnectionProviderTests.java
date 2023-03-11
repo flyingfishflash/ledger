@@ -19,6 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import net.flyingfishflash.ledger.core.multitenancy.TenantConnectionProvider;
 import net.flyingfishflash.ledger.core.multitenancy.TenantIdentifierResolver;
 
+/** Unit tests for {@link net.flyingfishflash.ledger.core.multitenancy.TenantConnectionProvider} */
+@DisplayName("TenantConnectionProvider")
 @ExtendWith(MockitoExtension.class)
 class TenantConnectionProviderTests {
 
@@ -27,8 +29,7 @@ class TenantConnectionProviderTests {
   @InjectMocks TenantConnectionProvider tenantConnectionProvider;
 
   @Test
-  @DisplayName("getAnyConnection() Schema Changed to COMMON")
-  void getAnyConnectionSchemaChangedToCommon() throws SQLException {
+  void getAnyConnectionChangesSchemaToCommon() throws SQLException {
     given(mockDataSource.getConnection()).willReturn(mockConnection);
     tenantConnectionProvider.getAnyConnection();
     verify(mockConnection, times(1)).setSchema(TenantIdentifierResolver.COMMON);
@@ -37,7 +38,6 @@ class TenantConnectionProviderTests {
   }
 
   @Test
-  @DisplayName("releaseAnyConnection() Closes Provided Connection")
   void releaseAnyConnectionClosesProvidedConnection() throws SQLException {
     tenantConnectionProvider.releaseAnyConnection(mockConnection);
     verify(mockConnection, times(1)).close();
@@ -45,8 +45,7 @@ class TenantConnectionProviderTests {
   }
 
   @Test
-  @DisplayName("getConnection() Schema Changed to tenantIdentifier When Not Equal to UNDEFINED")
-  void getConnectionSchemaChangedToTenantIdentifierWhenNotEqualToUndefined() throws SQLException {
+  void getConnectionChangesSchemaToTenantIdentifierWhenNotEqualToUndefined() throws SQLException {
     var tenantIdentifier = "Lorem Ipsum";
     given(mockDataSource.getConnection()).willReturn(mockConnection);
     tenantConnectionProvider.getConnection(tenantIdentifier);
@@ -57,31 +56,27 @@ class TenantConnectionProviderTests {
   }
 
   @Test
-  @DisplayName("getConnection() Schema Not Changed When Equal to UNDEFINED")
-  void getConnectionSchemaNotChangedWhenEqualToUndefined() throws SQLException {
+  void getConnectionSchemaUnchangedWhenEqualToUndefined() throws SQLException {
     given(mockDataSource.getConnection()).willReturn(mockConnection);
     tenantConnectionProvider.getConnection(TenantIdentifierResolver.UNDEFINED);
     verifyNoInteractions(mockConnection);
   }
 
   @Test
-  @DisplayName("releaseConnection() Schema Not Changed When Equal to UNDEFINED")
-  void releaseConnectionSchemaNotChangedWhenEqualToUndefined() throws SQLException {
+  void releaseConnectionSchemaUnchangedWhenEqualToUndefined() throws SQLException {
     tenantConnectionProvider.releaseConnection(TenantIdentifierResolver.UNDEFINED, mockConnection);
     verify(mockConnection, times(1)).close();
     verifyNoMoreInteractions(mockConnection);
   }
 
   @Test
-  @DisplayName("releaseConnection() Schema Not Changed When Equal to COMMON")
-  void releaseConnectionSchemaNotChangedWhenEqualToCommon() throws SQLException {
+  void releaseConnectionSchemaUnchangedWhenEqualToCommon() throws SQLException {
     tenantConnectionProvider.releaseConnection(TenantIdentifierResolver.COMMON, mockConnection);
     verify(mockConnection, times(1)).close();
     verifyNoMoreInteractions(mockConnection);
   }
 
   @Test
-  @DisplayName("releaseConnection() Schema Changed To COMMON When Not Equal to COMMON/UNDEFINED")
   void releaseConnectionSchemaChangedToCommonWhenNotEqualToCommonOrUndefined() throws SQLException {
     var tenantIdentifier = "Lorem Ipsum";
     tenantConnectionProvider.releaseConnection(tenantIdentifier, mockConnection);
@@ -91,19 +86,16 @@ class TenantConnectionProviderTests {
   }
 
   @Test
-  @DisplayName("supportsAggressiveRelease() Returns False")
   void supportsAggressiveReleaseReturnsFalse() {
     assertThat(tenantConnectionProvider.supportsAggressiveRelease()).isFalse();
   }
 
   @Test
-  @DisplayName("isUnwrappableAs() Returns False")
   void isUnwrappableAsReturnsFalse() {
     assertThat(tenantConnectionProvider.isUnwrappableAs(Object.class)).isFalse();
   }
 
   @Test
-  @DisplayName("unwrap() Returns Null")
   void unwrapReturnsNull() {
     assertThat(tenantConnectionProvider.unwrap(Object.class)).isNull();
   }

@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.flyingfishflash.ledger.core.IdentifierFactory;
+import net.flyingfishflash.ledger.core.utilities.IdentifierUtility;
 import net.flyingfishflash.ledger.domain.books.data.Book;
 import net.flyingfishflash.ledger.domain.prices.data.Price;
 import net.flyingfishflash.ledger.domain.prices.data.PriceRepository;
@@ -23,12 +23,12 @@ public class PriceService {
 
   public Price newPrice() {
 
-    return new Price(IdentifierFactory.getInstance().identifierWithoutHyphens());
+    return new Price(IdentifierUtility.identifier());
   }
 
   public Price newPrice(Book book) {
 
-    return new Price(IdentifierFactory.getInstance().identifierWithoutHyphens(), book);
+    return new Price(IdentifierUtility.identifier(), book);
   }
 
   public Price savePrice(Price price) {

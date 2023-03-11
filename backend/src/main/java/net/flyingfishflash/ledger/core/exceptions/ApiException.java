@@ -6,7 +6,11 @@ public class ApiException extends AbstractApiException {
 
   private static final String TITLE = "API Exception";
 
-  public ApiException(String detail, Exception cause, HttpStatus httpStatus) {
+  public ApiException(HttpStatus httpStatus, String detail) {
+    super(httpStatus, TITLE, detail);
+  }
+
+  public ApiException(HttpStatus httpStatus, String detail, Exception cause) {
     super(httpStatus, TITLE, detail, cause);
   }
 }

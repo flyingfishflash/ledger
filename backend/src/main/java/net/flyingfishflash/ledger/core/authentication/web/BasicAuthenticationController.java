@@ -1,11 +1,17 @@
 package net.flyingfishflash.ledger.core.authentication.web;
 
+import java.net.URI;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Optional;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,20 +20,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import net.flyingfishflash.ledger.core.authentication.payload.response.SignInResponse;
-import net.flyingfishflash.ledger.core.authentication.payload.response.SignOutResponse;
+import net.flyingfishflash.ledger.core.authentication.data.dto.SignInResponse;
+import net.flyingfishflash.ledger.core.response.structure.Response;
 import net.flyingfishflash.ledger.core.users.service.UserService;
 
 @Tag(name = "authentication controller - basic")
 @RestController
 @RequestMapping("/auth")
+@ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true)))
 public class BasicAuthenticationController {
-
-  private static final Logger logger = LoggerFactory.getLogger(BasicAuthenticationController.class);
 
   private final UserService userService;
 
@@ -37,38 +41,54 @@ public class BasicAuthenticationController {
 
   @GetMapping("/signin")
   @ResponseBody
-  public SignInResponse signIn(Principal principal) {
+  @Operation(
+      summary = "Sign-In",
+      responses = {
+        @ApiResponse(responseCode = "200"),
+        @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(hidden = true)))
+      })
+  public Response<SignInResponse> signIn(Principal principal, HttpServletRequest request) {
 
     var user = userService.findByUsername(principal.getName());
-
     var signInResponse = new SignInResponse();
-
     signInResponse.setId(user.getId());
-    signInResponse.setUsername(principal.getName());
+    signInResponse.setUsername(user.getUsername());
     signInResponse.setRoles(user.getAuthorities());
 
-    return signInResponse;
+    return new Response<>(
+        signInResponse,
+        "Successful sign-in using basic authentication",
+        request.getMethod(),
+        URI.create(request.getRequestURI()));
   }
 
   @PostMapping(value = {"/signout"})
   @ResponseBody
-  public SignOutResponse signOut(HttpServletRequest request, HttpServletResponse response) {
-
-    logger.info("Logging out");
+  @Operation(
+      summary = "Sign-Out",
+      responses = {
+        @ApiResponse(responseCode = "200"),
+      })
+  public Response<String> signOut(HttpServletRequest request, HttpServletResponse response) {
 
     var auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth != null) {
       new SecurityContextLogoutHandler().logout(request, response, auth);
     }
 
-    if (request.getCookies() != null) {
-      for (Cookie cookie : request.getCookies()) {
-        var cookieValue = cookie.getValue();
-        logger.info("cookie value: {}", cookieValue);
-        cookie.setMaxAge(0);
-      }
-    }
+    ArrayList<String> cookieList = new ArrayList<>();
+    Optional.ofNullable(request.getCookies()).stream()
+        .flatMap(Arrays::stream)
+        .forEach(
+            cookie -> {
+              cookieList.add(cookie.getValue());
+              cookie.setMaxAge(0);
+            });
 
-    return new SignOutResponse("Logged Out");
+    return new Response<>(
+        String.format("Successful sign-out. Cookies: %s", cookieList),
+        "Successful sign-out",
+        request.getMethod(),
+        URI.create(request.getRequestURI()));
   }
 }

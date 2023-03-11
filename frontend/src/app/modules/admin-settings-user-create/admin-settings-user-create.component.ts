@@ -100,7 +100,7 @@ export class AdminSettingsUserCreateComponent implements OnInit {
         ps.message =
           new Date().toLocaleTimeString() +
           ": " +
-          successResponse.response.body.message;
+          successResponse.content.message;
         this.createUserStatusSubject.next(ps);
       },
       (ledgerErrorResponse) => {
@@ -109,7 +109,7 @@ export class AdminSettingsUserCreateComponent implements OnInit {
         ps.message =
           new Date().toLocaleTimeString() +
           ": " +
-          ledgerErrorResponse.error.response.body.message;
+          ledgerErrorResponse.error.content.message;
         this.createUserStatusSubject.next(ps);
       }
     );

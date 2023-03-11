@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.flyingfishflash.ledger.core.IdentifierFactory;
+import net.flyingfishflash.ledger.core.utilities.IdentifierUtility;
 import net.flyingfishflash.ledger.domain.books.data.Book;
 import net.flyingfishflash.ledger.domain.commodities.data.Commodity;
 import net.flyingfishflash.ledger.domain.commodities.data.CommodityRepository;
@@ -23,12 +23,12 @@ public class CommodityService {
 
   public Commodity newCommodity() {
 
-    return new Commodity(IdentifierFactory.getInstance().identifierWithoutHyphens());
+    return new Commodity(IdentifierUtility.identifier());
   }
 
   public Commodity newCommodity(Book book) {
 
-    return new Commodity(IdentifierFactory.getInstance().identifierWithoutHyphens(), book);
+    return new Commodity(IdentifierUtility.identifier(), book);
   }
 
   public Commodity saveCommodity(Commodity commodity) {

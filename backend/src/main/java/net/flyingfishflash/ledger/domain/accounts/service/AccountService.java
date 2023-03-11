@@ -7,7 +7,7 @@ import java.util.stream.StreamSupport;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.flyingfishflash.ledger.core.IdentifierFactory;
+import net.flyingfishflash.ledger.core.utilities.IdentifierUtility;
 import net.flyingfishflash.ledger.domain.accounts.data.Account;
 import net.flyingfishflash.ledger.domain.accounts.data.AccountRepository;
 import net.flyingfishflash.ledger.domain.accounts.data.AccountType;
@@ -43,7 +43,7 @@ public class AccountService {
           "Failed to identify the parent account of an account to be created", e);
     }
 
-    var account = new Account(IdentifierFactory.getInstance().identifierWithoutHyphens());
+    var account = new Account(IdentifierUtility.identifier());
     Account sibling;
 
     var book = bookRepository.findById(accountCreateRequest.bookId());
@@ -112,8 +112,7 @@ public class AccountService {
    */
   public Account createAccount(Account p) {
 
-    var account =
-        accountRepository.newAccount(IdentifierFactory.getInstance().identifierWithoutHyphens());
+    var account = accountRepository.newAccount(IdentifierUtility.identifier());
 
     if (p.getType().equals(AccountType.ROOT)) {
       account.setType(AccountType.ASSET);

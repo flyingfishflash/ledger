@@ -1,55 +1,119 @@
 package net.flyingfishflash.ledger.core;
 
-import java.net.URI;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import org.springframework.boot.autoconfigure.web.ServerProperties;
-import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
+import org.springframework.boot.autoconfigure.web.ErrorProperties;
+import org.springframework.boot.autoconfigure.web.servlet.error.AbstractErrorController;
+import org.springframework.boot.web.error.ErrorAttributeOptions;
+import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.http.*;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.ServletWebRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-@Component
-public class CustomErrorController extends BasicErrorController {
+import net.flyingfishflash.ledger.core.response.structure.Response;
+import net.flyingfishflash.ledger.core.utilities.ProblemDetailUtility;
 
-  public CustomErrorController(ErrorAttributes errorAttributes, ServerProperties serverProperties) {
-    super(errorAttributes, serverProperties.getError());
+/**
+ * <i>Re-Implementation of Spring Boot's {@link
+ * org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController
+ * BasicErrorController}.</i>
+ *
+ * <p>Basic global error controller, rendering {@link ErrorAttributes}. More specific errors can be
+ * handled either using Spring MVC abstractions (e.g. {@code @ExceptionHandler}) or by adding
+ * servlet server error pages.
+ *
+ * @see ErrorAttributes
+ * @see ErrorProperties
+ */
+@RestController
+@RequestMapping("${server.error.path:${error.path:/error}}")
+public class CustomErrorController extends AbstractErrorController {
+
+  private final ErrorProperties errorProperties;
+
+  public CustomErrorController(ErrorAttributes errorAttributes, ErrorProperties errorProperties) {
+    super(errorAttributes);
+    this.errorProperties = errorProperties;
   }
 
-  @Override
-  @RequestMapping
-  public ResponseEntity<Map<String, Object>> error(HttpServletRequest request) {
+  @GetMapping
+  public ResponseEntity<Response<ProblemDetail>> error(HttpServletRequest request) {
     HttpStatus status = getStatus(request);
     if (status == HttpStatus.NO_CONTENT) {
       return new ResponseEntity<>(status);
     }
 
-    Map<String, Object> body = new LinkedHashMap<>();
-    var errorAttributes =
-        getErrorAttributes(request, getErrorAttributeOptions(request, MediaType.ALL));
+    var defaultErrorAttributes = new DefaultErrorAttributes();
+    var throwable = defaultErrorAttributes.getError(new ServletWebRequest(request));
+    var errorAttributes = getErrorAttributes(request, getErrorAttributeOptions(request));
+    var problemDetail = ProblemDetailUtility.createProblemDetail(throwable, errorAttributes);
+    var response = new Response<>(problemDetail, request.getMethod(), "Message about the problem");
+    return new ResponseEntity<>(response, status);
+  }
 
-    var problemDetail = ProblemDetail.forStatus(status);
-    problemDetail.setInstance(URI.create((String) errorAttributes.get("path")));
-    var message = (String) errorAttributes.get("message");
-    if (!StringUtils.hasText(message)) {
-      problemDetail.setDetail(String.format("%s", status.getReasonPhrase()));
-    } else {
-      if (status == HttpStatus.NOT_FOUND) {
-        problemDetail.setTitle("URI Not Found");
-        problemDetail.setDetail(
-            String.format("%s: %s", problemDetail.getTitle(), problemDetail.getInstance()));
-      } else {
-        problemDetail.setDetail((String) errorAttributes.get("message"));
-      }
+  public ErrorAttributeOptions getErrorAttributeOptions(HttpServletRequest request) {
+    ErrorAttributeOptions options = ErrorAttributeOptions.defaults();
+    if (this.errorProperties.isIncludeException()) {
+      options = options.including(ErrorAttributeOptions.Include.EXCEPTION);
     }
-    body.put("errorAttributes", errorAttributes);
-    body.put("problemDetail", problemDetail);
+    if (isIncludeStackTrace(request)) {
+      options = options.including(ErrorAttributeOptions.Include.STACK_TRACE);
+    }
+    if (isIncludeMessage(request)) {
+      options = options.including(ErrorAttributeOptions.Include.MESSAGE);
+    }
+    if (isIncludeBindingErrors(request)) {
+      options = options.including(ErrorAttributeOptions.Include.BINDING_ERRORS);
+    }
+    return options;
+  }
 
-    return new ResponseEntity<>(body, status);
+  /**
+   * Determine if the stacktrace attribute should be included.
+   *
+   * @param request the source request
+   * @return if the stacktrace attribute should be included
+   */
+  protected boolean isIncludeStackTrace(HttpServletRequest request) {
+    return switch (getErrorProperties().getIncludeStacktrace()) {
+      case ALWAYS -> true;
+      case ON_PARAM -> getTraceParameter(request);
+      default -> false;
+    };
+  }
+
+  /**
+   * Determine if the message attribute should be included.
+   *
+   * @param request the source request
+   * @return if the message attribute should be included
+   */
+  protected boolean isIncludeMessage(HttpServletRequest request) {
+    return switch (getErrorProperties().getIncludeMessage()) {
+      case ALWAYS -> true;
+      case ON_PARAM -> getMessageParameter(request);
+      default -> false;
+    };
+  }
+
+  /**
+   * Determine if the errors attribute should be included.
+   *
+   * @param request the source request
+   * @return if the errors attribute should be included
+   */
+  protected boolean isIncludeBindingErrors(HttpServletRequest request) {
+    return switch (getErrorProperties().getIncludeBindingErrors()) {
+      case ALWAYS -> true;
+      case ON_PARAM -> getErrorsParameter(request);
+      default -> false;
+    };
+  }
+
+  protected ErrorProperties getErrorProperties() {
+    return this.errorProperties;
   }
 }
