@@ -20,11 +20,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import net.flyingfishflash.ledger.domain.books.data.Book;
 import net.flyingfishflash.ledger.domain.prices.data.Price;
 import net.flyingfishflash.ledger.domain.prices.data.PriceRepository;
 import net.flyingfishflash.ledger.domain.prices.exceptions.PriceNotFoundException;
 import net.flyingfishflash.ledger.domain.prices.service.PriceService;
 
+/** Unit tests for {@link net.flyingfishflash.ledger.domain.prices.service.PriceService} */
 @ExtendWith(MockitoExtension.class)
 class PriceServiceTests {
 
@@ -38,6 +40,15 @@ class PriceServiceTests {
     StringBuilder sbr = new StringBuilder(price.getGuid());
     for (int i = 8, j = 0; i <= 20; i += 4, j++) sbr.insert(i + j, '-');
     // assertThat(UUID.fromString(sbr.toString()));
+  }
+
+  @Test
+  void newPriceForBook() {
+    var book = new Book();
+    book.setId(999L);
+    Price price = priceService.newPrice(book);
+    assertThat(price.getGuid()).isNotNull();
+    assertThat(price.getBook().getId()).isEqualTo(999L);
   }
 
   @Test
