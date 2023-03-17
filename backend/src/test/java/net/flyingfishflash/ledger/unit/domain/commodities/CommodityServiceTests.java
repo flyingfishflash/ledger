@@ -25,6 +25,7 @@ import net.flyingfishflash.ledger.domain.commodities.data.CommodityRepository;
 import net.flyingfishflash.ledger.domain.commodities.exceptions.CommodityNotFoundException;
 import net.flyingfishflash.ledger.domain.commodities.service.CommodityService;
 
+/** Unit tests for {@link net.flyingfishflash.ledger.domain.commodities.service.CommodityService} */
 @ExtendWith(MockitoExtension.class)
 class CommodityServiceTests {
 
@@ -38,6 +39,15 @@ class CommodityServiceTests {
     var sbr = new StringBuilder(commodity.getGuid());
     for (int i = 8, j = 0; i <= 20; i += 4, j++) sbr.insert(i + j, '-');
     // assertThat(UUID.fromString(sbr.toString()));
+  }
+
+  @Test
+  void newCommodityForBook() {
+    var book = new Book();
+    book.setId(999L);
+    var commodity = commodityService.newCommodity(book);
+    assertThat(commodity.getGuid()).isNotNull();
+    assertThat(commodity.getBook().getId()).isEqualTo(999L);
   }
 
   @Test
