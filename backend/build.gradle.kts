@@ -19,7 +19,7 @@ val ciPipelineId: String by rootProject.extra
 
 dependencies {
   val springBootVersion = "3.0.5"
-  val springSessionVersion = "3.0.0"
+  val springSessionVersion = "3.0.1"
 
   implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
   implementation("com.h2database:h2:2.1.214")
