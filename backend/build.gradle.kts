@@ -30,7 +30,7 @@ dependencies {
   implementation("jakarta.validation:jakarta.validation-api:3.0.2")
   implementation("org.flywaydb:flyway-core:9.16.1")
   implementation("org.javamoney:moneta:1.4.2")
-  implementation("org.postgresql:postgresql:42.5.4")
+  implementation("org.postgresql:postgresql:42.6.0")
   implementation("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
   implementation("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion")
