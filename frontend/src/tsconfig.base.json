@@ -11,7 +11,7 @@
     "moduleResolution": "node",
     "outDir": "../dist/out-tsc",
     "importHelpers": true,
-    "target": "es2018",
+    "target": "ES2022",
     "paths": {
       "@core/*": ["app/core/*"],
       "@shared/*": ["app/shared/*"],
@@ -19,7 +19,7 @@
       "@modules/*": ["app/modules/*"],
       "@data/*": ["app/data/*"]
     },
-    "lib": ["es2018", "dom"]
+    "lib": ["ES2022", "dom"]
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
