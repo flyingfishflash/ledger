@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card appearance="outlined">
   <mat-card-header>
     <mat-card-title-group>
       <mat-card-title>{{ componentHeading }}</mat-card-title>
@@ -25,7 +25,7 @@
         <mat-label>Filter</mat-label>
         <input matInput placeholder="" [(ngModel)]="listFilter" />
         <button
-          mat-button
+          mat-icon-button
           *ngIf="listFilter"
           matSuffix
           mat-icon-button

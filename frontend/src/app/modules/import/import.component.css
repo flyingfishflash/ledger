@@ -8,7 +8,7 @@
   width: 100%;
 }
 
-tr.mat-footer-row {
+tr.mat-mdc-footer-row {
   border: 1px solid #e7e7e7;
   font-weight: bold;
   height: 20px !important;

@@ -1,11 +1,11 @@
 <div id="import-component-content" style="padding: 24px">
   <!-- <div fxFlex fxLayout="column" style="width:100%;"> -->
   <div fxFlex fxLayout="column" style="width: 100%">
-    <h2 class="mat-headline">{{ componentHeading }}</h2>
+    <h2 class="mat-headline-5">{{ componentHeading }}</h2>
     <mat-divider></mat-divider>
 
     <div style="margin-top: 16px">
-      <mat-card style="padding: 16px; margin-top: 16px">
+      <mat-card appearance="outlined" style="padding: 16px; margin-top: 16px">
         <mat-card-header>
           <mat-card-title>File Selection</mat-card-title>
         </mat-card-header>
@@ -68,7 +68,11 @@
         </mat-card-content>
       </mat-card>
 
-      <mat-card class="no-expansion" style="margin-top: 16px">
+      <mat-card
+        appearance="outlined"
+        class="no-expansion"
+        style="margin-top: 16px"
+      >
         <mat-card-header>
           <!--mat-card-title>Status</mat-card-title-->
         </mat-card-header>
@@ -126,7 +130,11 @@
           </table>
 
           <h3>Messages</h3>
-          <mat-card class="no-expansion" style="margin-top: 16px">
+          <mat-card
+            appearance="outlined"
+            class="no-expansion"
+            style="margin-top: 16px"
+          >
             <mat-card-content>
               <ul>
                 <li class="message">No Messages</li>
