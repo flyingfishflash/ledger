@@ -1,5 +1,5 @@
-<div class="flex-container" fxLayout="column wrap">
-  <mat-card appearance="outlined" class="flex-child-1">
+<div>
+  <mat-card appearance="outlined">
     <mat-card-content>
       <div>
         <img
@@ -49,8 +49,8 @@
               (focusin)="onFocusInEvent()"
             />
           </mat-form-field>
-          <div fxLayoutGap="16px" fxLayoutAlign="none">
-            <mat-form-field style="width: 88%">
+          <div>
+            <mat-form-field>
               <input
                 matInput
                 type="password"
@@ -69,14 +69,12 @@
               class="show-hide-password-button"
               (click)="hide = !hide"
             >
-              <mat-icon matSuffix style="font-size: 18px">{{
-                this.hide ? "visibility_off" : "visibility"
-              }}</mat-icon>
+              {{ this.hide ? "Show Password" : "Hide Password" }}
             </button>
           </div>
           <button
             type="submit"
-            style="margin-top: 32px"
+            style="margin-top: 32px; width: 100%"
             mat-flat-button
             color="primary"
             [disabled]="isLoginDisabled"
