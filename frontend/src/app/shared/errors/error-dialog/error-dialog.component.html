@@ -1,8 +1,11 @@
 <h1 mat-dialog-title>Error</h1>
 <div mat-dialog-content>
-  <p *ngIf="data.status">
-    <b>Status Code: {{ data.status }}</b>
+  <p *ngIf="data.title">
+    <b>{{ data.title }}</b>
   </p>
+  <!--p *ngIf="data.status">
+    <b>Status Code: {{ data.status }}</b>
+  </p-->
   <p>Description:</p>
   <p class="error-message">
     {{ data?.message }}

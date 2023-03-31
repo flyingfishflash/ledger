@@ -20,14 +20,7 @@ import { ContentLayoutComponent } from "./layout/content-layout/content-layout.c
 import { ErrorLayoutComponent } from "./layout/error-layout/error-layout.component";
 import { HeadingComponent } from "./layout/heading/heading.component";
 
-import {
-  InjectableRxStompConfig,
-  RxStompService,
-  rxStompServiceFactory,
-} from "@stomp/ng2-stompjs";
 import { AppConfigRuntime } from "./app-config-runtime";
-
-// import { rxStompConfig } from './shared/rx-stomp.config';
 
 const appInitializerFn = (
   config: AppConfigRuntime
@@ -67,16 +60,6 @@ const appInitializerFn = (
       deps: [AppConfigRuntime],
       multi: true,
     },
-    RxStompService,
-    /*     {
-      provide: InjectableRxStompConfig,
-      useValue: rxStompConfig
-    },
-    {
-      provide: RxStompService,
-      useFactory: rxStompServiceFactory,
-      deps: [InjectableRxStompConfig]
-    }  */
   ],
 })
 export class AppModule {}

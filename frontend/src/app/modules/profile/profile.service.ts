@@ -53,7 +53,7 @@ export class ProfileService {
       )
       .subscribe(
         (res) => {
-          this.subject.next(res.response.body);
+          this.subject.next(res.content);
         },
         (err) => {
           this.handleError(err);
@@ -68,7 +68,7 @@ export class ProfileService {
       )
       .subscribe(
         (res) => {
-          this.subject.next(res.response.body);
+          this.subject.next(res.content);
         },
         (err) => {
           this.handleError(err);
@@ -90,7 +90,7 @@ export class ProfileService {
       )
       .subscribe(
         (res) => {
-          this.subject.next(res.response.body);
+          this.subject.next(res.content);
           const fields = Object.getOwnPropertyNames(payload);
           const ps =
             new Date().toLocaleTimeString() +

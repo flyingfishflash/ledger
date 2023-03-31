@@ -9,6 +9,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ApplicationConfiguration {
 
-  // TODO: Deal with configurable application properties
+  public static final String LOGGER_PREFIX = "🞛";
   public static final CurrencyUnit DEFAULT_CURRENCY = Monetary.getCurrency("USD");
 }

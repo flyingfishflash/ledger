@@ -10,6 +10,6 @@ import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from "@angular/material/leg
 export class ErrorDialogComponent {
   constructor(
     @Inject(MAT_DIALOG_DATA)
-    public data: { message: string; status?: number }
+    public data: { message: string; status?: number; title?: String }
   ) {}
 }

@@ -48,7 +48,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
       catchError((error) => {
         let errorMessage = null;
 
-        log.debug(error.error);
+        log.debug(error);
 
         if (error.error instanceof ErrorEvent) {
           errorMessage = `A client internal error occurred:\nError Message: ${error.error.message}`;
@@ -84,25 +84,30 @@ export class HttpErrorInterceptor implements HttpInterceptor {
 
   private handleServerSideError(error: HttpErrorResponse): boolean {
     let handled = false;
-
+    log.debug(error.status);
     switch (error.status) {
       case 0:
         // for the time being don't mark http status code 0 errors as handled
         // so they're returned to the calling component
         break;
       case 400:
+      case 500:
+        log.info(error.error.content.title);
         this.errorDialogService.openDialog(
-          error.error.response.body.message ?? JSON.stringify(error),
-          error.status
+          error.error.content.detail ?? JSON.stringify(error),
+          error.status,
+          error.error.content.title
         );
         handled = true;
+        log.debug("init1");
         break;
       case 401:
         if (error.url.indexOf("signin") < 0) {
           this.authenticationService.redirectToLogin();
           this.errorDialogService.openDialog(
-            error.error.response.body.message ?? JSON.stringify(error),
-            error.status
+            error.error.content.detail ?? JSON.stringify(error),
+            error.status,
+            error.error.content.title
           );
           handled = true;
         }
@@ -111,8 +116,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         if (error.url.indexOf("signin") < 0) {
           this.authenticationService.redirectToLogin();
           this.errorDialogService.openDialog(
-            error.error.response.body.message ?? JSON.stringify(error),
-            error.status
+            error.error.content.detail ?? JSON.stringify(error),
+            error.status,
+            error.error.content.title
           );
           handled = true;
         }
@@ -120,8 +126,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
       case 404:
         if (error.url.indexOf("config.json") < 0) {
           this.errorDialogService.openDialog(
-            error.error.response.body.message ?? JSON.stringify(error),
-            error.status
+            error.error.content.detail ?? JSON.stringify(error),
+            error.status,
+            error.error.content.title
           );
           handled = true;
         }

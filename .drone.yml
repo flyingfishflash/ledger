@@ -110,7 +110,7 @@ steps:
           -c "select count(*) from pg_catalog.pg_tables;"
 
   - name: build
-    image: gradle:7.6.0-jdk17
+    image: gradle:8-jdk17
     depends_on:
       - "cache pull"
       - "verify postgres"
@@ -175,7 +175,7 @@ steps:
 
   - name: sonar analysis
     failure: ignore
-    image: gradle:7.6.0-jdk17
+    image: gradle:8-jdk17
     depends_on:
       - "cache pull"
     environment:

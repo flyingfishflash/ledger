@@ -40,7 +40,7 @@ export class UserService {
       .get<any>(`${this.appConfig.assets.api.server.url}/users`)
       .pipe(
         map((res) => {
-          return res.response.body;
+          return res.content;
         }),
         catchError(this.handleError)
       );
@@ -98,13 +98,13 @@ export class UserService {
       .subscribe(
         (successResponse) => {
           log.debug(successResponse);
-          // this.subject.next(successResponse.response.body);
+          // this.subject.next(successResponse.content);
           // const fields = Object.getOwnPropertyNames(payload);
           // const ps = new Date().toLocaleTimeString() + ': ' + 'Updated profile (' + fields.toString().replace(/,/g, ', ').split(/(?=[A-Z])/).map(s => s.toLowerCase()).join(' ') + ')';
           // this.profileUpdateStatus.next(ps);
         },
-        (errorResponse) => {
-          this.handleError(errorResponse);
+        (ledgerErrorResponse) => {
+          this.handleError(ledgerErrorResponse);
         }
       );
   }

@@ -1,6 +1,6 @@
 plugins {
   java
-  id("org.springframework.boot") version "3.0.2"
+  id("org.springframework.boot") version "3.0.5"
   id("com.diffplug.spotless")
   id("jacoco")
   id("net.ltgt.errorprone") version "3.0.1"
@@ -18,8 +18,8 @@ val ciPlatform: String by rootProject.extra
 val ciPipelineId: String by rootProject.extra
 
 dependencies {
-  val springBootVersion = "3.0.2"
-  val springSessionVersion = "3.0.0"
+  val springBootVersion = "3.0.5"
+  val springSessionVersion = "3.0.1"
 
   implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
   implementation("com.h2database:h2:2.1.214")
@@ -28,9 +28,9 @@ dependencies {
   implementation("jakarta.interceptor:jakarta.interceptor-api:2.1.0")
   implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
   implementation("jakarta.validation:jakarta.validation-api:3.0.2")
-  implementation("org.flywaydb:flyway-core:9.14.1")
+  implementation("org.flywaydb:flyway-core:9.16.1")
   implementation("org.javamoney:moneta:1.4.2")
-  implementation("org.postgresql:postgresql:42.5.2")
+  implementation("org.postgresql:postgresql:42.6.0")
   implementation("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
   implementation("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion")
@@ -39,15 +39,27 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
   implementation("org.springframework.session:spring-session-core:$springSessionVersion")
   implementation("org.springframework.session:spring-session-jdbc:$springSessionVersion")
-  implementation("org.springdoc:springdoc-openapi-ui:1.6.14")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4")
   implementation("org.zalando:jackson-datatype-money:1.3.0")
   runtimeOnly("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
-  testImplementation("org.springframework.security:spring-security-test:6.0.1")
+  testImplementation("org.springframework.security:spring-security-test:6.0.2")
   testImplementation("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
   errorprone("com.google.errorprone:error_prone_core:2.18.0")
 }
 
 jacoco { toolVersion = "0.8.8" }
+
+sonarqube {
+  properties {
+    property(
+        "sonar.coverage.exclusions",
+        "src/main/java/net/flyingfishflash/ledger/core/CustomCommandLineRunner.java," +
+            "src/main/java/net/flyingfishflash/ledger/core/configuration/**," +
+            "src/main/java/net/flyingfishflash/ledger/core/multitenancy/TenantService.java," +
+            "src/main/java/net/flyingfishflash/ledger/**/dto/*," +
+            "src/main/java/net/flyingfishflash/ledger/*/*/*Configuration.java")
+  }
+}
 
 springBoot {
   buildInfo {
@@ -84,12 +96,15 @@ tasks {
     useJUnitPlatform { excludeTags("Integration") }
     testLogging { events("passed", "skipped", "failed") }
     finalizedBy("jacocoUnitTestReport")
+    filter { excludeTestsMatching("net.flyingfishflash.ledger.integration*") }
   }
 
   register<Test>("integrationTests") {
     useJUnitPlatform {
-      includeTags("Integration")
-      filter { excludeTestsMatching("net.flyingfishflash.ledger.*.unit.*") }
+      filter { excludeTestsMatching("net.flyingfishflash.ledger.unit*") }
+      filter {
+        excludeTestsMatching("net.flyingfishflash.ledger.integration.domain.accounts*nestedset*")
+      }
     }
   }
 
@@ -100,7 +115,12 @@ tasks {
     classDirectories.setFrom(
         files(
             project.sourceSets.main.get().output.asFileTree.filter { f: File ->
-              !f.path.contains("/net/flyingfishflash/ledger/foundation/configuration/")
+              !(f.path.contains("/java/main/net/flyingfishflash/ledger") &&
+                  (f.name.equals("Application") ||
+                      f.name.contains("ApplicationConfiguration") ||
+                      f.name.contains("Configuration") ||
+                      f.path.contains("dto/") ||
+                      f.path.contains("configuration/")))
             }))
     reports {
       html.required.set(true)

@@ -1,6 +1,4 @@
 import { NgModule } from "@angular/core";
-// import {A11yModule} from '@angular/cdk/a11y';
-// import {ClipboardModule} from '@angular/cdk/clipboard';
 import { DragDropModule } from "@angular/cdk/drag-drop";
 import { PortalModule } from "@angular/cdk/portal";
 import { ScrollingModule } from "@angular/cdk/scrolling";
@@ -12,9 +10,9 @@ import { MatBadgeModule } from "@angular/material/badge";
 import { MatBottomSheetModule } from "@angular/material/bottom-sheet";
 import { MatLegacyButtonModule as MatButtonModule } from "@angular/material/legacy-button";
 import { MatButtonToggleModule } from "@angular/material/button-toggle";
-import { MatLegacyCardModule as MatCardModule } from "@angular/material/legacy-card";
-import { MatLegacyCheckboxModule as MatCheckboxModule } from "@angular/material/legacy-checkbox";
-import { MatLegacyChipsModule as MatChipsModule } from "@angular/material/legacy-chips";
+import { MatCardModule } from "@angular/material/card";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatChipsModule as MatChipsModule } from "@angular/material/chips";
 import { MatStepperModule } from "@angular/material/stepper";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatLegacyDialogModule as MatDialogModule } from "@angular/material/legacy-dialog";
@@ -44,8 +42,6 @@ import { MatTreeModule } from "@angular/material/tree";
 
 @NgModule({
   exports: [
-    // A11yModule,
-    // ClipboardModule,
     CdkStepperModule,
     CdkTableModule,
     CdkTreeModule,
@@ -90,9 +86,3 @@ import { MatTreeModule } from "@angular/material/tree";
   ],
 })
 export class MaterialModule {}
-
-/**
- *  Copyright 2019 Google LLC. All Rights Reserved.
- *  Use of this source code is governed by an MIT-style license that
- *  can be found in the LICENSE file at http://angular.io/license
- */

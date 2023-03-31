@@ -5,11 +5,15 @@
     fxLayout.sm="column"
     fxLayoutAlign="space-evenly none"
   >
-    <mat-card class="flex-child-1">
+    <mat-card appearance="outlined" class="flex-child-1">
       <h1 class="mat-h1">{{ componentHeading }}</h1>
 
       <mat-card-content>
-        <mat-card class="mat-elevation-z0" style="margin-top: 16px">
+        <mat-card
+          appearance="outlined"
+          class="mat-elevation-z0"
+          style="margin-top: 16px"
+        >
           <form id="profile-details-form" [formGroup]="userForm">
             <strong>User Name</strong>
             <p>Set a name to be user for signing in to the application.</p>

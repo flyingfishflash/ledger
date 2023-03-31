@@ -3,9 +3,6 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 
 // third party
 import { Subscription } from "rxjs";
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { Message } from "@stomp/stompjs";
-import { InjectableRxStompConfig, RxStompService } from "@stomp/ng2-stompjs";
 
 // core and shared
 import { environment } from "environments/environment";
@@ -13,8 +10,6 @@ import { ImportService } from "./import.service";
 import { StorageService } from "@core/storage/storage.service";
 import { Logger } from "@core/logging/logger.service";
 import { BookService } from "@shared/books/book.service";
-import { rxStompConfig } from "@shared/rx-stomp.config";
-//import { stringify } from "@angular/compiler/src/util";
 import { concatMap } from "rxjs/operators";
 
 const log = new Logger("import.component");
@@ -38,11 +33,7 @@ export class ImportComponent implements OnInit, OnDestroy {
 
   uploadFileName = "";
   file: File;
-
-  importMessagesSubscription: Subscription;
-  importCountsSubscription: Subscription;
-
-  receivedMessages: string[] = [];
+  activeBookId: Number;
 
   displayedColumnsCommodities: string[] = [
     "Component",
@@ -60,35 +51,11 @@ export class ImportComponent implements OnInit, OnDestroy {
   constructor(
     private bookService: BookService,
     private importService: ImportService,
-    private storageService: StorageService,
-    private rxStompService: RxStompService
+    private storageService: StorageService
   ) {}
 
   ngOnInit(): void {
     this.fetchImportStatus();
-
-    this.initStomp();
-
-    this.importMessagesSubscription = this.rxStompService
-      .watch("/user/import/status/messages")
-      .subscribe((message: Message) => {
-        log.debug("received a message!");
-        this.receivedMessages.push(message.body);
-        log.debug(message.body);
-      });
-
-    this.importCountsSubscription = this.rxStompService
-      .watch("/user/import/status/counts")
-      .subscribe((message: Message) => {
-        // log.debug('received a count!')
-        // let messageJson = JSON.parse(message.body);
-        // log.debug('should be fetching new counts');
-        // this.fetchImportStatusComponentCounts();
-        // log.debug(messageJson);
-        // this.dataSource = (messageJson["components"]);
-      });
-
-    // this.rxStompService.publish({destination: '/app/sendImportStatusCounts', body: 'request' });
   }
 
   fetchImportStatus() {
@@ -104,9 +71,6 @@ export class ImportComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.importMessagesSubscription.unsubscribe();
-    this.importCountsSubscription.unsubscribe();
-    this.rxStompService.deactivate();
     log.debug("ngOnDestroy");
   }
 
@@ -129,10 +93,11 @@ export class ImportComponent implements OnInit, OnDestroy {
         .pipe(
           concatMap((successResponse) => {
             log.debug(successResponse);
+            this.activeBookId = successResponse.content.id;
             var uploadFileForm = new FormData();
             uploadFileForm.append(
               "bookId",
-              '{ "bookId":"' + successResponse.response.body.id + '" }'
+              '{ "bookId":"' + successResponse.content.id + '" }'
             );
             uploadFileForm.append("file", this.file);
             return this.importService.uploadFile(uploadFileForm);
@@ -142,8 +107,9 @@ export class ImportComponent implements OnInit, OnDestroy {
           (successReponse) => {
             log.debug(successReponse);
             log.debug("import success");
+            this.storageService.saveActiveBookId(this.activeBookId);
           },
-          (errorResponse) => {
+          (ledgerErrorResponse) => {
             log.debug("import error");
           }
         );
@@ -153,29 +119,5 @@ export class ImportComponent implements OnInit, OnDestroy {
   onClearClick(): void {
     this.uploadFileName = "";
     this.file = null;
-  }
-
-  private initStomp() {
-    log.debug("initStomp()");
-    const stompConfig: InjectableRxStompConfig = {
-      ...rxStompConfig,
-      brokerURL: environment.wsEndpoint,
-      connectHeaders: {
-        login: this.storageService.getLoggedInUserName(),
-        authorization: null,
-      },
-      heartbeatIncoming: 0,
-      heartbeatOutgoing: 20000,
-      reconnectDelay: 5000,
-      debug: (msg: string): void => {
-        log.debug(new Date(), msg);
-      },
-      beforeConnect: () => {
-        log.debug("%c called before connect", "color: blue");
-      },
-    };
-
-    this.rxStompService.configure(stompConfig);
-    this.rxStompService.activate();
   }
 }
