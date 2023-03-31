@@ -1,6 +1,6 @@
 // angular
 import { Component, OnInit } from "@angular/core";
-import { MatLegacyTabChangeEvent as MatTabChangeEvent } from "@angular/material/legacy-tabs";
+import { MatTabChangeEvent } from "@angular/material/tabs";
 import { Router } from "@angular/router";
 
 // core and shared
