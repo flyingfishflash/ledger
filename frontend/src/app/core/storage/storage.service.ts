@@ -56,7 +56,7 @@ export class StorageService {
     }
   }
 
-  public saveActiveBookId(bookId: Number) {
+  public saveActiveBookId(bookId: number) {
     window.sessionStorage.removeItem(STORAGE_KEY_ACTIVE_BOOK_ID);
     window.sessionStorage.setItem(
       STORAGE_KEY_ACTIVE_BOOK_ID,

@@ -10,14 +10,13 @@
     {
       "path": "./src/tsconfig.app.json"
     },
-     {
+    {
       "path": "./src/tsconfig.spec.json"
     }
-   ],
-  "compilerOptions": {
-  },
+  ],
+  "compilerOptions": {},
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true,
+    "strictInjectionParameters": true
   }
 }

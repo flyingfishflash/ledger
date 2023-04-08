@@ -22,4 +22,9 @@ spotless {
     target 'src/**/*.scss'
     prettier()
   }
+
+  json {
+    target("*.json")
+    prettier()
+  }
 }

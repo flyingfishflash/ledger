@@ -17,10 +17,11 @@ const log = new Logger("accounts-table.component");
   styleUrls: ["./accounts-table.component.css"],
 })
 export class AccountsTableComponent implements OnInit {
+  _listFilter: string;
+
   componentHeading = "Accounts Table";
   displayedColumns: string[] = ["name", "code", "description", "action"];
 
-  _listFilter: string;
   errorMessage: any;
 
   filteredAccounts: IAccount[];
@@ -29,6 +30,17 @@ export class AccountsTableComponent implements OnInit {
 
   constructor(private accountsService: AccountsService) {
     this.filteredAccounts = this.accounts;
+  }
+
+  get listFilter(): string {
+    return this._listFilter;
+  }
+
+  set listFilter(value: string) {
+    this._listFilter = value;
+    this.filteredAccounts = this._listFilter
+      ? this.performFilter(this._listFilter)
+      : this.accounts;
   }
 
   performFilter(filterBy: string): IAccount[] {
@@ -72,16 +84,5 @@ export class AccountsTableComponent implements OnInit {
     this.errorMessage = errorMessage;
     log.error(errorMessage);
     return throwError(error);
-  }
-
-  get listFilter(): string {
-    return this._listFilter;
-  }
-
-  set listFilter(value: string) {
-    this._listFilter = value;
-    this.filteredAccounts = this._listFilter
-      ? this.performFilter(this._listFilter)
-      : this.accounts;
   }
 }

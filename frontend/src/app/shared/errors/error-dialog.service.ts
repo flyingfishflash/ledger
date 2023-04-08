@@ -11,8 +11,8 @@ export class ErrorDialogService {
 
   constructor(private dialog: MatDialog) {}
 
-  openDialog(message: string, status?: number, title?: String): void {
-    console.log(`error dialog`);
+  openDialog(message: string, status?: number, title?: string): void {
+    console.log("error dialog");
     if (!this.opened) {
       this.opened = true;
       const dialogRef = this.dialog.open(ErrorDialogComponent, {

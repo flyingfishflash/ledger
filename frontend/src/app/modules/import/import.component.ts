@@ -33,7 +33,7 @@ export class ImportComponent implements OnInit, OnDestroy {
 
   uploadFileName = "";
   file: File;
-  activeBookId: Number;
+  activeBookId: number;
 
   displayedColumnsCommodities: string[] = [
     "Component",
@@ -94,7 +94,7 @@ export class ImportComponent implements OnInit, OnDestroy {
           concatMap((successResponse) => {
             log.debug(successResponse);
             this.activeBookId = successResponse.content.id;
-            var uploadFileForm = new FormData();
+            const uploadFileForm = new FormData();
             uploadFileForm.append(
               "bookId",
               '{ "bookId":"' + successResponse.content.id + '" }'
