@@ -11,7 +11,7 @@ import { Component, OnInit } from "@angular/core";
   templateUrl: "./content-layout.component.html",
   styleUrls: ["./content-layout.component.scss"],
 })
-export class ContentLayoutComponent implements OnInit {
+export class ContentLayoutComponent {
   currentTheme: string;
 
   private overlayContainer: OverlayContainer;
@@ -41,12 +41,11 @@ export class ContentLayoutComponent implements OnInit {
 
   // constructor(private themeService: ThemeService) {}
 
-  ngOnInit(): void {
-    /*     if (this.overlayContainer) {
-      this.overlayContainer
-        .getContainerElement()
-        .classList.add(this.currentTheme);
-    }
- */
-  }
+  // ngOnInit(): void {
+  //     if (this.overlayContainer) {
+  //     this.overlayContainer
+  //       .getContainerElement()
+  //       .classList.add(this.currentTheme);
+  //   }
+  // }
 }

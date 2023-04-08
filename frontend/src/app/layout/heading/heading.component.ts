@@ -16,7 +16,7 @@ const log = new Logger("heading.component");
   templateUrl: "./heading.component.html",
   styleUrls: ["./heading.component.css"],
 })
-export class HeadingComponent implements OnInit {
+export class HeadingComponent {
   isLoggedIn = false;
   user: BasicAuthUser;
 
@@ -29,7 +29,13 @@ export class HeadingComponent implements OnInit {
     this.user = this.storageService.getAuthenticatedUser();
   }
 
-  ngOnInit(): void {}
+  // ngOnInit(): void {}
+
+  get isAdmin() {
+    return (
+      this.user && this.user.roles.includes(BasicAuthUserRole.administrator)
+    );
+  }
 
   navigateToProfile() {
     // if already at the profile route, force a reload of window, which will refresh the
@@ -41,12 +47,6 @@ export class HeadingComponent implements OnInit {
         state: { data: { userId: this.user.id } },
       });
     }
-  }
-
-  get isAdmin() {
-    return (
-      this.user && this.user.roles.includes(BasicAuthUserRole.administrator)
-    );
   }
 
   logout() {

@@ -1,7 +1,6 @@
 // angular
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { HttpParams } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { ActivatedRoute, Router } from "@angular/router";
 
 // third party
@@ -106,7 +105,7 @@ export class AccountsService {
     */
 
   handleError(error: any) {
-    log.info(`zzzzzz`);
+    log.info("zzzzzz");
     log.debug(`error: ${error}`);
     let errorMessage = "";
     if (error.error instanceof ErrorEvent) {

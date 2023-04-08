@@ -1,7 +1,6 @@
 @import "./css/base.css";
-@import "./css/grids-core.css";
+@import "./css/grids.css";
 @import "./css/grids-responsive.css";
-@import "./css/grids-units.css";
 
 html,
 body {

@@ -2,6 +2,8 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
+import { MatIconRegistry } from "@angular/material/icon";
+import { DomSanitizer } from "@angular/platform-browser";
 
 // third party
 import { first } from "rxjs/operators";
@@ -23,17 +25,20 @@ export class LoginComponent implements OnInit {
   appConfigInfoBuild: AppConfigRuntimeInfoBuild;
   errorMessage = null;
   form: any = {};
-  hide = true;
+  isPasswordHidden = true;
   isLoggedIn = false;
   isLoginFailed = false;
   isLoginDisabled = true;
+  isLoginViaBackend = true;
   returnUrl: string;
 
   constructor(
     private basicAuthService: BasicAuthService,
     private router: Router,
     private route: ActivatedRoute,
-    private appConfig: AppConfigRuntime
+    private appConfig: AppConfigRuntime,
+    private iconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer
   ) {
     if (this.basicAuthService.userValue) {
       this.router.navigate(["/home"]);
@@ -50,6 +55,18 @@ export class LoginComponent implements OnInit {
       this.errorMessage = "API connection not configured";
     }
     this.form.submitted = false;
+    iconRegistry.addSvgIcon(
+      "sso-zitadel",
+      this.domSanitizer.bypassSecurityTrustResourceUrl(
+        "../../../assets/images/zitadel-logo-solo-dark.svg"
+      )
+    );
+    iconRegistry.addSvgIcon(
+      "sso-github",
+      this.domSanitizer.bypassSecurityTrustResourceUrl(
+        "../../../assets/images/github-mark.svg"
+      )
+    );
   }
 
   ngOnInit() {
@@ -73,17 +90,17 @@ export class LoginComponent implements OnInit {
     this.basicAuthService
       .signIn(this.form)
       .pipe(first())
-      .subscribe(
-        (res) => {
+      .subscribe({
+        next: () => {
           this.isLoggedIn = true;
           this.isLoginFailed = false;
           this.router.navigateByUrl("/home");
           //this.router.navigate([this.returnUrl]);
         },
-        (err) => {
+        error: (err) => {
           this.handleError(err);
-        }
-      );
+        },
+      });
   }
 
   private handleError(error: any) {
@@ -108,6 +125,6 @@ export class LoginComponent implements OnInit {
     log.error(errorMessage ? errorMessage : error);
     this.isLoggedIn = false;
     this.isLoginFailed = true;
-    return throwError(error);
+    throwError(() => error);
   }
 }
