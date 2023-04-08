@@ -24,15 +24,10 @@ import { UtilitiesService } from "@shared/utilities/utilities.service";
 })
 export class ProfileComponent implements OnInit, OnDestroy {
   componentHeading = "Profile";
-
   userDetailsForm: UntypedFormGroup;
-
-  hide = true;
-
+  isPasswordHidden = true;
   isDirty$: Observable<ObjectEqualityState>;
-
   profileUpdateStatus: string;
-
   userId: number;
 
   constructor(

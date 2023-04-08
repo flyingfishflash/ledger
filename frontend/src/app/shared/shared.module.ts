@@ -1,7 +1,6 @@
 // modules (angular)
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
-import { FlexLayoutModule } from "@angular/flex-layout";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 
@@ -30,7 +29,6 @@ const sharedComponents = [ErrorDialogComponent, PadWithSpacesPipe];
   exports: [
     sharedComponents,
     CommonModule,
-    FlexLayoutModule,
     FormsModule,
     MaterialModule,
     ReactiveFormsModule,
@@ -38,7 +36,6 @@ const sharedComponents = [ErrorDialogComponent, PadWithSpacesPipe];
   ],
   imports: [
     CommonModule,
-    FlexLayoutModule,
     FormsModule,
     MaterialModule,
     ReactiveFormsModule,

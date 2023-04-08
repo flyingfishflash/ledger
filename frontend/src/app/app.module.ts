@@ -1,7 +1,6 @@
 // modules (angular)
 import { APP_INITIALIZER, NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
-import { FlexLayoutModule } from "@angular/flex-layout";
 import { HttpClientModule } from "@angular/common/http";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
@@ -39,12 +38,11 @@ const appInitializerFn = (
     HeadingComponent,
   ],
 
-  exports: [FlexLayoutModule],
+  exports: [],
 
   imports: [
     AppRoutingModule,
     BrowserModule,
-    FlexLayoutModule,
     HttpClientModule,
     CoreModule,
     LoginModule,
