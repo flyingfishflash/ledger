@@ -1,6 +1,10 @@
 <div class="pure-g">
-  <div class="pure-u-1-24 pure-u-md-1-5 pure-u-xl-1-3 pure-u-xxl-3-8"></div>
-  <div class="pure-u-22-24 pure-u-md-3-5 pure-u-xl-1-3 pure-u-xxl-1-4">
+  <div
+    class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-4 pure-u-xl-1-3 pure-u-xxl-9-24"
+  ></div>
+  <div
+    class="pure-u-22-24 pure-u-md-3-5 pure-u-lg-1-2 pure-u-xl-1-3 pure-u-xxl-6-24"
+  >
     <div id="primary-content" style="box-sizing: border-box">
       <mat-card appearance="outlined">
         <mat-card-content>
@@ -51,41 +55,46 @@
                       <input
                         matInput
                         type="text"
-                        placeholder="User Name"
-                        [(ngModel)]="form.username"
                         name="username"
+                        placeholder="User Name"
                         required
-                        #username="ngModel"
+                        [(ngModel)]="form.username"
                         [disabled]="isLoginDisabled"
                         (focusin)="onFocusInEvent()"
+                        #username="ngModel"
                       />
                     </mat-form-field>
-                    <div>
-                      <mat-form-field>
-                        <input
-                          matInput
-                          type="password"
-                          [type]="isPasswordHidden ? 'password' : 'text'"
-                          placeholder="Password"
-                          name="password"
-                          [(ngModel)]="form.password"
-                          required
-                          #password="ngModel"
-                          [disabled]="isLoginDisabled"
-                          (focusin)="onFocusInEvent()"
-                        />
-                      </mat-form-field>
-                      <mat-button-toggle
-                        value="Show Password"
+
+                    <mat-form-field>
+                      <input
+                        matInput
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        required
+                        [(ngModel)]="form.password"
+                        [type]="isPasswordHidden ? 'password' : 'text'"
+                        [disabled]="isLoginDisabled"
+                        (focusin)="onFocusInEvent()"
+                        #password="ngModel"
+                      />
+                      <button
+                        mat-icon-button
+                        matSuffix
+                        type="button"
                         (click)="isPasswordHidden = !isPasswordHidden"
-                        ><mat-icon>{{
-                          isPasswordHidden ? "visibility_off" : "visibility"
-                        }}</mat-icon></mat-button-toggle
+                        [attr.aria-label]="'Hide password'"
+                        [attr.aria-pressed]="isPasswordHidden"
                       >
-                    </div>
+                        <mat-icon class="password-visibility-indicator">{{
+                          isPasswordHidden ? "visibility_off" : "visibility"
+                        }}</mat-icon>
+                      </button>
+                    </mat-form-field>
+
                     <button
                       type="submit"
-                      style="margin-top: 32px; width: 100%"
+                      style="margin-top: 1rem; width: 100%"
                       mat-flat-button
                       color="primary"
                       [disabled]="isLoginDisabled"
@@ -174,5 +183,7 @@
       </mat-card>
     </div>
   </div>
-  <div class="pure-u-1-24 pure-u-md-1-5 pure-u-xl-1-3 pure-u-xxl-3-8"></div>
+  <div
+    class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-4 pure-u-xl-1-3 pure-u-xxl-9-24"
+  ></div>
 </div>

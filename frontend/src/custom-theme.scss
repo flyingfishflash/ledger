@@ -1,5 +1,6 @@
 // https://material.angular.io/guide/theming
 @use "@angular/material" as mat;
+@use "./app/modules/login/login.component-theme" as login;
 
 /* SCSS HEX */
 // https://coolors.co/474448-2d232e-e0ddcf-534b52-f1f0ea
@@ -30,3 +31,4 @@ $ledger-ui-theme: mat.define-light-theme(
 );
 
 @include mat.all-component-themes($ledger-ui-theme);
+@include login.theme($ledger-ui-theme);
