@@ -19,7 +19,7 @@ const log = new Logger("login.component");
 
 @Component({
   templateUrl: "./login.component.html",
-  styleUrls: ["./login.component.css"],
+  styleUrls: ["./login.component.scss"],
 })
 export class LoginComponent implements OnInit {
   appConfigInfoBuild: AppConfigRuntimeInfoBuild;

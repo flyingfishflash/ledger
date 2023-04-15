@@ -26,12 +26,10 @@ interface CreateUserStatus {
 })
 export class AdminSettingsUserCreateComponent implements OnInit {
   componentHeading = "Create User";
-
   userForm: UntypedFormGroup;
-
   rolesArray = rolesArray;
-
   hide = true;
+  isPasswordHidden = true;
 
   createUserStatus$: Observable<CreateUserStatus>;
   createUserStatusSubject = new BehaviorSubject<CreateUserStatus>({

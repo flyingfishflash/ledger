@@ -1,7 +1,3 @@
-.flex-child-1 {
-  max-width: 840px;
-}
-
 .password-match-color {
   color: green;
 }
@@ -29,24 +25,3 @@
   display: inline-flex;
   vertical-align: middle;
 }
-
-.testbox {
-  background-color: green;
-}
-
-/* 
-.child-1{
-background-color: orange;
-}
-.child-2{
-background-color: yellow;
-max-width: 800px;
-}
-.child-3{
-background-color: green;
-}
-
-.container{
-margin: 15px;
-border:2px solid red;
-} */
