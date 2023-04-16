@@ -8,7 +8,7 @@ import { BehaviorSubject, Observable, throwError } from "rxjs";
 import { tap } from "rxjs/operators";
 
 // core and shared
-import { AppConfigRuntime } from "app/app-config-runtime";
+import { environment } from "@env";
 import { BasicAuthUser } from "./basic-auth-user";
 import { Logger } from "@core/logging/logger.service";
 import { StorageService } from "@core/storage/storage.service";
@@ -24,7 +24,6 @@ export class BasicAuthService {
   constructor(
     private router: Router,
     private http: HttpClient,
-    private appConfig: AppConfigRuntime,
     private storageService: StorageService
   ) {
     this.userSubject = new BehaviorSubject<BasicAuthUser>(
@@ -51,7 +50,7 @@ export class BasicAuthService {
     );
 
     return this.http
-      .get<any>(this.appConfig.assets.api.server.url + "/auth/signin", {
+      .get<any>(environment.api.server.url + "/auth/signin", {
         observe: "response",
         headers,
         withCredentials: true,
@@ -74,7 +73,7 @@ export class BasicAuthService {
 
   signOut(parameter: string) {
     this.http
-      .post<any>(this.appConfig.assets.api.server.url + "/auth/signout", {
+      .post<any>(environment.api.server.url + "/auth/signout", {
         parameter,
       })
       .subscribe(

@@ -10,10 +10,11 @@ import { first } from "rxjs/operators";
 import { throwError } from "rxjs";
 
 // core and shared
+import { environment } from "@env";
 import { AppConfigRuntime } from "app/app-config-runtime";
+import { AppConfigRuntimeInfoBuild } from "app/app-config-runtime-info-build";
 import { BasicAuthService } from "@core/authentication/basic-auth.service";
 import { Logger } from "@core/logging/logger.service";
-import { AppConfigRuntimeInfoBuild } from "app/app-config-runtime-info-build";
 
 const log = new Logger("login.component");
 
@@ -43,7 +44,7 @@ export class LoginComponent implements OnInit {
     if (this.basicAuthService.userValue) {
       this.router.navigate(["/home"]);
     }
-    if (this.appConfig.assets.api.server) {
+    if (environment.api.server) {
       if (this.appConfig.api.actuator.info.build) {
         this.appConfigInfoBuild = { ...this.appConfig.api.actuator.info.build };
         this.isLoginDisabled = false;

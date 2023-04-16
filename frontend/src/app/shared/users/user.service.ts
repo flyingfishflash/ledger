@@ -13,7 +13,7 @@ import { Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 
 // core and shared
-import { AppConfigRuntime } from "../../app-config-runtime";
+import { environment } from "@env";
 import { Logger } from "@core/logging/logger.service";
 import { StorageService } from "@core/storage/storage.service";
 
@@ -30,27 +30,24 @@ const httpOptions = {
 })
 export class UserService {
   constructor(
-    private appConfig: AppConfigRuntime,
     private http: HttpClient,
     private storageService: StorageService
   ) {}
 
   findAllUsers(): Observable<any> {
-    return this.http
-      .get<any>(`${this.appConfig.assets.api.server.url}/users`)
-      .pipe(
-        map((res) => {
-          return res.content;
-        }),
-        catchError(this.handleError)
-      );
+    return this.http.get<any>(`${environment.api.server.url}/users`).pipe(
+      map((res) => {
+        return res.content;
+      }),
+      catchError(this.handleError)
+    );
   }
 
   userDetailsUpdate(payload): Observable<any> {
     log.debug(payload);
     return this.http
       .patch<any>(
-        this.appConfig.assets.api.server.url +
+        environment.api.server.url +
           "/users/" +
           this.storageService.getAuthenticatedUser().id,
         {
@@ -70,7 +67,7 @@ export class UserService {
 
     return this.http
       .post<any>(
-        this.appConfig.assets.api.server.url + "/users/",
+        environment.api.server.url + "/users/",
         {
           email: userFormValue.email,
           firstName: userFormValue.firstName,
@@ -91,10 +88,7 @@ export class UserService {
     const options = { params: httpParams, withCredentials: true };
 
     this.http
-      .delete<any>(
-        this.appConfig.assets.api.server.url + "/users/delete",
-        options
-      )
+      .delete<any>(environment.api.server.url + "/users/delete", options)
       .subscribe(
         (successResponse) => {
           log.debug(successResponse);

@@ -1,11 +1,9 @@
 export const environment = {
   production: true,
-  wsEndpoint: "ws://localhost:8181/ws",
-  /*   api: {
-    url: "http://localhost:8181/api/v1/ledger",
-    version: "v1",
+  api: {
+    server: {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      url: window["env"]["apiServerUrl"] || "http://localhost:8181/api/v1",
+    },
   },
-  authApi: {
-    url: "http://localhost:8181/api/v1/ledger",
-  }, */
 };

@@ -7,7 +7,7 @@ import { Observable, ReplaySubject, Subject, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 
 // core and shared
-import { AppConfigRuntime } from "app/app-config-runtime";
+import { environment } from "@env";
 import { Logger } from "@core/logging/logger.service";
 import { StorageService } from "@core/storage/storage.service";
 
@@ -28,7 +28,6 @@ export class ProfileService {
   private profileUpdateStatus: Subject<any> = new ReplaySubject<any>(1);
 
   constructor(
-    private appConfig: AppConfigRuntime,
     private http: HttpClient,
     private storageService: StorageService
   ) {
@@ -46,7 +45,7 @@ export class ProfileService {
   loadData() {
     this.http
       .get<any>(
-        this.appConfig.assets.api.server.url +
+        environment.api.server.url +
           "/users/" +
           this.loggedInUserId +
           "/profile"
@@ -63,9 +62,7 @@ export class ProfileService {
 
   loadDataById(id) {
     this.http
-      .get<any>(
-        this.appConfig.assets.api.server.url + "/users/" + id + "/profile"
-      )
+      .get<any>(environment.api.server.url + "/users/" + id + "/profile")
       .subscribe(
         (res) => {
           this.subject.next(res.content);
@@ -79,7 +76,7 @@ export class ProfileService {
   userDetailsUpdate(payload, id) {
     this.http
       .patch<any>(
-        this.appConfig.assets.api.server.url + "/users/" + id,
+        environment.api.server.url + "/users/" + id,
         {
           email: payload.email,
           firstName: payload.firstName,
@@ -119,7 +116,7 @@ export class ProfileService {
     log.debug(payload);
     return this.http
       .patch(
-        this.appConfig.assets.api.server.url + "/users/" + this.loggedInUserId,
+        environment.api.server.url + "/users/" + this.loggedInUserId,
         { payload },
         httpOptions
       )
