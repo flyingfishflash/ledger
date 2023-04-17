@@ -45,7 +45,6 @@ public class WebSecurityConfiguration {
             AntPathRequestMatcher.antMatcher("/api/v1/auth/signin"),
             AntPathRequestMatcher.antMatcher("/api/v1/auth/signup"),
             AntPathRequestMatcher.antMatcher("/api/v1/info"),
-            AntPathRequestMatcher.antMatcher("/assets/config.json"),
             AntPathRequestMatcher.antMatcher("/h2-console"),
             AntPathRequestMatcher.antMatcher("/h2-console/**"),
             AntPathRequestMatcher.antMatcher("/swagger-ui.html"),
