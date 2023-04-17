@@ -7,13 +7,6 @@ services:
     depends_on:
       - ledger-postgres
     environment:
-#      The value of API_SERVER will be used to generate the resources/static/assets/config.json file
-#      config.json is fetched by api clients
-#      Defaults to: http://localhost:8181)
-#      API_SERVER: http://dockerhost:52300
-#      If behind a proxy like traefik with a DNS name configured:
-#      API_SERVER: ledger-backend.mydomain.tld
-      API_SERVER: http://localhost:53200
       JDK_JAVA_OPTIONS: >
         -Djava.security.egd=file:/dev/./urandom
         -Duser.timezone="UTC"
@@ -53,6 +46,12 @@ services:
       - ledger-backend
     environment:
       UPSTREAM_SERVER: 'ledger-backend:8181'
+#      If the application endpoint is proxied (traefik, etc) set the below environment variable to your URI
+#      API_SERVER_URL=https://ledger.my-domain.tld \
+#      If the application endpoint isn't proxied, set the below environment variable to include the external port
+#      API_SERVER_URL=http://localhost:53111 \
+#      Otherwise, the default value of API_SERVER_URL is http://localhost:8181
+      API_SERVER_URL: http://localhost:53200
     image: registry.gitlab.com/flyingfishflash/ledger:frontend-latest
     logging:
       driver: journald
