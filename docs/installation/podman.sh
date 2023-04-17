@@ -29,11 +29,6 @@ podman create \
  -p 53113:5432 \
  docker.io/postgres:14-alpine
 
-# If the application endpoint is proxied (traefik, etc) set the below environment variable with your URI
-#  -e API_SERVER=https://ledger.my-domain.tld \
-# If the application endpoint isn't proxied, set the below environment variable to include the external port
-#  -e API_SERVER=http://localhost:53111 \
-# Otherwise, the default value of API_SERVER is http://localhost:8181
 podman create \
  --pod=ledger-prd \
  --name=ledger-backend-prd \
@@ -57,6 +52,11 @@ podman create \
  --healthcheck-retries 3 \
  registry.gitlab.com/flyingfishflash/ledger:backend-latest
 
+# If the application endpoint is proxied (traefik, etc) set the below environment variable to your URI
+#  -e API_SERVER_URL=https://ledger.my-domain.tld \
+# If the application endpoint isn't proxied, set the below environment variable to include the external port
+#  -e API_SERVER_URL=http://localhost:53111 \
+# Otherwise, the default value of API_SERVER_URL is http://localhost:8181
 podman create \
  --pod=ledger-prd \
  --name=ledger-frontend-prd \

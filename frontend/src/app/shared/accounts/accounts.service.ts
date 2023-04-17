@@ -8,7 +8,7 @@ import { Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 
 // core and shared
-import { AppConfigRuntime } from "app/app-config-runtime";
+import { environment } from "@env";
 import { BasicAuthService } from "app/core/authentication/basic-auth.service";
 import { TreeUtilitiesService } from "@shared/tree-utilities/tree-utilties.service";
 import { StorageService } from "@core/storage/storage.service";
@@ -24,7 +24,6 @@ export class AccountsService {
   // private accountUrl = '/api/accounts/accounts.json';
 
   constructor(
-    private appConfig: AppConfigRuntime,
     private basicAuthService: BasicAuthService,
     private treeUtilitiesService: TreeUtilitiesService,
     private http: HttpClient,
@@ -40,7 +39,7 @@ export class AccountsService {
     );
 
     return this.http
-      .get<any>(`${this.appConfig.assets.api.server.url}/accounts`, {
+      .get<any>(`${environment.api.server.url}/accounts`, {
         params: httpParams,
       })
       .pipe(
@@ -66,7 +65,7 @@ export class AccountsService {
     );
 
     return this.http
-      .get<any>(`${this.appConfig.assets.api.server.url}/accounts`, {
+      .get<any>(`${environment.api.server.url}/accounts`, {
         params: httpParams,
       })
       .pipe(
@@ -87,7 +86,7 @@ export class AccountsService {
 
   getAccountCategories(): Observable<string[]> {
     return this.http
-      .get<any>(`${this.appConfig.assets.api.server.url}/account-categories`)
+      .get<any>(`${environment.api.server.url}/account-categories`)
       .pipe(
         map((res) => {
           return res.content;

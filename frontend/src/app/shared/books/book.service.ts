@@ -7,7 +7,7 @@ import { Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 
 // core and shared
-import { AppConfigRuntime } from "../../app-config-runtime";
+import { environment } from "@env";
 import { Logger } from "@core/logging/logger.service";
 
 const log = new Logger("books.service");
@@ -16,11 +16,11 @@ const log = new Logger("books.service");
   providedIn: "root",
 })
 export class BookService {
-  constructor(private appConfig: AppConfigRuntime, private http: HttpClient) {}
+  constructor(private http: HttpClient) {}
 
   postBook(bookName: string): Observable<any> {
     return this.http
-      .post<any>(this.appConfig.assets.api.server.url + "/books", {
+      .post<any>(environment.api.server.url + "/books", {
         name: bookName,
       })
       .pipe(catchError(this.handleError));
