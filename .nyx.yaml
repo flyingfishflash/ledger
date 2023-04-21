@@ -32,7 +32,7 @@ releaseTypes:
     - codeberg
     - flyingfishflash
     - github
-    - gitlab
+#    - gitlab
   items:
     mainline:
       collapseVersions: false
