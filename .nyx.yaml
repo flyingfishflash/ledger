@@ -1,0 +1,65 @@
+---
+dryRun: true
+preset: "simple"
+verbosity: "DEBUG"
+releasePrefix: "v"
+changelog:
+  path: "build/CHANGELOG.md"
+  template: "config/CHANGELOG.tpl"
+#  sections:
+#    "Added": "^feat$"
+#    "Changed": "^refactor"
+#    "Fixed": "^fix$"
+#    "Continuous Integration": "^ci$"
+#    "Build": "^build$"
+#    "Tests": "^test$"
+commitMessageConventions:
+  enabled:
+    - conventionalCommitsCustom
+  items:
+    conventionalCommitsCustom:
+      expression: "(?m)^(?<type>[a-zA-Z0-9_]+)(!)?(\\((?<scope>[a-z ]+)\\))?:( (?<title>.+))$(?s).*"
+      bumpExpressions:
+        major: "(?s)(?m)^[a-zA-Z0-9_]+(!|.*^(BREAKING( |-)CHANGE: )).*"
+        minor: "(?s)(?m)^feat(?!!|.*^(BREAKING( |-)CHANGE: )).*"
+        patch: "(?s)(?m)(^build|^ci|^docs|^fix|^perf|^refactor)(?!!|.*^(BREAKING( |-)CHANGE: )).*"
+releaseTypes:
+  enabled:
+    - mainline
+    - internal
+  publicationServices:
+    - gitea
+    - github
+  items:
+    mainline:
+      collapseVersions: false
+      filterTags: "^({{configuration.releasePrefix}})?([0-9]\\d*)\\.([0-9]\\d*)\\.([0-9]\\d*)$"
+      gitPush: "false"
+      gitTag: "true"
+      matchBranches: "^(master|main)$"
+      matchEnvironmentVariables:
+        CI: "^true$"
+      matchWorkspaceStatus: "CLEAN"
+      publish: "true"
+    internal:
+      collapseVersions: true
+      collapsedVersionQualifier: "{{#lower}}{{branch}}{{/lower}}"
+      filterTags: "^({{configuration.releasePrefix}})?([0-9]\\d*)\\.([0-9]\\d*)\\.([0-9]\\d*)$"
+      gitCommit: "false"
+      gitPush: "false"
+      gitTag: "false"
+      publish: "false"
+services:
+  gitea:
+    type: "GITHUB"
+    options:
+      AUTHENTICATION_TOKEN: "{{#environmentVariable}}GH_TOKEN{{/environmentVariable}}"
+      BASE_URI: "https://gitea.flyingfishflash.net/api/v1"
+      REPOSITORY_NAME: "ledger"
+      REPOSITORY_OWNER: "flyingfishflash"
+  github:
+    type: "GITHUB"
+    options:
+      AUTHENTICATION_TOKEN: "{{#environmentVariable}}GHH_TOKEN{{/environmentVariable}}"
+      REPOSITORY_NAME: "ledger"
+      REPOSITORY_OWNER: "flyingfishflash"
