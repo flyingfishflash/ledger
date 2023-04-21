@@ -6,13 +6,14 @@ releasePrefix: "v"
 changelog:
   path: "build/CHANGELOG.md"
   template: "config/CHANGELOG.tpl"
-#  sections:
-#    "Added": "^feat$"
-#    "Changed": "^refactor"
-#    "Fixed": "^fix$"
-#    "Continuous Integration": "^ci$"
-#    "Build": "^build$"
-#    "Tests": "^test$"
+  sections:
+    "Added": "^feat$"
+    "Changed": "(^refactor$|^perf$)"
+    "Fixed": "^fix$"
+    "Continuous Integration": "^ci$"
+    "Build": "^build$"
+    "Tests": "^test$"
+    "Documentation": "^docs$"
 commitMessageConventions:
   enabled:
     - conventionalCommitsCustom
@@ -28,11 +29,14 @@ releaseTypes:
     - mainline
     - internal
   publicationServices:
-    - gitea
+    - codeberg
+    - flyingfishflash
     - github
+    - gitlab
   items:
     mainline:
       collapseVersions: false
+      description: "{{#fileContent}}build/CHANGELOG.md{{/fileContent}}"
       filterTags: "^({{configuration.releasePrefix}})?([0-9]\\d*)\\.([0-9]\\d*)\\.([0-9]\\d*)$"
       gitPush: "false"
       gitTag: "true"
@@ -50,16 +54,29 @@ releaseTypes:
       gitTag: "false"
       publish: "false"
 services:
-  gitea:
+  codeberg:
     type: "GITHUB"
     options:
-      AUTHENTICATION_TOKEN: "{{#environmentVariable}}GH_TOKEN{{/environmentVariable}}"
+      AUTHENTICATION_TOKEN: "{{#environmentVariable}}CODEBERG_TOKEN{{/environmentVariable}}"
+      BASE_URI: "https://codeberg.org/api/v1"
+      REPOSITORY_NAME: "ledger"
+      REPOSITORY_OWNER: "flyingfishflash"
+  flyingfishflash:
+    type: "GITHUB"
+    options:
+      AUTHENTICATION_TOKEN: "{{#environmentVariable}}FLYINGFISHFLASH_TOKEN{{/environmentVariable}}"
       BASE_URI: "https://gitea.flyingfishflash.net/api/v1"
       REPOSITORY_NAME: "ledger"
       REPOSITORY_OWNER: "flyingfishflash"
   github:
     type: "GITHUB"
     options:
-      AUTHENTICATION_TOKEN: "{{#environmentVariable}}GHH_TOKEN{{/environmentVariable}}"
+      AUTHENTICATION_TOKEN: "{{#environmentVariable}}GITHUB_TOKEN{{/environmentVariable}}"
+      REPOSITORY_NAME: "ledger"
+      REPOSITORY_OWNER: "flyingfishflash"
+  gitlab:
+    type: "GITLAB"
+    options:
+      AUTHENTICATION_TOKEN: "{{#environmentVariable}}GITLAB_TOKEN{{/environmentVariable}}"
       REPOSITORY_NAME: "ledger"
       REPOSITORY_OWNER: "flyingfishflash"

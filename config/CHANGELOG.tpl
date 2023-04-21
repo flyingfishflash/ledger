@@ -1,14 +1,15 @@
-# Ledger Changelog
+# Changelog
 
 
 {{#releases}}
-## {{name}} ({{date}})
+## ({{date}})
 
 {{#sections}}
+
 ### {{name}}
 
 {{#commits}}
-* {{#short5}}{{SHA}}{{/short5}} {{message.shortMessage}} ({{authorAction.identity.name}})
+* {{#short7}}{{sha}}{{/short7}} {{message.shortMessage}}
 {{/commits}}
 {{^commits}}
 No changes.
