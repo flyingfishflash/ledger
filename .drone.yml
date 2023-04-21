@@ -26,7 +26,7 @@ volumes:
 trigger:
   event:
     - push
-    - tag
+#    - tag
 
 steps:
   - name: cache pull
@@ -67,7 +67,7 @@ name: "backend - build"
 trigger:
   event:
     - push
-    - tag
+#    - tag
 
 volumes:
   - name: drone_cache
@@ -153,7 +153,7 @@ type: docker
 trigger:
   event:
     - push
-    - tag
+#    - tag
 
 depends_on:
   - "frontend - build"
@@ -203,7 +203,7 @@ type: docker
 trigger:
   event:
     - push
-    - tag
+#    - tag
   ref:
     - refs/heads/ci-*
     - refs/heads/docs-*
@@ -212,7 +212,7 @@ trigger:
     - refs/heads/refactor-*
     - refs/heads/style-*
     - refs/heads/test-*
-    - refs/tags/*
+#    - refs/tags/*
 
 depends_on:
   - "frontend - build"
@@ -271,27 +271,27 @@ steps:
         - refs/heads/style-*
         - refs/heads/test-*
 
-  - name: publish release
-    image: plugins/docker
-    depends_on:
-      - "cache pull"
-    settings:
-      auto_tag: false
-      cache_from:
-        from_secret: repository_frontend_development
-      context: /drone/src/frontend/
-      dockerfile: /drone/src/frontend/Dockerfile
-      repo:
-        from_secret: repository_frontend
-      registry:
-        from_secret: registry_hostname
-      username:
-        from_secret: registry_username
-      password:
-        from_secret: registry_password
-    when:
-      ref:
-        - refs/tags/*
+#  - name: publish release
+#    image: plugins/docker
+#    depends_on:
+#      - "cache pull"
+#    settings:
+#      auto_tag: false
+#      cache_from:
+#        from_secret: repository_frontend_development
+#      context: /drone/src/frontend/
+#      dockerfile: /drone/src/frontend/Dockerfile
+#      repo:
+#        from_secret: repository_frontend
+#      registry:
+#        from_secret: registry_hostname
+#      username:
+#        from_secret: registry_username
+#      password:
+#        from_secret: registry_password
+#    when:
+#      ref:
+#        - refs/tags/*
 
 ---
 kind: pipeline
@@ -310,7 +310,7 @@ trigger:
     - refs/heads/refactor-*
     - refs/heads/style-*
     - refs/heads/test-*
-    - refs/tags/*
+#    - refs/tags/*
 
 depends_on:
   - "backend - build"
@@ -377,37 +377,37 @@ steps:
         - refs/heads/style-*
         - refs/heads/test-*
 
-  - name: write docker tag (release)
-    image: alpine/git
-    commands:
-      - ./scripts/version.sh version > .tags
-      - echo ",latest" >> .tags
-      - cat .tags
-    when:
-      ref:
-        - refs/tags/*
+#  - name: write docker tag (release)
+#    image: alpine/git
+#    commands:
+#      - ./scripts/version.sh version > .tags
+#      - echo ",latest" >> .tags
+#      - cat .tags
+#    when:
+#      ref:
+#        - refs/tags/*
 
-  - name: publish release
-    image: plugins/docker
-    depends_on:
-      - "write docker tag (release)"
-    settings:
-      auto_tag: false
-      cache_from:
-        from_secret: repository_backend_development
-      context: /drone/src/backend/
-      dockerfile: /drone/src/backend/Dockerfile
-      repo:
-        from_secret: repository_backend
-      registry:
-        from_secret: registry_hostname
-      username:
-        from_secret: registry_username
-      password:
-        from_secret: registry_password
-    when:
-      ref:
-        - refs/tags/*
+#  - name: publish release
+#    image: plugins/docker
+#    depends_on:
+#      - "write docker tag (release)"
+#    settings:
+#      auto_tag: false
+#      cache_from:
+#        from_secret: repository_backend_development
+#      context: /drone/src/backend/
+#      dockerfile: /drone/src/backend/Dockerfile
+#      repo:
+#        from_secret: repository_backend
+#      registry:
+#        from_secret: registry_hostname
+#      username:
+#        from_secret: registry_username
+#      password:
+#        from_secret: registry_password
+#    when:
+#      ref:
+#        - refs/tags/*
 
 ---
 kind: pipeline
@@ -417,7 +417,7 @@ type: docker
 trigger:
   event:
     - push
-    - tag
+#    - tag
   ref:
     - refs/heads/ci-*
     - refs/heads/docs-*
@@ -447,34 +447,34 @@ steps:
       script:
         - ~/.local/bin/scripts/ledger-dev-redeploy.sh
 
----
-kind: pipeline
-name: "deploy - production"
-type: docker
-
-trigger:
-  event:
-    - push
-    - tag
-  ref:
-    - refs/tags/*
-
-depends_on:
-  - "frontend - publish"
-  - "backend - publish"
-
-clone:
-  disable: true
-
-steps:
-  - name: deploy
-    image: appleboy/drone-ssh
-    settings:
-      host:
-        from_secret: ssh_host_prd
-      username:
-        from_secret: ssh_username
-      key:
-        from_secret: ssh_key
-      script:
-        - ~/.local/bin/scripts/ledger-prd-redeploy.sh
+#---
+#kind: pipeline
+#name: "deploy - production"
+#type: docker
+#
+#trigger:
+#  event:
+#    - push
+#    - tag
+#  ref:
+#    - refs/tags/*
+#
+#depends_on:
+#  - "frontend - publish"
+#  - "backend - publish"
+#
+#clone:
+#  disable: true
+#
+#steps:
+#  - name: deploy
+#    image: appleboy/drone-ssh
+#    settings:
+#      host:
+#        from_secret: ssh_host_prd
+#      username:
+#        from_secret: ssh_username
+#      key:
+#        from_secret: ssh_key
+#      script:
+#        - ~/.local/bin/scripts/ledger-prd-redeploy.sh
