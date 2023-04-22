@@ -39,3 +39,5 @@ frontend/dist
 
 # Other
 version
+.version
+.tags

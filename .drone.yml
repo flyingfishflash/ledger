@@ -13,10 +13,82 @@
 # - registry_mirror = http://registry-mirror.domain.tld
 # - sonar_host
 # - sonar_login (user token)
+# - codeberg_token
+# - flyingfishflash_token
+# - github_token
+# - gitlab_token
 
 kind: pipeline
 type: docker
+name: version
+
+volumes:
+  - name: drone_cache
+    host:
+      path: /var/lib/docker/volumes_managed/drone_cache
+
+trigger:
+  event:
+    - push
+
+steps:
+  - name: fetch git tags
+    image: alpine/git
+    commands:
+      - git fetch --tags
+
+  - name: write .version
+    image: registry.flyingfishflash.net/customized-images/container-nyx
+    commands:
+      - nyx infer --fatal --summary | grep 'current version' | awk '{ print $NF }' > .version
+      - cat .version
+
+  - name: write .tags (development)
+    image: alpine/git
+    commands:
+      - cat .version > .tmp
+      - echo ",development" >> .tmp
+      - tr -d '\n' < .tmp > .tags
+      - rm .tmp
+      - cat .tags
+    when:
+      ref:
+        - refs/heads/build-*
+        - refs/heads/ci-*
+        - refs/heads/docs-*
+        - refs/heads/feature-*
+        - refs/heads/fix-*
+        - refs/heads/refactor-*
+        - refs/heads/style-*
+        - refs/heads/test-*
+
+  - name: write .tags (release)
+    image: alpine/git
+    commands:
+      - cat .version > .tmp
+      - echo ",latest" >> .tmp
+      - tr -d '\n' < .tmp > .tags
+      - rm .tmp
+      - cat .tags
+    when:
+      ref:
+        - refs/heads/main
+
+  - name: cache push
+    image: alpine/git
+    commands:
+      - /drone/src/scripts/ci/drone/drone-cache-push.sh ledger-version-tags
+    volumes:
+      - name: drone_cache
+        path: /drone/drone_cache
+
+---
+kind: pipeline
+type: docker
 name: "frontend - build"
+
+depends_on:
+  - version
 
 volumes:
   - name: drone_cache
@@ -33,6 +105,7 @@ steps:
     image: alpine/git
     commands:
       - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-frontend
+      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-version-tags
     volumes:
       - name: drone_cache
         path: /drone/drone_cache
@@ -64,6 +137,9 @@ kind: pipeline
 type: docker
 name: "backend - build"
 
+depends_on:
+  - version
+
 trigger:
   event:
     - push
@@ -74,6 +150,7 @@ volumes:
     host:
       path: /var/lib/docker/volumes_managed/drone_cache
 
+
 services:
   - name: postgres
     image: postgres:latest
@@ -83,7 +160,7 @@ services:
       POSTGRES_DB: ledger
 
 steps:
-  # git tags are needed by ./scripts/version.sh
+  # git tags are needed by nyx
   - name: fetch git tags
     image: alpine/git
     commands:
@@ -95,6 +172,7 @@ steps:
       - "fetch git tags"
     commands:
       - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-backend
+      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-version-tags
     volumes:
       - name: drone_cache
         path: /drone/drone_cache
@@ -165,10 +243,17 @@ volumes:
       path: /var/lib/docker/volumes_managed/drone_cache
 
 steps:
+  # git tags are needed by nyx
+  - name: fetch git tags
+    image: alpine/git
+    commands:
+      - git fetch --tags
+
   - name: cache pull
     image: alpine/git
     commands:
       - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-backend
+      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-version-tags
     volumes:
       - name: drone_cache
         path: /drone/drone_cache
@@ -177,6 +262,7 @@ steps:
     failure: ignore
     image: gradle:8-jdk17
     depends_on:
+      - "fetch git tags"
       - "cache pull"
     environment:
       SONAR_PROJECT_KEY:
@@ -190,10 +276,9 @@ steps:
         /drone/src/scripts/ci/drone/drone-is-sonar-configured.sh &&
         gradle sonar
         -Dsonar.projectKey=$SONAR_PROJECT_KEY
-        -Dsonar.projectVersion=$(./scripts/version.sh version)
+        -Dsonar.projectVersion=$(cat .version)
         -Dsonar.host.url=$SONAR_HOST
-        -Dsonar.login=$SONAR_LOGIN
-        -Dsonar.coverage.exclusions=backend/src/main/java/net/flyingfishflash/ledger/foundation/configuration/*.java
+        -Dsonar.token=$SONAR_LOGIN
 
 ---
 kind: pipeline
@@ -205,6 +290,7 @@ trigger:
     - push
 #    - tag
   ref:
+    - refs/heads/build-*
     - refs/heads/ci-*
     - refs/heads/docs-*
     - refs/heads/feature-*
@@ -212,7 +298,7 @@ trigger:
     - refs/heads/refactor-*
     - refs/heads/style-*
     - refs/heads/test-*
-#    - refs/tags/*
+    - refs/heads/main
 
 depends_on:
   - "frontend - build"
@@ -235,6 +321,7 @@ steps:
       - "fetch git tags"
     commands:
       - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-frontend
+      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-version-tags
       - pwd
       - ls -la
       - ls /drone/src/frontend/dist/ledger-frontend/ -la
@@ -248,28 +335,29 @@ steps:
       - "cache pull"
     settings:
       auto_tag: false
-      cache_from:
-        from_secret: repository_frontend_development
+#      cache_from:
+#        from_secret: repository_frontend_development
       context: /drone/src/frontend/
       dockerfile: /drone/src/frontend/Dockerfile
       repo:
         from_secret: repository_frontend
-      tags: development
+#      tags: development
       registry:
         from_secret: registry_hostname
       username:
         from_secret: registry_username
       password:
         from_secret: registry_password
-    when:
-      ref:
-        - refs/heads/ci-*
-        - refs/heads/docs-*
-        - refs/heads/feature-*
-        - refs/heads/fix-*
-        - refs/heads/refactor-*
-        - refs/heads/style-*
-        - refs/heads/test-*
+#    when:
+#      ref:
+#        - refs/heads/build-*
+#        - refs/heads/ci-*
+#        - refs/heads/docs-*
+#        - refs/heads/feature-*
+#        - refs/heads/fix-*
+#        - refs/heads/refactor-*
+#        - refs/heads/style-*
+#        - refs/heads/test-*
 
 #  - name: publish release
 #    image: plugins/docker
@@ -301,8 +389,9 @@ type: docker
 trigger:
   event:
     - push
-    - tag
+#    - tag
   ref:
+    - refs/heads/build-*
     - refs/heads/ci-*
     - refs/heads/docs-*
     - refs/heads/feature-*
@@ -310,7 +399,7 @@ trigger:
     - refs/heads/refactor-*
     - refs/heads/style-*
     - refs/heads/test-*
-#    - refs/tags/*
+    - refs/heads/main
 
 depends_on:
   - "backend - build"
@@ -326,56 +415,38 @@ steps:
     image: alpine/git
     commands:
       - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-backend
+      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-version-tags
     volumes:
       - name: drone_cache
         path: /drone/drone_cache
 
-  - name: write docker tag (development)
-    image: alpine/git
-    depends_on:
-      - "cache pull"
-    commands:
-      - ./scripts/version.sh version > .tags
-      - echo ",development" >> .tags
-      - cat .tags
-    when:
-      ref:
-        - refs/heads/ci-*
-        - refs/heads/docs-*
-        - refs/heads/feature-*
-        - refs/heads/fix-*
-        - refs/heads/refactor-*
-        - refs/heads/style-*
-        - refs/heads/test-*
-
   - name: publish branch
     image: plugins/docker
-    depends_on:
-      - "write docker tag (development)"
     settings:
       auto_tag: false
-      cache_from:
-        from_secret: repository_backend_development
+#      cache_from:
+#        from_secret: repository_backend_development
       context: /drone/src/backend/
       dockerfile: /drone/src/backend/Dockerfile
       repo:
         from_secret: repository_backend
-      tags: development
+#      tags: development
       registry:
         from_secret: registry_hostname
       username:
         from_secret: registry_username
       password:
         from_secret: registry_password
-    when:
-      ref:
-        - refs/heads/ci-*
-        - refs/heads/docs-*
-        - refs/heads/feature-*
-        - refs/heads/fix-*
-        - refs/heads/refactor-*
-        - refs/heads/style-*
-        - refs/heads/test-*
+#    when:
+#      ref:
+#        - refs/heads/build-*
+#        - refs/heads/ci-*
+#        - refs/heads/docs-*
+#        - refs/heads/feature-*
+#        - refs/heads/fix-*
+#        - refs/heads/refactor-*
+#        - refs/heads/style-*
+#        - refs/heads/test-*
 
 #  - name: write docker tag (release)
 #    image: alpine/git
@@ -419,6 +490,7 @@ trigger:
     - push
 #    - tag
   ref:
+    - refs/heads/build-*
     - refs/heads/ci-*
     - refs/heads/docs-*
     - refs/heads/feature-*

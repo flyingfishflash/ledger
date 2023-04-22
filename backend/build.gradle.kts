@@ -12,8 +12,7 @@ group = "net.flyingfishflash"
 description = "Ledger"
 
 val googleJavaFormatVersion: String by rootProject.extra
-val scmVersion: String by rootProject.extra
-val scmCommit: String by rootProject.extra
+val ciCommit: String by rootProject.extra
 val ciPlatform: String by rootProject.extra
 val ciPipelineId: String by rootProject.extra
 
@@ -66,9 +65,9 @@ springBoot {
     properties {
       artifact.set("ledger-backend")
       name.set("Ledger")
-      version.set(scmVersion)
+      version.set(rootProject.version.toString())
       additional.set(
-          mapOf("ciPlatform" to ciPlatform, "ciPipelineId" to ciPipelineId, "commit" to scmCommit))
+          mapOf("ciPlatform" to ciPlatform, "ciPipelineId" to ciPipelineId, "commit" to ciCommit))
     }
   }
 }
