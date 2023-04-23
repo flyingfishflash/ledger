@@ -39,6 +39,8 @@ releaseTypes:
     - flyingfishflash
     - github
 #    - gitlab
+  remoteRepositories:
+    - flyingfishflash
   items:
     mainline:
       collapseVersions: false
@@ -52,8 +54,6 @@ releaseTypes:
         CI: "^true$"
       matchWorkspaceStatus: "CLEAN"
       publish: "true"
-      remoteRepositories:
-        - flyingfishflash
     internal:
       collapseVersions: true
       collapsedVersionQualifier: "{{#lower}}{{branch}}{{/lower}}"
