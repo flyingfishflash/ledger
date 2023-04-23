@@ -117,6 +117,7 @@ steps:
       - export PATH=/drone/src/frontend/node_modules/.bin:$PATH
       - cd /drone/src/frontend
       - npm install
+      - npm version $(cat /drone/src/.version) --no-git-tag-version
       - ng version
       - ng build --configuration production
       - ls -l
