@@ -4,7 +4,7 @@ preset: "simple"
 verbosity: "DEBUG"
 releasePrefix: "v"
 changelog:
-  path: ".nyx-changelog/CHANGELOG.md"
+  path: "build/CHANGELOG.md"
   template: ".nyx-changelog.template"
   sections:
     "Added": "^feat$"

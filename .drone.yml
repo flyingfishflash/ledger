@@ -447,7 +447,7 @@ steps:
       GITLAB_TOKEN:
         from_secret: gitlab_token
     commands:
-      - mkdir .nyx-changelog
+      - mkdir /drone/src/build
       - nyx publish --dry-run=false
 
 ---
