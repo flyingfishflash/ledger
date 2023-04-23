@@ -10,11 +10,11 @@ case $SONAR_HOST in
     exitcode=1;;
 esac
 
-case $SONAR_LOGIN in
+case $SONAR_TOKEN in
   (*[![:blank:]]*)
-    echo '$SONAR_LOGIN is not blank';;
+    echo '$SONAR_TOKEN is not blank';;
   (*)
-    echo '$SONAR_LOGIN contains only blanks or is empty or is unset'
+    echo '$SONAR_TOKEN contains only blanks or is empty or is unset'
     exitcode=1;;
 esac
 
