@@ -24,6 +24,12 @@ commitMessageConventions:
         major: "(?s)(?m)^[a-zA-Z0-9_]+(!|.*^(BREAKING( |-)CHANGE: )).*"
         minor: "(?s)(?m)^feat(?!!|.*^(BREAKING( |-)CHANGE: )).*"
         patch: "(?s)(?m)(^build|^ci|^docs|^fix|^perf|^refactor)(?!!|.*^(BREAKING( |-)CHANGE: )).*"
+git:
+  remotes:
+    flyingfishflash:
+      authenticationMethod: USER_PASSWORD
+      user: "{{#environmentVariable}}FLYINGFISHFLASH_USER{{/environmentVariable}}"
+      password: "{{#environmentVariable}}FLYINGFISHFLASH_PASSWORD{{/environmentVariable}}"
 releaseTypes:
   enabled:
     - mainline
@@ -45,6 +51,8 @@ releaseTypes:
         CI: "^true$"
       matchWorkspaceStatus: "CLEAN"
       publish: "true"
+      remoteRepositories:
+        - flyingfishflash
     internal:
       collapseVersions: true
       collapsedVersionQualifier: "{{#lower}}{{branch}}{{/lower}}"
