@@ -26,7 +26,7 @@ commitMessageConventions:
         patch: "(?s)(?m)(^build|^ci|^docs|^fix|^perf|^refactor)(?!!|.*^(BREAKING( |-)CHANGE: )).*"
 git:
   remotes:
-    flyingfishflash:
+    origin:
       authenticationMethod: USER_PASSWORD
       user: "{{#environmentVariable}}FLYINGFISHFLASH_USER{{/environmentVariable}}"
       password: "{{#environmentVariable}}FLYINGFISHFLASH_PASSWORD{{/environmentVariable}}"
@@ -40,7 +40,7 @@ releaseTypes:
     - github
 #    - gitlab
   remoteRepositories:
-    - flyingfishflash
+    - origin
   items:
     mainline:
       collapseVersions: false
