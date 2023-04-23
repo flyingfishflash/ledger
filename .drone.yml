@@ -54,6 +54,9 @@ steps:
   - name: write .version
     image: registry.flyingfishflash.net/customized-images/container-nyx
     commands:
+      - nyx clean
+      - nyx infer --debug
+      - nyx infer --fatal --summary
       - nyx infer --fatal --summary | grep 'current version' | awk '{ print $NF }' > .version
       - cat .version
 
