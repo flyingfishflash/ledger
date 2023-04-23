@@ -438,6 +438,14 @@ steps:
         from_secret: flyingfishflash_git_user
       FLYINGFISHFLASH_GIT_PASSWORD:
         from_secret: flyingfishflash_git_password
+      FLYINGFISHFLASH_TOKEN:
+        from_secret: flyingfishflash_token
+      CODEBERG_TOKEN:
+        from_secret: codeberg_token
+      GITHUB_TOKEN:
+        from_secret: github_token
+      GITLAB_TOKEN:
+        from_secret: gitlab_token
     commands:
       - mkdir .nyx-changelog
       - nyx publish --dry-run=false
