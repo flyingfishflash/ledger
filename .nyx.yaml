@@ -28,8 +28,8 @@ git:
   remotes:
     origin:
       authenticationMethod: USER_PASSWORD
-      user: "{{#environmentVariable}}FLYINGFISHFLASH_GIT_USER{{/environmentVariable}}"
-      password: "{{#environmentVariable}}FLYINGFISHFLASH_GIT_PASSWORD{{/environmentVariable}}"
+      user: "{{#environmentVariable}}NYX_GIT_FLYINGFISHFLASH_USER{{/environmentVariable}}"
+      password: "{{#environmentVariable}}NYX_GIT_FLYINGFISHFLASH_PASSWORD{{/environmentVariable}}"
 releaseTypes:
   enabled:
     - mainline
@@ -66,26 +66,26 @@ services:
   codeberg:
     type: "GITHUB"
     options:
-      AUTHENTICATION_TOKEN: "{{#environmentVariable}}CODEBERG_TOKEN{{/environmentVariable}}"
+      AUTHENTICATION_TOKEN: "{{#environmentVariable}}NYX_GIT_CODEBERG_TOKEN{{/environmentVariable}}"
       BASE_URI: "https://codeberg.org/api/v1"
       REPOSITORY_NAME: "ledger"
       REPOSITORY_OWNER: "flyingfishflash"
   flyingfishflash:
     type: "GITHUB"
     options:
-      AUTHENTICATION_TOKEN: "{{#environmentVariable}}FLYINGFISHFLASH_TOKEN{{/environmentVariable}}"
+      AUTHENTICATION_TOKEN: "{{#environmentVariable}}NYX_GIT_FLYINGFISHFLASH_TOKEN{{/environmentVariable}}"
       BASE_URI: "https://gitea.flyingfishflash.net/api/v1"
       REPOSITORY_NAME: "ledger"
       REPOSITORY_OWNER: "flyingfishflash"
   github:
     type: "GITHUB"
     options:
-      AUTHENTICATION_TOKEN: "{{#environmentVariable}}GITHUB_TOKEN{{/environmentVariable}}"
+      AUTHENTICATION_TOKEN: "{{#environmentVariable}}NYX_GIT_GITHUB_TOKEN{{/environmentVariable}}"
       REPOSITORY_NAME: "ledger"
       REPOSITORY_OWNER: "flyingfishflash"
   gitlab:
     type: "GITLAB"
     options:
-      AUTHENTICATION_TOKEN: "{{#environmentVariable}}GITLAB_TOKEN{{/environmentVariable}}"
+      AUTHENTICATION_TOKEN: "{{#environmentVariable}}NYX_GIT_GITLAB_TOKEN{{/environmentVariable}}"
       REPOSITORY_NAME: "ledger"
       REPOSITORY_OWNER: "flyingfishflash"
