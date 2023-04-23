@@ -5,7 +5,7 @@ verbosity: "DEBUG"
 releasePrefix: "v"
 changelog:
   path: ".nyx-changelog/CHANGELOG.md"
-  template: "config/CHANGELOG.tpl"
+  template: ".nyx-changelog.template"
   sections:
     "Added": "^feat$"
     "Changed": "(^refactor$|^perf$)"
