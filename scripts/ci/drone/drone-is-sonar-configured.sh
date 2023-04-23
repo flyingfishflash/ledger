@@ -18,12 +18,4 @@ case $SONAR_LOGIN in
     exitcode=1;;
 esac
 
-case $SONAR_PROJECT_KEY in
-  (*[![:blank:]]*)
-    echo '$SONAR_PROJECT_KEY is not blank';;
-  (*)
-    echo '$SONAR_PROJECT_KEY contains only blanks or is empty or is unset'
-    exitcode=1;;
-esac
-
 exit $exitcode

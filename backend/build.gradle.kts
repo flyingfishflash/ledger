@@ -50,6 +50,8 @@ jacoco { toolVersion = "0.8.8" }
 
 sonarqube {
   properties {
+    property("sonar.projectKey", rootProject.name)
+    property("sonar.projectVersion", rootProject.version.toString())
     property(
         "sonar.coverage.exclusions",
         "src/main/java/net/flyingfishflash/ledger/core/CustomCommandLineRunner.java," +

@@ -3,7 +3,6 @@
 # - repository_frontend = registry.domain.tld/namespace/ledger-frontend
 # - repository_backend_development  = registry.domain.tld/namespace/ledger:development
 # - repository_frontend_development = registry.domain.tld/namespace/ledger-frontend:development
-# - sonar_project_key
 # - ssh_username
 # - ssh_host_dev
 # - ssh_host_prd
@@ -253,7 +252,6 @@ steps:
     image: alpine/git
     commands:
       - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-backend
-      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-version-tags
     volumes:
       - name: drone_cache
         path: /drone/drone_cache
@@ -265,8 +263,6 @@ steps:
       - "fetch git tags"
       - "cache pull"
     environment:
-      SONAR_PROJECT_KEY:
-        from_secret: sonar_project_key
       SONAR_HOST:
         from_secret: sonar_host
       SONAR_LOGIN:
@@ -275,8 +271,6 @@ steps:
       - >
         /drone/src/scripts/ci/drone/drone-is-sonar-configured.sh &&
         gradle sonar
-        -Dsonar.projectKey=$SONAR_PROJECT_KEY
-        -Dsonar.projectVersion=$(cat .version)
         -Dsonar.host.url=$SONAR_HOST
         -Dsonar.token=$SONAR_LOGIN
 
