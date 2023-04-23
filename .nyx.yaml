@@ -28,8 +28,8 @@ git:
   remotes:
     origin:
       authenticationMethod: USER_PASSWORD
-      user: "{{#environmentVariable}}FLYINGFISHFLASH_USER{{/environmentVariable}}"
-      password: "{{#environmentVariable}}FLYINGFISHFLASH_PASSWORD{{/environmentVariable}}"
+      user: "{{#environmentVariable}}FLYINGFISHFLASH_GIT_USER{{/environmentVariable}}"
+      password: "{{#environmentVariable}}FLYINGFISHFLASH_GIT_PASSWORD{{/environmentVariable}}"
 releaseTypes:
   enabled:
     - mainline
