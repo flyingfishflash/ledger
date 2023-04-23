@@ -38,7 +38,7 @@ releaseTypes:
       collapseVersions: false
       description: "{{#fileContent}}build/CHANGELOG.md{{/fileContent}}"
       filterTags: "^({{configuration.releasePrefix}})?([0-9]\\d*)\\.([0-9]\\d*)\\.([0-9]\\d*)$"
-      gitPush: "false"
+      gitPush: "true"
       gitTag: "true"
       matchBranches: "^(master|main)$"
       matchEnvironmentVariables:
