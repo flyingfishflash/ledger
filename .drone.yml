@@ -397,6 +397,38 @@ steps:
 
 ---
 kind: pipeline
+name: "release"
+type: docker
+
+trigger:
+  event:
+    - push
+  ref:
+    - refs/heads/main
+
+depends_on:
+  - "backend - publish"
+  - "frontend - publish"
+
+steps:
+  # nyx requires git tags to infer the current version
+  - name: fetch git tags
+    image: alpine/git
+    commands:
+      - git fetch --tags
+
+  - name: publish release
+    image: registry.flyingfishflash.net/customized-images/container-nyx
+    environment:
+      FLYINGFISHFLASH_GIT_USER:
+        from_secret: flyingfishflash_git_user
+      FLYINGFISHFLASH_GIT_PASSWORD:
+        from_secret: flyingfishflash_git_password
+    commands:
+      - nyx publish --dry-run=false
+
+---
+kind: pipeline
 name: "deploy - development"
 type: docker
 
