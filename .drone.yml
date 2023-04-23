@@ -33,6 +33,16 @@ volumes:
 trigger:
   event:
     - push
+  ref:
+    - refs/heads/build-*
+    - refs/heads/ci-*
+    - refs/heads/docs-*
+    - refs/heads/feature-*
+    - refs/heads/fix-*
+    - refs/heads/refactor-*
+    - refs/heads/style-*
+    - refs/heads/test-*
+    - refs/heads/main
 
 steps:
   # nyx requires git tags to infer the current version
@@ -57,14 +67,8 @@ steps:
       - cat .tags
     when:
       ref:
-        - refs/heads/build-*
-        - refs/heads/ci-*
-        - refs/heads/docs-*
-        - refs/heads/feature-*
-        - refs/heads/fix-*
-        - refs/heads/refactor-*
-        - refs/heads/style-*
-        - refs/heads/test-*
+        exclude:
+          - refs/heads/main
 
   - name: write .tags (release)
     image: alpine/git
