@@ -40,7 +40,7 @@ releaseTypes:
       filterTags: "^({{configuration.releasePrefix}})?([0-9]\\d*)\\.([0-9]\\d*)\\.([0-9]\\d*)$"
       gitPush: "true"
       gitTag: "true"
-      matchBranches: "^(master|main)$"
+      matchBranches: "^main$"
       matchEnvironmentVariables:
         CI: "^true$"
       matchWorkspaceStatus: "CLEAN"
