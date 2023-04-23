@@ -3,7 +3,7 @@ plugins {
   id("org.springframework.boot") version "3.0.5"
   id("com.diffplug.spotless")
   id("jacoco")
-  id("net.ltgt.errorprone") version "3.0.1"
+  id("net.ltgt.errorprone") version "3.1.0"
   //    id "com.github.spotbugs" version "5.0.6"
 }
 
