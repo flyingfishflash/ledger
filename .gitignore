@@ -40,4 +40,5 @@ frontend/dist
 # Other
 version
 .version
+.nyx-changelog/
 .tags

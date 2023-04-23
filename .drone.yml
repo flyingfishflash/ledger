@@ -410,12 +410,26 @@ depends_on:
   - "backend - publish"
   - "frontend - publish"
 
+volumes:
+  - name: drone_cache
+    host:
+      path: /var/lib/docker/volumes_managed/drone_cache
+
 steps:
   # nyx requires git tags to infer the current version
   - name: fetch git tags
     image: alpine/git
     commands:
       - git fetch --tags
+
+
+  - name: cache pull
+    image: alpine/git
+    commands:
+      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-backend
+    volumes:
+      - name: drone_cache
+        path: /drone/drone_cache
 
   - name: publish release
     image: registry.flyingfishflash.net/customized-images/container-nyx
@@ -425,6 +439,7 @@ steps:
       FLYINGFISHFLASH_GIT_PASSWORD:
         from_secret: flyingfishflash_git_password
     commands:
+      - mkdir .nyx-changelog
       - nyx publish --dry-run=false
 
 ---
