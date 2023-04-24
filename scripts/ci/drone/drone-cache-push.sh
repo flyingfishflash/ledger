@@ -13,7 +13,7 @@ else
   else
     if [ "$1" = "ledger-version-tags" ];
     then
-      tar -cf "$drone_cache" /drone/src/.version /drone/src/.tags
+      tar -cf "$drone_cache" /drone/src/.tags
       else
         echo "neither ledger-frontend, ledger-backend, or ledger-version-tags was passed as a parameter"
     fi

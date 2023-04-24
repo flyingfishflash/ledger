@@ -23,7 +23,7 @@
 
 kind: pipeline
 type: docker
-name: infer version
+name: "frontend - build"
 
 volumes:
   - name: drone_cache
@@ -33,16 +33,6 @@ volumes:
 trigger:
   event:
     - push
-  ref:
-    - refs/heads/build-*
-    - refs/heads/ci-*
-    - refs/heads/docs-*
-    - refs/heads/feature-*
-    - refs/heads/fix-*
-    - refs/heads/refactor-*
-    - refs/heads/style-*
-    - refs/heads/test-*
-    - refs/heads/main
 
 steps:
   # nyx requires git tags to infer the current version
@@ -51,8 +41,20 @@ steps:
     commands:
       - git fetch --tags
 
+  - name: cache pull
+    image: alpine/git
+    depends_on:
+      - fetch git tags
+    commands:
+      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-frontend
+    volumes:
+      - name: drone_cache
+        path: /drone/drone_cache
+
   - name: write .version
     image: registry.flyingfishflash.net/customized-images/container-nyx
+    depends_on:
+      - cache pull
     commands:
       - nyx clean
       - nyx infer --debug
@@ -60,70 +62,10 @@ steps:
       - nyx infer --fatal --summary | grep 'current version' | awk '{ print $NF }' > .version
       - cat .version
 
-  - name: write .tags (development)
-    image: alpine/git
-    commands:
-      - cat .version > .tmp
-      - echo ",development" >> .tmp
-      - tr -d '\n' < .tmp > .tags
-      - rm .tmp
-      - cat .tags
-    when:
-      ref:
-        exclude:
-          - refs/heads/main
-
-  - name: write .tags (release)
-    image: alpine/git
-    commands:
-      - cat .version > .tmp
-      - echo ",latest" >> .tmp
-      - tr -d '\n' < .tmp > .tags
-      - rm .tmp
-      - cat .tags
-    when:
-      ref:
-        - refs/heads/main
-
-  - name: cache push
-    image: alpine/git
-    commands:
-      - /drone/src/scripts/ci/drone/drone-cache-push.sh ledger-version-tags
-    volumes:
-      - name: drone_cache
-        path: /drone/drone_cache
-
----
-kind: pipeline
-type: docker
-name: "frontend - build"
-
-depends_on:
-  - infer version
-
-volumes:
-  - name: drone_cache
-    host:
-      path: /var/lib/docker/volumes_managed/drone_cache
-
-trigger:
-  event:
-    - push
-
-steps:
-  - name: cache pull
-    image: alpine/git
-    commands:
-      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-frontend
-      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-version-tags
-    volumes:
-      - name: drone_cache
-        path: /drone/drone_cache
-
   - name: build
     image: node:18-alpine
     depends_on:
-      - cache pull
+      - write .version
     commands:
       - export PATH=/drone/src/frontend/node_modules/.bin:$PATH
       - cd /drone/src/frontend
@@ -147,9 +89,6 @@ steps:
 kind: pipeline
 type: docker
 name: "backend - build"
-
-depends_on:
-  - infer version
 
 trigger:
   event:
@@ -181,7 +120,6 @@ steps:
       - fetch git tags
     commands:
       - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-backend
-      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-version-tags
     volumes:
       - name: drone_cache
         path: /drone/drone_cache
@@ -203,14 +141,14 @@ steps:
       - verify postgres
     commands:
       - >
-        gradle :backend:explodebootjar :backend:copyBuildInfo :backend:testClasses :backend:spotlessCheck
+        ./gradlew :backend:explodebootjar :backend:copyBuildInfo :backend:testClasses :backend:spotlessCheck
       - >
-        gradle :backend:test
+        ./gradlew :backend:test
       - >
-        gradle :backend:integrationTests
+        ./gradlew :backend:integrationTests
         -x :backend:bootBuildInfo
       - >
-        gradle :backend:integrationTests
+        ./gradlew :backend:integrationTests
         -x backend:bootBuildInfo
         -Dspring.profiles.active=postgresql
         -Dspring.datasource.url=jdbc:postgresql://postgres:5432/ledger
@@ -218,7 +156,7 @@ steps:
         -Dspring.datasource.password=ledger
         -Dspring.datasource.platform=postgresql
       - >
-        gradle --stop
+        ./gradlew --stop
     environment:
       NODE_OPTION: --max-old-space-size=4096
 
@@ -251,7 +189,7 @@ volumes:
       path: /var/lib/docker/volumes_managed/drone_cache
 
 steps:
-  # nyx requires git tags to infer the current version
+  # nyx gradle plugin requires git tags to infer the current version
   - name: fetch git tags
     image: alpine/git
     commands:
@@ -259,6 +197,8 @@ steps:
 
   - name: cache pull
     image: alpine/git
+    depends_on:
+      - fetch git tags
     commands:
       - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-backend
     volumes:
@@ -269,7 +209,6 @@ steps:
     failure: ignore
     image: gradle:8-jdk17
     depends_on:
-      - fetch git tags
       - cache pull
     environment:
       SONAR_HOST:
@@ -279,13 +218,13 @@ steps:
     commands:
       - >
         /drone/src/scripts/ci/drone/drone-is-sonar-configured.sh &&
-        gradle sonar
+        ./gradlew sonar
         -Dsonar.host.url=$SONAR_HOST
         -Dsonar.token=$SONAR_TOKEN
 
 ---
 kind: pipeline
-name: "frontend - publish"
+name: publish
 type: docker
 
 trigger:
@@ -318,21 +257,37 @@ steps:
     commands:
       - git fetch --tags
 
-  - name: cache pull
-    image: alpine/git
+  - name: write version to .tags
+    image: registry.flyingfishflash.net/customized-images/container-nyx
     depends_on:
       - fetch git tags
     commands:
+      - nyx clean
+      - nyx infer --debug
+      - nyx infer --fatal --summary
+      - nyx infer --fatal --summary | grep 'current version' | awk '{ print $NF }' | tr -d '\n' > .tags
+      - cat .tags
+
+  - name: write derived tag to .tags
+    image: alpine/git
+    depends_on:
+      - write version to .tags
+    commands:
+      - if [ "$DRONE_COMMIT_REF" = "refs/heads/main" ]; then echo -n ",latest" >> .tags; else echo -n ",development" >> .tags; fi
+      - cat .tags
+
+  - name: cache pull
+    image: alpine/git
+    depends_on:
+      - write derived tag to .tags
+    commands:
+      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-backend
       - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-frontend
-      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-version-tags
-      - pwd
-      - ls -la
-      - ls /drone/src/frontend/dist/ledger-frontend/ -la
     volumes:
       - name: drone_cache
         path: /drone/drone_cache
 
-  - name: publish
+  - name: publish frontend
     image: plugins/docker
     depends_on:
       - cache pull
@@ -351,46 +306,10 @@ steps:
       password:
         from_secret: registry_password
 
----
-kind: pipeline
-name: "backend - publish"
-type: docker
-
-trigger:
-  event:
-    - push
-  ref:
-    - refs/heads/build-*
-    - refs/heads/ci-*
-    - refs/heads/docs-*
-    - refs/heads/feature-*
-    - refs/heads/fix-*
-    - refs/heads/refactor-*
-    - refs/heads/style-*
-    - refs/heads/test-*
-    - refs/heads/main
-
-depends_on:
-  - "backend - build"
-  - "frontend - build"
-
-volumes:
-  - name: drone_cache
-    host:
-      path: /var/lib/docker/volumes_managed/drone_cache
-
-steps:
-  - name: cache pull
-    image: alpine/git
-    commands:
-      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-backend
-      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-version-tags
-    volumes:
-      - name: drone_cache
-        path: /drone/drone_cache
-
-  - name: publish
+  - name: publish backend
     image: plugins/docker
+    depends_on:
+      - cache pull
     settings:
       auto_tag: false
       cache_from:
@@ -418,8 +337,7 @@ trigger:
     - refs/heads/main
 
 depends_on:
-  - "backend - publish"
-  - "frontend - publish"
+  - publish
 
 volumes:
   - name: drone_cache
@@ -433,9 +351,10 @@ steps:
     commands:
       - git fetch --tags
 
-
   - name: cache pull
     image: alpine/git
+    depends_on:
+      - fetch git tags
     commands:
       - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-backend
     volumes:
@@ -444,6 +363,8 @@ steps:
 
   - name: publish release
     image: registry.flyingfishflash.net/customized-images/container-nyx
+    depends_on:
+      - cache pull
     environment:
       NYX_GIT_FLYINGFISHFLASH_USER:
         from_secret: nyx_git_flyingfishflash_user
@@ -459,6 +380,8 @@ steps:
         from_secret: nyx_git_gitlab_token
     commands:
       - mkdir /drone/src/build
+      - nyx infer --fatal
+      - nyx --fatal --summary
       - nyx publish --dry-run=false
 
 ---
@@ -480,8 +403,7 @@ trigger:
     - refs/heads/test-*
 
 depends_on:
-  - "frontend - publish"
-  - "backend - publish"
+  - publish
 
 clone:
   disable: true
