@@ -41,20 +41,10 @@ steps:
     commands:
       - git fetch --tags
 
-  - name: cache pull
-    image: alpine/git
-    depends_on:
-      - fetch git tags
-    commands:
-      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-frontend
-    volumes:
-      - name: drone_cache
-        path: /drone/drone_cache
-
   - name: write .version
     image: registry.flyingfishflash.net/customized-images/container-nyx
     depends_on:
-      - cache pull
+      - fetch git tags
     commands:
       - nyx clean
       - nyx infer --debug
@@ -67,20 +57,19 @@ steps:
     depends_on:
       - write .version
     commands:
+      - export NPM_CACHE=/drone/drone_cache/$DRONE_REPO/client/npm
+      - echo $NPM_CACHE
+      - mkdir -pv $NPM_CACHE
+      - export CLIENT_DIST=/drone/drone_cache/$DRONE_REPO/client/dist
+      - echo $CLIENT_DIST
+      - mkdir -pv $CLIENT_DIST
       - export PATH=/drone/src/frontend/node_modules/.bin:$PATH
       - cd /drone/src/frontend
-      - npm install
       - npm version $(cat /drone/src/.version) --no-git-tag-version
+      - npm ci --cache $NPM_CACHE --prefer-offline
       - ng version
-      - ng build --configuration production
-      - ls -l
-
-  - name: cache push
-    image: alpine/git
-    depends_on:
-      - build
-    commands:
-      - /drone/src/scripts/ci/drone/drone-cache-push.sh ledger-frontend
+      - ng build --configuration production --output-path=$CLIENT_DIST/ledger-frontend
+      - ls -la $CLIENT_DIST/ledger-frontend
     volumes:
       - name: drone_cache
         path: /drone/drone_cache
@@ -114,16 +103,6 @@ steps:
     commands:
       - git fetch --tags
 
-  - name: cache pull
-    image: alpine/git
-    depends_on:
-      - fetch git tags
-    commands:
-      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-backend
-    volumes:
-      - name: drone_cache
-        path: /drone/drone_cache
-
   - name: verify postgres
     image: postgres
     commands:
@@ -137,90 +116,53 @@ steps:
   - name: build
     image: gradle:8-jdk17
     depends_on:
-      - cache pull
+      - fetch git tags
       - verify postgres
     commands:
+      - export GRADLE_USER_HOME=/drone/drone_cache/$DRONE_REPO/api/gradle-user-home
+      - echo $GRADLE_USER_HOME
+      - mkdir -pv $GRADLE_USER_HOME
+      - touch $GRADLE_USER_HOME/gradle.properties
+      - echo org.gradle.caching=true > $GRADLE_USER_HOME/gradle.properties
+      - echo org.gradle.daemon=false >> $GRADLE_USER_HOME/gradle.properties
+      - export GRADLE_PROJECT_BUILD_DIR=/drone/drone_cache/$DRONE_REPO/api/build
+      - echo $GRADLE_PROJECT_BUILD_DIR
+      - mkdir -pv $GRADLE_PROJECT_BUILD_DIR
       - >
-        ./gradlew :backend:explodebootjar :backend:copyBuildInfo :backend:testClasses :backend:spotlessCheck
+        gradle
+        :backend:explodebootjar
+        :backend:copyBuildInfo
+        :backend:testClasses
+        :backend:spotlessCheck
+        :backend:test
+        :backend:integrationTests
+        :backend:bootBuildInfo
+        -PbuildDir=$GRADLE_PROJECT_BUILD_DIR
       - >
-        ./gradlew :backend:test
-      - >
-        ./gradlew :backend:integrationTests
-        -x :backend:bootBuildInfo
-      - >
-        ./gradlew :backend:integrationTests
-        -x backend:bootBuildInfo
+        gradle
+        :backend:integrationTests
         -Dspring.profiles.active=postgresql
         -Dspring.datasource.url=jdbc:postgresql://postgres:5432/ledger
         -Dspring.datasource.username=ledger
         -Dspring.datasource.password=ledger
         -Dspring.datasource.platform=postgresql
+        -PbuildDir=$GRADLE_PROJECT_BUILD_DIR
       - >
-        ./gradlew --stop
-    environment:
-      NODE_OPTION: --max-old-space-size=4096
-
-  - name: cache push
-    image: alpine/git
-    depends_on:
-      - build
-    commands:
-      - /drone/src/scripts/ci/drone/drone-cache-push.sh ledger-backend
-    volumes:
-      - name: drone_cache
-        path: /drone/drone_cache
-
----
-kind: pipeline
-name: sonar
-type: docker
-
-trigger:
-  event:
-    - push
-
-depends_on:
-  - "frontend - build"
-  - "backend - build"
-
-volumes:
-  - name: drone_cache
-    host:
-      path: /var/lib/docker/volumes_managed/drone_cache
-
-steps:
-  # nyx gradle plugin requires git tags to infer the current version
-  - name: fetch git tags
-    image: alpine/git
-    commands:
-      - git fetch --tags
-
-  - name: cache pull
-    image: alpine/git
-    depends_on:
-      - fetch git tags
-    commands:
-      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-backend
-    volumes:
-      - name: drone_cache
-        path: /drone/drone_cache
-
-  - name: sonar analysis
-    failure: ignore
-    image: gradle:8-jdk17
-    depends_on:
-      - cache pull
+        /drone/src/scripts/ci/drone/drone-is-sonar-configured.sh &&
+        gradle
+        sonar
+        -Dsonar.host.url=$SONAR_HOST
+        -Dsonar.token=$SONAR_TOKEN
+        -Dsonar.qualitygate.wait=true
+        -PbuildDir=$GRADLE_PROJECT_BUILD_DIR
     environment:
       SONAR_HOST:
         from_secret: sonar_host
       SONAR_TOKEN:
         from_secret: sonar_token
-    commands:
-      - >
-        /drone/src/scripts/ci/drone/drone-is-sonar-configured.sh &&
-        ./gradlew sonar
-        -Dsonar.host.url=$SONAR_HOST
-        -Dsonar.token=$SONAR_TOKEN
+    volumes:
+      - name: drone_cache
+        path: /drone/drone_cache
 
 ---
 kind: pipeline
@@ -246,9 +188,12 @@ depends_on:
   - "backend - build"
 
 volumes:
-  - name: drone_cache
+  - name: drone_cache_client_dist
     host:
-      path: /var/lib/docker/volumes_managed/drone_cache
+      path: /var/lib/docker/volumes_managed/drone_cache/flyingfishflash/ledger/client/dist
+  - name: drone_cache_api_build
+    host:
+      path: /var/lib/docker/volumes_managed/drone_cache/flyingfishflash/ledger/api/build
 
 steps:
   # nyx requires git tags to infer the current version
@@ -276,21 +221,11 @@ steps:
       - if [ "$DRONE_COMMIT_REF" = "refs/heads/main" ]; then echo -n ",latest" >> .tags; else echo -n ",development" >> .tags; fi
       - cat .tags
 
-  - name: cache pull
-    image: alpine/git
-    depends_on:
-      - write derived tag to .tags
-    commands:
-      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-backend
-      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-frontend
-    volumes:
-      - name: drone_cache
-        path: /drone/drone_cache
-
   - name: publish frontend
     image: plugins/docker
+    privileged: true
     depends_on:
-      - cache pull
+      - write derived tag to .tags
     settings:
       auto_tag: false
       cache_from:
@@ -305,11 +240,15 @@ steps:
         from_secret: registry_username
       password:
         from_secret: registry_password
+    volumes:
+      - name: drone_cache_client_dist
+        path: /drone/src/frontend/dist
 
   - name: publish backend
     image: plugins/docker
+    privileged: true
     depends_on:
-      - cache pull
+      - write derived tag to .tags
     settings:
       auto_tag: false
       cache_from:
@@ -324,6 +263,9 @@ steps:
         from_secret: registry_username
       password:
         from_secret: registry_password
+    volumes:
+      - name: drone_cache_api_build
+        path: /drone/src/backend/build
 
 ---
 kind: pipeline
@@ -351,12 +293,12 @@ steps:
     commands:
       - git fetch --tags
 
-  - name: cache pull
+  - name: fetch cached build artifacts
     image: alpine/git
     depends_on:
       - fetch git tags
     commands:
-      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-backend
+      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-backend-build-artifact
     volumes:
       - name: drone_cache
         path: /drone/drone_cache
@@ -364,7 +306,7 @@ steps:
   - name: publish release
     image: registry.flyingfishflash.net/customized-images/container-nyx
     depends_on:
-      - cache pull
+      - fetch cached build artifacts
     environment:
       NYX_GIT_FLYINGFISHFLASH_USER:
         from_secret: nyx_git_flyingfishflash_user
