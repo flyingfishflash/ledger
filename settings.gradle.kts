@@ -1,4 +1,4 @@
-plugins { id("com.mooltiverse.oss.nyx") version "2.3.1-hotfix186.1" }
+plugins { id("com.mooltiverse.oss.nyx") version "2.3.1" }
 
 rootProject.name = "ledger"
 
