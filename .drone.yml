@@ -57,16 +57,18 @@ steps:
     depends_on:
       - write .version
     commands:
-      - export NPM_CACHE=/drone/drone_cache/$DRONE_REPO/client/npm
-      - echo $NPM_CACHE
-      - mkdir -pv $NPM_CACHE
+      # define alt location for npm cache
+      - export CLIENT_NPM_CACHE=/drone/drone_cache/$DRONE_REPO/client/npm
+      - echo $CLIENT_NPM_CACHE
+      - mkdir -pv $CLIENT_NPM_CACHE
+      # define alt location for distributable files
       - export CLIENT_DIST=/drone/drone_cache/$DRONE_REPO/client/dist
       - echo $CLIENT_DIST
       - mkdir -pv $CLIENT_DIST
       - export PATH=/drone/src/frontend/node_modules/.bin:$PATH
       - cd /drone/src/frontend
       - npm version $(cat /drone/src/.version) --no-git-tag-version
-      - npm ci --cache $NPM_CACHE --prefer-offline
+      - npm ci --cache $CLIENT_NPM_CACHE --prefer-offline
       - ng version
       - ng build --configuration production --output-path=$CLIENT_DIST/ledger-frontend
       - ls -la $CLIENT_DIST/ledger-frontend
