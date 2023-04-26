@@ -221,7 +221,7 @@ steps:
     depends_on:
       - write version to .tags
     commands:
-      - if [ "$DRONE_COMMIT_REF" = "refs/heads/main" ]; then echo -n ",latest" >> .tags; else echo -n ",development" >> .tags; fi
+      - if [ "$DRONE_COMMIT_REF" = "refs/tags/v"*   ]; then echo -n ",latest" >> .tags; else echo -n ",development" >> .tags; fi
       - cat .tags
 
   - name: publish frontend
@@ -364,6 +364,7 @@ type: docker
 trigger:
   event:
     - push
+    - tag
   ref:
     - refs/tags/*
 
