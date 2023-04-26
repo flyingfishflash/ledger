@@ -172,6 +172,7 @@ type: docker
 trigger:
   event:
     - push
+    - tag
   ref:
     - refs/heads/build-*
     - refs/heads/ci-*
@@ -181,7 +182,7 @@ trigger:
     - refs/heads/refactor-*
     - refs/heads/style-*
     - refs/heads/test-*
-    - refs/heads/main
+    - refs/tags/*
 
 depends_on:
   - "frontend - build"
@@ -293,20 +294,10 @@ steps:
     commands:
       - git fetch --tags
 
-  - name: fetch cached build artifacts
-    image: alpine/git
-    depends_on:
-      - fetch git tags
-    commands:
-      - /drone/src/scripts/ci/drone/drone-cache-pull.sh ledger-backend-build-artifact
-    volumes:
-      - name: drone_cache
-        path: /drone/drone_cache
-
   - name: publish release
     image: registry.flyingfishflash.net/customized-images/container-nyx
     depends_on:
-      - fetch cached build artifacts
+      - fetch git tags
     environment:
       NYX_GIT_FLYINGFISHFLASH_USER:
         from_secret: nyx_git_flyingfishflash_user
@@ -363,25 +354,29 @@ steps:
       script:
         - ~/.local/bin/scripts/ledger-dev-redeploy.sh
 
-#---
-#kind: pipeline
-#name: "deploy - production"
-#type: docker
-#
-#trigger:
-#  event:
-#    - push
-#  ref:
-#    - refs/tags/*
-#
-#depends_on:
-#  - "frontend - publish"
-#  - "backend - publish"
-#
-#clone:
-#  disable: true
-#
-#steps:
+---
+kind: pipeline
+name: "deploy - production"
+type: docker
+
+trigger:
+  event:
+    - push
+  ref:
+    - refs/tags/*
+
+depends_on:
+  - publish
+
+clone:
+  disable: true
+
+steps:
+  - name: deploy
+    image: alpine/git
+    commands:
+      - echo "here's where we would deploy to production"
+
 #  - name: deploy
 #    image: appleboy/drone-ssh
 #    settings:
