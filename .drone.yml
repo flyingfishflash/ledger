@@ -22,6 +22,94 @@
 # - sonar_login (user token)
 
 kind: pipeline
+name: infer container tags
+type: docker
+
+trigger:
+  event:
+    - push
+    - tag
+  ref:
+    - refs/heads/build-*
+    - refs/heads/ci-*
+    - refs/heads/docs-*
+    - refs/heads/feature-*
+    - refs/heads/fix-*
+    - refs/heads/refactor-*
+    - refs/heads/style-*
+    - refs/heads/test-*
+    - refs/tags/*
+
+volumes:
+  - name: drone_cache
+    host:
+      path: /var/lib/docker/volumes_managed/drone_cache
+
+steps:
+  # nyx requires git tags to infer the current version
+  - name: fetch git tags
+    image: alpine/git
+    commands:
+      - git fetch --tags
+
+  - name: write version to .tags
+    image: registry.flyingfishflash.net/customized-images/container-nyx
+    depends_on:
+      - fetch git tags
+    commands:
+      - export BASE=/drone/drone_cache/$DRONE_REPO
+      - export TAGS=$BASE/.tags
+      - export VERSION=$BASE/.version
+      - export NYX_STATE=$BASE/.nyx_state.yaml
+      - echo $TAGS
+      - echo $VERSION
+      - mkdir -pv $BASE
+      - rm -f $NYX_STATE
+      - nyx clean --fatal --state-file=$NYX_STATE
+      - nyx infer --debug --state-file=$NYX_STATE
+      - nyx infer --fatal --state-file=$NYX_STATE --summary > .nyx-summary
+      - cat .nyx-summary && echo
+      - cat .nyx-summary | grep 'current version' | awk '{ print $NF }' | tr -d '\n' > $VERSION
+      - cat $VERSION | tr -d '\n' > $TAGS
+      - cat $VERSION && echo
+      - cat $TAGS && echo
+    volumes:
+      - name: drone_cache
+        path: /drone/drone_cache
+
+  - name: write development tag
+    image: alpine/git
+    depends_on:
+      - write version to .tags
+    commands:
+      - export TAGS=/drone/drone_cache/$DRONE_REPO
+      - echo -n ",development" >> $TAGS/.tags
+      - cat $TAGS/.tags
+    volumes:
+      - name: drone_cache
+        path: /drone/drone_cache
+    when:
+      ref:
+        exclude:
+          - refs/tags/*
+
+  - name: write latest tag
+    image: alpine/git
+    depends_on:
+      - write version to .tags
+    commands:
+      - export TAGS=/drone/drone_cache/$DRONE_REPO
+      - echo -n ",latest" >> $TAGS/.tags
+      - cat .tags
+    volumes:
+      - name: drone_cache
+        path: /drone/drone_cache
+    when:
+      ref:
+        - refs/tags/*
+
+---
+kind: pipeline
 type: docker
 name: "frontend - build"
 
@@ -35,27 +123,18 @@ trigger:
     - push
 
 steps:
-  # nyx requires git tags to infer the current version
-  - name: fetch git tags
+  - name: verify .version
     image: alpine/git
     commands:
-      - git fetch --tags
-
-  - name: write .version
-    image: registry.flyingfishflash.net/customized-images/container-nyx
-    depends_on:
-      - fetch git tags
-    commands:
-      - nyx clean
-      - nyx infer --debug
-      - nyx infer --fatal --summary
-      - nyx infer --fatal --summary | grep 'current version' | awk '{ print $NF }' > .version
-      - cat .version
+      - if [ ! -e "/drone/drone_cache/$DRONE_REPO/.version" ]; then exit 1; else exit 0; fi
+    volumes:
+      - name: drone_cache
+        path: /drone/drone_cache
 
   - name: build
     image: node:18-alpine
     depends_on:
-      - write .version
+      - verify .version
     commands:
       # define alt location for npm cache
       - export CLIENT_NPM_CACHE=/drone/drone_cache/$DRONE_REPO/client/npm
@@ -67,7 +146,7 @@ steps:
       - mkdir -pv $CLIENT_DIST
       - export PATH=/drone/src/frontend/node_modules/.bin:$PATH
       - cd /drone/src/frontend
-      - npm version $(cat /drone/src/.version) --no-git-tag-version
+      - npm version $(cat /drone/drone_cache/$DRONE_REPO/.version) --no-git-tag-version
       - npm ci --cache $CLIENT_NPM_CACHE --prefer-offline
       - ng version
       - ng build --configuration production --output-path=$CLIENT_DIST/ledger-frontend
@@ -171,26 +250,14 @@ kind: pipeline
 name: publish
 type: docker
 
-trigger:
-  event:
-    - push
-    - tag
-  ref:
-    - refs/heads/build-*
-    - refs/heads/ci-*
-    - refs/heads/docs-*
-    - refs/heads/feature-*
-    - refs/heads/fix-*
-    - refs/heads/refactor-*
-    - refs/heads/style-*
-    - refs/heads/test-*
-    - refs/tags/*
-
 depends_on:
   - "frontend - build"
   - "backend - build"
 
 volumes:
+  - name: drone_cache
+    host:
+      path: /var/lib/docker/volumes_managed/drone_cache/flyingfishflash/ledger
   - name: drone_cache_client_dist
     host:
       path: /var/lib/docker/volumes_managed/drone_cache/flyingfishflash/ledger/client/dist
@@ -199,36 +266,17 @@ volumes:
       path: /var/lib/docker/volumes_managed/drone_cache/flyingfishflash/ledger/api/build
 
 steps:
-  # nyx requires git tags to infer the current version
-  - name: fetch git tags
+  - name: fetch .tags from cache
     image: alpine/git
     commands:
-      - git fetch --tags
-
-  - name: write version to .tags
-    image: registry.flyingfishflash.net/customized-images/container-nyx
-    depends_on:
-      - fetch git tags
-    commands:
-      - nyx clean
-      - nyx infer --debug
-      - nyx infer --fatal --summary
-      - nyx infer --fatal --summary | grep 'current version' | awk '{ print $NF }' | tr -d '\n' > .tags
-      - cat .tags
-
-  - name: write derived tag to .tags
-    image: alpine/git
-    depends_on:
-      - write version to .tags
-    commands:
-      - if [ "$DRONE_COMMIT_REF" = "refs/tags/v"*   ]; then echo -n ",latest" >> .tags; else echo -n ",development" >> .tags; fi
-      - cat .tags
+      - cp /drone/cache/.tags /drone/src/.tags
+    volumes:
+      - name: drone_cache
+        path: /drone/cache
 
   - name: publish frontend
     image: plugins/docker
     privileged: true
-    depends_on:
-      - write derived tag to .tags
     settings:
       auto_tag: false
       cache_from:
@@ -250,8 +298,6 @@ steps:
   - name: publish backend
     image: plugins/docker
     privileged: true
-    depends_on:
-      - write derived tag to .tags
     settings:
       auto_tag: false
       cache_from:
