@@ -22,7 +22,7 @@
 # - sonar_login (user token)
 
 kind: pipeline
-name: infer container tags
+name: infer version
 type: docker
 
 trigger:
@@ -38,6 +38,7 @@ trigger:
     - refs/heads/refactor-*
     - refs/heads/style-*
     - refs/heads/test-*
+    - refs/heads/main
     - refs/tags/*
 
 volumes:
