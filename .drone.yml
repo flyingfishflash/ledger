@@ -66,9 +66,10 @@ steps:
       - echo $VERSION
       - mkdir -pv $BASE
       - rm -f $NYX_STATE
+      - rm -f .nyx-summary
       - nyx clean --fatal --state-file=$NYX_STATE
       - nyx infer --debug --state-file=$NYX_STATE
-      - nyx infer --fatal --state-file=$NYX_STATE --summary > .nyx-summary
+      - nyx infer --fatal --state-file=$NYX_STATE --resume --summary > .nyx-summary
       - cat .nyx-summary && echo
       - cat .nyx-summary | grep 'current version' | awk '{ print $NF }' | tr -d '\n' > $VERSION
       - cat $VERSION | tr -d '\n' > $TAGS
