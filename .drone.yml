@@ -250,6 +250,21 @@ kind: pipeline
 name: publish
 type: docker
 
+trigger:
+  event:
+    - push
+    - tag
+  ref:
+    - refs/heads/build-*
+    - refs/heads/ci-*
+    - refs/heads/docs-*
+    - refs/heads/feature-*
+    - refs/heads/fix-*
+    - refs/heads/refactor-*
+    - refs/heads/style-*
+    - refs/heads/test-*
+    - refs/tags/*
+
 depends_on:
   - "frontend - build"
   - "backend - build"
