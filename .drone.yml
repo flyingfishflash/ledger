@@ -63,17 +63,31 @@ steps:
       - export VERSION=$BASE/.version
       - export NYX_STATE=$BASE/.nyx_state.yaml
       - mkdir -pv $BASE
-      - rm -f $NYX_STATE
-      - rm -f .nyx-summary
+      - rm -fv $NYX_STATE
+      - rm -fv .nyx-summary
+      - rm -fv $VERSION
+      - rm -fv $TAGS
       - nyx clean --fatal --state-file=$NYX_STATE
       - nyx infer --debug --state-file=$NYX_STATE
       - nyx infer --fatal --state-file=$NYX_STATE --resume --summary > .nyx-summary
       - cat .nyx-summary && echo
-      - cat .nyx-summary | grep 'current version' | awk '{ print $NF }' | tr -d '\n' > $VERSION
+      - export NYX_NEW_VERSION=$(cat .nyx-summary | grep 'new version' | awk '{ print $NF }' | tr -d '\n')
+      - echo $NYX_NEW_VERSION
+      - export NYX_CURRENT_VERSION=$(cat .nyx-summary | grep 'current version' | awk '{ print $NF }' | tr -d '\n')
+      - echo $NYX_CURRENT_VERSION
+      - export NYX_BRANCH=$(cat .nyx-summary | grep 'branch' | awk '{ print $NF }' | tr -d '\n')
+      - echo $NYX_BRANCH
+      - echo $NYX_CURRENT_VERSION > $VERSION
+      - |
+        if [ "$NYX_NEW_VERSION" = "true" ]; then
+            echo $NYX_CURRENT_VERSION > $TAGS
+        else
+            echo "$NYX_CURRENT_VERSION"-"$NYX_BRANCH" > $VERSION
+            echo "$NYX_CURRENT_VERSION"-"$NYX_BRANCH" > $TAGS  
+        fi;
       - echo $VERSION
-      - cat $version
+      - cat $VERSION
       - echo $TAGS
-      - cat $VERSION | tr -d '\n' > $TAGS
       - cat $TAGS && echo
     volumes:
       - name: drone_cache
@@ -95,22 +109,21 @@ steps:
         exclude:
           - refs/tags/*
           - refs/heads/main
-
-  - name: write latest tag
-    image: alpine/git
-    depends_on:
-      - write version to .tags
-    commands:
-      - export TAGS=/drone/drone_cache/$DRONE_REPO
-      - echo -n ",latest" >> $TAGS/.tags
-      - cat .tags
-    volumes:
-      - name: drone_cache
-        path: /drone/drone_cache
-    when:
-      ref:
-        - refs/tags/*
-        - refs/heads/main
+#
+#  - name: write latest tag
+#    image: alpine/git
+#    depends_on:
+#      - write version to .tags
+#    commands:
+#      - export TAGS=/drone/drone_cache/$DRONE_REPO
+#      - echo -n ",latest" >> $TAGS/.tags
+#      - cat .tags
+#    volumes:
+#      - name: drone_cache
+#        path: /drone/drone_cache
+#    when:
+#      ref:
+#        - refs/tags/*
 
 ---
 kind: pipeline
@@ -130,6 +143,7 @@ steps:
   - name: verify .version
     image: alpine/git
     commands:
+      - sleep 1
       - export VERSION=/drone/drone_cache/$DRONE_REPO/.version
       - if [ ! -e "$VERSION" ]; then exit 1; else cat $VERSION; fi
     volumes:

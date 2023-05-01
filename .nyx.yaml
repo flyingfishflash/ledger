@@ -56,7 +56,12 @@ releaseTypes:
       publish: "true"
     internal:
       collapseVersions: true
-      collapsedVersionQualifier: "{{#lower}}{{branch}}{{/lower}}"
+      collapsedVersionQualifier: internal
+      identifiers:
+        - qualifier: "{{#lower}}{{branch}}{{/lower}}"
+          position: "BUILD"
+        - qualifier: "{{#short7}}{{releaseScope.finalCommit}}{{/short7}}"
+          position: "BUILD"
       filterTags: "^({{configuration.releasePrefix}})?([0-9]\\d*)\\.([0-9]\\d*)\\.([0-9]\\d*)$"
       gitCommit: "false"
       gitPush: "false"
