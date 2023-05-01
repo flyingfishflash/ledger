@@ -62,8 +62,6 @@ steps:
       - export TAGS=$BASE/.tags
       - export VERSION=$BASE/.version
       - export NYX_STATE=$BASE/.nyx_state.yaml
-      - echo $TAGS
-      - echo $VERSION
       - mkdir -pv $BASE
       - rm -f $NYX_STATE
       - rm -f .nyx-summary
@@ -72,8 +70,10 @@ steps:
       - nyx infer --fatal --state-file=$NYX_STATE --resume --summary > .nyx-summary
       - cat .nyx-summary && echo
       - cat .nyx-summary | grep 'current version' | awk '{ print $NF }' | tr -d '\n' > $VERSION
+      - echo $VERSION
+      - cat $version
+      - echo $TAGS
       - cat $VERSION | tr -d '\n' > $TAGS
-      - cat $VERSION && echo
       - cat $TAGS && echo
     volumes:
       - name: drone_cache
@@ -128,7 +128,8 @@ steps:
   - name: verify .version
     image: alpine/git
     commands:
-      - if [ ! -e "/drone/drone_cache/$DRONE_REPO/.version" ]; then exit 1; else exit 0; fi
+      - export VERSION=/drone/drone_cache/$DRONE_REPO/.version
+      - if [ ! -e "$VERSION" ]; then exit 1; else cat $VERSION; fi
     volumes:
       - name: drone_cache
         path: /drone/drone_cache
@@ -139,6 +140,7 @@ steps:
       - verify .version
     commands:
       # define alt location for npm cache
+      - export VERSION=$(cat /drone/drone_cache/$DRONE_REPO/.version)
       - export CLIENT_NPM_CACHE=/drone/drone_cache/$DRONE_REPO/client/npm
       - echo $CLIENT_NPM_CACHE
       - mkdir -pv $CLIENT_NPM_CACHE
@@ -148,7 +150,7 @@ steps:
       - mkdir -pv $CLIENT_DIST
       - export PATH=/drone/src/frontend/node_modules/.bin:$PATH
       - cd /drone/src/frontend
-      - npm version $(cat /drone/drone_cache/$DRONE_REPO/.version) --no-git-tag-version
+      - npm version $VERSION --no-git-tag-version
       - npm ci --cache $CLIENT_NPM_CACHE --prefer-offline
       - ng version
       - ng build --configuration production --output-path=$CLIENT_DIST/ledger-frontend
