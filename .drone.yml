@@ -79,7 +79,7 @@ steps:
       - echo $NYX_BRANCH
       - echo $NYX_CURRENT_VERSION > $VERSION
       - |
-        if [ "$NYX_NEW_VERSION" = "true" ]; then
+        if [ "$NYX_NEW_VERSION" = "true" ] || ([ "$NYX_NEW_VERSION" = "false" ] && [ "$NYX_BRANCH" = "HEAD" ]); then
             echo $NYX_CURRENT_VERSION > $TAGS
         else
             echo "$NYX_CURRENT_VERSION"-"$NYX_BRANCH" > $VERSION
@@ -98,9 +98,10 @@ steps:
     depends_on:
       - write version to .tags
     commands:
-      - export TAGS=/drone/drone_cache/$DRONE_REPO
-      - echo -n ",development" >> $TAGS/.tags
-      - cat $TAGS/.tags
+      - export BASE=/drone/drone_cache/$DRONE_REPO
+      - export TAGS=$BASE/.tags
+      - echo -n ",development" >> $TAGS
+      - cat $TAGS
     volumes:
       - name: drone_cache
         path: /drone/drone_cache
@@ -109,21 +110,22 @@ steps:
         exclude:
           - refs/tags/*
           - refs/heads/main
-#
-#  - name: write latest tag
-#    image: alpine/git
-#    depends_on:
-#      - write version to .tags
-#    commands:
-#      - export TAGS=/drone/drone_cache/$DRONE_REPO
-#      - echo -n ",latest" >> $TAGS/.tags
-#      - cat .tags
-#    volumes:
-#      - name: drone_cache
-#        path: /drone/drone_cache
-#    when:
-#      ref:
-#        - refs/tags/*
+
+  - name: write latest tag
+    image: alpine/git
+    depends_on:
+      - write version to .tags
+    commands:
+      - export BASE=/drone/drone_cache/$DRONE_REPO
+      - export TAGS=$BASE/.tags
+      - echo -n ",latest" >> $TAGS
+      - cat $TAGS
+    volumes:
+      - name: drone_cache
+        path: /drone/drone_cache
+    when:
+      ref:
+        - refs/tags/*
 
 ---
 kind: pipeline
