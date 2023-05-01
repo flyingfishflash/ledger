@@ -35,9 +35,9 @@ releaseTypes:
     - mainline
     - internal
   publicationServices:
-    - codeberg
+#    - codeberg
     - flyingfishflash
-    - github
+#    - github
 #    - gitlab
   remoteRepositories:
     - origin
