@@ -398,9 +398,11 @@ steps:
         from_secret: nyx_git_gitlab_token
     commands:
       - mkdir /drone/src/build
+      - export BASE=/drone/drone_cache/$DRONE_REPO
+      - export NYX_STATE=$BASE/.nyx_state.yaml
       - nyx infer --fatal
       - nyx --fatal --summary
-      - nyx publish --dry-run=false
+      - nyx publish --state-file=$NYX_STATE --resume --dry-run=false
 
 ---
 kind: pipeline
