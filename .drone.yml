@@ -126,6 +126,7 @@ steps:
     when:
       ref:
         - refs/tags/*
+        - refs/heads/main
 
 ---
 kind: pipeline
