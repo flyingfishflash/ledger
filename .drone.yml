@@ -403,6 +403,9 @@ steps:
       - nyx infer --fatal
       - nyx --fatal --summary
       - nyx publish --state-file=$NYX_STATE --resume --dry-run=false
+    volumes:
+      - name: drone_cache
+        path: /drone/cache
 
 ---
 kind: pipeline
