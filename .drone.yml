@@ -164,14 +164,15 @@ steps:
     depends_on:
       - fetch git tags
     commands:
+      - export NYX_SUMMARY=.nyx-summary
       - export VERSION=.version
+      - rm -fv $NYX_SUMMARY
       - rm -fv $VERSION
-      # - nyx infer --debug --state-file=$NYX_STATE
-      - nyx infer --fatal --summary > .nyx-summary
-      - cat .nyx-summary && echo
+      - nyx infer --fatal --summary > $NYX_SUMMARY
+      - cat $NYX_SUMMARY && echo
       # - export NYX_NEW_VERSION=$(cat .nyx-summary | grep 'new version' | awk '{ print $NF }' | tr -d '\n')
       # - echo $NYX_NEW_VERSION
-      - export NYX_CURRENT_VERSION=$(cat .nyx-summary | grep 'current version' | awk '{ print $NF }' | tr -d '\n')
+      - export NYX_CURRENT_VERSION=$(cat $NYX_SUMMARY | grep 'current version' | awk '{ print $NF }' | tr -d '\n')
       - echo $NYX_CURRENT_VERSION
       # - export NYX_BRANCH=$(cat .nyx-summary | grep 'branch' | awk '{ print $NF }' | tr -d '\n')
       # - echo $NYX_BRANCH
