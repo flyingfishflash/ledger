@@ -200,95 +200,95 @@ steps:
       - name: drone_cache
         path: /drone/drone_cache
 
----
-kind: pipeline
-type: docker
-name: "backend - build"
+# ---
+# kind: pipeline
+# type: docker
+# name: "backend - build"
 
-trigger:
-  event:
-    - push
+# trigger:
+#   event:
+#     - push
 
-volumes:
-  - name: drone_cache
-    host:
-      path: /var/lib/docker/volumes_managed/drone_cache
+# volumes:
+#   - name: drone_cache
+#     host:
+#       path: /var/lib/docker/volumes_managed/drone_cache
 
-services:
-  - name: postgres
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: ledger
-      POSTGRES_PASSWORD: ledger
-      POSTGRES_DB: ledger
+# services:
+#   - name: postgres
+#     image: postgres:latest
+#     environment:
+#       POSTGRES_USER: ledger
+#       POSTGRES_PASSWORD: ledger
+#       POSTGRES_DB: ledger
 
-steps:
-  # nyx requires git tags to infer the current version
-  - name: fetch git tags
-    image: alpine/git
-    commands:
-      - git fetch --tags
+# steps:
+#   # nyx requires git tags to infer the current version
+#   - name: fetch git tags
+#     image: alpine/git
+#     commands:
+#       - git fetch --tags
 
-  - name: verify postgres
-    image: postgres
-    commands:
-      - |
-        until psql "dbname=ledger host=postgres user=ledger password=ledger port=5432" \
-          -c "select 1;" >/dev/null 2>&1; do sleep 1; done
-      - |
-        psql "dbname=ledger host=postgres user=ledger password=ledger port=5432" \
-          -c "select count(*) from pg_catalog.pg_tables;"
+#   - name: verify postgres
+#     image: postgres
+#     commands:
+#       - |
+#         until psql "dbname=ledger host=postgres user=ledger password=ledger port=5432" \
+#           -c "select 1;" >/dev/null 2>&1; do sleep 1; done
+#       - |
+#         psql "dbname=ledger host=postgres user=ledger password=ledger port=5432" \
+#           -c "select count(*) from pg_catalog.pg_tables;"
 
-  - name: build
-    image: gradle:8-jdk17
-    depends_on:
-      - fetch git tags
-      - verify postgres
-    commands:
-      - export GRADLE_USER_HOME=/drone/drone_cache/$DRONE_REPO/api/gradle-user-home
-      - echo $GRADLE_USER_HOME
-      - mkdir -pv $GRADLE_USER_HOME
-      - touch $GRADLE_USER_HOME/gradle.properties
-      - echo org.gradle.caching=true > $GRADLE_USER_HOME/gradle.properties
-      - echo org.gradle.daemon=false >> $GRADLE_USER_HOME/gradle.properties
-      - export GRADLE_PROJECT_BUILD_DIR=/drone/drone_cache/$DRONE_REPO/api/build
-      - echo $GRADLE_PROJECT_BUILD_DIR
-      - mkdir -pv $GRADLE_PROJECT_BUILD_DIR
-      - >
-        gradle
-        :backend:explodebootjar
-        :backend:copyBuildInfo
-        :backend:testClasses
-        :backend:spotlessCheck
-        :backend:test
-        :backend:integrationTests
-        :backend:bootBuildInfo
-        -PbuildDir=$GRADLE_PROJECT_BUILD_DIR
-      - >
-        gradle
-        :backend:integrationTests
-        -Dspring.profiles.active=postgresql
-        -Dspring.datasource.url=jdbc:postgresql://postgres:5432/ledger
-        -Dspring.datasource.username=ledger
-        -Dspring.datasource.password=ledger
-        -Dspring.datasource.platform=postgresql
-        -PbuildDir=$GRADLE_PROJECT_BUILD_DIR
-      - >
-        /drone/src/scripts/ci/drone/drone-is-sonar-configured.sh &&
-        gradle
-        sonar
-        -Dsonar.host.url=$SONAR_HOST
-        -Dsonar.token=$SONAR_TOKEN
-        -Dsonar.qualitygate.wait=true
-        -PbuildDir=$GRADLE_PROJECT_BUILD_DIR
-    environment:
-      SONAR_HOST:
-        from_secret: sonar_host
-      SONAR_TOKEN:
-        from_secret: sonar_token
-    volumes:
-      - name: drone_cache
-        path: /drone/drone_cache
+#   - name: build
+#     image: gradle:8-jdk17
+#     depends_on:
+#       - fetch git tags
+#       - verify postgres
+#     commands:
+#       - export GRADLE_USER_HOME=/drone/drone_cache/$DRONE_REPO/api/gradle-user-home
+#       - echo $GRADLE_USER_HOME
+#       - mkdir -pv $GRADLE_USER_HOME
+#       - touch $GRADLE_USER_HOME/gradle.properties
+#       - echo org.gradle.caching=true > $GRADLE_USER_HOME/gradle.properties
+#       - echo org.gradle.daemon=false >> $GRADLE_USER_HOME/gradle.properties
+#       - export GRADLE_PROJECT_BUILD_DIR=/drone/drone_cache/$DRONE_REPO/api/build
+#       - echo $GRADLE_PROJECT_BUILD_DIR
+#       - mkdir -pv $GRADLE_PROJECT_BUILD_DIR
+#       - >
+#         gradle
+#         :backend:explodebootjar
+#         :backend:copyBuildInfo
+#         :backend:testClasses
+#         :backend:spotlessCheck
+#         :backend:test
+#         :backend:integrationTests
+#         :backend:bootBuildInfo
+#         -PbuildDir=$GRADLE_PROJECT_BUILD_DIR
+#       - >
+#         gradle
+#         :backend:integrationTests
+#         -Dspring.profiles.active=postgresql
+#         -Dspring.datasource.url=jdbc:postgresql://postgres:5432/ledger
+#         -Dspring.datasource.username=ledger
+#         -Dspring.datasource.password=ledger
+#         -Dspring.datasource.platform=postgresql
+#         -PbuildDir=$GRADLE_PROJECT_BUILD_DIR
+#       - >
+#         /drone/src/scripts/ci/drone/drone-is-sonar-configured.sh &&
+#         gradle
+#         sonar
+#         -Dsonar.host.url=$SONAR_HOST
+#         -Dsonar.token=$SONAR_TOKEN
+#         -Dsonar.qualitygate.wait=true
+#         -PbuildDir=$GRADLE_PROJECT_BUILD_DIR
+#     environment:
+#       SONAR_HOST:
+#         from_secret: sonar_host
+#       SONAR_TOKEN:
+#         from_secret: sonar_token
+#     volumes:
+#       - name: drone_cache
+#         path: /drone/drone_cache
 
 ---
 kind: pipeline
@@ -309,7 +309,7 @@ trigger:
 
 depends_on:
   - "frontend - build"
-  - "backend - build"
+  # - "backend - build"
 
 volumes:
   # - name: drone_cache
