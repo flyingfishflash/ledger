@@ -22,114 +22,6 @@
 # - sonar_login (user token)
 
 kind: pipeline
-name: infer version
-type: docker
-
-trigger:
-  event:
-    - push
-    - tag
-  ref:
-    - refs/heads/build-*
-    - refs/heads/ci-*
-    - refs/heads/docs-*
-    - refs/heads/feature-*
-    - refs/heads/fix-*
-    - refs/heads/refactor-*
-    - refs/heads/style-*
-    - refs/heads/test-*
-    - refs/heads/main
-    - refs/tags/*
-
-volumes:
-  - name: drone_cache
-    host:
-      path: /var/lib/docker/volumes_managed/drone_cache
-
-steps:
-  # nyx requires git tags to infer the current version
-  - name: fetch git tags
-    image: alpine/git
-    commands:
-      - git fetch --tags
-
-  # - name: write version to .tags
-  #   image: registry.flyingfishflash.net/customized-images/container-nyx
-  #   depends_on:
-  #     - fetch git tags
-  #   commands:
-  #     - export BASE=/drone/drone_cache/$DRONE_REPO
-  #     - export TAGS=$BASE/.tags
-  #     - export VERSION=$BASE/.version
-  #     - export NYX_STATE=$BASE/.nyx_state.yaml
-  #     - mkdir -pv $BASE
-  #     - rm -fv $NYX_STATE
-  #     - rm -fv .nyx-summary
-  #     - rm -fv $VERSION
-  #     - rm -fv $TAGS
-  #     - nyx clean --fatal --state-file=$NYX_STATE
-  #     - nyx infer --debug --state-file=$NYX_STATE
-  #     - nyx infer --fatal --state-file=$NYX_STATE --resume --summary > .nyx-summary
-  #     - cat .nyx-summary && echo
-  #     - export NYX_NEW_VERSION=$(cat .nyx-summary | grep 'new version' | awk '{ print $NF }' | tr -d '\n')
-  #     - echo $NYX_NEW_VERSION
-  #     - export NYX_CURRENT_VERSION=$(cat .nyx-summary | grep 'current version' | awk '{ print $NF }' | tr -d '\n')
-  #     - echo $NYX_CURRENT_VERSION
-  #     - export NYX_BRANCH=$(cat .nyx-summary | grep 'branch' | awk '{ print $NF }' | tr -d '\n')
-  #     - echo $NYX_BRANCH
-  #     - echo $NYX_CURRENT_VERSION > $VERSION
-  #     - |
-  #       if [ "$NYX_NEW_VERSION" = "true" ] || ([ "$NYX_NEW_VERSION" = "false" ] && [ "$NYX_BRANCH" = "HEAD" ]); then
-  #           echo $NYX_CURRENT_VERSION > $TAGS
-  #       else
-  #           echo "$NYX_CURRENT_VERSION"-"$NYX_BRANCH" > $VERSION
-  #           echo "$NYX_CURRENT_VERSION"-"$NYX_BRANCH" > $TAGS  
-  #       fi;
-  #     - echo $VERSION
-  #     - cat $VERSION
-  #     - echo $TAGS
-  #     - cat $TAGS && echo
-  #   volumes:
-  #     - name: drone_cache
-  #       path: /drone/drone_cache
-
-  # - name: write development tag
-  #   image: alpine/git
-  #   depends_on:
-  #     - write version to .tags
-  #   commands:
-  #     - export BASE=/drone/drone_cache/$DRONE_REPO
-  #     - export TAGS=$BASE/.tags
-  #     - echo -n ",development" >> $TAGS
-  #     - cat $TAGS
-  #   volumes:
-  #     - name: drone_cache
-  #       path: /drone/drone_cache
-  #   when:
-  #     ref:
-  #       exclude:
-  #         - refs/tags/*
-  #         - refs/heads/main
-
-  # - name: write latest tag
-  #   image: alpine/git
-  #   depends_on:
-  #     - write version to .tags
-  #   commands:
-  #     - export BASE=/drone/drone_cache/$DRONE_REPO
-  #     - export TAGS=$BASE/.tags
-  #     - echo -n ",latest" >> $TAGS
-  #     - cat $TAGS
-  #   volumes:
-  #     - name: drone_cache
-  #       path: /drone/drone_cache
-  #   when:
-  #     ref:
-  #       - refs/tags/*
-  #       - refs/heads/main
-
----
-kind: pipeline
 type: docker
 name: "frontend - build"
 
@@ -141,8 +33,8 @@ volumes:
 trigger:
   event:
     - push
+    - tag
   ref:
-    - refs/heads/ci-*
     - refs/heads/feature-*
     - refs/heads/fix-*
     - refs/heads/main-*
@@ -150,15 +42,6 @@ trigger:
     - refs/heads/refactor-*
 
 steps:
-  # - name: verify .version
-  #   image: alpine/git
-  #   commands:
-  #     - sleep 1
-  #     - export VERSION=/drone/drone_cache/$DRONE_REPO/.version
-  #     - if [ ! -e "$VERSION" ]; then exit 1; else cat $VERSION; fi
-  #   volumes:
-  #     - name: drone_cache
-  #       path: /drone/drone_cache
 
   # nyx requires git tags to infer the current version
   - name: fetch git tags
@@ -207,102 +90,102 @@ steps:
       - name: drone_cache
         path: /drone/drone_cache
 
-# ---
-# kind: pipeline
-# type: docker
-# name: "backend - build"
+---
+kind: pipeline
+type: docker
+name: "backend - build"
 
-# trigger:
-#   event:
-#     - push
-#   ref:
-#     - refs/heads/ci-*
-#     - refs/heads/feature-*
-#     - refs/heads/fix-*
-#     - refs/heads/main-*
-#     - refs/heads/perf-*
-#     - refs/heads/refactor-*
+trigger:
+  event:
+    - push
+    - tag
+  ref:
+    - refs/heads/feature-*
+    - refs/heads/fix-*
+    - refs/heads/main-*
+    - refs/heads/perf-*
+    - refs/heads/refactor-*
 
-# volumes:
-#   - name: drone_cache
-#     host:
-#       path: /var/lib/docker/volumes_managed/drone_cache
+volumes:
+  - name: drone_cache
+    host:
+      path: /var/lib/docker/volumes_managed/drone_cache
 
-# services:
-#   - name: postgres
-#     image: postgres:latest
-#     environment:
-#       POSTGRES_USER: ledger
-#       POSTGRES_PASSWORD: ledger
-#       POSTGRES_DB: ledger
+services:
+  - name: postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ledger
+      POSTGRES_PASSWORD: ledger
+      POSTGRES_DB: ledger
 
-# steps:
-#   # nyx requires git tags to infer the current version
-#   - name: fetch git tags
-#     image: alpine/git
-#     commands:
-#       - git fetch --tags
+steps:
+  # nyx requires git tags to infer the current version
+  - name: fetch git tags
+    image: alpine/git
+    commands:
+      - git fetch --tags
 
-#   - name: verify postgres
-#     image: postgres
-#     commands:
-#       - |
-#         until psql "dbname=ledger host=postgres user=ledger password=ledger port=5432" \
-#           -c "select 1;" >/dev/null 2>&1; do sleep 1; done
-#       - |
-#         psql "dbname=ledger host=postgres user=ledger password=ledger port=5432" \
-#           -c "select count(*) from pg_catalog.pg_tables;"
+  - name: verify postgres
+    image: postgres
+    commands:
+      - |
+        until psql "dbname=ledger host=postgres user=ledger password=ledger port=5432" \
+          -c "select 1;" >/dev/null 2>&1; do sleep 1; done
+      - |
+        psql "dbname=ledger host=postgres user=ledger password=ledger port=5432" \
+          -c "select count(*) from pg_catalog.pg_tables;"
 
-#   - name: build
-#     image: gradle:8-jdk17
-#     depends_on:
-#       - fetch git tags
-#       - verify postgres
-#     commands:
-#       - export GRADLE_USER_HOME=/drone/drone_cache/$DRONE_REPO/api/gradle-user-home
-#       - echo $GRADLE_USER_HOME
-#       - mkdir -pv $GRADLE_USER_HOME
-#       - touch $GRADLE_USER_HOME/gradle.properties
-#       - echo org.gradle.caching=true > $GRADLE_USER_HOME/gradle.properties
-#       - echo org.gradle.daemon=false >> $GRADLE_USER_HOME/gradle.properties
-#       - export GRADLE_PROJECT_BUILD_DIR=/drone/drone_cache/$DRONE_REPO/api/build
-#       - echo $GRADLE_PROJECT_BUILD_DIR
-#       - mkdir -pv $GRADLE_PROJECT_BUILD_DIR
-#       - >
-#         gradle
-#         :backend:explodebootjar
-#         :backend:copyBuildInfo
-#         :backend:testClasses
-#         :backend:spotlessCheck
-#         :backend:test
-#         :backend:integrationTests
-#         :backend:bootBuildInfo
-#         -PbuildDir=$GRADLE_PROJECT_BUILD_DIR
-#       - >
-#         gradle
-#         :backend:integrationTests
-#         -Dspring.profiles.active=postgresql
-#         -Dspring.datasource.url=jdbc:postgresql://postgres:5432/ledger
-#         -Dspring.datasource.username=ledger
-#         -Dspring.datasource.password=ledger
-#         -Dspring.datasource.platform=postgresql
-#         -PbuildDir=$GRADLE_PROJECT_BUILD_DIR
-#       - >
-#         /drone/src/scripts/ci/drone/drone-is-sonar-configured.sh &&
-#         gradle
-#         sonar
-#         -Dsonar.host.url=$SONAR_HOST
-#         -Dsonar.token=$SONAR_TOKEN
-#         -Dsonar.qualitygate.wait=true
-#         -PbuildDir=$GRADLE_PROJECT_BUILD_DIR
-#     environment:
-#       SONAR_HOST:
-#         from_secret: sonar_host
-#       SONAR_TOKEN:
-#         from_secret: sonar_token
-#     volumes:
-#       - name: drone_cache
-#         path: /drone/drone_cache
+  - name: build
+    image: gradle:8-jdk17
+    depends_on:
+      - fetch git tags
+      - verify postgres
+    commands:
+      - export GRADLE_USER_HOME=/drone/drone_cache/$DRONE_REPO/api/gradle-user-home
+      - echo $GRADLE_USER_HOME
+      - mkdir -pv $GRADLE_USER_HOME
+      - touch $GRADLE_USER_HOME/gradle.properties
+      - echo org.gradle.caching=true > $GRADLE_USER_HOME/gradle.properties
+      - echo org.gradle.daemon=false >> $GRADLE_USER_HOME/gradle.properties
+      - export GRADLE_PROJECT_BUILD_DIR=/drone/drone_cache/$DRONE_REPO/api/build
+      - echo $GRADLE_PROJECT_BUILD_DIR
+      - mkdir -pv $GRADLE_PROJECT_BUILD_DIR
+      - >
+        gradle
+        :backend:explodebootjar
+        :backend:copyBuildInfo
+        :backend:testClasses
+        :backend:spotlessCheck
+        :backend:test
+        :backend:integrationTests
+        :backend:bootBuildInfo
+        -PbuildDir=$GRADLE_PROJECT_BUILD_DIR
+      - >
+        gradle
+        :backend:integrationTests
+        -Dspring.profiles.active=postgresql
+        -Dspring.datasource.url=jdbc:postgresql://postgres:5432/ledger
+        -Dspring.datasource.username=ledger
+        -Dspring.datasource.password=ledger
+        -Dspring.datasource.platform=postgresql
+        -PbuildDir=$GRADLE_PROJECT_BUILD_DIR
+      - >
+        /drone/src/scripts/ci/drone/drone-is-sonar-configured.sh &&
+        gradle
+        sonar
+        -Dsonar.host.url=$SONAR_HOST
+        -Dsonar.token=$SONAR_TOKEN
+        -Dsonar.qualitygate.wait=true
+        -PbuildDir=$GRADLE_PROJECT_BUILD_DIR
+    environment:
+      SONAR_HOST:
+        from_secret: sonar_host
+      SONAR_TOKEN:
+        from_secret: sonar_token
+    volumes:
+      - name: drone_cache
+        path: /drone/drone_cache
 
 ---
 kind: pipeline
@@ -312,37 +195,25 @@ type: docker
 trigger:
   event:
     - push
-    # - tag
+    - tag
   ref:
-    - refs/heads/ci-*
     - refs/heads/feature-*
     - refs/heads/fix-*
     - refs/heads/perf-*
     - refs/heads/refactor-*
-    # - refs/tags/*
+    - refs/tags/*
 
 depends_on:
   - "frontend - build"
-  # - "backend - build"
+  - "backend - build"
 
 volumes:
-  # - name: drone_cache
-  #   host:
-  #     path: /var/lib/docker/volumes_managed/drone_cache/flyingfishflash/ledger
   - name: drone_cache_client_dist
     host:
       path: /var/lib/docker/volumes_managed/drone_cache/flyingfishflash/ledger/client/dist
   - name: drone_cache_api_build
     host:
       path: /var/lib/docker/volumes_managed/drone_cache/flyingfishflash/ledger/api/build
-
-#   - name: fetch .tags from cache
-#     image: alpine/git
-#     commands:
-#       - cp /drone/cache/.tags /drone/src/.tags
-#     volumes:
-#       - name: drone_cache
-#         path: /drone/cache
 
   # nyx requires git tags to infer the current version
 steps:
@@ -358,6 +229,7 @@ steps:
     commands:
       - export NYX_SUMMARY=.nyx-summary
       - export VERSION=.version
+      - export TAGS=.tags
       - rm -fv $NYX_SUMMARY
       - rm -fv $VERSION
       - nyx infer --dry-run=false --fatal --summary > $NYX_SUMMARY
@@ -367,51 +239,55 @@ steps:
       - export NYX_CURRENT_VERSION=$(cat $NYX_SUMMARY | grep 'current version' | awk '{ print $NF }' | tr -d '\n')
       - echo $NYX_CURRENT_VERSION
       - echo $NYX_CURRENT_VERSION > $VERSION
+      - echo -n $NYX_CURRENT_VERSION > $TAGS
+      - '[ -z "$DRONE_TAG" ] && echo -n ",development" >> $TAGS || echo -n ",latest"  >> $TAGS'
+      - cat $TAGS && echo
 
-  # - name: pipeline gate
-  #   image: 
+  - name: publish frontend
+    image: plugins/docker
+    depends_on:
+      - infer version
+    privileged: true
+    settings:
+      auto_tag: false
+      cache_from:
+        from_secret: repository_frontend_development
+      context: /drone/src/frontend/
+      dockerfile: /drone/src/frontend/Dockerfile
+      repo:
+        from_secret: repository_frontend
+      registry:
+        from_secret: registry_hostname
+      username:
+        from_secret: registry_username
+      password:
+        from_secret: registry_password
+    volumes:
+      - name: drone_cache_client_dist
+        path: /drone/src/frontend/dist
 
-  # - name: publish frontend
-  #   image: plugins/docker
-  #   privileged: true
-  #   settings:
-  #     auto_tag: false
-  #     cache_from:
-  #       from_secret: repository_frontend_development
-  #     context: /drone/src/frontend/
-  #     dockerfile: /drone/src/frontend/Dockerfile
-  #     repo:
-  #       from_secret: repository_frontend
-  #     registry:
-  #       from_secret: registry_hostname
-  #     username:
-  #       from_secret: registry_username
-  #     password:
-  #       from_secret: registry_password
-  #   volumes:
-  #     - name: drone_cache_client_dist
-  #       path: /drone/src/frontend/dist
-
-  # - name: publish backend
-  #   image: plugins/docker
-  #   privileged: true
-  #   settings:
-  #     auto_tag: false
-  #     cache_from:
-  #       from_secret: repository_backend_development
-  #     context: /drone/src/backend/
-  #     dockerfile: /drone/src/backend/Dockerfile
-  #     repo:
-  #       from_secret: repository_backend
-  #     registry:
-  #       from_secret: registry_hostname
-  #     username:
-  #       from_secret: registry_username
-  #     password:
-  #       from_secret: registry_password
-  #   volumes:
-  #     - name: drone_cache_api_build
-  #       path: /drone/src/backend/build
+  - name: publish backend
+    image: plugins/docker
+    depends_on:
+      - infer version
+    privileged: true
+    settings:
+      auto_tag: false
+      cache_from:
+        from_secret: repository_backend_development
+      context: /drone/src/backend/
+      dockerfile: /drone/src/backend/Dockerfile
+      repo:
+        from_secret: repository_backend
+      registry:
+        from_secret: registry_hostname
+      username:
+        from_secret: registry_username
+      password:
+        from_secret: registry_password
+    volumes:
+      - name: drone_cache_api_build
+        path: /drone/src/backend/build
 
 ---
 kind: pipeline
