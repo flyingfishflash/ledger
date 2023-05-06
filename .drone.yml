@@ -300,6 +300,7 @@ trigger:
     - push
     - tag
   ref:
+    - refs/heads/ci-*
     - refs/heads/feature-*
     - refs/heads/fix-*
     - refs/heads/perf-*
@@ -321,7 +322,6 @@ volumes:
     host:
       path: /var/lib/docker/volumes_managed/drone_cache/flyingfishflash/ledger/api/build
 
-# steps:
 #   - name: fetch .tags from cache
 #     image: alpine/git
 #     commands:
@@ -331,6 +331,7 @@ volumes:
 #         path: /drone/cache
 
   # nyx requires git tags to infer the current version
+steps:
   - name: fetch git tags
     image: alpine/git
     commands:
