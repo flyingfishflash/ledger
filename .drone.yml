@@ -303,14 +303,10 @@ trigger:
     - push
     - tag
   ref:
-    - refs/heads/build-*
-    - refs/heads/ci-*
-    - refs/heads/docs-*
     - refs/heads/feature-*
     - refs/heads/fix-*
+    - refs/heads/perf-*
     - refs/heads/refactor-*
-    - refs/heads/style-*
-    - refs/heads/test-*
     - refs/tags/*
 
 depends_on:
@@ -336,6 +332,9 @@ steps:
     volumes:
       - name: drone_cache
         path: /drone/cache
+
+  # - name: pipeline gate
+  #   image: 
 
   - name: publish frontend
     image: plugins/docker
