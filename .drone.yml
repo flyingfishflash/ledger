@@ -441,14 +441,10 @@ trigger:
   event:
     - push
   ref:
-    - refs/heads/build-*
-    - refs/heads/ci-*
-    - refs/heads/docs-*
     - refs/heads/feature-*
     - refs/heads/fix-*
+    - refs/heads/perf-*
     - refs/heads/refactor-*
-    - refs/heads/style-*
-    - refs/heads/test-*
 
 depends_on:
   - publish
