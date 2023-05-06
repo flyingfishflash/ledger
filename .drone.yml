@@ -141,6 +141,13 @@ volumes:
 trigger:
   event:
     - push
+  ref:
+    - refs/heads/ci-*
+    - refs/heads/feature-*
+    - refs/heads/fix-*
+    - refs/heads/main-*
+    - refs/heads/perf-*
+    - refs/heads/refactor-*
 
 steps:
   # - name: verify .version
@@ -208,6 +215,13 @@ steps:
 # trigger:
 #   event:
 #     - push
+#   ref:
+#     - refs/heads/ci-*
+#     - refs/heads/feature-*
+#     - refs/heads/fix-*
+#     - refs/heads/main-*
+#     - refs/heads/perf-*
+#     - refs/heads/refactor-*
 
 # volumes:
 #   - name: drone_cache
@@ -298,14 +312,14 @@ type: docker
 trigger:
   event:
     - push
-    - tag
+    # - tag
   ref:
     - refs/heads/ci-*
     - refs/heads/feature-*
     - refs/heads/fix-*
     - refs/heads/perf-*
     - refs/heads/refactor-*
-    - refs/tags/*
+    # - refs/tags/*
 
 depends_on:
   - "frontend - build"
