@@ -11,8 +11,7 @@
     "tslint-check": "tslint-config-prettier-check ./tslint.json",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "release": "standard-version",
-    "postinstall": "ngcc --tsconfig ./src/tsconfig.app.json --tsconfig ./tsconfig.spec.json"
+    "release": "standard-version"
   },
   "private": true,
   "dependencies": {
