@@ -311,9 +311,9 @@ depends_on:
   - "backend - build"
 
 volumes:
-  - name: drone_cache
-    host:
-      path: /var/lib/docker/volumes_managed/drone_cache/flyingfishflash/ledger
+  # - name: drone_cache
+  #   host:
+  #     path: /var/lib/docker/volumes_managed/drone_cache/flyingfishflash/ledger
   - name: drone_cache_client_dist
     host:
       path: /var/lib/docker/volumes_managed/drone_cache/flyingfishflash/ledger/client/dist
@@ -321,59 +321,82 @@ volumes:
     host:
       path: /var/lib/docker/volumes_managed/drone_cache/flyingfishflash/ledger/api/build
 
-steps:
-  - name: fetch .tags from cache
+# steps:
+#   - name: fetch .tags from cache
+#     image: alpine/git
+#     commands:
+#       - cp /drone/cache/.tags /drone/src/.tags
+#     volumes:
+#       - name: drone_cache
+#         path: /drone/cache
+
+  # nyx requires git tags to infer the current version
+  - name: fetch git tags
     image: alpine/git
     commands:
-      - cp /drone/cache/.tags /drone/src/.tags
-    volumes:
-      - name: drone_cache
-        path: /drone/cache
+      - git fetch --tags
+
+  - name: infer version
+    image: registry.flyingfishflash.net/customized-images/container-nyx
+    depends_on:
+      - fetch git tags
+    commands:
+      - export NYX_SUMMARY=.nyx-summary
+      - export VERSION=.version
+      - rm -fv $NYX_SUMMARY
+      - rm -fv $VERSION
+      - nyx infer --dry-run=false --fatal --summary > $NYX_SUMMARY
+      - cat $NYX_SUMMARY && echo
+      - export NYX_NEW_VERSION=$(cat .nyx-summary | grep 'new version' | awk '{ print $NF }' | tr -d '\n')
+      - echo $NYX_NEW_VERSION
+      - export NYX_CURRENT_VERSION=$(cat $NYX_SUMMARY | grep 'current version' | awk '{ print $NF }' | tr -d '\n')
+      - echo $NYX_CURRENT_VERSION
+      - echo $NYX_CURRENT_VERSION > $VERSION
 
   # - name: pipeline gate
   #   image: 
 
-  - name: publish frontend
-    image: plugins/docker
-    privileged: true
-    settings:
-      auto_tag: false
-      cache_from:
-        from_secret: repository_frontend_development
-      context: /drone/src/frontend/
-      dockerfile: /drone/src/frontend/Dockerfile
-      repo:
-        from_secret: repository_frontend
-      registry:
-        from_secret: registry_hostname
-      username:
-        from_secret: registry_username
-      password:
-        from_secret: registry_password
-    volumes:
-      - name: drone_cache_client_dist
-        path: /drone/src/frontend/dist
+  # - name: publish frontend
+  #   image: plugins/docker
+  #   privileged: true
+  #   settings:
+  #     auto_tag: false
+  #     cache_from:
+  #       from_secret: repository_frontend_development
+  #     context: /drone/src/frontend/
+  #     dockerfile: /drone/src/frontend/Dockerfile
+  #     repo:
+  #       from_secret: repository_frontend
+  #     registry:
+  #       from_secret: registry_hostname
+  #     username:
+  #       from_secret: registry_username
+  #     password:
+  #       from_secret: registry_password
+  #   volumes:
+  #     - name: drone_cache_client_dist
+  #       path: /drone/src/frontend/dist
 
-  - name: publish backend
-    image: plugins/docker
-    privileged: true
-    settings:
-      auto_tag: false
-      cache_from:
-        from_secret: repository_backend_development
-      context: /drone/src/backend/
-      dockerfile: /drone/src/backend/Dockerfile
-      repo:
-        from_secret: repository_backend
-      registry:
-        from_secret: registry_hostname
-      username:
-        from_secret: registry_username
-      password:
-        from_secret: registry_password
-    volumes:
-      - name: drone_cache_api_build
-        path: /drone/src/backend/build
+  # - name: publish backend
+  #   image: plugins/docker
+  #   privileged: true
+  #   settings:
+  #     auto_tag: false
+  #     cache_from:
+  #       from_secret: repository_backend_development
+  #     context: /drone/src/backend/
+  #     dockerfile: /drone/src/backend/Dockerfile
+  #     repo:
+  #       from_secret: repository_backend
+  #     registry:
+  #       from_secret: registry_hostname
+  #     username:
+  #       from_secret: registry_username
+  #     password:
+  #       from_secret: registry_password
+  #   volumes:
+  #     - name: drone_cache_api_build
+  #       path: /drone/src/backend/build
 
 ---
 kind: pipeline
