@@ -53,80 +53,80 @@ steps:
     commands:
       - git fetch --tags
 
-  - name: write version to .tags
-    image: registry.flyingfishflash.net/customized-images/container-nyx
-    depends_on:
-      - fetch git tags
-    commands:
-      - export BASE=/drone/drone_cache/$DRONE_REPO
-      - export TAGS=$BASE/.tags
-      - export VERSION=$BASE/.version
-      - export NYX_STATE=$BASE/.nyx_state.yaml
-      - mkdir -pv $BASE
-      - rm -fv $NYX_STATE
-      - rm -fv .nyx-summary
-      - rm -fv $VERSION
-      - rm -fv $TAGS
-      - nyx clean --fatal --state-file=$NYX_STATE
-      - nyx infer --debug --state-file=$NYX_STATE
-      - nyx infer --fatal --state-file=$NYX_STATE --resume --summary > .nyx-summary
-      - cat .nyx-summary && echo
-      - export NYX_NEW_VERSION=$(cat .nyx-summary | grep 'new version' | awk '{ print $NF }' | tr -d '\n')
-      - echo $NYX_NEW_VERSION
-      - export NYX_CURRENT_VERSION=$(cat .nyx-summary | grep 'current version' | awk '{ print $NF }' | tr -d '\n')
-      - echo $NYX_CURRENT_VERSION
-      - export NYX_BRANCH=$(cat .nyx-summary | grep 'branch' | awk '{ print $NF }' | tr -d '\n')
-      - echo $NYX_BRANCH
-      - echo $NYX_CURRENT_VERSION > $VERSION
-      - |
-        if [ "$NYX_NEW_VERSION" = "true" ] || ([ "$NYX_NEW_VERSION" = "false" ] && [ "$NYX_BRANCH" = "HEAD" ]); then
-            echo $NYX_CURRENT_VERSION > $TAGS
-        else
-            echo "$NYX_CURRENT_VERSION"-"$NYX_BRANCH" > $VERSION
-            echo "$NYX_CURRENT_VERSION"-"$NYX_BRANCH" > $TAGS  
-        fi;
-      - echo $VERSION
-      - cat $VERSION
-      - echo $TAGS
-      - cat $TAGS && echo
-    volumes:
-      - name: drone_cache
-        path: /drone/drone_cache
+  # - name: write version to .tags
+  #   image: registry.flyingfishflash.net/customized-images/container-nyx
+  #   depends_on:
+  #     - fetch git tags
+  #   commands:
+  #     - export BASE=/drone/drone_cache/$DRONE_REPO
+  #     - export TAGS=$BASE/.tags
+  #     - export VERSION=$BASE/.version
+  #     - export NYX_STATE=$BASE/.nyx_state.yaml
+  #     - mkdir -pv $BASE
+  #     - rm -fv $NYX_STATE
+  #     - rm -fv .nyx-summary
+  #     - rm -fv $VERSION
+  #     - rm -fv $TAGS
+  #     - nyx clean --fatal --state-file=$NYX_STATE
+  #     - nyx infer --debug --state-file=$NYX_STATE
+  #     - nyx infer --fatal --state-file=$NYX_STATE --resume --summary > .nyx-summary
+  #     - cat .nyx-summary && echo
+  #     - export NYX_NEW_VERSION=$(cat .nyx-summary | grep 'new version' | awk '{ print $NF }' | tr -d '\n')
+  #     - echo $NYX_NEW_VERSION
+  #     - export NYX_CURRENT_VERSION=$(cat .nyx-summary | grep 'current version' | awk '{ print $NF }' | tr -d '\n')
+  #     - echo $NYX_CURRENT_VERSION
+  #     - export NYX_BRANCH=$(cat .nyx-summary | grep 'branch' | awk '{ print $NF }' | tr -d '\n')
+  #     - echo $NYX_BRANCH
+  #     - echo $NYX_CURRENT_VERSION > $VERSION
+  #     - |
+  #       if [ "$NYX_NEW_VERSION" = "true" ] || ([ "$NYX_NEW_VERSION" = "false" ] && [ "$NYX_BRANCH" = "HEAD" ]); then
+  #           echo $NYX_CURRENT_VERSION > $TAGS
+  #       else
+  #           echo "$NYX_CURRENT_VERSION"-"$NYX_BRANCH" > $VERSION
+  #           echo "$NYX_CURRENT_VERSION"-"$NYX_BRANCH" > $TAGS  
+  #       fi;
+  #     - echo $VERSION
+  #     - cat $VERSION
+  #     - echo $TAGS
+  #     - cat $TAGS && echo
+  #   volumes:
+  #     - name: drone_cache
+  #       path: /drone/drone_cache
 
-  - name: write development tag
-    image: alpine/git
-    depends_on:
-      - write version to .tags
-    commands:
-      - export BASE=/drone/drone_cache/$DRONE_REPO
-      - export TAGS=$BASE/.tags
-      - echo -n ",development" >> $TAGS
-      - cat $TAGS
-    volumes:
-      - name: drone_cache
-        path: /drone/drone_cache
-    when:
-      ref:
-        exclude:
-          - refs/tags/*
-          - refs/heads/main
+  # - name: write development tag
+  #   image: alpine/git
+  #   depends_on:
+  #     - write version to .tags
+  #   commands:
+  #     - export BASE=/drone/drone_cache/$DRONE_REPO
+  #     - export TAGS=$BASE/.tags
+  #     - echo -n ",development" >> $TAGS
+  #     - cat $TAGS
+  #   volumes:
+  #     - name: drone_cache
+  #       path: /drone/drone_cache
+  #   when:
+  #     ref:
+  #       exclude:
+  #         - refs/tags/*
+  #         - refs/heads/main
 
-  - name: write latest tag
-    image: alpine/git
-    depends_on:
-      - write version to .tags
-    commands:
-      - export BASE=/drone/drone_cache/$DRONE_REPO
-      - export TAGS=$BASE/.tags
-      - echo -n ",latest" >> $TAGS
-      - cat $TAGS
-    volumes:
-      - name: drone_cache
-        path: /drone/drone_cache
-    when:
-      ref:
-        - refs/tags/*
-        - refs/heads/main
+  # - name: write latest tag
+  #   image: alpine/git
+  #   depends_on:
+  #     - write version to .tags
+  #   commands:
+  #     - export BASE=/drone/drone_cache/$DRONE_REPO
+  #     - export TAGS=$BASE/.tags
+  #     - echo -n ",latest" >> $TAGS
+  #     - cat $TAGS
+  #   volumes:
+  #     - name: drone_cache
+  #       path: /drone/drone_cache
+  #   when:
+  #     ref:
+  #       - refs/tags/*
+  #       - refs/heads/main
 
 ---
 kind: pipeline
@@ -143,23 +143,48 @@ trigger:
     - push
 
 steps:
-  - name: verify .version
+  # - name: verify .version
+  #   image: alpine/git
+  #   commands:
+  #     - sleep 1
+  #     - export VERSION=/drone/drone_cache/$DRONE_REPO/.version
+  #     - if [ ! -e "$VERSION" ]; then exit 1; else cat $VERSION; fi
+  #   volumes:
+  #     - name: drone_cache
+  #       path: /drone/drone_cache
+
+  # nyx requires git tags to infer the current version
+  - name: fetch git tags
     image: alpine/git
     commands:
-      - sleep 1
-      - export VERSION=/drone/drone_cache/$DRONE_REPO/.version
-      - if [ ! -e "$VERSION" ]; then exit 1; else cat $VERSION; fi
-    volumes:
-      - name: drone_cache
-        path: /drone/drone_cache
+      - git fetch --tags
+
+  - name: 'nyx: derive version'
+    image: registry.flyingfishflash.net/customized-images/container-nyx
+    depends_on:
+      - fetch git tags
+    commands:
+      - export VERSION=.version
+      - rm -fv $VERSION
+      # - nyx infer --debug --state-file=$NYX_STATE
+      - nyx infer --fatal --summary > .nyx-summary
+      - cat .nyx-summary && echo
+      # - export NYX_NEW_VERSION=$(cat .nyx-summary | grep 'new version' | awk '{ print $NF }' | tr -d '\n')
+      # - echo $NYX_NEW_VERSION
+      - export NYX_CURRENT_VERSION=$(cat .nyx-summary | grep 'current version' | awk '{ print $NF }' | tr -d '\n')
+      - echo $NYX_CURRENT_VERSION
+      # - export NYX_BRANCH=$(cat .nyx-summary | grep 'branch' | awk '{ print $NF }' | tr -d '\n')
+      # - echo $NYX_BRANCH
+      - echo $NYX_CURRENT_VERSION > $VERSION
 
   - name: build
     image: node:18-alpine
     depends_on:
-      - verify .version
+      - 'nyx: derive version'
     commands:
+      - export VERSION=.version
+      - export NYX_VERSION=$(cat .version)
       # define alt location for npm cache
-      - export VERSION=$(cat /drone/drone_cache/$DRONE_REPO/.version)
       - export CLIENT_NPM_CACHE=/drone/drone_cache/$DRONE_REPO/client/npm
       - echo $CLIENT_NPM_CACHE
       - mkdir -pv $CLIENT_NPM_CACHE
@@ -169,7 +194,7 @@ steps:
       - mkdir -pv $CLIENT_DIST
       - export PATH=/drone/src/frontend/node_modules/.bin:$PATH
       - cd /drone/src/frontend
-      - npm version $VERSION --no-git-tag-version
+      - npm version $NYX_VERSION --no-git-tag-version
       - npm ci --cache $CLIENT_NPM_CACHE --prefer-offline
       - ng version
       - ng build --configuration production --output-path=$CLIENT_DIST/ledger-frontend
