@@ -234,8 +234,6 @@ steps:
       - rm -fv $VERSION
       - nyx infer --dry-run=false --fatal --summary > $NYX_SUMMARY
       - cat $NYX_SUMMARY && echo
-      - export NYX_NEW_VERSION=$(cat .nyx-summary | grep 'new version' | awk '{ print $NF }' | tr -d '\n')
-      - echo $NYX_NEW_VERSION
       - export NYX_CURRENT_VERSION=$(cat $NYX_SUMMARY | grep 'current version' | awk '{ print $NF }' | tr -d '\n')
       - echo $NYX_CURRENT_VERSION
       - echo $NYX_CURRENT_VERSION > $VERSION
