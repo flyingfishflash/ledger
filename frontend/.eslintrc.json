@@ -16,8 +16,8 @@
         "createDefaultProgram": true
       },
       "extends": [
-        "plugin:@angular-eslint/ng-cli-compat",
-        "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
+        "plugin:import/recommended",
+        "plugin:@typescript-eslint/recommended",
         "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates",
         "plugin:prettier/recommended"
@@ -75,7 +75,8 @@
         ],
         "eol-last": "off",
         "import/no-extraneous-dependencies": "error",
-        "import/order": "off",
+        "import/no-unresolved": "off",
+        "import/order": 0,
         "linebreak-style": "off",
         "max-len": "off",
         "new-parens": "off",
