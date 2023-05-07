@@ -3,13 +3,16 @@ plugins {
 }
 
 configure<com.diffplug.gradle.spotless.SpotlessExtension> {
-  typescript() {
-    target("src/**/*.ts")
-    prettier()
+  // eslist is configured to format angular html templates
+  typescript {
+    target("src/**/*.ts", "src/**/*.html")
+    eslint()
+      .tsconfigFile("./tsconfig.json")
+      .configFile("./.eslintrc.json")
   }
 
-  format("angular") {
-    target("src/**/*.html")
+  format("js") {
+    target("src/assets/*.js")
     prettier()
   }
 
@@ -19,12 +22,12 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
   }
 
   format("scss") {
-    target("src/**/*.scss")
+    target("src/*.scss", "src/**/*.scss")
     prettier()
   }
 
   json {
-    target("*.json")
+    target("*.json", "src/*.json", "src/**/*.json")
     prettier()
   }
 }
