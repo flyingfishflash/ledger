@@ -35,6 +35,7 @@ trigger:
     - push
     - tag
   ref:
+    - refs/heads/build-*
     - refs/heads/feature-*
     - refs/heads/fix-*
     - refs/heads/main-*
@@ -42,7 +43,6 @@ trigger:
     - refs/heads/refactor-*
 
 steps:
-
   # nyx requires git tags to infer the current version
   - name: fetch git tags
     image: alpine/git
@@ -100,6 +100,7 @@ trigger:
     - push
     - tag
   ref:
+    - refs/heads/build-*
     - refs/heads/feature-*
     - refs/heads/fix-*
     - refs/heads/main-*
