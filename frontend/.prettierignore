@@ -4,3 +4,6 @@ e2e
 node_modules
 .angular
 dist
+package.json
+package-log.json
+polyfills.ts
