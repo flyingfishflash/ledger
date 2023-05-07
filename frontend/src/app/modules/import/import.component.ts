@@ -6,11 +6,11 @@ import { Subscription } from "rxjs";
 
 // core and shared
 import { environment } from "environments/environment";
-import { ImportService } from "./import.service";
 import { StorageService } from "@core/storage/storage.service";
 import { Logger } from "@core/logging/logger.service";
 import { BookService } from "@shared/books/book.service";
 import { concatMap } from "rxjs/operators";
+import { ImportService } from "./import.service";
 
 const log = new Logger("import.component");
 

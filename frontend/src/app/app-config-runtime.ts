@@ -8,8 +8,8 @@ import { catchError, map, mergeMap } from "rxjs/operators";
 
 // core and shared
 import { Logger } from "@core/logging/logger.service";
-import { AppConfigRuntimeInfoBuild } from "./app-config-runtime-info-build";
 import { environment } from "@env";
+import { AppConfigRuntimeInfoBuild } from "./app-config-runtime-info-build";
 
 const log = new Logger("app-config");
 

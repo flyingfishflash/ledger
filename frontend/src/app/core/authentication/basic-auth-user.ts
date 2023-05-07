@@ -1,5 +1,5 @@
-import { BasicAuthUserRole } from "./basic-auth-user-role";
 import { HttpResponse } from "@angular/common/http";
+import { BasicAuthUserRole } from "./basic-auth-user-role";
 
 export class BasicAuthUser {
   readonly id: number;

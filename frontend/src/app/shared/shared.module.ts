@@ -16,11 +16,10 @@ import { TreeUtilitiesService } from "@shared/tree-utilities/tree-utilties.servi
 import { UserService } from "@shared/users/user.service";
 import { UtilitiesService } from "@shared/utilities/utilities.service";
 
+import { PadWithSpacesPipe } from "@shared/pipes/pad-with-spaces.pipe";
+
 // components
 import { ErrorDialogComponent } from "./errors/error-dialog/error-dialog.component";
-
-// pipes
-import { PadWithSpacesPipe } from "@shared/pipes/pad-with-spaces.pipe";
 
 const sharedComponents = [ErrorDialogComponent, PadWithSpacesPipe];
 

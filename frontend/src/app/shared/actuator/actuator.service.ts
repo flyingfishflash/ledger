@@ -8,8 +8,8 @@ import { catchError, map } from "rxjs/operators";
 
 // core and shared
 import { AppConfig } from "app/app-config";
-import { ActuatorInfo } from "./actuator-info";
 import { Logger } from "@core/logging/logger.service";
+import { ActuatorInfo } from "./actuator-info";
 
 const log = new Logger("actuator.service");
 

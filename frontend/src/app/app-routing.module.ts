@@ -2,13 +2,13 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 
+import { AuthGuard } from "@core/guards/auth.guard";
+import { BasicAuthUserRole } from "@core/authentication/basic-auth-user-role";
+
 // components
 import { AuthLayoutComponent } from "./layout/auth-layout/auth-layout.component";
 import { ContentLayoutComponent } from "./layout/content-layout/content-layout.component";
 import { ErrorLayoutComponent } from "./layout/error-layout/error-layout.component";
-
-import { AuthGuard } from "@core/guards/auth.guard";
-import { BasicAuthUserRole } from "@core/authentication/basic-auth-user-role";
 
 const routes: Routes = [
   {

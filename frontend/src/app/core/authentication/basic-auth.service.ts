@@ -9,9 +9,9 @@ import { tap } from "rxjs/operators";
 
 // core and shared
 import { environment } from "@env";
-import { BasicAuthUser } from "./basic-auth-user";
 import { Logger } from "@core/logging/logger.service";
 import { StorageService } from "@core/storage/storage.service";
+import { BasicAuthUser } from "./basic-auth-user";
 
 const log = new Logger("basic-auth.service");
 
