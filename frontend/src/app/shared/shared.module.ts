@@ -8,6 +8,7 @@ import { RouterModule } from "@angular/router";
 import { MaterialModule } from "app/material.module";
 
 // services
+import { ActuatorService } from "@shared/actuator/actuator.service";
 import { BookService } from "@shared/books/book.service";
 import { DirtyCheckService } from "@shared/dirty-check/dirty-check.service";
 import { EqualObjectsService } from "@shared/equal-objects/equal-objects.service";
@@ -41,6 +42,7 @@ const sharedComponents = [ErrorDialogComponent, PadWithSpacesPipe];
     RouterModule,
   ],
   providers: [
+    ActuatorService,
     BookService,
     DirtyCheckService,
     EqualObjectsService,

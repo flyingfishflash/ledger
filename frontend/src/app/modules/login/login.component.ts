@@ -10,7 +10,7 @@ import { first } from "rxjs/operators";
 import { throwError } from "rxjs";
 
 // core and shared
-import { environment } from "@env";
+import { ActuatorService } from "@shared/actuator/actuator.service";
 import { AppConfigRuntime } from "app/app-config-runtime";
 import { BuildProperties } from "app/app-build-properties";
 import { BasicAuthService } from "@core/authentication/basic-auth.service";
@@ -34,6 +34,7 @@ export class LoginComponent implements OnInit {
   returnUrl: string;
 
   constructor(
+    private actuatorService: ActuatorService,
     private basicAuthService: BasicAuthService,
     private router: Router,
     private route: ActivatedRoute,
@@ -48,21 +49,7 @@ export class LoginComponent implements OnInit {
     if (this.appConfig.buildProperties) {
       this.buildProperties = { ...this.appConfig.buildProperties };
     } else {
-      log.error("Build propeties are not populated");
-    }
-
-    if (environment.api.server) {
-      //apiService.isHealthy()
-      // TODO: fix this
-      // if (this.appConfig.clientBuildInfo) {
-      //   this.clientBuildProperties = { ...this.appConfig.clientBuildInfo };
-      //   this.isLoginDisabled = false;
-      // } else {
-      //   this.errorMessage =
-      //     "Application build information couldn't be obtained";
-      // }
-    } else {
-      this.errorMessage = "API connection not configured";
+      log.error("Build properties are not populated");
     }
 
     this.form.submitted = false;
@@ -83,6 +70,22 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.returnUrl = this.route.snapshot.queryParams.returnUrl || "/";
+
+    this.actuatorService.getHealthStatusSimple().subscribe({
+      next: (healthStatusSimple) => {
+        if (healthStatusSimple) {
+          log.debug("Api server health status is UP");
+          this.isLoginDisabled = false;
+        } else {
+          log.debug("Api server health status is not UP");
+          this.errorMessage = "Api server status is not UP";
+        }
+      },
+      error: (error) => {
+        log.debug("health subscription" + error);
+        this.handleError(error);
+      },
+    });
   }
 
   onFocusInEvent() {
@@ -125,11 +128,20 @@ export class LoginComponent implements OnInit {
       if (error.error.disposition) {
         log.debug("api error");
         if (error.error.disposition === "failure") {
-          errorMessage = error.error.content.detail;
+          if (error.url.includes("/health")) {
+            errorMessage = `Api healthcheck failed: ${error.error.content.title}`;
+          } else {
+            errorMessage = error.error.content.detail;
+          }
         }
       } else {
         log.debug("non-api error");
-        errorMessage = `A server-side error occured:\nError Status: ${error.message}`;
+        log.error(
+          `A server-side error occured:\nError Status: ${error.status}\nError Message: ${error.message}`
+        );
+        if (error.url.includes("/health")) {
+          errorMessage = "Api server could not be reached. Is it running?";
+        }
       }
     }
 

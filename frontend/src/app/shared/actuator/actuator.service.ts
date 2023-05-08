@@ -3,41 +3,43 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 
 // third party
-import { Observable, throwError } from "rxjs";
-import { catchError, map } from "rxjs/operators";
+import { Observable, throwError, map } from "rxjs";
+import { catchError } from "rxjs/operators";
 
 // core and shared
-import { AppConfig } from "app/app-config";
-import { Logger } from "@core/logging/logger.service";
+import { environment } from "@env";
+import { ActuatorHealth } from "./actuator-health";
 import { ActuatorInfo } from "./actuator-info";
-
-const log = new Logger("actuator.service");
 
 @Injectable({
   providedIn: "root",
 })
 export class ActuatorService {
-  constructor(private appConfig: AppConfig, private http: HttpClient) {}
+  constructor(private http: HttpClient) {}
 
-  getInfo(): Observable<ActuatorInfo> {
+  getHealth(): Observable<ActuatorHealth> {
+    return this.http.get<ActuatorHealth>(
+      environment.api.server.url + "/health"
+    );
+  }
+
+  getHealthStatusSimple(): Observable<boolean> {
     return this.http
-      .get<ActuatorInfo>(`${this.appConfig.apiServer.url}/actuator/info`)
+      .get<ActuatorHealth>(environment.api.server.url + "/health")
       .pipe(
-        map((res) => {
-          return res;
-        }),
-        catchError(this.handleError)
+        map((actuatorHealth) => {
+          if (actuatorHealth.status == "UP") {
+            return true;
+          } else {
+            return false;
+          }
+        })
       );
   }
 
-  handleError(error: any) {
-    let errorMessage = "";
-    if (error.error instanceof ErrorEvent) {
-      errorMessage = `A client internal error occurred:\nError Message: ${error.error.message}`;
-    } else {
-      errorMessage = `A server-side error occured:\nError Status: ${error.status}\nError Message: ${error.message}`;
-    }
-    log.error(errorMessage);
-    return throwError(error);
+  getInfo(): Observable<ActuatorInfo> {
+    return this.http
+      .get<ActuatorInfo>(environment.api.server.url + "/info")
+      .pipe(catchError((error) => throwError(() => error)));
   }
 }

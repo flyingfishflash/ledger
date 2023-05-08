@@ -102,7 +102,10 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         log.debug("init1");
         break;
       case 401:
-        if (error.url.indexOf("signin") < 0) {
+        if (
+          error.url.indexOf("signin") < 0 &&
+          error.url.indexOf("/health") < 0
+        ) {
           this.authenticationService.redirectToLogin();
           this.errorDialogService.openDialog(
             error.error.content.detail ?? JSON.stringify(error),
