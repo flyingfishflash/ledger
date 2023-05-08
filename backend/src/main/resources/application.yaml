@@ -14,16 +14,21 @@ logging:
     org:
       flywaydb: info
       hibernate: info
-
 management:
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: true
   endpoints:
+    enabled-by-default: false
     web:
       base-path: *api-v1-url-path
       cors:
         allowed-origins: "*"
         allowed-methods: "OPTIONS, GET"
       exposure:
-        include: "info"
+        include: "info,health"
 
 server:
   error:

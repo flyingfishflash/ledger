@@ -44,6 +44,7 @@ public class WebSecurityConfiguration {
         .requestMatchers(
             AntPathRequestMatcher.antMatcher("/api/v1/auth/signin"),
             AntPathRequestMatcher.antMatcher("/api/v1/auth/signup"),
+            AntPathRequestMatcher.antMatcher("/api/v1/health"),
             AntPathRequestMatcher.antMatcher("/api/v1/info"),
             AntPathRequestMatcher.antMatcher("/h2-console"),
             AntPathRequestMatcher.antMatcher("/h2-console/**"),
