@@ -12,7 +12,7 @@ import { throwError } from "rxjs";
 // core and shared
 import { environment } from "@env";
 import { AppConfigRuntime } from "app/app-config-runtime";
-import { AppConfigRuntimeInfoBuild } from "app/app-config-runtime-info-build";
+import { BuildProperties } from "app/app-build-properties";
 import { BasicAuthService } from "@core/authentication/basic-auth.service";
 import { Logger } from "@core/logging/logger.service";
 
@@ -23,7 +23,7 @@ const log = new Logger("login.component");
   styleUrls: ["./login.component.scss"],
 })
 export class LoginComponent implements OnInit {
-  appConfigInfoBuild: AppConfigRuntimeInfoBuild;
+  buildProperties: BuildProperties;
   errorMessage = null;
   form: any = {};
   isPasswordHidden = true;
@@ -44,17 +44,27 @@ export class LoginComponent implements OnInit {
     if (this.basicAuthService.userValue) {
       this.router.navigate(["/home"]);
     }
+
+    if (this.appConfig.buildProperties) {
+      this.buildProperties = { ...this.appConfig.buildProperties };
+    } else {
+      log.error("Build propeties are not populated");
+    }
+
     if (environment.api.server) {
-      if (this.appConfig.api.actuator.info.build) {
-        this.appConfigInfoBuild = { ...this.appConfig.api.actuator.info.build };
-        this.isLoginDisabled = false;
-      } else {
-        this.errorMessage =
-          "Application build information couldn't be obtained";
-      }
+      //apiService.isHealthy()
+      // TODO: fix this
+      // if (this.appConfig.clientBuildInfo) {
+      //   this.clientBuildProperties = { ...this.appConfig.clientBuildInfo };
+      //   this.isLoginDisabled = false;
+      // } else {
+      //   this.errorMessage =
+      //     "Application build information couldn't be obtained";
+      // }
     } else {
       this.errorMessage = "API connection not configured";
     }
+
     this.form.submitted = false;
     iconRegistry.addSvgIcon(
       "sso-zitadel",
@@ -62,6 +72,7 @@ export class LoginComponent implements OnInit {
         "../../../assets/images/zitadel-logo-solo-dark.svg"
       )
     );
+
     iconRegistry.addSvgIcon(
       "sso-github",
       this.domSanitizer.bypassSecurityTrustResourceUrl(

@@ -4,38 +4,31 @@ import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 
 // third party
 import { EMPTY, Observable } from "rxjs";
-import { catchError, map, mergeMap } from "rxjs/operators";
+import { catchError, map } from "rxjs/operators";
 
 // core and shared
 import { Logger } from "@core/logging/logger.service";
-import { environment } from "@env";
-import { AppConfigRuntimeInfoBuild } from "./app-config-runtime-info-build";
+import { BuildProperties } from "./app-build-properties";
 
 const log = new Logger("app-config");
 
-export interface IAppConfigRuntime extends AppConfigRuntime {
-  api: {
-    actuator: {
-      info: {
-        build: AppConfigRuntimeInfoBuild;
-      };
-    };
-  };
+export interface IBuildProperties extends AppConfigRuntime {
+  buildProperties: BuildProperties;
 
   load: () => Observable<AppConfigRuntime>;
 }
 
 @Injectable()
-export class AppConfigRuntime implements IAppConfigRuntime {
-  public api = { actuator: { info: { build: null } } };
+export class AppConfigRuntime implements IBuildProperties {
+  public buildProperties = null;
 
   constructor(private readonly http: HttpClient) {}
 
   public load(): Observable<AppConfigRuntime> {
-    return this.http.get(environment.api.server.url + "/info").pipe(
-      map((build: any) => {
-        this.api.actuator.info.build = build.build;
-        return build;
+    return this.http.get("/assets/buildProperties.json").pipe(
+      map((discoveredBuildProperties: any) => {
+        this.buildProperties = discoveredBuildProperties;
+        return discoveredBuildProperties;
       }),
       catchError((err) => {
         this.handleError(err);

@@ -17,23 +17,21 @@
               alt="ledger logo"
             />
             <h2 class="mat-h2">Ledger</h2>
-            <div *ngIf="!isLoginDisabled">
-              <h3 class="mat-h3" style="margin: 0.8rem">
-                {{ appConfigInfoBuild.version }}
-              </h3>
-              <p class="mat-small" style="margin: 0.1rem">
-                {{ appConfigInfoBuild.time | date : "mediumDate" : "UTC" }}
-              </p>
-              <p class="mat-small" style="margin: 0.1rem">
-                {{ appConfigInfoBuild.time | date : "longTime" : "UTC" }}
-              </p>
-              <p class="mat-small" style="margin: 0.1rem">
-                <br />
-                {{ appConfigInfoBuild.ciPlatform }} |
-                {{ appConfigInfoBuild.ciPipelineId }} |
-                {{ appConfigInfoBuild.commit }}
-              </p>
-            </div>
+            <h3 class="mat-h3" style="margin: 0.8rem">
+              {{ buildProperties.version }}
+            </h3>
+            <p class="mat-small" style="margin: 0.1rem">
+              {{ buildProperties.time | date : "mediumDate" : "UTC" }}
+            </p>
+            <p class="mat-small" style="margin: 0.1rem">
+              {{ buildProperties.time | date : "longTime" : "UTC" }}
+            </p>
+            <p class="mat-small" style="margin: 0.1rem">
+              <br />
+              {{ buildProperties.ciPlatform }} |
+              {{ buildProperties.ciPipelineId }} |
+              {{ buildProperties.commit }}
+            </p>
           </div>
 
           <mat-tab-group

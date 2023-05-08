@@ -1,0 +1,10 @@
+{
+  "artifact": "artifact",
+  "ciPipelineId": "0",
+  "ciPlatform": "local build",
+  "commit": "abcdef0",
+  "group": "",
+  "name": "",
+  "time": "",
+  "version": "0.0.0"
+}

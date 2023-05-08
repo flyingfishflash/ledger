@@ -1,4 +1,7 @@
-export interface AppConfigRuntimeInfoBuild {
+/**
+ * Type describing the application build properties.
+ */
+export interface BuildProperties {
   artifact: string;
   ciPipelineId: string;
   ciPlatform: string;
