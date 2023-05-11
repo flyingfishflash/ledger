@@ -71,6 +71,8 @@ steps:
     commands:
       - export VERSION=.version
       - export NYX_VERSION=$(cat .version)
+      - export SCM_COMMIT_SHORT_SHA=$(echo $DRONE_COMMIT_SHA | cut -c1-8)
+      - echo $SCM_COMMIT_SHORT_SHA
       # define alt location for npm cache
       - export CLIENT_NPM_CACHE=/drone/drone_cache/$DRONE_REPO/client/npm
       - echo $CLIENT_NPM_CACHE
@@ -81,6 +83,21 @@ steps:
       - mkdir -pv $CLIENT_DIST
       - export PATH=/drone/src/frontend/node_modules/.bin:$PATH
       - cd /drone/src/frontend
+      - |
+        export JSON_BUILD_PROPERTIES=$(node -pe "
+          JSON.stringify({
+            artifact: new String('ledger'),
+            ciPipelineId: process.env.DRONE_BUILD_NUMBER,
+            ciPlatform: new String('drone'),
+            commit: process.env.SCM_COMMIT_SHORT_SHA,
+            group: Symbol(''),
+            name: Symbol(''),
+            time: Symbol(''),
+            version: process.env.NYX_VERSION
+          });
+        ")
+      - echo $JSON_BUILD_PROPERTIES > src/assets/buildProperties.json
+      - cat src/assets/buildProperties.json
       - npm version $NYX_VERSION --no-git-tag-version
       - npm ci --cache $CLIENT_NPM_CACHE --prefer-offline
       - ng version
