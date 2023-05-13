@@ -38,7 +38,7 @@ trigger:
     - refs/heads/build-*
     - refs/heads/feature-*
     - refs/heads/fix-*
-    - refs/heads/main-*
+    - refs/heads/main
     - refs/heads/perf-*
     - refs/heads/refactor-*
     - refs/heads/release
@@ -121,7 +121,7 @@ trigger:
     - refs/heads/build-*
     - refs/heads/feature-*
     - refs/heads/fix-*
-    - refs/heads/main-*
+    - refs/heads/main
     - refs/heads/perf-*
     - refs/heads/refactor-*
     - refs/heads/release
