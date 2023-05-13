@@ -62,7 +62,7 @@ releaseTypes:
       gitCommit: "false"
       gitPush: "true"
       gitTag: "true"
-      matchBranches: "^release$"
+      matchBranches: "^release-next$"
       matchEnvironmentVariables:
         CI: "^true$"
       matchWorkspaceStatus: "CLEAN"
