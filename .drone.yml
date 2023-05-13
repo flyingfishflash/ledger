@@ -41,7 +41,7 @@ trigger:
     - refs/heads/main-*
     - refs/heads/perf-*
     - refs/heads/refactor-*
-    - refs/heads/release-*
+    - refs/heads/release
 
 steps:
   # nyx requires git tags to infer the current version
@@ -124,7 +124,7 @@ trigger:
     - refs/heads/main-*
     - refs/heads/perf-*
     - refs/heads/refactor-*
-    - refs/heads/release-*
+    - refs/heads/release
 
 volumes:
   - name: drone_cache
@@ -221,7 +221,7 @@ trigger:
     - refs/heads/fix-*
     - refs/heads/perf-*
     - refs/heads/refactor-*
-    - refs/heads/release-*
+    - refs/heads/release
     - refs/tags/*
 
 depends_on:
@@ -317,7 +317,7 @@ trigger:
   event:
     - push
   ref:
-    - refs/heads/release-*
+    - refs/heads/release
 
 depends_on:
   - "publish - image"
@@ -373,7 +373,7 @@ trigger:
     - refs/heads/fix-*
     - refs/heads/perf-*
     - refs/heads/refactor-*
-    - refs/heads/release-*
+    - refs/heads/release
 
 depends_on:
   - "publish - image"
