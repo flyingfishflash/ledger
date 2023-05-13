@@ -320,7 +320,7 @@ trigger:
     - refs/heads/release-*
 
 depends_on:
-  - publish
+  - publish image
 
 volumes:
   - name: drone_cache
@@ -376,7 +376,7 @@ trigger:
     - refs/heads/release-*
 
 depends_on:
-  - publish
+  - publish image
 
 clone:
   disable: true
@@ -407,7 +407,7 @@ trigger:
     - refs/tags/*
 
 depends_on:
-  - publish
+  - publish image
 
 clone:
   disable: true
