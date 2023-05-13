@@ -41,6 +41,7 @@ trigger:
     - refs/heads/main-*
     - refs/heads/perf-*
     - refs/heads/refactor-*
+    - refs/heads/release-*
 
 steps:
   # nyx requires git tags to infer the current version
@@ -123,6 +124,7 @@ trigger:
     - refs/heads/main-*
     - refs/heads/perf-*
     - refs/heads/refactor-*
+    - refs/heads/release-*
 
 volumes:
   - name: drone_cache
@@ -207,7 +209,7 @@ steps:
 
 ---
 kind: pipeline
-name: publish
+name: publish image
 type: docker
 
 trigger:
@@ -219,6 +221,7 @@ trigger:
     - refs/heads/fix-*
     - refs/heads/perf-*
     - refs/heads/refactor-*
+    - refs/heads/release-*
     - refs/tags/*
 
 depends_on:
@@ -307,14 +310,14 @@ steps:
 
 ---
 kind: pipeline
-name: release
+name: publish release
 type: docker
 
 trigger:
   event:
     - push
   ref:
-    - refs/heads/main
+    - refs/heads/release-*
 
 depends_on:
   - publish
@@ -370,6 +373,7 @@ trigger:
     - refs/heads/fix-*
     - refs/heads/perf-*
     - refs/heads/refactor-*
+    - refs/heads/release-*
 
 depends_on:
   - publish
