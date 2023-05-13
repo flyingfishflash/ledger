@@ -215,14 +215,12 @@ type: docker
 trigger:
   event:
     - push
-    - tag
   ref:
     - refs/heads/feature-*
     - refs/heads/fix-*
     - refs/heads/perf-*
     - refs/heads/refactor-*
     - refs/heads/release
-    - refs/tags/*
 
 depends_on:
   - "frontend - build"
