@@ -33,6 +33,7 @@ git:
 releaseTypes:
   enabled:
     - mainline
+    - release
     - internal
   publicationServices:
     - codeberg
@@ -50,6 +51,18 @@ releaseTypes:
       gitPush: "true"
       gitTag: "true"
       matchBranches: "^main$"
+      matchEnvironmentVariables:
+        CI: "^true$"
+      matchWorkspaceStatus: "CLEAN"
+      publish: "false"
+    release:
+      collapseVersions: false
+      description: "{{#fileContent}}build/CHANGELOG.md{{/fileContent}}"
+      filterTags: "^({{configuration.releasePrefix}})?([0-9]\\d*)\\.([0-9]\\d*)\\.([0-9]\\d*)$"
+      gitCommit: "false"
+      gitPush: "true"
+      gitTag: "true"
+      matchBranches: "^release$"
       matchEnvironmentVariables:
         CI: "^true$"
       matchWorkspaceStatus: "CLEAN"
