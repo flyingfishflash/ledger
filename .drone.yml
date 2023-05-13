@@ -209,7 +209,7 @@ steps:
 
 ---
 kind: pipeline
-name: publish image
+name: "publish - image"
 type: docker
 
 trigger:
@@ -310,7 +310,7 @@ steps:
 
 ---
 kind: pipeline
-name: publish release
+name: "publish - release"
 type: docker
 
 trigger:
@@ -320,7 +320,7 @@ trigger:
     - refs/heads/release-*
 
 depends_on:
-  - publish image
+  - "publish - image"
 
 volumes:
   - name: drone_cache
@@ -334,7 +334,7 @@ steps:
     commands:
       - git fetch --tags
 
-  - name: publish release
+  - name: "publish - release"
     image: registry.flyingfishflash.net/customized-images/container-nyx
     depends_on:
       - fetch git tags
@@ -376,7 +376,7 @@ trigger:
     - refs/heads/release-*
 
 depends_on:
-  - publish image
+  - "publish - image"
 
 clone:
   disable: true
@@ -407,7 +407,7 @@ trigger:
     - refs/tags/*
 
 depends_on:
-  - publish image
+  - "publish - image"
 
 clone:
   disable: true
