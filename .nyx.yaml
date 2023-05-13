@@ -48,8 +48,8 @@ releaseTypes:
       description: "{{#fileContent}}build/CHANGELOG.md{{/fileContent}}"
       filterTags: "^({{configuration.releasePrefix}})?([0-9]\\d*)\\.([0-9]\\d*)\\.([0-9]\\d*)$"
       gitCommit: "false"
-      gitPush: "true"
-      gitTag: "true"
+      gitPush: "false"
+      gitTag: "false"
       matchBranches: "^main$"
       matchEnvironmentVariables:
         CI: "^true$"
@@ -62,7 +62,7 @@ releaseTypes:
       gitCommit: "false"
       gitPush: "true"
       gitTag: "true"
-      matchBranches: "^release-next$"
+      matchBranches: "^release$"
       matchEnvironmentVariables:
         CI: "^true$"
       matchWorkspaceStatus: "CLEAN"
