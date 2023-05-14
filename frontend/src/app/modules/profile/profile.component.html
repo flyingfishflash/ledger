@@ -11,22 +11,19 @@
           <mat-form-field
             appearance="fill"
             class="pure-u-1 pure-u-md-1-3"
-            style="padding: 0.5rem 0.5rem 0.5rem 0; box-sizing: border-box"
-          >
+            style="padding: 0.5rem 0.5rem 0.5rem 0; box-sizing: border-box">
             <mat-label>First Name</mat-label>
             <input matInput formControlName="firstName" />
             <mat-error
               *ngIf="
                 this.userDetailsForm.controls.firstName.hasError('required')
-              "
-            >
+              ">
               First name is <strong>required</strong>
             </mat-error>
             <mat-error
               *ngIf="
                 this.userDetailsForm.controls.firstName.hasError('maxlength')
-              "
-            >
+              ">
               First name must be no more than
               {{
                 this.userDetailsForm.controls.firstName.errors.maxlength
@@ -39,22 +36,19 @@
           <mat-form-field
             appearance="fill"
             class="pure-u-1 pure-u-md-1-3"
-            style="padding: 0.5rem 0.5rem 0.5rem 0; box-sizing: border-box"
-          >
+            style="padding: 0.5rem 0.5rem 0.5rem 0; box-sizing: border-box">
             <mat-label>Last Name</mat-label>
             <input matInput formControlName="lastName" />
             <mat-error
               *ngIf="
                 this.userDetailsForm.controls.lastName.hasError('required')
-              "
-            >
+              ">
               Last name is <strong>required</strong>
             </mat-error>
             <mat-error
               *ngIf="
                 this.userDetailsForm.controls.lastName.hasError('maxlength')
-              "
-            >
+              ">
               Last name must be no more than
               {{
                 this.userDetailsForm.controls.lastName.errors.maxlength
@@ -67,26 +61,22 @@
           <mat-form-field
             appearance="fill"
             class="pure-u-1 pure-u-md-1-3"
-            style="padding: 0.5rem 0.5rem 0.5rem 0; box-sizing: border-box"
-          >
+            style="padding: 0.5rem 0.5rem 0.5rem 0; box-sizing: border-box">
             <mat-label>E-Mail</mat-label>
             <input matInput type="text" formControlName="email" required />
             <mat-error
               *ngIf="
                 this.userDetailsForm.controls.email.hasError('email') &&
                 !this.userDetailsForm.controls.email.hasError('required')
-              "
-            >
+              ">
               Please enter a valid email address
             </mat-error>
             <mat-error
-              *ngIf="this.userDetailsForm.controls.email.hasError('required')"
-            >
+              *ngIf="this.userDetailsForm.controls.email.hasError('required')">
               Email is <strong>required</strong>
             </mat-error>
             <mat-error
-              *ngIf="this.userDetailsForm.controls.email.hasError('maxlength')"
-            >
+              *ngIf="this.userDetailsForm.controls.email.hasError('maxlength')">
               Email must be no more than
               {{
                 this.userDetailsForm.controls.email.errors.maxlength
@@ -104,24 +94,21 @@
           <mat-form-field
             appearance="fill"
             class="pure-u-1 pure-u-md-1-3"
-            style="padding: 0.5rem 0.5rem 0.5rem 0; box-sizing: border-box"
-          >
+            style="padding: 0.5rem 0.5rem 0.5rem 0; box-sizing: border-box">
             <mat-label>Password</mat-label>
             <input
               matInput
               formControlName="password"
-              [type]="isPasswordHidden ? 'password' : 'text'"
-            />
+              [type]="isPasswordHidden ? 'password' : 'text'" />
             <button
               mat-icon-button
               matSuffix
               type="button"
               (click)="isPasswordHidden = !isPasswordHidden"
               [attr.aria-label]="'Hide password'"
-              [attr.aria-pressed]="isPasswordHidden"
-            >
+              [attr.aria-pressed]="isPasswordHidden">
               <mat-icon class="password-visibility-indicator">{{
-                isPasswordHidden ? "visibility_off" : "visibility"
+                isPasswordHidden ? 'visibility_off' : 'visibility'
               }}</mat-icon>
             </button>
           </mat-form-field>
@@ -136,13 +123,12 @@
                   userDetailsForm.controls.password.hasError('noWhitespace')
                     ? 'text-danger'
                     : 'text-success'
-                "
-              >
+                ">
                 <i class="material-icons" style="font-size: 1.2rem">{{
-                  userDetailsForm.controls.password.hasError("required") ||
-                  userDetailsForm.controls.password.hasError("noWhitespace")
-                    ? "cancel"
-                    : "check_circle"
+                  userDetailsForm.controls.password.hasError('required') ||
+                  userDetailsForm.controls.password.hasError('noWhitespace')
+                    ? 'cancel'
+                    : 'check_circle'
                 }}</i>
                 No whitespace
               </label>
@@ -155,13 +141,12 @@
                   userDetailsForm.controls.password.hasError('minlength')
                     ? 'text-danger'
                     : 'text-success'
-                "
-              >
+                ">
                 <i class="material-icons" style="font-size: 1.2rem">{{
-                  userDetailsForm.controls.password.hasError("required") ||
-                  userDetailsForm.controls.password.hasError("minlength")
-                    ? "cancel"
-                    : "check_circle"
+                  userDetailsForm.controls.password.hasError('required') ||
+                  userDetailsForm.controls.password.hasError('minlength')
+                    ? 'cancel'
+                    : 'check_circle'
                 }}</i>
                 At least 8 characters
               </label>
@@ -175,13 +160,12 @@
                   userDetailsForm.controls.password.hasError('hasNumber')
                     ? 'text-danger'
                     : 'text-success'
-                "
-              >
+                ">
                 <i class="material-icons" style="font-size: 1.2rem">{{
-                  userDetailsForm.controls.password.hasError("required") ||
-                  userDetailsForm.controls.password.hasError("hasNumber")
-                    ? "cancel"
-                    : "check_circle"
+                  userDetailsForm.controls.password.hasError('required') ||
+                  userDetailsForm.controls.password.hasError('hasNumber')
+                    ? 'cancel'
+                    : 'check_circle'
                 }}</i>
                 At least 1 number
               </label>
@@ -194,13 +178,12 @@
                   userDetailsForm.controls.password.hasError('hasLowercase')
                     ? 'text-danger'
                     : 'text-success'
-                "
-              >
+                ">
                 <i class="material-icons" style="font-size: 1.2rem">{{
-                  userDetailsForm.controls.password.hasError("required") ||
-                  userDetailsForm.controls.password.hasError("hasLowercase")
-                    ? "cancel"
-                    : "check_circle"
+                  userDetailsForm.controls.password.hasError('required') ||
+                  userDetailsForm.controls.password.hasError('hasLowercase')
+                    ? 'cancel'
+                    : 'check_circle'
                 }}</i>
                 At least 1 character in lower case
               </label>
@@ -213,13 +196,12 @@
                   userDetailsForm.controls.password.hasError('hasUppercase')
                     ? 'text-danger'
                     : 'text-success'
-                "
-              >
+                ">
                 <i class="material-icons" style="font-size: 1.2rem">{{
-                  userDetailsForm.controls.password.hasError("required") ||
-                  userDetailsForm.controls.password.hasError("hasUppercase")
-                    ? "cancel"
-                    : "check_circle"
+                  userDetailsForm.controls.password.hasError('required') ||
+                  userDetailsForm.controls.password.hasError('hasUppercase')
+                    ? 'cancel'
+                    : 'check_circle'
                 }}</i>
                 At least 1 character in upper case
               </label>
@@ -234,15 +216,14 @@
                   )
                     ? 'text-danger'
                     : 'text-success'
-                "
-              >
+                ">
                 <i class="material-icons" style="font-size: 1.2rem">{{
-                  userDetailsForm.controls.password.hasError("required") ||
+                  userDetailsForm.controls.password.hasError('required') ||
                   userDetailsForm.controls.password.hasError(
-                    "hasSpecialCharacters"
+                    'hasSpecialCharacters'
                   )
-                    ? "cancel"
-                    : "check_circle"
+                    ? 'cancel'
+                    : 'check_circle'
                 }}</i>
                 At least 1 special character
               </label>
@@ -269,8 +250,7 @@
           [disabled]="
             ((isDirty$ | async)?.equal && userDetailsForm.valid) ||
             (!(isDirty$ | async)?.equal && !userDetailsForm.valid)
-          "
-        >
+          ">
           Submit
         </button>
         <button
@@ -279,8 +259,7 @@
           color="primary"
           (click)="onCancel()"
           [routerLink]="''"
-          matTooltip="Cancel Edit of Profile Information"
-        >
+          matTooltip="Cancel Edit of Profile Information">
           Cancel
         </button>
       </div>

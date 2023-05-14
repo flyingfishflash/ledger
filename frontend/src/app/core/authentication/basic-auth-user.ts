@@ -1,5 +1,5 @@
-import { HttpResponse } from "@angular/common/http";
-import { BasicAuthUserRole } from "./basic-auth-user-role";
+import { HttpResponse } from '@angular/common/http';
+import { BasicAuthUserRole } from './basic-auth-user-role';
 
 export class BasicAuthUser {
   readonly id: number;
@@ -11,7 +11,7 @@ export class BasicAuthUser {
     this.id = response.body.content.id;
     this.username = response.body.content.username;
     this.roles = response.body.content.roles;
-    this.sessionId = response.headers.get("x-auth-token");
+    this.sessionId = response.headers.get('x-auth-token');
   }
 }
 

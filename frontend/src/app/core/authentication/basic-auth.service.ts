@@ -1,21 +1,21 @@
 // angular
-import { HttpClient, HttpHeaders, HttpResponse } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Router } from "@angular/router";
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 // third party
-import { BehaviorSubject, Observable, throwError } from "rxjs";
-import { tap } from "rxjs/operators";
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 // core and shared
-import { environment } from "@env";
-import { Logger } from "@core/logging/logger.service";
-import { StorageService } from "@core/storage/storage.service";
-import { BasicAuthUser } from "./basic-auth-user";
+import { environment } from '@env';
+import { Logger } from '@core/logging/logger.service';
+import { StorageService } from '@core/storage/storage.service';
+import { BasicAuthUser } from './basic-auth-user';
 
-const log = new Logger("basic-auth.service");
+const log = new Logger('basic-auth.service');
 
-@Injectable({ providedIn: "root" })
+@Injectable({ providedIn: 'root' })
 export class BasicAuthService {
   public user: Observable<any>;
 
@@ -24,10 +24,10 @@ export class BasicAuthService {
   constructor(
     private router: Router,
     private http: HttpClient,
-    private storageService: StorageService
+    private storageService: StorageService,
   ) {
     this.userSubject = new BehaviorSubject<BasicAuthUser>(
-      storageService.getAuthenticatedUser()
+      storageService.getAuthenticatedUser(),
     );
     this.user = this.userSubject.asObservable();
   }
@@ -43,15 +43,15 @@ export class BasicAuthService {
         ? {
             authorization: this.createBasicAuthToken(
               credentials.username,
-              credentials.password
+              credentials.password,
             ),
           }
-        : {}
+        : {},
     );
 
     return this.http
-      .get<any>(environment.api.server.url + "/auth/signin", {
-        observe: "response",
+      .get<any>(environment.api.server.url + '/auth/signin', {
+        observe: 'response',
         headers,
         withCredentials: true,
       })
@@ -63,30 +63,30 @@ export class BasicAuthService {
           this.storageService.saveAuthenticatedUser(u);
           this.userSubject.next(u);
           return u;
-        })
+        }),
       );
   }
 
   createBasicAuthToken(username, password) {
-    return "Basic " + window.btoa(username + ":" + password);
+    return 'Basic ' + window.btoa(username + ':' + password);
   }
 
   signOut(parameter: string) {
     this.http
-      .post<any>(environment.api.server.url + "/auth/signout", {
+      .post<any>(environment.api.server.url + '/auth/signout', {
         parameter,
       })
       .subscribe(
         (result) => {
-          if (result.message === "Successful sign-out") {
+          if (result.message === 'Successful sign-out') {
             window.sessionStorage.clear();
             this.userSubject.next(null);
-            this.router.navigate(["/login"]);
+            this.router.navigate(['/login']);
           }
         },
         (err) => {
           this.handleError(err);
-        }
+        },
       );
   }
 
@@ -94,11 +94,11 @@ export class BasicAuthService {
     window.sessionStorage.clear();
     this.userSubject.next(null);
     //this.userSubject.unsubscribe();
-    this.router.navigate(["/login"]);
+    this.router.navigate(['/login']);
   }
 
   handleError(error: any) {
-    let errorMessage = "";
+    let errorMessage = '';
     if (error.error instanceof ErrorEvent) {
       errorMessage = `A client internal error occurred:\nError Message: ${error.error.message}`;
     } else {

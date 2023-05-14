@@ -1,13 +1,13 @@
 // angular
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
 // core and shared
-import { Logger } from "@core/logging/logger.service";
+import { Logger } from '@core/logging/logger.service';
 
-const log = new Logger("tree-utilities.service");
+const log = new Logger('tree-utilities.service');
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class TreeUtilitiesService {
   listToTreeSorted(list) {
@@ -39,9 +39,9 @@ export class TreeUtilitiesService {
         minParentId = list[i].parentId;
       }
     }
-    log.debug("minId: " + minId);
-    log.debug("maxId: " + maxId);
-    log.debug("minParentId: " + minParentId);
+    log.debug('minId: ' + minId);
+    log.debug('maxId: ' + maxId);
+    log.debug('minParentId: ' + minParentId);
 
     for (i = 0; i <= maxId - minId; i += 1) {
       map[list[i].id] = i; // initialize the map
@@ -98,9 +98,9 @@ export class TreeUtilitiesService {
       }
     }
 
-    log.debug("minId: " + minId);
-    log.debug("maxId: " + maxId);
-    log.debug("minParentId: " + minParentId);
+    log.debug('minId: ' + minId);
+    log.debug('maxId: ' + maxId);
+    log.debug('minParentId: ' + minParentId);
 
     // First map the nodes of the array to an object -> create a hash table.
     for (i = 0; i <= maxId - minId; i++) {

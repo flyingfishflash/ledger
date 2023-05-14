@@ -1,9 +1,9 @@
 {
-  "compileOnSave": false,
+  "compileOnSave": true,
   "compilerOptions": {
+    "baseUrl": "./",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "baseUrl": "",
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,

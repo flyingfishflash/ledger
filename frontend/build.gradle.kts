@@ -6,6 +6,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
   // eslist is configured to format angular html templates
   typescript {
     target("src/**/*.ts", "src/**/*.html")
+    targetExclude("src/polyfills.ts")
     eslint()
       .tsconfigFile("./tsconfig.json")
       .configFile("./.eslintrc.json")

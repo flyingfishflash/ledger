@@ -5,20 +5,20 @@ import {
   HttpHandler,
   HttpInterceptor,
   HttpRequest,
-} from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Router } from "@angular/router";
+} from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 // third party
-import { Observable, throwError, of } from "rxjs";
-import { catchError, retry } from "rxjs/operators";
+import { Observable, throwError, of } from 'rxjs';
+import { catchError, retry } from 'rxjs/operators';
 
 // core and shared
-import { BasicAuthService } from "@core/authentication/basic-auth.service";
-import { ErrorDialogService } from "@shared/errors/error-dialog.service";
-import { Logger } from "@core/logging/logger.service";
+import { BasicAuthService } from '@core/authentication/basic-auth.service';
+import { ErrorDialogService } from '@shared/errors/error-dialog.service';
+import { Logger } from '@core/logging/logger.service';
 
-const log = new Logger("http-error.interceptor");
+const log = new Logger('http-error.interceptor');
 
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
@@ -34,12 +34,12 @@ export class HttpErrorInterceptor implements HttpInterceptor {
   constructor(
     private authenticationService: BasicAuthService,
     private errorDialogService: ErrorDialogService,
-    private router: Router
+    private router: Router,
   ) {}
 
   intercept(
     request: HttpRequest<any>,
-    next: HttpHandler
+    next: HttpHandler,
   ): Observable<HttpEvent<any>> {
     let handled = false;
 
@@ -52,14 +52,14 @@ export class HttpErrorInterceptor implements HttpInterceptor {
 
         if (error.error instanceof ErrorEvent) {
           errorMessage = `A client internal error occurred:\nError Message: ${error.error.message}`;
-          this.errorState.errorType = "client";
+          this.errorState.errorType = 'client';
           this.errorState.errorMessageOriginal = error.error.message;
           this.errorState.errorMessageHeading =
-            "A client internal error occurred";
+            'A client internal error occurred';
           this.errorState.errorMessageLine1 = error.error.message;
         } else if (error instanceof HttpErrorResponse) {
           errorMessage = `A server-side error occured:\nError Status: ${error.status}\nError Message: ${error.message}`;
-          this.errorState.errorType = "server";
+          this.errorState.errorType = 'server';
           this.errorState.errorStatus = error.status;
           this.errorState.errorMessageOriginal = error.message;
           this.errorState.errorMessageHeading = errorMessage;
@@ -73,12 +73,12 @@ export class HttpErrorInterceptor implements HttpInterceptor {
           if (errorMessage) {
             return throwError(error);
           } else {
-            return throwError("Unexpected problem occurred");
+            return throwError('Unexpected problem occurred');
           }
         } else {
           return of(error);
         }
-      })
+      }),
     );
   }
 
@@ -96,59 +96,59 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         this.errorDialogService.openDialog(
           error.error.content.detail ?? JSON.stringify(error),
           error.status,
-          error.error.content.title
+          error.error.content.title,
         );
         handled = true;
-        log.debug("init1");
+        log.debug('init1');
         break;
       case 401:
         if (
-          error.url.indexOf("signin") < 0 &&
-          error.url.indexOf("/health") < 0
+          error.url.indexOf('signin') < 0 &&
+          error.url.indexOf('/health') < 0
         ) {
           this.authenticationService.redirectToLogin();
           this.errorDialogService.openDialog(
             error.error.content.detail ?? JSON.stringify(error),
             error.status,
-            error.error.content.title
+            error.error.content.title,
           );
           handled = true;
         }
         break;
       case 403:
-        if (error.url.indexOf("signin") < 0) {
+        if (error.url.indexOf('signin') < 0) {
           this.authenticationService.redirectToLogin();
           this.errorDialogService.openDialog(
             error.error.content.detail ?? JSON.stringify(error),
             error.status,
-            error.error.content.title
+            error.error.content.title,
           );
           handled = true;
         }
         break;
       case 404:
-        if (error.url.indexOf("config.json") < 0) {
+        if (error.url.indexOf('config.json') < 0) {
           this.errorDialogService.openDialog(
             error.error.content.detail ?? JSON.stringify(error),
             error.status,
-            error.error.content.title
+            error.error.content.title,
           );
           handled = true;
         }
         break;
       case 502:
-        if (error.url.indexOf("config.json") < 0) {
+        if (error.url.indexOf('config.json') < 0) {
           this.errorState.errorMessageHeading = `Server Error: ${error.status} Bad Gateway`;
           this.errorState.errorMessageLine1 =
             "Runtime configuration couldn't be found. Perhaps the server isn't up or isn't accepting connections.";
-          this.router.navigate(["/error"], { state: this.errorState });
+          this.router.navigate(['/error'], { state: this.errorState });
           handled = true;
         }
         break;
       default:
         window.sessionStorage.clear();
         log.debug(this.errorState);
-        this.router.navigate(["/error"], { state: this.errorState });
+        this.router.navigate(['/error'], { state: this.errorState });
         handled = true;
     }
     return handled;

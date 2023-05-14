@@ -111,11 +111,11 @@ export class Logger {
   private log(func: VoidFunction, level: LogLevel, objects: any[]) {
     if (level <= Logger.level) {
       const log = this.source
-        ? ["[" + this.source + "]"].concat(objects)
+        ? ['[' + this.source + ']'].concat(objects)
         : objects;
       func.apply(console, log);
       Logger.outputs.forEach((output) =>
-        output.apply(output, [this.source, level].concat(objects))
+        output.apply(output, [this.source, level].concat(objects)),
       );
     }
   }

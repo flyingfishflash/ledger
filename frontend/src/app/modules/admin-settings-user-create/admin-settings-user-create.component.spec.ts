@@ -1,8 +1,8 @@
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { AdminSettingsUserCreateComponent } from "./admin-settings-user-create.component";
+import { AdminSettingsUserCreateComponent } from './admin-settings-user-create.component';
 
-describe("AdminSettingsUserCreateComponent", () => {
+describe('AdminSettingsUserCreateComponent', () => {
   let component: AdminSettingsUserCreateComponent;
   let fixture: ComponentFixture<AdminSettingsUserCreateComponent>;
 
@@ -18,7 +18,7 @@ describe("AdminSettingsUserCreateComponent", () => {
     fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

@@ -1,24 +1,24 @@
 // angular
-import { Injectable } from "@angular/core";
-import { HttpClient, HttpParams } from "@angular/common/http";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { ActivatedRoute, Router } from '@angular/router';
 
 // third party
-import { Observable, throwError } from "rxjs";
-import { catchError, map } from "rxjs/operators";
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 // core and shared
-import { environment } from "@env";
-import { BasicAuthService } from "app/core/authentication/basic-auth.service";
-import { TreeUtilitiesService } from "@shared/tree-utilities/tree-utilties.service";
-import { StorageService } from "@core/storage/storage.service";
-import { Logger } from "@core/logging/logger.service";
-import { IAccount } from "./account";
+import { environment } from '@env';
+import { BasicAuthService } from 'app/core/authentication/basic-auth.service';
+import { TreeUtilitiesService } from '@shared/tree-utilities/tree-utilties.service';
+import { StorageService } from '@core/storage/storage.service';
+import { Logger } from '@core/logging/logger.service';
+import { IAccount } from './account';
 
-const log = new Logger("account.service");
+const log = new Logger('account.service');
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class AccountsService {
   // private accountUrl = '/api/accounts/accounts.json';
@@ -29,13 +29,13 @@ export class AccountsService {
     private http: HttpClient,
     private route: ActivatedRoute,
     private router: Router,
-    private storageService: StorageService
+    private storageService: StorageService,
   ) {}
 
   getAccounts(): Observable<any> {
     const httpParams = new HttpParams().set(
-      "bookId",
-      this.storageService.getActiveBookId()
+      'bookId',
+      this.storageService.getActiveBookId(),
     );
 
     return this.http
@@ -45,7 +45,7 @@ export class AccountsService {
       .pipe(
         map((res) => {
           return res.content;
-        }) //,
+        }), //,
         //catchError(this.handleError)
       );
   }
@@ -60,8 +60,8 @@ export class AccountsService {
 
   getAccountsTree(): Observable<any> {
     const httpParams = new HttpParams().set(
-      "bookId",
-      this.storageService.getActiveBookId()
+      'bookId',
+      this.storageService.getActiveBookId(),
     );
 
     return this.http
@@ -72,7 +72,7 @@ export class AccountsService {
         map((res) => {
           return this.treeUtilitiesService.listToTreeSorted(res.content);
         }),
-        catchError(this.handleError)
+        catchError(this.handleError),
       );
   }
 
@@ -91,7 +91,7 @@ export class AccountsService {
         map((res) => {
           return res.content;
         }),
-        catchError(this.handleError)
+        catchError(this.handleError),
       );
   }
 
@@ -104,9 +104,9 @@ export class AccountsService {
     */
 
   handleError(error: any) {
-    log.info("zzzzzz");
+    log.info('zzzzzz');
     log.debug(`error: ${error}`);
-    let errorMessage = "";
+    let errorMessage = '';
     if (error.error instanceof ErrorEvent) {
       errorMessage = `A client internal error occurred:\nError Message: ${error.error.message}`;
     } else {

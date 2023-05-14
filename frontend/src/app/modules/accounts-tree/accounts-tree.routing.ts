@@ -1,9 +1,9 @@
 // angular
-import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
 
 // components
-import { AccountsTreeComponent } from "./accounts-tree.component";
+import { AccountsTreeComponent } from './accounts-tree.component';
 
 export const routes: Routes = [
   /*   {
@@ -12,7 +12,7 @@ export const routes: Routes = [
     pathMatch: "full",
   }, */
   {
-    path: "",
+    path: '',
     component: AccountsTreeComponent,
   },
 ];

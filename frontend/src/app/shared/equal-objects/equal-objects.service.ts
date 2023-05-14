@@ -1,10 +1,10 @@
 // angular
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
 // core and shared
-import { Logger } from "@core/logging/logger.service";
+import { Logger } from '@core/logging/logger.service';
 
-const log = new Logger("equal-objects.service");
+const log = new Logger('equal-objects.service');
 
 export interface ObjectEqualityState {
   equal: boolean;
@@ -12,7 +12,7 @@ export interface ObjectEqualityState {
 }
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class EqualObjectsService {
   isEqual(value, other): ObjectEqualityState {
@@ -37,7 +37,7 @@ export class EqualObjectsService {
     }
 
     // If items are not an object or array, return false
-    if (["[object Array]", "[object Object]"].indexOf(type) < 0) {
+    if (['[object Array]', '[object Object]'].indexOf(type) < 0) {
       myReturn.equal = false;
       // log.debug(myReturn);
       return myReturn;
@@ -45,9 +45,9 @@ export class EqualObjectsService {
 
     // Compare the length of the length of the two items
     const valueLen =
-      type === "[object Array]" ? value.length : Object.keys(value).length;
+      type === '[object Array]' ? value.length : Object.keys(value).length;
     const otherLen =
-      type === "[object Array]" ? other.length : Object.keys(other).length;
+      type === '[object Array]' ? other.length : Object.keys(other).length;
     if (valueLen !== otherLen) {
       myReturn.equal = false;
       // log.debug(myReturn);
@@ -62,7 +62,7 @@ export class EqualObjectsService {
       const itemType = Object.prototype.toString.call(item1);
 
       // If an object or array, compare recursively
-      if (["[object Array]", "[object Object]"].indexOf(itemType) >= 0) {
+      if (['[object Array]', '[object Object]'].indexOf(itemType) >= 0) {
         if (!this.isEqual(item1, item2)) {
           myReturn.equal = false;
           // log.debug(myReturn);
@@ -81,7 +81,7 @@ export class EqualObjectsService {
 
         // Else if it's a function, convert to a string and compare
         // Otherwise, just compare
-        if (itemType === "[object Function]") {
+        if (itemType === '[object Function]') {
           if (item1.toString() !== item2.toString()) {
             myReturn.equal = false;
             // log.debug(myReturn);
@@ -98,7 +98,7 @@ export class EqualObjectsService {
     }; // compare function
 
     // Compare properties
-    if (type === "[object Array]") {
+    if (type === '[object Array]') {
       for (let i = 0; i < valueLen; i++) {
         if (compare(value[i], other[i]) === false) {
           myReturn.equal = false;

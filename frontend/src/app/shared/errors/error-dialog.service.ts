@@ -1,9 +1,9 @@
 // angular
-import { Injectable } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
+import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 
 // components
-import { ErrorDialogComponent } from "./error-dialog/error-dialog.component";
+import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
 
 @Injectable()
 export class ErrorDialogService {
@@ -12,14 +12,14 @@ export class ErrorDialogService {
   constructor(private dialog: MatDialog) {}
 
   openDialog(message: string, status?: number, title?: string): void {
-    console.log("error dialog");
+    console.log('error dialog');
     if (!this.opened) {
       this.opened = true;
       const dialogRef = this.dialog.open(ErrorDialogComponent, {
         data: { message, status, title },
-        maxHeight: "100%",
-        width: "540px",
-        maxWidth: "100%",
+        maxHeight: '100%',
+        width: '540px',
+        maxWidth: '100%',
         disableClose: true,
         hasBackdrop: true,
       });

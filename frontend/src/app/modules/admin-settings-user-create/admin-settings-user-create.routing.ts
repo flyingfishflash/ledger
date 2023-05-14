@@ -1,13 +1,13 @@
 // angular
-import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
 
 // components
-import { AdminSettingsUserCreateComponent } from "./admin-settings-user-create.component";
+import { AdminSettingsUserCreateComponent } from './admin-settings-user-create.component';
 
 export const routes: Routes = [
   {
-    path: "",
+    path: '',
     component: AdminSettingsUserCreateComponent,
   },
 ];

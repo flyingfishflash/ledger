@@ -29,8 +29,7 @@
               mat-flat-button
               color="primary"
               [routerLink]="'user/create'"
-              matTooltip="Add New User"
-            >
+              matTooltip="Add New User">
               Add User
             </button>
           </div>
@@ -46,16 +45,14 @@
                   [routerLink]="'/profile'"
                   [state]="{ data: { userId: user.id } }"
                   matTooltip="Add New User"
-                  style="margin: 10px"
-                >
+                  style="margin: 10px">
                   Edit
                 </button>
                 <button
                   mat-flat-button
                   color="primary"
                   matTooltip="Add New User"
-                  (click)="onClickDelete(user.id)"
-                >
+                  (click)="onClickDelete(user.id)">
                   Delete
                 </button>
               </mat-list-item>

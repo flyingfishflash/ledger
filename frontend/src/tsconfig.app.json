@@ -1,9 +1,7 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    //"experimentalDecorators": true,
     "types": []
   },
-  "files": ["main.ts", "polyfills.ts"],
-  "include": ["src/**/*.ts"]
+  "files": ["./main.ts", "./polyfills.ts"]
 }

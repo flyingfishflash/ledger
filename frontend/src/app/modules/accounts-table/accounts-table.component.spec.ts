@@ -1,8 +1,8 @@
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { AccountsTableComponent } from "./accounts-table.component";
+import { AccountsTableComponent } from './accounts-table.component';
 
-describe("AccountsTableComponent", () => {
+describe('AccountsTableComponent', () => {
   let component: AccountsTableComponent;
   let fixture: ComponentFixture<AccountsTableComponent>;
 
@@ -18,7 +18,7 @@ describe("AccountsTableComponent", () => {
     fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

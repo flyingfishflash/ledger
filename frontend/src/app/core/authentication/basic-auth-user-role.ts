@@ -1,7 +1,7 @@
 export enum BasicAuthUserRole {
-  administrator = "ROLE_ADMIN",
-  editor = "ROLE_USER",
-  viewer = "ROLE_VIEWER",
+  administrator = 'ROLE_ADMIN',
+  editor = 'ROLE_USER',
+  viewer = 'ROLE_VIEWER',
 }
 
 export const reverseRole = new Map<string, BasicAuthUserRole>();

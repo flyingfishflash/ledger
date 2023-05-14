@@ -1,37 +1,37 @@
 // angular
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import {
   HttpClient,
   HttpErrorResponse,
   HttpHeaders,
   HttpParams,
-} from "@angular/common/http";
-import { EVENT_MANAGER_PLUGINS } from "@angular/platform-browser";
+} from '@angular/common/http';
+import { EVENT_MANAGER_PLUGINS } from '@angular/platform-browser';
 
 // third party
-import { Observable, throwError } from "rxjs";
-import { catchError, map } from "rxjs/operators";
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 // core and shared
-import { environment } from "@env";
-import { Logger } from "@core/logging/logger.service";
-import { StorageService } from "@core/storage/storage.service";
+import { environment } from '@env';
+import { Logger } from '@core/logging/logger.service';
+import { StorageService } from '@core/storage/storage.service';
 
-const log = new Logger("user.service");
+const log = new Logger('user.service');
 
 const httpOptions = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  headers: new HttpHeaders({ "Content-Type": "application/json" }),
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
   withCredentials: true,
 };
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class UserService {
   constructor(
     private http: HttpClient,
-    private storageService: StorageService
+    private storageService: StorageService,
   ) {}
 
   findAllUsers(): Observable<any> {
@@ -39,7 +39,7 @@ export class UserService {
       map((res) => {
         return res.content;
       }),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -48,7 +48,7 @@ export class UserService {
     return this.http
       .patch<any>(
         environment.api.server.url +
-          "/users/" +
+          '/users/' +
           this.storageService.getAuthenticatedUser().id,
         {
           email: payload.email,
@@ -56,7 +56,7 @@ export class UserService {
           lastName: payload.lastName,
           password: payload.password,
         },
-        httpOptions
+        httpOptions,
       )
       .pipe(catchError(this.handleError));
   }
@@ -67,7 +67,7 @@ export class UserService {
 
     return this.http
       .post<any>(
-        environment.api.server.url + "/users/",
+        environment.api.server.url + '/users/',
         {
           email: userFormValue.email,
           firstName: userFormValue.firstName,
@@ -76,7 +76,7 @@ export class UserService {
           roles,
           username: userFormValue.username,
         },
-        httpOptions
+        httpOptions,
       )
       .pipe(catchError(this.handleError));
   }
@@ -84,11 +84,11 @@ export class UserService {
   userDeleteById(id) {
     const payload: any = {};
     payload.id = id;
-    const httpParams = new HttpParams().set("id", id);
+    const httpParams = new HttpParams().set('id', id);
     const options = { params: httpParams, withCredentials: true };
 
     this.http
-      .delete<any>(environment.api.server.url + "/users/delete", options)
+      .delete<any>(environment.api.server.url + '/users/delete', options)
       .subscribe(
         (successResponse) => {
           log.debug(successResponse);
@@ -99,7 +99,7 @@ export class UserService {
         },
         (ledgerErrorResponse) => {
           this.handleError(ledgerErrorResponse);
-        }
+        },
       );
   }
 

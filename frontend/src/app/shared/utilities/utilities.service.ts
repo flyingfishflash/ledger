@@ -1,16 +1,16 @@
 // angular
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
 // core and shared
-import { Logger } from "@core/logging/logger.service";
+import { Logger } from '@core/logging/logger.service';
 
-const log = new Logger("utilities.service");
+const log = new Logger('utilities.service');
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class UtilitiesService {
   isEmptyObject(obj) {
-    return JSON.stringify(obj) === "{}";
+    return JSON.stringify(obj) === '{}';
   }
 }

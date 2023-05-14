@@ -1,18 +1,18 @@
 // angular
-import { NestedTreeControl } from "@angular/cdk/tree";
-import { Component, OnInit } from "@angular/core";
-import { MatTreeNestedDataSource } from "@angular/material/tree";
+import { NestedTreeControl } from '@angular/cdk/tree';
+import { Component, OnInit } from '@angular/core';
+import { MatTreeNestedDataSource } from '@angular/material/tree';
 
 // third party
-import { throwError } from "rxjs";
+import { throwError } from 'rxjs';
 
 // core and shared
-import { IAccount } from "@shared/accounts/account";
-import { AccountsService } from "@shared/accounts/accounts.service";
-import { ErrorDialogService } from "@shared/errors/error-dialog.service";
-import { Logger } from "@core/logging/logger.service";
+import { IAccount } from '@shared/accounts/account';
+import { AccountsService } from '@shared/accounts/accounts.service';
+import { ErrorDialogService } from '@shared/errors/error-dialog.service';
+import { Logger } from '@core/logging/logger.service';
 
-const log = new Logger("accounts-tree.component");
+const log = new Logger('accounts-tree.component');
 
 interface IAccountNode {
   id: number;
@@ -41,12 +41,12 @@ interface IAccountNode {
 }
 
 @Component({
-  selector: "app-accounts-tree",
-  templateUrl: "./accounts-tree.component.html",
-  styleUrls: ["./accounts-tree.component.css"],
+  selector: 'app-accounts-tree',
+  templateUrl: './accounts-tree.component.html',
+  styleUrls: ['./accounts-tree.component.css'],
 })
 export class AccountsTreeComponent implements OnInit {
-  componentHeading = "Accounts Tree";
+  componentHeading = 'Accounts Tree';
   treeControl = new NestedTreeControl<IAccountNode>((node) => node.children);
   dataSource = new MatTreeNestedDataSource<IAccountNode>();
   errorMessage: any;
@@ -54,7 +54,7 @@ export class AccountsTreeComponent implements OnInit {
 
   constructor(
     private accountsService: AccountsService,
-    private errorDialogService: ErrorDialogService
+    private errorDialogService: ErrorDialogService,
   ) {}
 
   ngOnInit(): void {
@@ -80,7 +80,7 @@ export class AccountsTreeComponent implements OnInit {
     !!node.children && node.children.length > 0;
 
   handleError(error: any) {
-    let errorMessage = "";
+    let errorMessage = '';
     if (error.error instanceof ErrorEvent) {
       errorMessage = `A client internal error occurred:\nError Message: ${error.error.message}`;
     } else {

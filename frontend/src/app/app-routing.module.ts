@@ -1,86 +1,86 @@
 // modules (angular)
-import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
 
-import { AuthGuard } from "@core/guards/auth.guard";
-import { BasicAuthUserRole } from "@core/authentication/basic-auth-user-role";
+// import { AuthGuard } from '@core/guards/auth.guard';
+// import { BasicAuthUserRole } from '@core/authentication/basic-auth-user-role';
 
 // components
-import { AuthLayoutComponent } from "./layout/auth-layout/auth-layout.component";
-import { ContentLayoutComponent } from "./layout/content-layout/content-layout.component";
-import { ErrorLayoutComponent } from "./layout/error-layout/error-layout.component";
+import { AuthLayoutComponent } from './layout/auth-layout/auth-layout.component';
+import { ContentLayoutComponent } from './layout/content-layout/content-layout.component';
+import { ErrorLayoutComponent } from './layout/error-layout/error-layout.component';
 
 const routes: Routes = [
   {
-    path: "",
-    redirectTo: "/login",
-    pathMatch: "full",
+    path: '',
+    redirectTo: '/login',
+    pathMatch: 'full',
   },
   {
-    path: "",
+    path: '',
     component: ContentLayoutComponent,
     //canActivate: [AuthGuard],
     children: [
       {
-        path: "accounts-table",
+        path: 'accounts-table',
         loadChildren: () =>
-          import("@modules/accounts-table/accounts-table.module").then(
-            (m) => m.AccountsTableModule
+          import('@modules/accounts-table/accounts-table.module').then(
+            (m) => m.AccountsTableModule,
           ),
       },
       {
-        path: "accounts-tree",
+        path: 'accounts-tree',
         loadChildren: () =>
-          import("@modules/accounts-tree/accounts-tree.module").then(
-            (m) => m.AccountsTreeModule
+          import('@modules/accounts-tree/accounts-tree.module').then(
+            (m) => m.AccountsTreeModule,
           ),
       },
       {
-        path: "admin/settings",
+        path: 'admin/settings',
         loadChildren: () =>
-          import("@modules/admin-settings/admin-settings.module").then(
-            (m) => m.AdminSettingsModule
+          import('@modules/admin-settings/admin-settings.module').then(
+            (m) => m.AdminSettingsModule,
           ),
       },
       {
-        path: "admin/settings/user/create",
+        path: 'admin/settings/user/create',
         loadChildren: () =>
           import(
-            "@modules/admin-settings-user-create/admin-settings-user-create.module"
+            '@modules/admin-settings-user-create/admin-settings-user-create.module'
           ).then((m) => m.AdminSettingsUserCreateModule),
       },
       {
-        path: "home",
+        path: 'home',
         loadChildren: () =>
-          import("@modules/home/home.module").then((m) => m.HomeModule),
+          import('@modules/home/home.module').then((m) => m.HomeModule),
       },
       {
-        path: "import",
+        path: 'import',
         loadChildren: () =>
-          import("@modules/import/import.module").then((m) => m.ImportModule),
+          import('@modules/import/import.module').then((m) => m.ImportModule),
       },
       {
-        path: "profile",
+        path: 'profile',
         loadChildren: () =>
-          import("@modules/profile/profile.module").then(
-            (m) => m.ProfileModule
+          import('@modules/profile/profile.module').then(
+            (m) => m.ProfileModule,
           ),
       },
     ],
   },
   {
-    path: "error",
+    path: 'error',
     component: ErrorLayoutComponent,
     loadChildren: () =>
-      import("@modules/error/error.module").then((m) => m.ErrorModule),
+      import('@modules/error/error.module').then((m) => m.ErrorModule),
   },
   {
-    path: "login",
+    path: 'login',
     component: AuthLayoutComponent,
     loadChildren: () =>
-      import("@modules/login/login.module").then((m) => m.LoginModule),
+      import('@modules/login/login.module').then((m) => m.LoginModule),
   },
-  { path: "**", redirectTo: "/login" },
+  { path: '**', redirectTo: '/login' },
   // { path: '**', component: PageNotFoundComponent },
 ];
 
@@ -88,7 +88,7 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(
       routes,
-      { enableTracing: false /*, relativeLinkResolution: "legacy"*/ } // <-- debugging purposes only
+      { enableTracing: false /*, relativeLinkResolution: "legacy"*/ }, // <-- debugging purposes only
     ),
   ],
   exports: [RouterModule],

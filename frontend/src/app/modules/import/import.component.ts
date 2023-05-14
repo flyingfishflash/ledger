@@ -1,18 +1,18 @@
 // angular
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
 // third party
-import { Subscription } from "rxjs";
+// import { Subscription } from 'rxjs';
 
 // core and shared
-import { environment } from "environments/environment";
-import { StorageService } from "@core/storage/storage.service";
-import { Logger } from "@core/logging/logger.service";
-import { BookService } from "@shared/books/book.service";
-import { concatMap } from "rxjs/operators";
-import { ImportService } from "./import.service";
+// import { environment } from 'environments/environment';
+import { StorageService } from '@core/storage/storage.service';
+import { Logger } from '@core/logging/logger.service';
+import { BookService } from '@shared/books/book.service';
+import { concatMap } from 'rxjs/operators';
+import { ImportService } from './import.service';
 
-const log = new Logger("import.component");
+const log = new Logger('import.component');
 
 export interface Comp {
   component: string;
@@ -24,26 +24,26 @@ export interface Comp {
 }
 
 @Component({
-  selector: "app-import",
-  templateUrl: "./import.component.html",
-  styleUrls: ["./import.component.css"],
+  selector: 'app-import',
+  templateUrl: './import.component.html',
+  styleUrls: ['./import.component.css'],
 })
 export class ImportComponent implements OnInit, OnDestroy {
-  componentHeading = "Import";
+  componentHeading = 'Import';
 
-  uploadFileName = "";
+  uploadFileName = '';
   file: File;
   activeBookId: number;
 
   displayedColumnsCommodities: string[] = [
-    "Component",
-    "Gnc Count",
-    "Sent to Adapter",
-    "Persisted",
-    "Ignored Templates",
-    "Ignored Currencies",
+    'Component',
+    'Gnc Count',
+    'Sent to Adapter',
+    'Persisted',
+    'Ignored Templates',
+    'Ignored Currencies',
   ];
-  displayedColumns: string[] = ["Property", "Value"];
+  displayedColumns: string[] = ['Property', 'Value'];
 
   dataSource: Comp[];
   thisdata: Comp[];
@@ -51,7 +51,7 @@ export class ImportComponent implements OnInit, OnDestroy {
   constructor(
     private bookService: BookService,
     private importService: ImportService,
-    private storageService: StorageService
+    private storageService: StorageService,
   ) {}
 
   ngOnInit(): void {
@@ -71,7 +71,7 @@ export class ImportComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    log.debug("ngOnDestroy");
+    log.debug('ngOnDestroy');
   }
 
   uploadSelected(files: File[]): void {
@@ -84,8 +84,8 @@ export class ImportComponent implements OnInit, OnDestroy {
   onUploadClick(): void {
     if (this.file) {
       const cleanFileName: string = this.file.name.replace(
-        /[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,
-        ""
+        /[`~!@#$%^&*()_|+\-=?;:'",.<>{}[\]\\/]/gi,
+        '',
       );
 
       this.bookService
@@ -96,28 +96,28 @@ export class ImportComponent implements OnInit, OnDestroy {
             this.activeBookId = successResponse.content.id;
             const uploadFileForm = new FormData();
             uploadFileForm.append(
-              "bookId",
-              '{ "bookId":"' + successResponse.content.id + '" }'
+              'bookId',
+              '{ "bookId":"' + successResponse.content.id + '" }',
             );
-            uploadFileForm.append("file", this.file);
+            uploadFileForm.append('file', this.file);
             return this.importService.uploadFile(uploadFileForm);
-          })
+          }),
         )
         .subscribe(
           (successReponse) => {
             log.debug(successReponse);
-            log.debug("import success");
+            log.debug('import success');
             this.storageService.saveActiveBookId(this.activeBookId);
           },
           (ledgerErrorResponse) => {
-            log.debug("import error");
-          }
+            log.debug('import error');
+          },
         );
     }
   }
 
   onClearClick(): void {
-    this.uploadFileName = "";
+    this.uploadFileName = '';
     this.file = null;
   }
 }

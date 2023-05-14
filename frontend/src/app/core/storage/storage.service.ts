@@ -1,25 +1,25 @@
 // angular
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
 // core and shared
-import { BasicAuthUser } from "@core/authentication/basic-auth-user";
-import { Logger } from "@core/logging/logger.service";
+import { BasicAuthUser } from '@core/authentication/basic-auth-user';
+import { Logger } from '@core/logging/logger.service';
 
-const STORAGE_KEY_AUTHENTICATED_USER = "authenticated-user";
-const STORAGE_KEY_ACTIVE_BOOK_ID = "active-book-id";
-const log = new Logger("storage.service");
+const STORAGE_KEY_AUTHENTICATED_USER = 'authenticated-user';
+const STORAGE_KEY_ACTIVE_BOOK_ID = 'active-book-id';
+const log = new Logger('storage.service');
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class StorageService {
-  constructor() {}
+  // constructor() {}
 
   public saveAuthenticatedUser(user: BasicAuthUser) {
     window.sessionStorage.removeItem(STORAGE_KEY_AUTHENTICATED_USER);
     window.sessionStorage.setItem(
       STORAGE_KEY_AUTHENTICATED_USER,
-      JSON.stringify(user)
+      JSON.stringify(user),
     );
   }
 
@@ -60,7 +60,7 @@ export class StorageService {
     window.sessionStorage.removeItem(STORAGE_KEY_ACTIVE_BOOK_ID);
     window.sessionStorage.setItem(
       STORAGE_KEY_ACTIVE_BOOK_ID,
-      bookId.toString()
+      bookId.toString(),
     );
   }
 

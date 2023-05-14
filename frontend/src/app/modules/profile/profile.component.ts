@@ -1,29 +1,29 @@
 // angular
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
-} from "@angular/forms";
+} from '@angular/forms';
 
 // third party
-import { Observable } from "rxjs";
+import { Observable } from 'rxjs';
 
 // core and shared
-import { StorageService } from "@core/storage/storage.service";
-import { DirtyCheckService } from "@shared/dirty-check/dirty-check.service";
-import { ObjectEqualityState } from "@shared/equal-objects/equal-objects.service";
-import { ValidationService } from "@core/validation/validation.service";
-import { UtilitiesService } from "@shared/utilities/utilities.service";
-import { ProfileService } from "./profile.service";
+import { StorageService } from '@core/storage/storage.service';
+import { DirtyCheckService } from '@shared/dirty-check/dirty-check.service';
+import { ObjectEqualityState } from '@shared/equal-objects/equal-objects.service';
+import { ValidationService } from '@core/validation/validation.service';
+import { UtilitiesService } from '@shared/utilities/utilities.service';
+import { ProfileService } from './profile.service';
 
 @Component({
-  selector: "app-profile",
-  templateUrl: "./profile.component.html",
-  styleUrls: ["./profile.component.css"],
+  selector: 'app-profile',
+  templateUrl: './profile.component.html',
+  styleUrls: ['./profile.component.css'],
 })
 export class ProfileComponent implements OnInit, OnDestroy {
-  componentHeading = "Profile";
+  componentHeading = 'Profile';
   userDetailsForm: UntypedFormGroup;
   isPasswordHidden = true;
   isDirty$: Observable<ObjectEqualityState>;
@@ -35,20 +35,20 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private profileService: ProfileService,
     private storageService: StorageService,
     private utilitiesService: UtilitiesService,
-    private formBuilder: UntypedFormBuilder
+    private formBuilder: UntypedFormBuilder,
   ) {}
 
   ngOnInit() {
     this.userDetailsForm = this.formBuilder.group({
-      id: [""],
+      id: [''],
       email: [
-        "",
+        '',
         [Validators.required, Validators.email, Validators.maxLength(50)],
       ],
-      firstName: ["", [Validators.required, Validators.maxLength(50)]],
-      lastName: ["", [Validators.required, Validators.maxLength(50)]],
+      firstName: ['', [Validators.required, Validators.maxLength(50)]],
+      lastName: ['', [Validators.required, Validators.maxLength(50)]],
       password: [
-        "",
+        '',
         [
           Validators.minLength(8),
           Validators.maxLength(128),
@@ -62,8 +62,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
           ValidationService.patternValidator(/\d/, { hasNumber: true }),
           // check whether the entered password has a special character
           ValidationService.patternValidator(
-            /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/,
-            { hasSpecialCharacters: true }
+            /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/,
+            { hasSpecialCharacters: true },
           ),
         ],
       ],
@@ -93,7 +93,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
 
     this.isDirty$ = this.userDetailsForm.valueChanges.pipe(
-      this.dirtyCheckService.dirtyCheck(this.profileService.$getSubject)
+      this.dirtyCheckService.dirtyCheck(this.profileService.$getSubject),
     );
   }
 
@@ -111,7 +111,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     if (!this.utilitiesService.isEmptyObject(userDetailsPayload)) {
       this.profileService.userDetailsUpdate(
         userDetailsPayload,
-        this.userDetailsForm.controls.id.value
+        this.userDetailsForm.controls.id.value,
       );
     }
   }

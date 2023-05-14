@@ -1,18 +1,18 @@
 // angular
-import { Component, OnInit } from "@angular/core";
-import { MatTabChangeEvent } from "@angular/material/tabs";
-import { Router } from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { MatTabChangeEvent } from '@angular/material/tabs';
+import { Router } from '@angular/router';
 
 // core and shared
-import { UserService } from "@shared/users/user.service";
+import { UserService } from '@shared/users/user.service';
 
 @Component({
-  selector: "app-admin-settings",
-  templateUrl: "./admin-settings.component.html",
-  styleUrls: ["./admin-settings.component.css"],
+  selector: 'app-admin-settings',
+  templateUrl: './admin-settings.component.html',
+  styleUrls: ['./admin-settings.component.css'],
 })
 export class AdminSettingsComponent implements OnInit {
-  componentHeading = "Settings";
+  componentHeading = 'Settings';
   users;
 
   constructor(private userService: UserService, private router: Router) {}

@@ -1,26 +1,26 @@
 // angular
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit } from '@angular/core';
 
 // third party
-import { throwError } from "rxjs";
+import { throwError } from 'rxjs';
 
 // core and shared
-import { IAccount } from "@shared/accounts/account";
-import { AccountsService } from "@shared/accounts/accounts.service";
-import { Logger } from "@core/logging/logger.service";
+import { IAccount } from '@shared/accounts/account';
+import { AccountsService } from '@shared/accounts/accounts.service';
+import { Logger } from '@core/logging/logger.service';
 
-const log = new Logger("accounts-table.component");
+const log = new Logger('accounts-table.component');
 
 @Component({
-  selector: "app-accounts-table",
-  templateUrl: "./accounts-table.component.html",
-  styleUrls: ["./accounts-table.component.css"],
+  selector: 'app-accounts-table',
+  templateUrl: './accounts-table.component.html',
+  styleUrls: ['./accounts-table.component.css'],
 })
 export class AccountsTableComponent implements OnInit {
   _listFilter: string;
 
-  componentHeading = "Accounts Table";
-  displayedColumns: string[] = ["name", "code", "description", "action"];
+  componentHeading = 'Accounts Table';
+  displayedColumns: string[] = ['name', 'code', 'description', 'action'];
 
   errorMessage: any;
 
@@ -47,7 +47,7 @@ export class AccountsTableComponent implements OnInit {
     filterBy = filterBy.toLocaleLowerCase();
     return this.accounts.filter(
       (account: IAccount) =>
-        account.name.toLocaleLowerCase().indexOf(filterBy) !== -1
+        account.name.toLocaleLowerCase().indexOf(filterBy) !== -1,
     );
   }
 
@@ -75,7 +75,7 @@ export class AccountsTableComponent implements OnInit {
 
   handleError(error: any) {
     log.debug(error);
-    let errorMessage = "";
+    let errorMessage = '';
     if (error.error instanceof ErrorEvent) {
       errorMessage = `A client internal error occurred:\nError Message: ${error.error.message}`;
     } else {

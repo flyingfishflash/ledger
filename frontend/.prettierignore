@@ -5,5 +5,5 @@ node_modules
 .angular
 dist
 package.json
-package-log.json
+package-lock.json
 polyfills.ts

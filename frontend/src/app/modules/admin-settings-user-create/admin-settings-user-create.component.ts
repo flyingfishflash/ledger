@@ -1,18 +1,21 @@
 // angular
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
-} from "@angular/forms";
+} from '@angular/forms';
 
 // third party
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, Observable } from 'rxjs';
 
 // core and shared
-import { rolesArray } from "@shared/users/role";
-import { UserService } from "@shared/users/user.service";
-import { ValidationService } from "@core/validation/validation.service";
+import { rolesArray } from '@shared/users/role';
+import { UserService } from '@shared/users/user.service';
+import { ValidationService } from '@core/validation/validation.service';
+import { Logger } from '@core/logging/logger.service';
+
+const LOGGER = new Logger('login.component');
 
 interface CreateUserStatus {
   userDetailsOK: boolean;
@@ -20,12 +23,12 @@ interface CreateUserStatus {
 }
 
 @Component({
-  selector: "app-admin-settings-user-create",
-  templateUrl: "./admin-settings-user-create.component.html",
-  styleUrls: ["./admin-settings-user-create.component.css"],
+  selector: 'app-admin-settings-user-create',
+  templateUrl: './admin-settings-user-create.component.html',
+  styleUrls: ['./admin-settings-user-create.component.css'],
 })
 export class AdminSettingsUserCreateComponent implements OnInit {
-  componentHeading = "Create User";
+  componentHeading = 'Create User';
   userForm: UntypedFormGroup;
   rolesArray = rolesArray;
   hide = true;
@@ -39,7 +42,7 @@ export class AdminSettingsUserCreateComponent implements OnInit {
 
   constructor(
     private formBuilder: UntypedFormBuilder,
-    private userService: UserService
+    private userService: UserService,
   ) {}
 
   ngOnInit(): void {
@@ -47,22 +50,22 @@ export class AdminSettingsUserCreateComponent implements OnInit {
 
     this.userForm = this.formBuilder.group({
       username: [
-        "",
+        '',
         [
           Validators.required,
           Validators.minLength(5),
           Validators.maxLength(20),
         ],
       ],
-      firstName: ["", [Validators.required, Validators.maxLength(50)]],
-      lastName: ["", [Validators.required, Validators.maxLength(50)]],
+      firstName: ['', [Validators.required, Validators.maxLength(50)]],
+      lastName: ['', [Validators.required, Validators.maxLength(50)]],
       email: [
-        "",
+        '',
         [Validators.required, Validators.email, Validators.maxLength(50)],
       ],
-      role: ["", Validators.required],
+      role: ['', Validators.required],
       password: [
-        "",
+        '',
         [
           Validators.minLength(8),
           Validators.maxLength(128),
@@ -76,8 +79,8 @@ export class AdminSettingsUserCreateComponent implements OnInit {
           ValidationService.patternValidator(/\d/, { hasNumber: true }),
           // check whether the entered password has a special character
           ValidationService.patternValidator(
-            /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/,
-            { hasSpecialCharacters: true }
+            /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/,
+            { hasSpecialCharacters: true },
           ),
         ],
       ],
@@ -97,7 +100,7 @@ export class AdminSettingsUserCreateComponent implements OnInit {
         ps.userDetailsOK = true;
         ps.message =
           new Date().toLocaleTimeString() +
-          ": " +
+          ': ' +
           successResponse.content.message;
         this.createUserStatusSubject.next(ps);
       },
@@ -106,12 +109,14 @@ export class AdminSettingsUserCreateComponent implements OnInit {
         ps.userDetailsOK = false;
         ps.message =
           new Date().toLocaleTimeString() +
-          ": " +
+          ': ' +
           ledgerErrorResponse.error.content.message;
         this.createUserStatusSubject.next(ps);
-      }
+      },
     );
   }
 
-  onCancel(): void {}
+  onCancel(): void {
+    LOGGER.debug('cancel clicked');
+  }
 }

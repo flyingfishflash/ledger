@@ -9,15 +9,13 @@
 
     <mat-card-content>
       <mat-form-field
-        style="padding: 0.5rem 0.5rem 0.5rem 0; box-sizing: border-box"
-      >
+        style="padding: 0.5rem 0.5rem 0.5rem 0; box-sizing: border-box">
         <input
           matInput
           disabled
           #fileInputHolder
           placeholder="File name"
-          [ngModel]="uploadFileName"
-        />
+          [ngModel]="uploadFileName" />
         <input
           type="file"
           name="dataFile"
@@ -25,8 +23,7 @@
           #fileInput
           style="display: none"
           accept=".gnucash"
-          (change)="uploadSelected($event.target.files)"
-        />
+          (change)="uploadSelected($event.target.files)" />
       </mat-form-field>
       <div class="button-group">
         <span>
@@ -35,8 +32,7 @@
             mat-flat-button
             color="primary"
             (click)="fileInput.click()"
-            style="margin-right: 1rem"
-          >
+            style="margin-right: 1rem">
             Browse
           </button>
         </span>
@@ -47,8 +43,7 @@
             (click)="onUploadClick()"
             matTooltip="Upload selected file"
             [disabled]="uploadFileName === ''"
-            style="margin-right: 1rem"
-          >
+            style="margin-right: 1rem">
             Upload
           </button>
         </span>
@@ -58,8 +53,7 @@
             mat-flat-button
             (click)="onClearClick()"
             matTooltip="Clear selected file"
-            [disabled]="uploadFileName === ''"
-          >
+            [disabled]="uploadFileName === ''">
             Clear
           </button>
         </span>
@@ -125,8 +119,7 @@
       <mat-card
         appearance="outlined"
         class="no-expansion"
-        style="margin-top: 16px"
-      >
+        style="margin-top: 16px">
         <mat-card-content>
           <ul>
             <li class="message">No Messages</li>

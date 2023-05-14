@@ -1,10 +1,8 @@
 <div class="pure-g">
   <div
-    class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-4 pure-u-xl-1-3 pure-u-xxl-9-24"
-  ></div>
+    class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-4 pure-u-xl-1-3 pure-u-xxl-9-24"></div>
   <div
-    class="pure-u-22-24 pure-u-md-3-5 pure-u-lg-1-2 pure-u-xl-1-3 pure-u-xxl-6-24"
-  >
+    class="pure-u-22-24 pure-u-md-3-5 pure-u-lg-1-2 pure-u-xl-1-3 pure-u-xxl-6-24">
     <div id="primary-content" style="box-sizing: border-box">
       <mat-card appearance="outlined">
         <mat-card-content>
@@ -14,17 +12,16 @@
               src="/assets/images/project-icon.png"
               width="100"
               height="100"
-              alt="ledger logo"
-            />
+              alt="ledger logo" />
             <h2 class="mat-h2">Ledger</h2>
             <h3 class="mat-h3" style="margin: 0.8rem">
               {{ buildProperties.version }}
             </h3>
             <p class="mat-small" style="margin: 0.1rem">
-              {{ buildProperties.time | date : "mediumDate" : "UTC" }}
+              {{ buildProperties.time | date : 'mediumDate' : 'UTC' }}
             </p>
             <p class="mat-small" style="margin: 0.1rem">
-              {{ buildProperties.time | date : "longTime" : "UTC" }}
+              {{ buildProperties.time | date : 'longTime' : 'UTC' }}
             </p>
             <p class="mat-small" style="margin: 0.1rem">
               <br />
@@ -37,8 +34,7 @@
           <mat-tab-group
             animationDuration="0ms"
             id="login-tab-group"
-            style="margin-top: 3rem"
-          >
+            style="margin-top: 3rem">
             <mat-tab label="Application">
               <div style="margin: 1rem">
                 <div style="padding: 3rem; height: 300px">
@@ -47,8 +43,7 @@
                     name="form"
                     (ngSubmit)="f.form.valid && onSubmit()"
                     #f="ngForm"
-                    novalidate
-                  >
+                    novalidate>
                     <mat-form-field>
                       <input
                         matInput
@@ -59,8 +54,7 @@
                         [(ngModel)]="form.username"
                         [disabled]="isLoginDisabled"
                         (focusin)="onFocusInEvent()"
-                        #username="ngModel"
-                      />
+                        #username="ngModel" />
                     </mat-form-field>
 
                     <mat-form-field>
@@ -74,18 +68,16 @@
                         [type]="isPasswordHidden ? 'password' : 'text'"
                         [disabled]="isLoginDisabled"
                         (focusin)="onFocusInEvent()"
-                        #password="ngModel"
-                      />
+                        #password="ngModel" />
                       <button
                         mat-icon-button
                         matSuffix
                         type="button"
                         (click)="isPasswordHidden = !isPasswordHidden"
                         [attr.aria-label]="'Hide password'"
-                        [attr.aria-pressed]="isPasswordHidden"
-                      >
+                        [attr.aria-pressed]="isPasswordHidden">
                         <mat-icon class="password-visibility-indicator">{{
-                          isPasswordHidden ? "visibility_off" : "visibility"
+                          isPasswordHidden ? 'visibility_off' : 'visibility'
                         }}</mat-icon>
                       </button>
                     </mat-form-field>
@@ -95,16 +87,14 @@
                       style="margin-top: 1rem; width: 100%"
                       mat-flat-button
                       color="primary"
-                      [disabled]="isLoginDisabled"
-                    >
+                      [disabled]="isLoginDisabled">
                       Login
                     </button>
                     <div style="margin-top: 32px">
                       <div
                         *ngIf="
                           (f.submitted && isLoginFailed) || this.isLoginDisabled
-                        "
-                      >
+                        ">
                         <mat-error
                           ><span>{{ errorMessage }}</span></mat-error
                         >
@@ -113,8 +103,7 @@
                         *ngIf="
                           f.submitted && username.invalid && password.invalid
                         "
-                        style="word-wrap: break-word; margin: 16px"
-                      >
+                        style="word-wrap: break-word; margin: 16px">
                         <mat-error
                           *ngIf="
                             username.errors.required && password.errors.required
@@ -126,8 +115,7 @@
                         *ngIf="
                           f.submitted && username.invalid && !password.invalid
                         "
-                        style="margin: 16px"
-                      >
+                        style="margin: 16px">
                         <mat-error *ngIf="username.errors.required"
                           >Username is a required field</mat-error
                         >
@@ -136,8 +124,7 @@
                         *ngIf="
                           f.submitted && !username.invalid && password.invalid
                         "
-                        style="margin: 16px"
-                      >
+                        style="margin: 16px">
                         <mat-error *ngIf="password.errors.required"
                           >Password is a required field</mat-error
                         >
@@ -159,8 +146,7 @@
                         width="35"
                         height="35"
                         alt="zitadel logo"
-                        style="padding: 1rem"
-                      />Zitadel
+                        style="padding: 1rem" />Zitadel
                     </mat-grid-tile>
                     <mat-grid-tile>
                       <img
@@ -169,8 +155,7 @@
                         width="35"
                         height="35"
                         alt="github logo"
-                        style="padding: 1rem"
-                      />Github
+                        style="padding: 1rem" />Github
                     </mat-grid-tile>
                   </mat-grid-list>
                 </div>
@@ -182,6 +167,5 @@
     </div>
   </div>
   <div
-    class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-4 pure-u-xl-1-3 pure-u-xxl-9-24"
-  ></div>
+    class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-4 pure-u-xl-1-3 pure-u-xxl-9-24"></div>
 </div>

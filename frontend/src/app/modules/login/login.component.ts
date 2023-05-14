@@ -1,26 +1,26 @@
 // angular
-import { HttpErrorResponse } from "@angular/common/http";
-import { Component, OnInit } from "@angular/core";
-import { Router, ActivatedRoute } from "@angular/router";
-import { MatIconRegistry } from "@angular/material/icon";
-import { DomSanitizer } from "@angular/platform-browser";
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
 
 // third party
-import { first } from "rxjs/operators";
-import { throwError } from "rxjs";
+import { first } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 // core and shared
-import { ActuatorService } from "@shared/actuator/actuator.service";
-import { AppConfigRuntime } from "app/app-config-runtime";
-import { BuildProperties } from "app/app-build-properties";
-import { BasicAuthService } from "@core/authentication/basic-auth.service";
-import { Logger } from "@core/logging/logger.service";
+import { ActuatorService } from '@shared/actuator/actuator.service';
+import { AppConfigRuntime } from 'app/app-config-runtime';
+import { BuildProperties } from 'app/app-build-properties';
+import { BasicAuthService } from '@core/authentication/basic-auth.service';
+import { Logger } from '@core/logging/logger.service';
 
-const log = new Logger("login.component");
+const log = new Logger('login.component');
 
 @Component({
-  templateUrl: "./login.component.html",
-  styleUrls: ["./login.component.scss"],
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
   buildProperties: BuildProperties;
@@ -40,49 +40,49 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private appConfig: AppConfigRuntime,
     private iconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer
+    private domSanitizer: DomSanitizer,
   ) {
     if (this.basicAuthService.userValue) {
-      this.router.navigate(["/home"]);
+      this.router.navigate(['/home']);
     }
 
     if (this.appConfig.buildProperties) {
       this.buildProperties = { ...this.appConfig.buildProperties };
     } else {
-      log.error("Build properties are not populated");
+      log.error('Build properties are not populated');
     }
 
     this.form.submitted = false;
     iconRegistry.addSvgIcon(
-      "sso-zitadel",
+      'sso-zitadel',
       this.domSanitizer.bypassSecurityTrustResourceUrl(
-        "../../../assets/images/zitadel-logo-solo-dark.svg"
-      )
+        '../../../assets/images/zitadel-logo-solo-dark.svg',
+      ),
     );
 
     iconRegistry.addSvgIcon(
-      "sso-github",
+      'sso-github',
       this.domSanitizer.bypassSecurityTrustResourceUrl(
-        "../../../assets/images/github-mark.svg"
-      )
+        '../../../assets/images/github-mark.svg',
+      ),
     );
   }
 
   ngOnInit() {
-    this.returnUrl = this.route.snapshot.queryParams.returnUrl || "/";
+    this.returnUrl = this.route.snapshot.queryParams.returnUrl || '/';
 
     this.actuatorService.getHealthStatusSimple().subscribe({
       next: (healthStatusSimple) => {
         if (healthStatusSimple) {
-          log.debug("Api server health status is UP");
+          log.debug('Api server health status is UP');
           this.isLoginDisabled = false;
         } else {
-          log.debug("Api server health status is not UP");
-          this.errorMessage = "Api server status is not UP";
+          log.debug('Api server health status is not UP');
+          this.errorMessage = 'Api server status is not UP';
         }
       },
       error: (error) => {
-        log.debug("health subscription" + error);
+        log.debug('health subscription' + error);
         this.handleError(error);
       },
     });
@@ -93,7 +93,7 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
-    log.debug("onSubmit");
+    log.debug('onSubmit');
     this.onSubmitBasicAuth();
   }
 
@@ -109,7 +109,7 @@ export class LoginComponent implements OnInit {
         next: () => {
           this.isLoggedIn = true;
           this.isLoginFailed = false;
-          this.router.navigateByUrl("/home");
+          this.router.navigateByUrl('/home');
           //this.router.navigate([this.returnUrl]);
         },
         error: (err) => {
@@ -124,23 +124,23 @@ export class LoginComponent implements OnInit {
     if (error.error instanceof ErrorEvent) {
       errorMessage = `A client internal error occurred:\nError Message: ${error.error.detail}`;
     } else if (error instanceof HttpErrorResponse) {
-      log.debug("httperror");
+      log.debug('httperror');
       if (error.error.disposition) {
-        log.debug("api error");
-        if (error.error.disposition === "failure") {
-          if (error.url.includes("/health")) {
+        log.debug('api error');
+        if (error.error.disposition === 'failure') {
+          if (error.url.includes('/health')) {
             errorMessage = `Api healthcheck failed: ${error.error.content.title}`;
           } else {
             errorMessage = error.error.content.detail;
           }
         }
       } else {
-        log.debug("non-api error");
+        log.debug('non-api error');
         log.error(
-          `A server-side error occured:\nError Status: ${error.status}\nError Message: ${error.message}`
+          `A server-side error occured:\nError Status: ${error.status}\nError Message: ${error.message}`,
         );
-        if (error.url.includes("/health")) {
-          errorMessage = "Api server could not be reached. Is it running?";
+        if (error.url.includes('/health')) {
+          errorMessage = 'Api server could not be reached. Is it running?';
         }
       }
     }
