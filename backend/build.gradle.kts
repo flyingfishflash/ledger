@@ -38,7 +38,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
   implementation("org.springframework.session:spring-session-core:$springSessionVersion")
   implementation("org.springframework.session:spring-session-jdbc:$springSessionVersion")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
   implementation("org.zalando:jackson-datatype-money:1.3.0")
   runtimeOnly("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
   testImplementation("org.springframework.security:spring-security-test:6.0.3")
