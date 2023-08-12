@@ -24,7 +24,7 @@ dependencies {
   implementation("com.h2database:h2:2.2.220")
   implementation("com.vladmihalcea:hibernate-types-60:2.21.1")
   implementation("commons-validator:commons-validator:1.7")
-  implementation("jakarta.interceptor:jakarta.interceptor-api:2.1.0")
+  implementation("jakarta.interceptor:jakarta.interceptor-api:2.2.0-RC1")
   implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
   implementation("jakarta.validation:jakarta.validation-api:3.0.2")
   implementation("org.flywaydb:flyway-core:9.17.0")
