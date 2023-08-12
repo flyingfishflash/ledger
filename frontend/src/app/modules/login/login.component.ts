@@ -10,11 +10,11 @@ import { first } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
 // core and shared
-import { ActuatorService } from '@shared/actuator/actuator.service';
-import { AppConfigRuntime } from 'app/app-config-runtime';
-import { BuildProperties } from 'app/app-build-properties';
-import { BasicAuthService } from '@core/authentication/basic-auth.service';
-import { Logger } from '@core/logging/logger.service';
+import { ActuatorService } from '../../shared/actuator/actuator.service';
+import { AppConfigRuntime } from '../../../app/app-config-runtime';
+import { BuildProperties } from '../../../app/app-build-properties';
+import { BasicAuthService } from '../../core/authentication/basic-auth.service';
+import { Logger } from '../../core/logging/logger.service';
 
 const log = new Logger('login.component');
 
@@ -24,7 +24,7 @@ const log = new Logger('login.component');
 })
 export class LoginComponent implements OnInit {
   buildProperties: BuildProperties;
-  errorMessage = null;
+  errorMessage = '';
   form: any = {};
   isPasswordHidden = true;
   isLoggedIn = false;
@@ -69,7 +69,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.returnUrl = this.route.snapshot.queryParams.returnUrl || '/';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
 
     this.actuatorService.getHealthStatusSimple().subscribe({
       next: (healthStatusSimple) => {
@@ -120,15 +120,16 @@ export class LoginComponent implements OnInit {
 
   private handleError(error: any) {
     log.debug(error);
-    let errorMessage = null;
+    let errorMessage = '';
     if (error.error instanceof ErrorEvent) {
       errorMessage = `A client internal error occurred:\nError Message: ${error.error.detail}`;
     } else if (error instanceof HttpErrorResponse) {
       log.debug('httperror');
+      const errorUrl = error.url ?? '';
       if (error.error.disposition) {
         log.debug('api error');
         if (error.error.disposition === 'failure') {
-          if (error.url.includes('/health')) {
+          if (errorUrl.includes('/health')) {
             errorMessage = `Api healthcheck failed: ${error.error.content.title}`;
           } else {
             errorMessage = error.error.content.detail;
@@ -136,10 +137,11 @@ export class LoginComponent implements OnInit {
         }
       } else {
         log.debug('non-api error');
+        const errorUrl = error.url ?? '';
         log.error(
           `A server-side error occured:\nError Status: ${error.status}\nError Message: ${error.message}`,
         );
-        if (error.url.includes('/health')) {
+        if (errorUrl.includes('/health')) {
           errorMessage = 'Api server could not be reached. Is it running?';
         }
       }

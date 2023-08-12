@@ -5,9 +5,9 @@ import { Component, OnInit } from '@angular/core';
 import { throwError } from 'rxjs';
 
 // core and shared
-import { IAccount } from '@shared/accounts/account';
-import { AccountsService } from '@shared/accounts/accounts.service';
-import { Logger } from '@core/logging/logger.service';
+import { IAccount } from '../../shared/accounts/account';
+import { AccountsService } from '../../shared/accounts/accounts.service';
+import { Logger } from '../../core/logging/logger.service';
 
 const log = new Logger('accounts-table.component');
 
@@ -45,9 +45,8 @@ export class AccountsTableComponent implements OnInit {
 
   performFilter(filterBy: string): IAccount[] {
     filterBy = filterBy.toLocaleLowerCase();
-    return this.accounts.filter(
-      (account: IAccount) =>
-        account.name.toLocaleLowerCase().indexOf(filterBy) !== -1,
+    return this.accounts.filter((account: IAccount) =>
+      account.name.toLocaleLowerCase().includes(filterBy),
     );
   }
 

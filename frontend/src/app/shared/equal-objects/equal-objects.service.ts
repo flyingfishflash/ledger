@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 
 // core and shared
-import { Logger } from '@core/logging/logger.service';
+import { Logger } from '../../core/logging/logger.service';
 
 const log = new Logger('equal-objects.service');
 
@@ -37,7 +37,7 @@ export class EqualObjectsService {
     }
 
     // If items are not an object or array, return false
-    if (['[object Array]', '[object Object]'].indexOf(type) < 0) {
+    if (!['[object Array]', '[object Object]'].includes(type)) {
       myReturn.equal = false;
       // log.debug(myReturn);
       return myReturn;
@@ -62,7 +62,7 @@ export class EqualObjectsService {
       const itemType = Object.prototype.toString.call(item1);
 
       // If an object or array, compare recursively
-      if (['[object Array]', '[object Object]'].indexOf(itemType) >= 0) {
+      if (['[object Array]', '[object Object]'].includes(itemType)) {
         if (!this.isEqual(item1, item2)) {
           myReturn.equal = false;
           // log.debug(myReturn);
@@ -100,7 +100,7 @@ export class EqualObjectsService {
     // Compare properties
     if (type === '[object Array]') {
       for (let i = 0; i < valueLen; i++) {
-        if (compare(value[i], other[i]) === false) {
+        if (!compare(value[i], other[i])) {
           myReturn.equal = false;
           // log.debug(myReturn);
           return myReturn;
@@ -110,7 +110,7 @@ export class EqualObjectsService {
       for (const key in value) {
         if (Object.prototype.hasOwnProperty.call(value, key)) {
           // log.debug(key);
-          if (compare(value[key], other[key]) === false) {
+          if (!compare(value[key], other[key])) {
             myReturn.equal = false;
             myReturn.differences.push(key);
             // log.debug(myReturn);

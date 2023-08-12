@@ -4,7 +4,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Router } from '@angular/router';
 
 // core and shared
-import { UserService } from '@shared/users/user.service';
+import { UserService } from '../../shared/users/user.service';
 
 @Component({
   selector: 'app-admin-settings',

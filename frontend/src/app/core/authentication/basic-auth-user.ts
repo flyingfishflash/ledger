@@ -5,13 +5,13 @@ export class BasicAuthUser {
   readonly id: number;
   readonly username: string;
   readonly roles: BasicAuthUserRole[];
-  readonly sessionId?: string;
+  readonly sessionId: string = '';
 
   constructor(response: HttpResponse<any>) {
     this.id = response.body.content.id;
     this.username = response.body.content.username;
     this.roles = response.body.content.roles;
-    this.sessionId = response.headers.get('x-auth-token');
+    this.sessionId = response.headers.get('x-auth-token') ?? '';
   }
 }
 

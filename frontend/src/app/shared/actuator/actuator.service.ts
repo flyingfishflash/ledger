@@ -7,7 +7,7 @@ import { Observable, throwError, map } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 // core and shared
-import { environment } from '@env';
+import { environment } from '../../../environments/environment';
 import { ActuatorHealth } from './actuator-health';
 import { ActuatorInfo } from './actuator-info';
 

@@ -6,9 +6,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 
 // core and shared
 // import { environment } from 'environments/environment';
-import { StorageService } from '@core/storage/storage.service';
-import { Logger } from '@core/logging/logger.service';
-import { BookService } from '@shared/books/book.service';
+import { StorageService } from '../../core/storage/storage.service';
+import { Logger } from '../../core/logging/logger.service';
+import { BookService } from '../../shared/books/book.service';
 import { concatMap } from 'rxjs/operators';
 import { ImportService } from './import.service';
 
@@ -118,6 +118,7 @@ export class ImportComponent implements OnInit, OnDestroy {
 
   onClearClick(): void {
     this.uploadFileName = '';
-    this.file = null;
+    // TODO fixs this so file is properly removed
+    //this.file = new File();
   }
 }

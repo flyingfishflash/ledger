@@ -10,15 +10,15 @@ import {
 import { BehaviorSubject, Observable } from 'rxjs';
 
 // core and shared
-import { rolesArray } from '@shared/users/role';
-import { UserService } from '@shared/users/user.service';
-import { ValidationService } from '@core/validation/validation.service';
-import { Logger } from '@core/logging/logger.service';
+import { rolesArray } from '../../shared/users/role';
+import { UserService } from '../../shared/users/user.service';
+import { ValidationService } from '../../core/validation/validation.service';
+import { Logger } from '../../core/logging/logger.service';
 
 const LOGGER = new Logger('login.component');
 
 interface CreateUserStatus {
-  userDetailsOK: boolean;
+  userDetailsOk: boolean;
   message: string;
 }
 
@@ -36,8 +36,8 @@ export class AdminSettingsUserCreateComponent implements OnInit {
 
   createUserStatus$: Observable<CreateUserStatus>;
   createUserStatusSubject = new BehaviorSubject<CreateUserStatus>({
-    userDetailsOK: null,
-    message: null,
+    userDetailsOk: false,
+    message: '',
   });
 
   constructor(
@@ -89,15 +89,15 @@ export class AdminSettingsUserCreateComponent implements OnInit {
 
   onSubmit(): void {
     const createUserStatus: CreateUserStatus = {
-      userDetailsOK: null,
-      message: null,
+      userDetailsOk: false,
+      message: '',
     };
     this.createUserStatusSubject.next(createUserStatus);
 
     this.userService.userSignUp(this.userForm.value).subscribe(
       (successResponse) => {
         const ps: CreateUserStatus = this.createUserStatusSubject.getValue();
-        ps.userDetailsOK = true;
+        ps.userDetailsOk = true;
         ps.message =
           new Date().toLocaleTimeString() +
           ': ' +
@@ -106,7 +106,7 @@ export class AdminSettingsUserCreateComponent implements OnInit {
       },
       (ledgerErrorResponse) => {
         const ps: CreateUserStatus = this.createUserStatusSubject.getValue();
-        ps.userDetailsOK = false;
+        ps.userDetailsOk = false;
         ps.message =
           new Date().toLocaleTimeString() +
           ': ' +

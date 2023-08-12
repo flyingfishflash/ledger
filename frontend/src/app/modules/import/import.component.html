@@ -23,7 +23,7 @@
           #fileInput
           style="display: none"
           accept=".gnucash"
-          (change)="uploadSelected($event.target.files)" />
+          (change)="uploadSelected($any($event).target.files)" />
       </mat-form-field>
       <div class="button-group">
         <span>

@@ -14,22 +14,24 @@
             <mat-label>User Name</mat-label>
             <input matInput formControlName="username" required />
             <mat-error
-              *ngIf="this.userForm.controls.username.hasError('required')">
+              *ngIf="this.userForm.controls['username'].hasError('required')">
               User name is <strong>required</strong>
             </mat-error>
             <mat-error
-              *ngIf="this.userForm.controls.username.hasError('minlength')">
+              *ngIf="this.userForm.controls['username'].hasError('minlength')">
               User name must be at least
               {{
-                this.userForm.controls.username.errors.minlength.requiredLength
+                this.userForm.controls['username'].errors['minlength']
+                  .requiredLength
               }}
               characters.
             </mat-error>
             <mat-error
-              *ngIf="this.userForm.controls.username.hasError('maxlength')">
+              *ngIf="this.userForm.controls['username'].hasError('maxlength')">
               User name must be no more than
               {{
-                this.userForm.controls.username.errors.maxlength.requiredLength
+                this.userForm.controls['username'].errors['maxlength']
+                  .requiredLength
               }}
               characters.
             </mat-error>
@@ -42,14 +44,15 @@
             <mat-label>First Name</mat-label>
             <input matInput formControlName="firstName" required />
             <mat-error
-              *ngIf="this.userForm.controls.firstName.hasError('required')">
+              *ngIf="this.userForm.controls['firstName'].hasError('required')">
               First name is <strong>required</strong>
             </mat-error>
             <mat-error
-              *ngIf="this.userForm.controls.firstName.hasError('maxlength')">
+              *ngIf="this.userForm.controls['firstName'].hasError('maxlength')">
               First name must be no more than
               {{
-                this.userForm.controls.firstName.errors.maxlength.requiredLength
+                this.userForm.controls['firstName'].errors['maxlength']
+                  .requiredLength
               }}
               characters.
             </mat-error>
@@ -62,14 +65,15 @@
             <mat-label>Last Name</mat-label>
             <input matInput formControlName="lastName" required />
             <mat-error
-              *ngIf="this.userForm.controls.lastName.hasError('required')">
+              *ngIf="this.userForm.controls['lastName'].hasError('required')">
               Last name is <strong>required</strong>
             </mat-error>
             <mat-error
-              *ngIf="this.userForm.controls.lastName.hasError('maxlength')">
+              *ngIf="this.userForm.controls['lastName'].hasError('maxlength')">
               Last name must be no more than
               {{
-                this.userForm.controls.lastName.errors.maxlength.requiredLength
+                this.userForm.controls['lastName'].errors['maxlength']
+                  .requiredLength
               }}
               characters.
             </mat-error>
@@ -83,19 +87,22 @@
             <input matInput type="text" formControlName="email" required />
             <mat-error
               *ngIf="
-                this.userForm.controls.email.hasError('email') &&
-                !this.userForm.controls.email.hasError('required')
+                this.userForm.controls['email'].hasError('email') &&
+                !this.userForm.controls['email'].hasError('required')
               ">
               Please enter a valid email address
             </mat-error>
             <mat-error
-              *ngIf="this.userForm.controls.email.hasError('required')">
+              *ngIf="this.userForm.controls['email'].hasError('required')">
               Email is <strong>required</strong>
             </mat-error>
             <mat-error
-              *ngIf="this.userForm.controls.email.hasError('maxlength')">
+              *ngIf="this.userForm.controls['email'].hasError('maxlength')">
               Email must be no more than
-              {{ this.userForm.controls.email.errors.maxlength.requiredLength }}
+              {{
+                this.userForm.controls['email'].errors['maxlength']
+                  .requiredLength
+              }}
               characters.
             </mat-error>
           </mat-form-field>
@@ -145,15 +152,15 @@
                 <label
                   class="col"
                   [ngClass]="
-                    userForm.controls.password.hasError('required') ||
-                    userForm.controls.password.hasError('noWhitespace')
+                    userForm.controls['password'].hasError('required') ||
+                    userForm.controls['password'].hasError('noWhitespace')
                       ? 'text-danger'
                       : 'text-success'
                   ">
                   <i class="material-icons" style="font-size: 1.2rem">
                     {{
-                      userForm.controls.password.hasError('required') ||
-                      userForm.controls.password.hasError('noWhitespace')
+                      userForm.controls['password'].hasError('required') ||
+                      userForm.controls['password'].hasError('noWhitespace')
                         ? 'cancel'
                         : 'check_circle'
                     }}
@@ -167,15 +174,15 @@
                 <label
                   class="col"
                   [ngClass]="
-                    userForm.controls.password.hasError('required') ||
-                    userForm.controls.password.hasError('minlength')
+                    userForm.controls['password'].hasError('required') ||
+                    userForm.controls['password'].hasError('minlength')
                       ? 'text-danger'
                       : 'text-success'
                   ">
                   <i class="material-icons" style="font-size: 1.2rem">
                     {{
-                      userForm.controls.password.hasError('required') ||
-                      userForm.controls.password.hasError('minlength')
+                      userForm.controls['password'].hasError('required') ||
+                      userForm.controls['password'].hasError('minlength')
                         ? 'cancel'
                         : 'check_circle'
                     }}
@@ -188,15 +195,15 @@
                 <label
                   class="col"
                   [ngClass]="
-                    userForm.controls.password.hasError('required') ||
-                    userForm.controls.password.hasError('hasNumber')
+                    userForm.controls['password'].hasError('required') ||
+                    userForm.controls['password'].hasError('hasNumber')
                       ? 'text-danger'
                       : 'text-success'
                   ">
                   <i class="material-icons" style="font-size: 1.2rem">
                     {{
-                      userForm.controls.password.hasError('required') ||
-                      userForm.controls.password.hasError('hasNumber')
+                      userForm.controls['password'].hasError('required') ||
+                      userForm.controls['password'].hasError('hasNumber')
                         ? 'cancel'
                         : 'check_circle'
                     }}
@@ -208,15 +215,15 @@
                 <label
                   class="col"
                   [ngClass]="
-                    userForm.controls.password.hasError('required') ||
-                    userForm.controls.password.hasError('hasLowercase')
+                    userForm.controls['password'].hasError('required') ||
+                    userForm.controls['password'].hasError('hasLowercase')
                       ? 'text-danger'
                       : 'text-success'
                   ">
                   <i class="material-icons" style="font-size: 1.2rem">
                     {{
-                      userForm.controls.password.hasError('required') ||
-                      userForm.controls.password.hasError('hasLowercase')
+                      userForm.controls['password'].hasError('required') ||
+                      userForm.controls['password'].hasError('hasLowercase')
                         ? 'cancel'
                         : 'check_circle'
                     }}
@@ -228,15 +235,15 @@
                 <label
                   class="col"
                   [ngClass]="
-                    userForm.controls.password.hasError('required') ||
-                    userForm.controls.password.hasError('hasUppercase')
+                    userForm.controls['password'].hasError('required') ||
+                    userForm.controls['password'].hasError('hasUppercase')
                       ? 'text-danger'
                       : 'text-success'
                   ">
                   <i class="material-icons" style="font-size: 1.2rem">
                     {{
-                      userForm.controls.password.hasError('required') ||
-                      userForm.controls.password.hasError('hasUppercase')
+                      userForm.controls['password'].hasError('required') ||
+                      userForm.controls['password'].hasError('hasUppercase')
                         ? 'cancel'
                         : 'check_circle'
                     }}
@@ -248,15 +255,17 @@
                 <label
                   class="col"
                   [ngClass]="
-                    userForm.controls.password.hasError('required') ||
-                    userForm.controls.password.hasError('hasSpecialCharacters')
+                    userForm.controls['password'].hasError('required') ||
+                    userForm.controls['password'].hasError(
+                      'hasSpecialCharacters'
+                    )
                       ? 'text-danger'
                       : 'text-success'
                   ">
                   <i class="material-icons" style="font-size: 1.2rem">
                     {{
-                      userForm.controls.password.hasError('required') ||
-                      userForm.controls.password.hasError(
+                      userForm.controls['password'].hasError('required') ||
+                      userForm.controls['password'].hasError(
                         'hasSpecialCharacters'
                       )
                         ? 'cancel'

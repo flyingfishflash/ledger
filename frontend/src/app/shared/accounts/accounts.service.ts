@@ -8,11 +8,11 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 // core and shared
-import { environment } from '@env';
-import { BasicAuthService } from 'app/core/authentication/basic-auth.service';
-import { TreeUtilitiesService } from '@shared/tree-utilities/tree-utilties.service';
-import { StorageService } from '@core/storage/storage.service';
-import { Logger } from '@core/logging/logger.service';
+import { environment } from '../../../environments/environment';
+import { BasicAuthService } from '../../core/authentication/basic-auth.service';
+import { TreeUtilitiesService } from '../../shared/tree-utilities/tree-utilties.service';
+import { StorageService } from '../../core/storage/storage.service';
+import { Logger } from '../../core/logging/logger.service';
 import { IAccount } from './account';
 
 const log = new Logger('account.service');

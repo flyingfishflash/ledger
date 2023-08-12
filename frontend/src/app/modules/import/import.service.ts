@@ -15,8 +15,8 @@ import {
 } from 'rxjs/operators';
 
 // core and shared
-import { environment } from '@env';
-import { Logger } from '@core/logging/logger.service';
+import { environment } from '../../../environments/environment';
+import { Logger } from '../../core/logging/logger.service';
 
 const log = new Logger('import.service');
 

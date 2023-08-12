@@ -2,7 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 
 // core and shared
-import { UserService } from '@shared/users/user.service';
+import { UserService } from '../../shared/users/user.service';
 
 @Component({
   selector: 'app-home',

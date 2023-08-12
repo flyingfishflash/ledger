@@ -10,11 +10,11 @@ import {
 import { Observable } from 'rxjs';
 
 // core and shared
-import { StorageService } from '@core/storage/storage.service';
-import { DirtyCheckService } from '@shared/dirty-check/dirty-check.service';
-import { ObjectEqualityState } from '@shared/equal-objects/equal-objects.service';
-import { ValidationService } from '@core/validation/validation.service';
-import { UtilitiesService } from '@shared/utilities/utilities.service';
+import { StorageService } from '../../core/storage/storage.service';
+import { DirtyCheckService } from '../../shared/dirty-check/dirty-check.service';
+import { ObjectEqualityState } from '../../shared/equal-objects/equal-objects.service';
+import { ValidationService } from '../../core/validation/validation.service';
+import { UtilitiesService } from '../../shared/utilities/utilities.service';
 import { ProfileService } from './profile.service';
 
 @Component({
@@ -111,7 +111,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     if (!this.utilitiesService.isEmptyObject(userDetailsPayload)) {
       this.profileService.userDetailsUpdate(
         userDetailsPayload,
-        this.userDetailsForm.controls.id.value,
+        this.userDetailsForm.controls['id'].value,
       );
     }
   }

@@ -24,21 +24,21 @@ const routes: Routes = [
       {
         path: 'accounts-table',
         loadChildren: () =>
-          import('@modules/accounts-table/accounts-table.module').then(
+          import('./modules/accounts-table/accounts-table.module').then(
             (m) => m.AccountsTableModule,
           ),
       },
       {
         path: 'accounts-tree',
         loadChildren: () =>
-          import('@modules/accounts-tree/accounts-tree.module').then(
+          import('./modules/accounts-tree/accounts-tree.module').then(
             (m) => m.AccountsTreeModule,
           ),
       },
       {
         path: 'admin/settings',
         loadChildren: () =>
-          import('@modules/admin-settings/admin-settings.module').then(
+          import('./modules/admin-settings/admin-settings.module').then(
             (m) => m.AdminSettingsModule,
           ),
       },
@@ -46,23 +46,23 @@ const routes: Routes = [
         path: 'admin/settings/user/create',
         loadChildren: () =>
           import(
-            '@modules/admin-settings-user-create/admin-settings-user-create.module'
+            './modules/admin-settings-user-create/admin-settings-user-create.module'
           ).then((m) => m.AdminSettingsUserCreateModule),
       },
       {
         path: 'home',
         loadChildren: () =>
-          import('@modules/home/home.module').then((m) => m.HomeModule),
+          import('./modules/home/home.module').then((m) => m.HomeModule),
       },
       {
         path: 'import',
         loadChildren: () =>
-          import('@modules/import/import.module').then((m) => m.ImportModule),
+          import('./modules/import/import.module').then((m) => m.ImportModule),
       },
       {
         path: 'profile',
         loadChildren: () =>
-          import('@modules/profile/profile.module').then(
+          import('./modules/profile/profile.module').then(
             (m) => m.ProfileModule,
           ),
       },
@@ -72,13 +72,13 @@ const routes: Routes = [
     path: 'error',
     component: ErrorLayoutComponent,
     loadChildren: () =>
-      import('@modules/error/error.module').then((m) => m.ErrorModule),
+      import('./modules/error/error.module').then((m) => m.ErrorModule),
   },
   {
     path: 'login',
     component: AuthLayoutComponent,
     loadChildren: () =>
-      import('@modules/login/login.module').then((m) => m.LoginModule),
+      import('./modules/login/login.module').then((m) => m.LoginModule),
   },
   { path: '**', redirectTo: '/login' },
   // { path: '**', component: PageNotFoundComponent },

@@ -7,13 +7,13 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Observable } from 'rxjs';
 
 // modules
-import { AppRoutingModule } from 'app/app-routing.module';
-import { CoreModule } from '@core/core.module';
-import { SharedModule } from '@shared/shared.module';
-import { LoginModule } from '@modules/login/login.module';
+import { AppRoutingModule } from './app-routing.module';
+import { CoreModule } from './core/core.module';
+import { SharedModule } from './shared/shared.module';
+import { LoginModule } from './modules/login/login.module';
 
 // components
-import { AppComponent } from 'app/app.component';
+import { AppComponent } from './app.component';
 import { AuthLayoutComponent } from './layout/auth-layout/auth-layout.component';
 import { ContentLayoutComponent } from './layout/content-layout/content-layout.component';
 import { ErrorLayoutComponent } from './layout/error-layout/error-layout.component';

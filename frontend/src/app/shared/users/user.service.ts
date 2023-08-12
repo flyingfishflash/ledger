@@ -13,9 +13,9 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 // core and shared
-import { environment } from '@env';
-import { Logger } from '@core/logging/logger.service';
-import { StorageService } from '@core/storage/storage.service';
+import { environment } from '../../../environments/environment';
+import { Logger } from '../../core/logging/logger.service';
+import { StorageService } from '../../core/storage/storage.service';
 
 const log = new Logger('user.service');
 

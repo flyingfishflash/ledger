@@ -2,7 +2,7 @@
 import { NgModule } from '@angular/core';
 
 // core and shared
-import { SharedModule } from '@shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
 
 // components
 import { LoginComponent } from './login.component';

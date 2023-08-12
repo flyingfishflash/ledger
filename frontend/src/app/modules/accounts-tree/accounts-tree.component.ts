@@ -7,10 +7,10 @@ import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { throwError } from 'rxjs';
 
 // core and shared
-import { IAccount } from '@shared/accounts/account';
-import { AccountsService } from '@shared/accounts/accounts.service';
-import { ErrorDialogService } from '@shared/errors/error-dialog.service';
-import { Logger } from '@core/logging/logger.service';
+import { IAccount } from '../../shared/accounts/account';
+import { AccountsService } from '../../shared/accounts/accounts.service';
+import { ErrorDialogService } from '../../shared/errors/error-dialog.service';
+import { Logger } from '../../core/logging/logger.service';
 
 const log = new Logger('accounts-tree.component');
 

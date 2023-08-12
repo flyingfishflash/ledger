@@ -11,8 +11,8 @@ import {
 import { Observable } from 'rxjs';
 
 // core and shared
-import { StorageService } from '@core/storage/storage.service';
-import { Logger } from '@core/logging/logger.service';
+import { StorageService } from '../../core/storage/storage.service';
+import { Logger } from '../../core/logging/logger.service';
 
 const log = new Logger('basic-auth.interceptor');
 
@@ -28,7 +28,7 @@ export class AuthInterceptor implements HttpInterceptor {
     /*
       Intercepted request by authenticated user
     */
-    if (this.storageService.getAuthenticatedUser() !== null) {
+    if (this.storageService.getAuthenticatedUser()) {
       authReq = req.clone({
         headers: req.headers
           .append('Access-Control-Allow-Credentials', 'true')

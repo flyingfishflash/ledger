@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 
 // core and shared
-import { Logger } from '@core/logging/logger.service';
+import { Logger } from '../../core/logging/logger.service';
 
 const log = new Logger('tree-utilities.service');
 

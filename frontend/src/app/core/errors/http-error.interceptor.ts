@@ -14,21 +14,21 @@ import { Observable, throwError, of } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 
 // core and shared
-import { BasicAuthService } from '@core/authentication/basic-auth.service';
-import { ErrorDialogService } from '@shared/errors/error-dialog.service';
-import { Logger } from '@core/logging/logger.service';
+import { BasicAuthService } from '../../core/authentication/basic-auth.service';
+import { ErrorDialogService } from '../../shared/errors/error-dialog.service';
+import { Logger } from '../../core/logging/logger.service';
 
 const log = new Logger('http-error.interceptor');
 
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
   private errorState = {
-    errorType: null,
-    errorStatus: null,
-    errorMessageOriginal: null,
-    errorMessageHeading: null,
-    errorMessageLine1: null,
-    errorMessageLine2: null,
+    errorType: '',
+    errorStatus: 0,
+    errorMessageOriginal: '',
+    errorMessageHeading: '',
+    errorMessageLine1: '',
+    errorMessageLine2: '',
   };
 
   constructor(
@@ -41,12 +41,12 @@ export class HttpErrorInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler,
   ): Observable<HttpEvent<any>> {
-    let handled = false;
+    let isHandled = false;
 
     return next.handle(request).pipe(
       retry(1),
       catchError((error) => {
-        let errorMessage = null;
+        let errorMessage: string = '';
 
         log.debug(error);
 
@@ -64,13 +64,13 @@ export class HttpErrorInterceptor implements HttpInterceptor {
           this.errorState.errorMessageOriginal = error.message;
           this.errorState.errorMessageHeading = errorMessage;
           this.errorState.errorMessageLine1 = error.message;
-          handled = this.handleServerSideError(error);
+          isHandled = this.handleServerSideError(error);
         }
 
         log.error(errorMessage ? errorMessage : error);
 
-        if (!handled) {
-          if (errorMessage) {
+        if (!isHandled) {
+          if (errorMessage!) {
             return throwError(error);
           } else {
             return throwError('Unexpected problem occurred');
@@ -83,8 +83,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
   }
 
   private handleServerSideError(error: HttpErrorResponse): boolean {
-    let handled = false;
+    let isHandled = false;
     log.debug(error.status);
+    const errorUrl: string = error.url == null ? '' : error.url;
     switch (error.status) {
       case 0:
         // for the time being don't mark http status code 0 errors as handled
@@ -98,59 +99,56 @@ export class HttpErrorInterceptor implements HttpInterceptor {
           error.status,
           error.error.content.title,
         );
-        handled = true;
+        isHandled = true;
         log.debug('init1');
         break;
       case 401:
-        if (
-          error.url.indexOf('signin') < 0 &&
-          error.url.indexOf('/health') < 0
-        ) {
+        if (!errorUrl.includes('signin') && !errorUrl.includes('/health')) {
           this.authenticationService.redirectToLogin();
           this.errorDialogService.openDialog(
             error.error.content.detail ?? JSON.stringify(error),
             error.status,
             error.error.content.title,
           );
-          handled = true;
+          isHandled = true;
         }
         break;
       case 403:
-        if (error.url.indexOf('signin') < 0) {
+        if (!errorUrl.includes('signin')) {
           this.authenticationService.redirectToLogin();
           this.errorDialogService.openDialog(
             error.error.content.detail ?? JSON.stringify(error),
             error.status,
             error.error.content.title,
           );
-          handled = true;
+          isHandled = true;
         }
         break;
       case 404:
-        if (error.url.indexOf('config.json') < 0) {
+        if (!errorUrl.includes('config.json')) {
           this.errorDialogService.openDialog(
             error.error.content.detail ?? JSON.stringify(error),
             error.status,
             error.error.content.title,
           );
-          handled = true;
+          isHandled = true;
         }
         break;
       case 502:
-        if (error.url.indexOf('config.json') < 0) {
+        if (!errorUrl.includes('config.json')) {
           this.errorState.errorMessageHeading = `Server Error: ${error.status} Bad Gateway`;
           this.errorState.errorMessageLine1 =
             "Runtime configuration couldn't be found. Perhaps the server isn't up or isn't accepting connections.";
           this.router.navigate(['/error'], { state: this.errorState });
-          handled = true;
+          isHandled = true;
         }
         break;
       default:
         window.sessionStorage.clear();
         log.debug(this.errorState);
         this.router.navigate(['/error'], { state: this.errorState });
-        handled = true;
+        isHandled = true;
     }
-    return handled;
+    return isHandled;
   }
 }

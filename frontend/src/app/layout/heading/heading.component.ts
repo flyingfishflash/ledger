@@ -3,11 +3,11 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 // core and shared
-import { BasicAuthService } from '@core/authentication/basic-auth.service';
-import { BasicAuthUser } from '@core/authentication/basic-auth-user';
-import { BasicAuthUserRole } from '@core/authentication/basic-auth-user-role';
-import { Logger } from '@core/logging/logger.service';
-import { StorageService } from '@core/storage/storage.service';
+import { BasicAuthService } from '../../core/authentication/basic-auth.service';
+import { BasicAuthUser } from '../../core/authentication/basic-auth-user';
+import { BasicAuthUserRole } from '../../core/authentication/basic-auth-user-role';
+import { Logger } from '../../core/logging/logger.service';
+import { StorageService } from '../../core/storage/storage.service';
 
 const log = new Logger('heading.component');
 

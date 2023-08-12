@@ -7,7 +7,7 @@ import { EMPTY, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 // core and shared
-import { Logger } from '@core/logging/logger.service';
+import { Logger } from './core/logging/logger.service';
 import { BuildProperties } from './app-build-properties';
 
 const log = new Logger('app-config');
@@ -20,7 +20,7 @@ export interface IBuildProperties extends AppConfigRuntime {
 
 @Injectable()
 export class AppConfigRuntime implements IBuildProperties {
-  public buildProperties = null;
+  public buildProperties: BuildProperties;
 
   constructor(private readonly http: HttpClient) {}
 
