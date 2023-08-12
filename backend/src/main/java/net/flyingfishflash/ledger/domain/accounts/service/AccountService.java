@@ -98,6 +98,7 @@ public class AccountService {
       throw new AccountCreateException("Failed to create account: '" + account.getName() + "'", e);
     }
   }
+
   /**
    * Create a new bare account with only the guid, category, and type set.
    *

@@ -1,6 +1,7 @@
 package net.flyingfishflash.ledger.domain.importer.dto;
 
 import java.sql.Timestamp;
+
 // import net.flyingfishflash.ledger.importer.utilities.TimestampHelper;
 
 public class GncPrice /*extends BaseModel*/ {

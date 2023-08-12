@@ -27,6 +27,7 @@ public class Price {
   @ManyToOne
   @JoinColumn(name = "commodity_id")
   private Commodity commodity;
+
   /*
     @ManyToOne
     @JoinColumn(name = "currency_id")
@@ -131,6 +132,7 @@ public class Price {
   public void setType(String type) {
     this.type = type;
   }
+
   /*
   public Long getNumerator() {
     return numerator;
