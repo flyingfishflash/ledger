@@ -5,12 +5,12 @@
     {
       "files": ["*.ts"],
       "parserOptions": {
-        "project": ["tsconfig.json", "e2e/tsconfig.json"],
+        "project": ["**/tsconfig.json", "**/e2e/tsconfig.json"],
         "createDefaultProgram": true
       },
       "extends": [
         "eslint:recommended",
-        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/strict",
         "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates",
         "plugin:import/recommended",
@@ -54,42 +54,76 @@
             }
           }
         ],
+        "@typescript-eslint/consistent-type-assertions": [
+          "error",
+          { "assertionStyle": "as", "objectLiteralTypeAssertions": "never" }
+        ],
+        "@typescript-eslint/consistent-type-definitions": [
+          "error",
+          "interface"
+        ],
+        "@typescript-eslint/member-ordering": "error",
+        "@typescript-eslint/method-signature-style": "error",
+        "@typescript-eslint/naming-convention": [
+          "error",
+          {
+            "selector": "default",
+            "format": ["strictCamelCase"]
+          },
+          {
+            "selector": "variable",
+            "format": ["strictCamelCase", "UPPER_CASE"]
+          },
+          {
+            "selector": "variable",
+            "types": ["boolean"],
+            "format": ["PascalCase"],
+            "prefix": ["is", "should", "has", "can", "did", "will"]
+          },
+          // TODO: parameter selector can be removed when account tree is removed.
+          {
+            "selector": "parameter",
+            "format": ["strictCamelCase"],
+            "leadingUnderscore": "allow",
+            "trailingUnderscore": "forbid"
+          },
+          {
+            "selector": "property",
+            "format": ["strictCamelCase"],
+            "leadingUnderscore": "allow",
+            "trailingUnderscore": "forbid"
+          },
+          {
+            "selector": "typeLike",
+            "format": ["PascalCase"]
+          }
+        ],
         "@typescript-eslint/no-this-alias": "error",
         "@typescript-eslint/semi": ["off", null],
         "@typescript-eslint/type-annotation-spacing": "off",
-        "arrow-parens": ["off", "always"],
-        "brace-style": ["off", "off"],
-        "eol-last": "off",
+        "array-callback-return": ["error"],
         "import/no-unresolved": "off",
         "import/no-extraneous-dependencies": "error",
         "import/order": 0,
-        "linebreak-style": "off",
-        "max-len": "off",
-        "new-parens": "off",
+        "new-parens": "error",
         "newline-per-chained-call": "error",
-        "no-duplicate-case": "error",
-        "no-duplicate-imports": "error",
+        "no-await-in-loop": "error",
+        "no-constant-binary-expression": "error",
+        "no-constructor-return": "error",
+        "no-duplicate-imports": ["error", { "includeExports": true }],
         "no-extra-bind": "error",
-        "no-extra-semi": "off",
-        "no-irregular-whitespace": "off",
         "no-new-func": "error",
-        "no-redeclare": "error",
         "no-return-await": "error",
         "no-sequences": "error",
         "no-sparse-arrays": "error",
         "no-template-curly-in-string": "error",
-        "no-trailing-spaces": "off",
         "no-underscore-dangle": [
           "error",
           {
             "allowAfterThis": true
           }
         ],
-        "prefer-object-spread": "error",
-        "quote-props": "off",
-        "quotes": "off",
-        "space-before-function-paren": "off",
-        "space-in-parens": ["off", "never"]
+        "prefer-object-spread": "error"
       }
     },
     {
