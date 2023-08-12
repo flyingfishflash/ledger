@@ -7,7 +7,7 @@ plugins {
 description =
     "A Java based bookkeeping engine and API server, along with an Angular based web application for personal finance management."
 
-val googleJavaFormatVersion by extra { "1.16.0" }
+val googleJavaFormatVersion by extra { "1.17.0" }
 val ciCommit by extra { ciCommit() }
 val ciPlatform by extra { ciPlatform() }
 val ciPipelineId by extra { ciPipelineId() }
