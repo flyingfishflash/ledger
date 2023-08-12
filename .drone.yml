@@ -244,7 +244,7 @@ steps:
       - git fetch --tags
 
   - name: infer version
-    image: registry.flyingfishflash.net/customized-images/container-nyx
+    image: registry.flyingfishflash.net/custom/nyx:latest
     depends_on:
       - fetch git tags
     commands:
@@ -335,7 +335,7 @@ steps:
       - git fetch --tags
 
   - name: "publish - release"
-    image: registry.flyingfishflash.net/customized-images/container-nyx
+    image: registry.flyingfishflash.net/custom/nyx:latest
     depends_on:
       - fetch git tags
     environment:
