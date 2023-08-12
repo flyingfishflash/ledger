@@ -21,7 +21,7 @@ dependencies {
   val springSessionVersion = "3.0.1"
 
   implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
-  implementation("com.h2database:h2:2.1.214")
+  implementation("com.h2database:h2:2.2.220")
   implementation("com.vladmihalcea:hibernate-types-60:2.21.1")
   implementation("commons-validator:commons-validator:1.7")
   implementation("jakarta.interceptor:jakarta.interceptor-api:2.1.0")
