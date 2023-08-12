@@ -41,6 +41,7 @@ trigger:
     - refs/heads/main
     - refs/heads/perf-*
     - refs/heads/refactor-*
+    - refs/heads/style-*
     - refs/heads/release
 
 steps:
@@ -125,6 +126,7 @@ trigger:
     - refs/heads/perf-*
     - refs/heads/refactor-*
     - refs/heads/release
+    - refs/heads/style-*
 
 volumes:
   - name: drone_cache
