@@ -46,7 +46,7 @@ dependencies {
   errorprone("com.google.errorprone:error_prone_core:2.21.1")
 }
 
-jacoco { toolVersion = "0.8.8" }
+jacoco { toolVersion = "0.8.10" }
 
 sonarqube {
   properties {
