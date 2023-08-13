@@ -10,6 +10,7 @@
       },
       "extends": [
         "eslint:recommended",
+        // when ts strictNullChecks has been enabled, change this to strict-type-checked
         "plugin:@typescript-eslint/strict",
         "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates",
