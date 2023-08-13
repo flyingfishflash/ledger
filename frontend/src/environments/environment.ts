@@ -6,7 +6,7 @@ export const environment = {
       url: window['env']['apiServerUrl'] || 'http://localhost:8181/api/v1',
     },
   },
-};
+}
 
 /*
  * For easier debugging in development mode, you can import the following file

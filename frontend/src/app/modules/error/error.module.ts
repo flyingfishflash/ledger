@@ -1,12 +1,12 @@
 // angular
-import { NgModule } from '@angular/core';
+import { NgModule } from '@angular/core'
 
 // core and shared
-import { SharedModule } from '../../shared/shared.module';
+import { SharedModule } from '../../shared/shared.module'
 
 // components
-import { ErrorComponent } from './error.component';
-import { ErrorRoutingModule } from './error.routing';
+import { ErrorComponent } from './error.component'
+import { ErrorRoutingModule } from './error.routing'
 
 @NgModule({
   declarations: [ErrorComponent],

@@ -1,6 +1,7 @@
 {
   "bracketSameLine": true,
   "quoteProps": "consistent",
+  "semi": false,
   "singleQuote": true,
   "trailingComma": "all",
   "overrides": [

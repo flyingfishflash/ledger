@@ -1,3 +1,3 @@
 export interface ActuatorHealth {
-  status: string;
+  status: string
 }

@@ -1,15 +1,15 @@
 // angular
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core'
+import { Router } from '@angular/router'
 
 // core and shared
-import { BasicAuthService } from '../../core/authentication/basic-auth.service';
-import { BasicAuthUser } from '../../core/authentication/basic-auth-user';
-import { BasicAuthUserRole } from '../../core/authentication/basic-auth-user-role';
-import { Logger } from '../../core/logging/logger.service';
-import { StorageService } from '../../core/storage/storage.service';
+import { BasicAuthService } from '../../core/authentication/basic-auth.service'
+import { BasicAuthUser } from '../../core/authentication/basic-auth-user'
+import { BasicAuthUserRole } from '../../core/authentication/basic-auth-user-role'
+import { Logger } from '../../core/logging/logger.service'
+import { StorageService } from '../../core/storage/storage.service'
 
-const log = new Logger('heading.component');
+const log = new Logger('heading.component')
 
 @Component({
   selector: 'app-heading',
@@ -17,8 +17,8 @@ const log = new Logger('heading.component');
   styleUrls: ['./heading.component.css'],
 })
 export class HeadingComponent {
-  isLoggedIn = false;
-  user: BasicAuthUser;
+  isLoggedIn = false
+  user: BasicAuthUser
 
   constructor(
     private authenticationService: BasicAuthService,
@@ -26,7 +26,7 @@ export class HeadingComponent {
     private router: Router,
   ) {
     //this.storageService.user.subscribe((x) => (this.user = x));
-    this.user = this.storageService.getAuthenticatedUser();
+    this.user = this.storageService.getAuthenticatedUser()
   }
 
   // ngOnInit(): void {}
@@ -34,22 +34,22 @@ export class HeadingComponent {
   get isAdmin() {
     return (
       this.user && this.user.roles.includes(BasicAuthUserRole.administrator)
-    );
+    )
   }
 
   navigateToProfile() {
     // if already at the profile route, force a reload of window, which will refresh the
     // component using the currently logged in user's data
     if (this.router.url === '/profile') {
-      location.reload();
+      location.reload()
     } else {
       this.router.navigateByUrl('/profile', {
         state: { data: { userId: this.user.id } },
-      });
+      })
     }
   }
 
   logout() {
-    this.authenticationService.signOut('parameter');
+    this.authenticationService.signOut('parameter')
   }
 }

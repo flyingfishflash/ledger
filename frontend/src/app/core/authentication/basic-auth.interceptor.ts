@@ -1,20 +1,20 @@
 // angular
-import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core'
 import {
   HttpEvent,
   HttpHandler,
   HttpInterceptor,
   HttpRequest,
-} from '@angular/common/http';
+} from '@angular/common/http'
 
 // third party
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs'
 
 // core and shared
-import { StorageService } from '../../core/storage/storage.service';
-import { Logger } from '../../core/logging/logger.service';
+import { StorageService } from '../../core/storage/storage.service'
+import { Logger } from '../../core/logging/logger.service'
 
-const log = new Logger('basic-auth.interceptor');
+const log = new Logger('basic-auth.interceptor')
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -24,7 +24,7 @@ export class AuthInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler,
   ): Observable<HttpEvent<any>> {
-    let authReq = req;
+    let authReq = req
     /*
       Intercepted request by authenticated user
     */
@@ -38,7 +38,7 @@ export class AuthInterceptor implements HttpInterceptor {
           )
           .append('X-Requested-With', 'XMLHttpRequest'),
         withCredentials: true,
-      });
+      })
       /*       return next.handle(authReq).pipe(
         map((event: HttpEvent<any>) => {
           if (event instanceof HttpResponse) {
@@ -85,6 +85,6 @@ export class AuthInterceptor implements HttpInterceptor {
         })
       ); */
     }
-    return next.handle(authReq);
+    return next.handle(authReq)
   }
 }

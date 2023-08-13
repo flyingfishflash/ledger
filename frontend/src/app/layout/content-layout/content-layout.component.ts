@@ -1,6 +1,6 @@
 // angular
-import { OverlayContainer } from '@angular/cdk/overlay';
-import { Component, OnInit } from '@angular/core';
+import { OverlayContainer } from '@angular/cdk/overlay'
+import { Component, OnInit } from '@angular/core'
 
 // core and shared
 //import { ThemeService } from '@core/services/theme.service';
@@ -12,9 +12,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./content-layout.component.scss'],
 })
 export class ContentLayoutComponent {
-  currentTheme: string;
+  currentTheme: string
 
-  private overlayContainer: OverlayContainer;
+  private overlayContainer: OverlayContainer
 
   /*   currentActiveTheme$ = this.themeService.getDarkTheme().pipe(
     map((isDarkTheme: boolean) => {

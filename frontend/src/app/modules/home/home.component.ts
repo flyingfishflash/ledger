@@ -1,8 +1,8 @@
 // angular
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core'
 
 // core and shared
-import { UserService } from '../../shared/users/user.service';
+import { UserService } from '../../shared/users/user.service'
 
 @Component({
   selector: 'app-home',
@@ -10,11 +10,11 @@ import { UserService } from '../../shared/users/user.service';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-  content: string;
+  content: string
 
   constructor(private userService: UserService) {}
 
   ngOnInit() {
-    this.content = 'Home Component';
+    this.content = 'Home Component'
   }
 }

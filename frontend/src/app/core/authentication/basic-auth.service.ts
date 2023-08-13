@@ -1,25 +1,25 @@
 // angular
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http'
+import { Injectable } from '@angular/core'
+import { Router } from '@angular/router'
 
 // third party
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, throwError } from 'rxjs'
+import { tap } from 'rxjs/operators'
 
 // core and shared
-import { environment } from '../../../environments/environment';
-import { Logger } from '../../core/logging/logger.service';
-import { StorageService } from '../../core/storage/storage.service';
-import { BasicAuthUser } from './basic-auth-user';
+import { environment } from '../../../environments/environment'
+import { Logger } from '../../core/logging/logger.service'
+import { StorageService } from '../../core/storage/storage.service'
+import { BasicAuthUser } from './basic-auth-user'
 
-const log = new Logger('basic-auth.service');
+const log = new Logger('basic-auth.service')
 
 @Injectable({ providedIn: 'root' })
 export class BasicAuthService {
-  public user: Observable<any>;
+  public user: Observable<any>
 
-  private userSubject: BehaviorSubject<BasicAuthUser>;
+  private userSubject: BehaviorSubject<BasicAuthUser>
 
   constructor(
     private router: Router,
@@ -28,12 +28,12 @@ export class BasicAuthService {
   ) {
     this.userSubject = new BehaviorSubject<BasicAuthUser>(
       storageService.getAuthenticatedUser(),
-    );
-    this.user = this.userSubject.asObservable();
+    )
+    this.user = this.userSubject.asObservable()
   }
 
   public get userValue(): BasicAuthUser {
-    return this.userSubject.value;
+    return this.userSubject.value
   }
 
   signIn(credentials) {
@@ -47,7 +47,7 @@ export class BasicAuthService {
             ),
           }
         : {},
-    );
+    )
 
     return this.http
       .get<any>(environment.api.server.url + '/auth/signin', {
@@ -57,18 +57,18 @@ export class BasicAuthService {
       })
       .pipe(
         tap((res: HttpResponse<any>) => {
-          const u = new BasicAuthUser(res);
+          const u = new BasicAuthUser(res)
           // TODO: remove me
-          this.storageService.saveActiveBookId(48748);
-          this.storageService.saveAuthenticatedUser(u);
-          this.userSubject.next(u);
-          return u;
+          this.storageService.saveActiveBookId(48748)
+          this.storageService.saveAuthenticatedUser(u)
+          this.userSubject.next(u)
+          return u
         }),
-      );
+      )
   }
 
   createBasicAuthToken(username, password) {
-    return 'Basic ' + window.btoa(username + ':' + password);
+    return 'Basic ' + window.btoa(username + ':' + password)
   }
 
   signOut(parameter: string) {
@@ -79,32 +79,32 @@ export class BasicAuthService {
       .subscribe(
         (result) => {
           if (result.message === 'Successful sign-out') {
-            window.sessionStorage.clear();
-            this.userSubject.next(null);
-            this.router.navigate(['/login']);
+            window.sessionStorage.clear()
+            this.userSubject.next(null)
+            this.router.navigate(['/login'])
           }
         },
         (err) => {
-          this.handleError(err);
+          this.handleError(err)
         },
-      );
+      )
   }
 
   redirectToLogin() {
-    window.sessionStorage.clear();
-    this.userSubject.next(null);
+    window.sessionStorage.clear()
+    this.userSubject.next(null)
     //this.userSubject.unsubscribe();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/login'])
   }
 
   handleError(error: any) {
-    let errorMessage = '';
+    let errorMessage = ''
     if (error.error instanceof ErrorEvent) {
-      errorMessage = `A client internal error occurred:\nError Message: ${error.error.message}`;
+      errorMessage = `A client internal error occurred:\nError Message: ${error.error.message}`
     } else {
-      errorMessage = `A server-side error occured on SIGN-OUT:\nError Status: ${error.status}\nError Message: ${error.message}`;
+      errorMessage = `A server-side error occured on SIGN-OUT:\nError Status: ${error.status}\nError Message: ${error.message}`
     }
-    log.error(errorMessage);
-    return throwError(error);
+    log.error(errorMessage)
+    return throwError(error)
   }
 }

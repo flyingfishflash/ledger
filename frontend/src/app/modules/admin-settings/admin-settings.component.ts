@@ -1,10 +1,10 @@
 // angular
-import { Component, OnInit } from '@angular/core';
-import { MatTabChangeEvent } from '@angular/material/tabs';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core'
+import { MatTabChangeEvent } from '@angular/material/tabs'
+import { Router } from '@angular/router'
 
 // core and shared
-import { UserService } from '../../shared/users/user.service';
+import { UserService } from '../../shared/users/user.service'
 
 @Component({
   selector: 'app-admin-settings',
@@ -12,8 +12,8 @@ import { UserService } from '../../shared/users/user.service';
   styleUrls: ['./admin-settings.component.css'],
 })
 export class AdminSettingsComponent implements OnInit {
-  componentHeading = 'Settings';
-  users;
+  componentHeading = 'Settings'
+  users
 
   constructor(
     private userService: UserService,
@@ -23,16 +23,16 @@ export class AdminSettingsComponent implements OnInit {
   ngOnInit(): void {
     this.userService.findAllUsers().subscribe({
       next: (users) => {
-        this.users = users;
+        this.users = users
         // this.filteredAccounts = this.accounts;
       },
       //error: err => this.errorMessage = err
-    });
+    })
   }
 
   onClickDelete(id: number) {
     if (id) {
-      this.userService.userDeleteById(id);
+      this.userService.userDeleteById(id)
     }
   }
 

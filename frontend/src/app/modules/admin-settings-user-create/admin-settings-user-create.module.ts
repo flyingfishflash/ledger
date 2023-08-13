@@ -1,13 +1,13 @@
 // angular
-import { NgModule } from '@angular/core';
+import { NgModule } from '@angular/core'
 
 // core and shared
-import { SharedModule } from '../../shared/shared.module';
+import { SharedModule } from '../../shared/shared.module'
 
 // components
-import { AdminSettingsUserCreateComponent } from './admin-settings-user-create.component';
+import { AdminSettingsUserCreateComponent } from './admin-settings-user-create.component'
 
-import { AdminSettingsUserCreateRoutingModule } from './admin-settings-user-create.routing';
+import { AdminSettingsUserCreateRoutingModule } from './admin-settings-user-create.routing'
 
 @NgModule({
   declarations: [AdminSettingsUserCreateComponent],

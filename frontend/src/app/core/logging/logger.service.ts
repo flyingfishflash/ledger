@@ -49,19 +49,19 @@ export type LogOutput = (
   source: string,
   level: LogLevel,
   ...objects: any[]
-) => void;
+) => void
 
 export class Logger {
   /**
    * Current logging level.
    * Set it to LogLevel.Off to disable logs completely.
    */
-  static level = LogLevel.debug;
+  static level = LogLevel.debug
 
   /**
    * Additional log outputs.
    */
-  static outputs: LogOutput[] = [];
+  static outputs: LogOutput[] = []
 
   constructor(private source?: string) {}
 
@@ -70,7 +70,7 @@ export class Logger {
    * Sets logging level to LogLevel.Warning.
    */
   static enableProductionMode() {
-    Logger.level = LogLevel.warning;
+    Logger.level = LogLevel.warning
   }
 
   /**
@@ -81,7 +81,7 @@ export class Logger {
   /* eslint no-console: ["error", { allow: ["log", "info", "warn", "error"] }] */
 
   debug(...objects: any[]) {
-    this.log(console.log, LogLevel.debug, objects);
+    this.log(console.log, LogLevel.debug, objects)
   }
 
   /**
@@ -89,7 +89,7 @@ export class Logger {
    * Works the same as console.log().
    */
   info(...objects: any[]) {
-    this.log(console.info, LogLevel.info, objects);
+    this.log(console.info, LogLevel.info, objects)
   }
 
   /**
@@ -97,7 +97,7 @@ export class Logger {
    * Works the same as console.log().
    */
   warn(...objects: any[]) {
-    this.log(console.warn, LogLevel.warning, objects);
+    this.log(console.warn, LogLevel.warning, objects)
   }
 
   /**
@@ -105,18 +105,18 @@ export class Logger {
    * Works the same as console.log().
    */
   error(...objects: any[]) {
-    this.log(console.error, LogLevel.error, objects);
+    this.log(console.error, LogLevel.error, objects)
   }
 
   private log(func: VoidFunction, level: LogLevel, objects: any[]) {
     if (level <= Logger.level) {
       const log = this.source
         ? ['[' + this.source + ']'].concat(objects)
-        : objects;
-      func.apply(console, log);
+        : objects
+      func.apply(console, log)
       Logger.outputs.forEach((output) =>
         output.apply(output, [this.source, level].concat(objects)),
-      );
+      )
     }
   }
 }

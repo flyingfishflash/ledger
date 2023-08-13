@@ -1,9 +1,9 @@
 // angular
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http'
+import { Injectable } from '@angular/core'
 
 // third party
-import { Observable, Subject, timer, throwError } from 'rxjs';
+import { Observable, Subject, timer, throwError } from 'rxjs'
 import {
   catchError,
   map,
@@ -12,21 +12,21 @@ import {
   tap,
   share,
   takeUntil,
-} from 'rxjs/operators';
+} from 'rxjs/operators'
 
 // core and shared
-import { environment } from '../../../environments/environment';
-import { Logger } from '../../core/logging/logger.service';
+import { environment } from '../../../environments/environment'
+import { Logger } from '../../core/logging/logger.service'
 
-const log = new Logger('import.service');
+const log = new Logger('import.service')
 
 @Injectable({
   providedIn: 'root',
 })
 export class ImportService {
-  private allCurrencies$: Observable<any[]>;
+  private allCurrencies$: Observable<any[]>
 
-  private stopPolling = new Subject();
+  private stopPolling = new Subject()
 
   constructor(private http: HttpClient) {
     this.allCurrencies$ = timer(1, 1000).pipe(
@@ -39,13 +39,13 @@ export class ImportService {
       tap(console.log),
       share(),
       takeUntil(this.stopPolling),
-    );
+    )
 
-    log.debug(this.allCurrencies$);
+    log.debug(this.allCurrencies$)
   }
 
   getImportStatus(): Observable<any> {
-    log.debug('getImportStatus()');
+    log.debug('getImportStatus()')
     return this.http
       .get<any[]>(
         `${environment.api.server.url}/import/gnucashFileImportStatus`,
@@ -53,14 +53,14 @@ export class ImportService {
       .pipe(
         map((res) => res),
         catchError(this.handleError),
-      );
+      )
   }
 
   getAllCurrencies(): Observable<any[]> {
-    log.debug('in getAllCurrencies');
+    log.debug('in getAllCurrencies')
     return this.allCurrencies$.pipe(
       tap(() => log.debug('data sent to subscriber!!!')),
-    );
+    )
   }
 
   uploadFile(formData): Observable<any> {
@@ -68,20 +68,20 @@ export class ImportService {
       .post<any[]>(`${environment.api.server.url}/import/gnucash`, formData)
       .pipe(
         map((res) => {
-          return res;
+          return res
         }),
-      );
+      )
   }
 
   handleError(err: HttpErrorResponse) {
-    let errorMessage = '';
+    let errorMessage = ''
     if (err.error instanceof ErrorEvent) {
-      errorMessage = 'An error occurred: ' + err.error.message;
+      errorMessage = 'An error occurred: ' + err.error.message
     } else {
-      errorMessage = 'HttpErrorResponse: ' + err.status + ' / ' + err.message;
+      errorMessage = 'HttpErrorResponse: ' + err.status + ' / ' + err.message
     }
-    log.debug('Error handled.');
-    log.error(errorMessage);
-    return throwError(errorMessage);
+    log.debug('Error handled.')
+    log.error(errorMessage)
+    return throwError(errorMessage)
   }
 }

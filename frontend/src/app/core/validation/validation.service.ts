@@ -1,6 +1,6 @@
 // angular
-import { Injectable } from '@angular/core';
-import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { Injectable } from '@angular/core'
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms'
 
 @Injectable({
   providedIn: 'root',
@@ -17,9 +17,9 @@ export class ValidationService {
         'Invalid password. Password must be at least 6 characters long, and contain a number.',
       maxlength: `The field can't contain more than ${validatorValue.requiredLength} characters.`,
       minlength: `The field must contain atleast ${validatorValue.requiredLength} characters.`,
-    };
+    }
 
-    return config[validatorName];
+    return config[validatorName]
   }
 
   public static patternValidator(
@@ -29,15 +29,15 @@ export class ValidationService {
     return (control: AbstractControl): Record<string, any> => {
       if (!control.value) {
         // if control is empty return no error
-        return null;
+        return null
       }
 
       // test the value of the control against the regexp supplied
-      const isValid = regex.test(control.value);
+      const isValid = regex.test(control.value)
 
       // if true, return no error (no error), else return error passed in the second parameter
-      return isValid ? null : error;
-    };
+      return isValid ? null : error
+    }
   }
 
   /* 

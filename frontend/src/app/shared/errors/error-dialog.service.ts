@@ -1,20 +1,20 @@
 // angular
-import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Injectable } from '@angular/core'
+import { MatDialog } from '@angular/material/dialog'
 
 // components
-import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
+import { ErrorDialogComponent } from './error-dialog/error-dialog.component'
 
 @Injectable()
 export class ErrorDialogService {
-  private opened = false;
+  private opened = false
 
   constructor(private dialog: MatDialog) {}
 
   openDialog(message: string, status?: number, title?: string): void {
-    console.log('error dialog');
+    console.log('error dialog')
     if (!this.opened) {
-      this.opened = true;
+      this.opened = true
       const dialogRef = this.dialog.open(ErrorDialogComponent, {
         data: { message, status, title },
         maxHeight: '100%',
@@ -22,11 +22,11 @@ export class ErrorDialogService {
         maxWidth: '100%',
         disableClose: true,
         hasBackdrop: true,
-      });
+      })
 
       dialogRef.afterClosed().subscribe(() => {
-        this.opened = false;
-      });
+        this.opened = false
+      })
     }
   }
 }

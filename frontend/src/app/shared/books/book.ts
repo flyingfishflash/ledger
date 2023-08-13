@@ -1,5 +1,5 @@
 export class Book {
-  id: number;
-  createdInstant: string;
-  name: string;
+  id: number
+  createdInstant: string
+  name: string
 }

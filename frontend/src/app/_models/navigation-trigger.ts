@@ -1,1 +1,1 @@
-export type NavigationTrigger = 'imperative' | 'popstate' | 'hashchange';
+export type NavigationTrigger = 'imperative' | 'popstate' | 'hashchange'

@@ -1,9 +1,9 @@
 // angular
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { NgModule } from '@angular/core'
+import { Routes, RouterModule } from '@angular/router'
 
 // components
-import { ProfileComponent } from './profile.component';
+import { ProfileComponent } from './profile.component'
 
 export const routes: Routes = [
   /*   {
@@ -15,7 +15,7 @@ export const routes: Routes = [
     path: '',
     component: ProfileComponent,
   },
-];
+]
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

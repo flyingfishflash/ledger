@@ -1,25 +1,25 @@
 // angular
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core'
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
-} from '@angular/forms';
+} from '@angular/forms'
 
 // third party
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs'
 
 // core and shared
-import { rolesArray } from '../../shared/users/role';
-import { UserService } from '../../shared/users/user.service';
-import { ValidationService } from '../../core/validation/validation.service';
-import { Logger } from '../../core/logging/logger.service';
+import { rolesArray } from '../../shared/users/role'
+import { UserService } from '../../shared/users/user.service'
+import { ValidationService } from '../../core/validation/validation.service'
+import { Logger } from '../../core/logging/logger.service'
 
-const LOGGER = new Logger('login.component');
+const LOGGER = new Logger('login.component')
 
 interface CreateUserStatus {
-  userDetailsOk: boolean;
-  message: string;
+  userDetailsOk: boolean
+  message: string
 }
 
 @Component({
@@ -28,17 +28,17 @@ interface CreateUserStatus {
   styleUrls: ['./admin-settings-user-create.component.css'],
 })
 export class AdminSettingsUserCreateComponent implements OnInit {
-  componentHeading = 'Create User';
-  userForm: UntypedFormGroup;
-  rolesArray = rolesArray;
-  hide = true;
-  isPasswordHidden = true;
+  componentHeading = 'Create User'
+  userForm: UntypedFormGroup
+  rolesArray = rolesArray
+  hide = true
+  isPasswordHidden = true
 
-  createUserStatus$: Observable<CreateUserStatus>;
+  createUserStatus$: Observable<CreateUserStatus>
   createUserStatusSubject = new BehaviorSubject<CreateUserStatus>({
     userDetailsOk: false,
     message: '',
-  });
+  })
 
   constructor(
     private formBuilder: UntypedFormBuilder,
@@ -46,7 +46,7 @@ export class AdminSettingsUserCreateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.createUserStatus$ = this.createUserStatusSubject.asObservable();
+    this.createUserStatus$ = this.createUserStatusSubject.asObservable()
 
     this.userForm = this.formBuilder.group({
       username: [
@@ -84,39 +84,39 @@ export class AdminSettingsUserCreateComponent implements OnInit {
           ),
         ],
       ],
-    });
+    })
   }
 
   onSubmit(): void {
     const createUserStatus: CreateUserStatus = {
       userDetailsOk: false,
       message: '',
-    };
-    this.createUserStatusSubject.next(createUserStatus);
+    }
+    this.createUserStatusSubject.next(createUserStatus)
 
     this.userService.userSignUp(this.userForm.value).subscribe(
       (successResponse) => {
-        const ps: CreateUserStatus = this.createUserStatusSubject.getValue();
-        ps.userDetailsOk = true;
+        const ps: CreateUserStatus = this.createUserStatusSubject.getValue()
+        ps.userDetailsOk = true
         ps.message =
           new Date().toLocaleTimeString() +
           ': ' +
-          successResponse.content.message;
-        this.createUserStatusSubject.next(ps);
+          successResponse.content.message
+        this.createUserStatusSubject.next(ps)
       },
       (ledgerErrorResponse) => {
-        const ps: CreateUserStatus = this.createUserStatusSubject.getValue();
-        ps.userDetailsOk = false;
+        const ps: CreateUserStatus = this.createUserStatusSubject.getValue()
+        ps.userDetailsOk = false
         ps.message =
           new Date().toLocaleTimeString() +
           ': ' +
-          ledgerErrorResponse.error.content.message;
-        this.createUserStatusSubject.next(ps);
+          ledgerErrorResponse.error.content.message
+        this.createUserStatusSubject.next(ps)
       },
-    );
+    )
   }
 
   onCancel(): void {
-    LOGGER.debug('cancel clicked');
+    LOGGER.debug('cancel clicked')
   }
 }

@@ -1,24 +1,24 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
-import { AccountsTableComponent } from './accounts-table.component';
+import { AccountsTableComponent } from './accounts-table.component'
 
 describe('AccountsTableComponent', () => {
-  let component: AccountsTableComponent;
-  let fixture: ComponentFixture<AccountsTableComponent>;
+  let component: AccountsTableComponent
+  let fixture: ComponentFixture<AccountsTableComponent>
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [AccountsTableComponent],
-    }).compileComponents();
-  }));
+    }).compileComponents()
+  }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AccountsTableComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(AccountsTableComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})
