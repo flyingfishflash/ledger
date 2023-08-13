@@ -199,7 +199,7 @@ public class UserService implements UserDetailsService {
             }
           }
           case "password" -> {
-            if (!user.getPassword().equals(value)) {
+            if (!user.getPassword().equals(value) && (value != null)) {
               newPassword = (String) value;
               patched = true;
             }
