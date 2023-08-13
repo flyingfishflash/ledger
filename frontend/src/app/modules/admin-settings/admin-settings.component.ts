@@ -15,7 +15,10 @@ export class AdminSettingsComponent implements OnInit {
   componentHeading = 'Settings';
   users;
 
-  constructor(private userService: UserService, private router: Router) {}
+  constructor(
+    private userService: UserService,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
     this.userService.findAllUsers().subscribe({

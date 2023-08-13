@@ -14,7 +14,10 @@ const log = new Logger('error.component');
 export class ErrorComponent implements OnInit {
   errorState: any;
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+  ) {}
 
   ngOnInit() {
     this.errorState = history.state;
