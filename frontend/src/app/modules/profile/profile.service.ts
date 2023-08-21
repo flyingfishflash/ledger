@@ -49,9 +49,10 @@ export class ProfileService {
         httpOptions,
       )
       .subscribe(
-        (res) => {
+        (response) => {
           // this.subject.next(res.content)
           const fields = Object.getOwnPropertyNames(payload)
+          log.debug(response)
           // const ps =
           //   new Date().toLocaleTimeString() +
           //   ': ' +

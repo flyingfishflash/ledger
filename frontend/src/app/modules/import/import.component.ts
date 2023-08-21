@@ -105,12 +105,13 @@ export class ImportComponent implements OnInit, OnDestroy {
         )
         .subscribe(
           (successReponse) => {
-            log.debug(successReponse)
             log.debug('import success')
+            log.debug(successReponse)
             this.storageService.saveActiveBookId(this.activeBookId)
           },
           (ledgerErrorResponse) => {
             log.debug('import error')
+            log.debug(ledgerErrorResponse)
           },
         )
     }
