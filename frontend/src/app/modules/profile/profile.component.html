@@ -251,10 +251,7 @@
           color="primary"
           (click)="onSubmit()"
           matTooltip="Submit changed profile information"
-          [disabled]="
-            ((isDirty$ | async)?.equal && userDetailsForm.valid) ||
-            (!(isDirty$ | async)?.equal && !userDetailsForm.valid)
-          ">
+          [disabled]="!userDetailsForm.valid">
           Submit
         </button>
         <button

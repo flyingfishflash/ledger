@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core'
 
 // third party
 import { Observable, ReplaySubject, Subject, throwError } from 'rxjs'
-import { catchError } from 'rxjs/operators'
+import { catchError, map } from 'rxjs/operators'
 
 // core and shared
 import { environment } from '../../../environments/environment'
@@ -23,53 +23,16 @@ const httpOptions = {
   providedIn: 'root',
 })
 export class ProfileService {
-  private loggedInUserId
-  private subject: Subject<any> = new ReplaySubject<any>(1)
-  private profileUpdateStatus: Subject<any> = new ReplaySubject<any>(1)
+  constructor(private http: HttpClient) {}
 
-  constructor(
-    private http: HttpClient,
-    private storageService: StorageService,
-  ) {
-    this.loggedInUserId = this.storageService.getLoggedInUserId()
-  }
-
-  get $getSubject(): Observable<any> {
-    return this.subject.asObservable()
-  }
-
-  get $getProfileUpdateStatus(): Observable<any> {
-    return this.profileUpdateStatus.asObservable()
-  }
-
-  loadData() {
-    this.http
-      .get<any>(
-        environment.api.server.url +
-          '/users/' +
-          this.loggedInUserId +
-          '/profile',
-      )
-      .subscribe(
-        (res) => {
-          this.subject.next(res.content)
-        },
-        (err) => {
-          this.handleError(err)
-        },
-      )
-  }
-
-  loadDataById(id) {
-    this.http
+  getProfileById(id: number): Observable<any> {
+    return this.http
       .get<any>(environment.api.server.url + '/users/' + id + '/profile')
-      .subscribe(
-        (res) => {
-          this.subject.next(res.content)
-        },
-        (err) => {
-          this.handleError(err)
-        },
+      .pipe(
+        map((res) => {
+          return res.content
+        }), //,
+        catchError(this.handleError),
       )
   }
 
@@ -87,40 +50,25 @@ export class ProfileService {
       )
       .subscribe(
         (res) => {
-          this.subject.next(res.content)
+          // this.subject.next(res.content)
           const fields = Object.getOwnPropertyNames(payload)
-          const ps =
-            new Date().toLocaleTimeString() +
-            ': ' +
-            'Updated profile (' +
-            fields
-              .toString()
-              .replace(/,/g, ', ')
-              .split(/(?=[A-Z])/)
-              .map((s) => s.toLowerCase())
-              .join(' ') +
-            ')'
-          this.profileUpdateStatus.next(ps)
+          // const ps =
+          //   new Date().toLocaleTimeString() +
+          //   ': ' +
+          //   'Updated profile (' +
+          //   fields
+          //     .toString()
+          //     .replace(/,/g, ', ')
+          //     .split(/(?=[A-Z])/)
+          //     .map((s) => s.toLowerCase())
+          //     .join(' ') +
+          //   ')'
+          // this.profileUpdateStatus.next(ps)
         },
         (err) => {
           this.handleError(err)
         },
       )
-  }
-
-  resetStatus() {
-    this.profileUpdateStatus.next(null)
-  }
-
-  userDetailsUpdateOriginal(payload): Observable<any> {
-    log.debug(payload)
-    return this.http
-      .patch(
-        environment.api.server.url + '/users/' + this.loggedInUserId,
-        { payload },
-        httpOptions,
-      )
-      .pipe(catchError(this.handleError))
   }
 
   handleError(error: any) {

@@ -1,41 +1,58 @@
 // angular
-import { Component, OnDestroy, OnInit } from '@angular/core'
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms'
-
-// third party
-import { Observable } from 'rxjs'
+import { Component, OnInit } from '@angular/core'
+import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms'
 
 // core and shared
 import { StorageService } from '../../core/storage/storage.service'
-import { DirtyCheckService } from '../../shared/dirty-check/dirty-check.service'
-import { ObjectEqualityState } from '../../shared/equal-objects/equal-objects.service'
 import { ValidationService } from '../../core/validation/validation.service'
 import { UtilitiesService } from '../../shared/utilities/utilities.service'
 import { ProfileService } from './profile.service'
+import { Logger } from 'src/app/core/logging/logger.service'
+
+const log = new Logger('profile componenet')
+
+class UserDetailsFormValues {
+  private id: number = 0
+  private email: string = ''
+  private firstName: string = ''
+  private lastName: string = ''
+  private password: string = ''
+
+  constructor(propertyValues: any) {
+    Object.assign(this, propertyValues)
+  }
+
+  differences(other: UserDetailsFormValues): any {
+    const updatedValues: any = {}
+    let key: string = ''
+
+    for (key of Object.keys(this)) {
+      if (this[key] !== other[key]) {
+        updatedValues[key] = other[key]
+      }
+    }
+    return updatedValues
+  }
+}
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css'],
 })
-export class ProfileComponent implements OnInit, OnDestroy {
-  componentHeading = 'Profile'
-  userDetailsForm: UntypedFormGroup
-  isPasswordHidden = true
-  isDirty$: Observable<ObjectEqualityState>
-  profileUpdateStatus: string
-  userId: number
+export class ProfileComponent implements OnInit {
+  componentHeading: string = 'Profile'
+  userDetailsForm: FormGroup
+  userDetailsFormInitial: UserDetailsFormValues
+  isPasswordHidden: boolean = true
+  profileUpdateStatus: string = ''
+  userId: number = 0
 
   constructor(
-    private dirtyCheckService: DirtyCheckService,
     private profileService: ProfileService,
     private storageService: StorageService,
     private utilitiesService: UtilitiesService,
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: NonNullableFormBuilder,
   ) {}
 
   ngOnInit() {
@@ -69,64 +86,53 @@ export class ProfileComponent implements OnInit, OnDestroy {
       ],
     })
 
-    this.profileService.$getSubject.subscribe((response) => {
-      this.userDetailsForm.patchValue(response)
-    })
-
-    this.profileService.$getProfileUpdateStatus.subscribe((response) => {
-      this.profileUpdateStatus = response
-    })
-
-    // Api request get profile
     // User id is determined by backend via authentication process
     if (history.state.data != null) {
-      if (history.state.data.userId == null) {
+      if (history.state.data.userId == 0) {
         this.userId = this.storageService.getLoggedInUserId()
-        this.profileService.loadDataById(this.userId)
       } else {
         this.userId = history.state.data.userId
-        this.profileService.loadDataById(this.userId)
       }
     } else {
       this.userId = this.storageService.getLoggedInUserId()
-      this.profileService.loadDataById(this.userId)
     }
 
-    this.isDirty$ = this.userDetailsForm.valueChanges.pipe(
-      this.dirtyCheckService.dirtyCheck(this.profileService.$getSubject),
-    )
-  }
-
-  ngOnDestroy(): void {
-    this.profileService.resetStatus()
+    this.profileService.getProfileById(this.userId).subscribe((response) => {
+      this.userDetailsForm.patchValue(response)
+      this.userDetailsFormInitial = new UserDetailsFormValues(
+        this.userDetailsForm.value,
+      )
+    })
   }
 
   onCancel(): void {
-    this.profileService.resetStatus()
-    window.history.back()
+    log.debug(
+      'we should check for unsaved entries and navigate back to previous route',
+    )
   }
 
   onSubmit(): void {
-    const userDetailsPayload: any = this.getDirtyValues(this.userDetailsForm)
+    const userDetailsFormCurrent = new UserDetailsFormValues(
+      this.userDetailsForm.value,
+    )
+
+    const userDetailsPayload = this.userDetailsFormInitial.differences(
+      userDetailsFormCurrent,
+    )
+    log.debug(userDetailsPayload)
+
     if (!this.utilitiesService.isEmptyObject(userDetailsPayload)) {
+      log.debug('current form differs from intial form')
+      log.debug('initial: ' + JSON.stringify(this.userDetailsFormInitial))
+      log.debug('current: ' + JSON.stringify(this.userDetailsForm.value))
+
       this.profileService.userDetailsUpdate(
         userDetailsPayload,
         this.userDetailsForm.controls['id'].value,
       )
+      this.userDetailsFormInitial = new UserDetailsFormValues(
+        this.userDetailsForm.value,
+      )
     }
-  }
-
-  getDirtyValues(form: any) {
-    let dirtyFields = []
-    const dirtyValues = {}
-
-    this.isDirty$.subscribe((val) => {
-      dirtyFields = val.differences
-    })
-    dirtyFields.forEach((item) => {
-      dirtyValues[item] = form.controls[item].value
-    })
-
-    return dirtyValues
   }
 }
