@@ -334,23 +334,26 @@ steps:
     commands:
       - git fetch --tags
 
+  # nyx is configured to push to the codeberg remote
+  # the codeberg remote propogates itself to github and gitlab
+  - name: add git remote [codeberg]
+    image: alpine/git
+    commands:
+      - git remote add codeberg https://codeberg.org/flyingfishflash/ledger.git
+
   - name: "publish - release"
     image: registry.flyingfishflash.net/custom/nyx:latest
     depends_on:
       - fetch git tags
     environment:
-      NYX_GIT_FLYINGFISHFLASH_USER:
-        from_secret: nyx_git_flyingfishflash_user
-      NYX_GIT_FLYINGFISHFLASH_PASSWORD:
-        from_secret: nyx_git_flyingfishflash_password
-      NYX_GIT_FLYINGFISHFLASH_TOKEN:
-        from_secret: nyx_git_flyingfishflash_token
-      NYX_GIT_CODEBERG_TOKEN:
-        from_secret: nyx_git_codeberg_token
-      NYX_GIT_GITHUB_TOKEN:
-        from_secret: nyx_git_github_token
-      NYX_GIT_GITLAB_TOKEN:
-        from_secret: nyx_git_gitlab_token
+      NYX_FLYINGFISHFLASH_TOKEN_CODEBERG:
+        from_secret: nyx_flyingfishflash_token_codeberg
+      NYX_FLYINGFISHFLASH_TOKEN_GITHUB:
+        from_secret: nyx_flyingfishflash_token_github
+#      NYX_FLYINGFISHFLASH_TOKEN_GITLAB:
+#        from_secret: nyx_flyingfishflash_token_gitlab
+      NYX_FLYINGFISHFLASH_TOKEN_LAN:
+        from_secret: nyx_flyingfishflash_token_lan
     commands:
       - mkdir /drone/src/build
       - nyx infer --dry-run=false --fatal
@@ -360,63 +363,63 @@ steps:
       - name: drone_cache
         path: /drone/cache
 
----
-kind: pipeline
-name: "deploy - development"
-type: docker
-
-trigger:
-  event:
-    - push
-  ref:
-    - refs/heads/feature-*
-    - refs/heads/fix-*
-    - refs/heads/perf-*
-    - refs/heads/refactor-*
-    - refs/heads/release
-
-depends_on:
-  - "publish - image"
-
-clone:
-  disable: true
-
-steps:
-  - name: deploy
-    image: appleboy/drone-ssh
-    settings:
-      host:
-        from_secret: ssh_host_dev
-      username:
-        from_secret: ssh_username
-      key:
-        from_secret: ssh_key
-      script:
-        - ~/.local/bin/scripts/ledger-dev-redeploy.sh
-
----
-kind: pipeline
-name: "deploy - production"
-type: docker
-
-trigger:
-  event:
-    - push
-    - tag
-  ref:
-    - refs/tags/*
-
-depends_on:
-  - "publish - image"
-
-clone:
-  disable: true
-
-steps:
-  - name: deploy
-    image: alpine/git
-    commands:
-      - echo "here's where we would deploy to production"
+#---
+#kind: pipeline
+#name: "deploy - development"
+#type: docker
+#
+#trigger:
+#  event:
+#    - push
+#  ref:
+#    - refs/heads/feature-*
+#    - refs/heads/fix-*
+#    - refs/heads/perf-*
+#    - refs/heads/refactor-*
+#    - refs/heads/release
+#
+#depends_on:
+#  - "publish - image"
+#
+#clone:
+#  disable: true
+#
+#steps:
+#  - name: deploy
+#    image: appleboy/drone-ssh
+#    settings:
+#      host:
+#        from_secret: ssh_host_dev
+#      username:
+#        from_secret: ssh_username
+#      key:
+#        from_secret: ssh_key
+#      script:
+#        - ~/.local/bin/scripts/ledger-dev-redeploy.sh
+#
+#---
+#kind: pipeline
+#name: "deploy - production"
+#type: docker
+#
+#trigger:
+#  event:
+#    - push
+#    - tag
+#  ref:
+#    - refs/tags/*
+#
+#depends_on:
+#  - "publish - image"
+#
+#clone:
+#  disable: true
+#
+#steps:
+#  - name: deploy
+#    image: alpine/git
+#    commands:
+#      - echo "here's where we would deploy to production"
 
 #  - name: deploy
 #    image: appleboy/drone-ssh

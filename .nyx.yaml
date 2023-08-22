@@ -26,10 +26,10 @@ commitMessageConventions:
         patch: "(?s)(?m)(^fix|^perf|^refactor)(?!!|.*^(BREAKING( |-)CHANGE: )).*"
 git:
   remotes:
-    origin:
+    codeberg:
       authenticationMethod: USER_PASSWORD
-      user: "{{#environmentVariable}}NYX_GIT_FLYINGFISHFLASH_USER{{/environmentVariable}}"
-      password: "{{#environmentVariable}}NYX_GIT_FLYINGFISHFLASH_PASSWORD{{/environmentVariable}}"
+      user: "{{#environmentVariable}}NYX_FLYINGFISHFLASH_TOKEN_CODEBERG{{/environmentVariable}}"
+      password: "{{#environmentVariable}}NYX_FLYINGFISHFLASH_TOKEN_CODEBERG{{/environmentVariable}}"
 releaseTypes:
   enabled:
     - mainline
@@ -37,11 +37,11 @@ releaseTypes:
     - internal
   publicationServices:
     - codeberg
-    - flyingfishflash
     - github
+    - lan
 #    - gitlab
   remoteRepositories:
-    - origin
+    - codeberg
   items:
     mainline:
       collapseVersions: false
@@ -79,26 +79,26 @@ services:
   codeberg:
     type: "GITHUB"
     options:
-      AUTHENTICATION_TOKEN: "{{#environmentVariable}}NYX_GIT_CODEBERG_TOKEN{{/environmentVariable}}"
+      AUTHENTICATION_TOKEN: "{{#environmentVariable}}NYX_FLYINGFISHFLASH_TOKEN_CODEBERG{{/environmentVariable}}"
       BASE_URI: "https://codeberg.org/api/v1"
       REPOSITORY_NAME: "ledger"
       REPOSITORY_OWNER: "flyingfishflash"
-  flyingfishflash:
+  lan:
     type: "GITHUB"
     options:
-      AUTHENTICATION_TOKEN: "{{#environmentVariable}}NYX_GIT_FLYINGFISHFLASH_TOKEN{{/environmentVariable}}"
+      AUTHENTICATION_TOKEN: "{{#environmentVariable}}NYX_FLYINGFISHFLASH_TOKEN_LAN{{/environmentVariable}}"
       BASE_URI: "https://gitea.flyingfishflash.net/api/v1"
       REPOSITORY_NAME: "ledger"
       REPOSITORY_OWNER: "flyingfishflash"
   github:
     type: "GITHUB"
     options:
-      AUTHENTICATION_TOKEN: "{{#environmentVariable}}NYX_GIT_GITHUB_TOKEN{{/environmentVariable}}"
+      AUTHENTICATION_TOKEN: "{{#environmentVariable}}NYX_FLYINGFISHFLASH_TOKEN_GITHUB{{/environmentVariable}}"
       REPOSITORY_NAME: "ledger"
       REPOSITORY_OWNER: "flyingfishflash"
   gitlab:
     type: "GITLAB"
     options:
-      AUTHENTICATION_TOKEN: "{{#environmentVariable}}NYX_GIT_GITLAB_TOKEN{{/environmentVariable}}"
+      AUTHENTICATION_TOKEN: "{{#environmentVariable}}NYX_FLYINGFISHFLASH_TOKEN_GITLAB{{/environmentVariable}}"
       REPOSITORY_NAME: "ledger"
       REPOSITORY_OWNER: "flyingfishflash"
