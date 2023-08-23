@@ -68,13 +68,15 @@ releaseTypes:
       matchWorkspaceStatus: "CLEAN"
       publish: "true"
     internal:
-      collapseVersions: true
-      collapsedVersionQualifier: "{{#lower}}{{branch}}{{/lower}}"
-      filterTags: "^({{configuration.releasePrefix}})?([0-9]\\d*)\\.([0-9]\\d*)\\.([0-9]\\d*)$"
       gitCommit: "false"
       gitPush: "false"
       gitTag: "false"
       publish: "false"
+      identifiers:
+        -
+          position: PRE_RELEASE
+          qualifier: "{{#lower}}{{branch}}{{/lower}}"
+          value: "{{#sanitize}}{{#environmentVariable}}DRONE_BUILD_NUMBER{{/environmentVariable}}{{/sanitize}}"
 services:
   codeberg:
     type: "GITHUB"
