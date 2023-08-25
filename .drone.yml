@@ -363,40 +363,79 @@ steps:
       - name: drone_cache
         path: /drone/cache
 
-#---
-#kind: pipeline
-#name: "deploy - development"
-#type: docker
-#
-#trigger:
-#  event:
-#    - push
-#  ref:
-#    - refs/heads/feature-*
-#    - refs/heads/fix-*
-#    - refs/heads/perf-*
-#    - refs/heads/refactor-*
-#    - refs/heads/release
-#
-#depends_on:
-#  - "publish - image"
-#
-#clone:
-#  disable: true
-#
-#steps:
-#  - name: deploy
-#    image: appleboy/drone-ssh
-#    settings:
-#      host:
-#        from_secret: ssh_host_dev
-#      username:
-#        from_secret: ssh_username
-#      key:
-#        from_secret: ssh_key
-#      script:
-#        - ~/.local/bin/scripts/ledger-dev-redeploy.sh
-#
+---
+kind: pipeline
+name: "deploy - development"
+type: docker
+
+trigger:
+  event:
+    - push
+  ref:
+    - refs/heads/feature-*
+    - refs/heads/fix-*
+    - refs/heads/perf-*
+    - refs/heads/refactor-*
+    - refs/heads/release
+
+depends_on:
+  - "publish - image"
+
+
+steps:
+  # nyx requires git tags to infer the current version
+  - name: fetch git tags
+    image: alpine/git
+    commands:
+      - git fetch --tags
+
+  - name: infer version
+    image: registry.flyingfishflash.net/custom/nyx:latest
+    depends_on:
+      - fetch git tags
+    commands:
+      - export NYX_SUMMARY=.nyx-summary
+      - export VERSION=.version
+      - export TAGS=.tags
+      - rm -fv $NYX_SUMMARY
+      - rm -fv $VERSION
+      - nyx infer --dry-run=false --fatal --summary > $NYX_SUMMARY
+      - cat $NYX_SUMMARY && echo
+      - export NYX_CURRENT_VERSION=$(cat $NYX_SUMMARY | grep 'current version' | awk '{ print $NF }' | tr -d '\n')
+      - echo $NYX_CURRENT_VERSION
+      - echo $NYX_CURRENT_VERSION > $VERSION
+      - echo -n $NYX_CURRENT_VERSION > $TAGS
+      - '[ -z "$DRONE_TAG" ] && echo -n ",development" >> $TAGS || echo -n ",latest"  >> $TAGS'
+      - cat $TAGS && echo
+
+  - name: create inventory file
+    image: alpine
+    commands:
+      - echo "nas.home.flyingfishflash.net" > scripts/ci/drone/deploy/inventory
+
+  - name: check syntax
+    image: plugins/ansible
+    settings:
+      playbook: scripts/ci/drone/deploy/deploy.yaml
+      inventory: scripts/ci/drone/deploy/inventory
+      syntax_check: true
+
+  # the secret containing the ssh private key must be created via the CLI
+  # drone secret add --repository flyingfishflash/ledger --name secret_name --data @/home/xxx/.ssh/id_xxx
+  - name: execute playbook
+    image: plugins/ansible
+    depends_on:
+      - infer version
+      - create inventory file
+      - check syntax
+    settings:
+      galaxy: scripts/ci/drone/deploy/requirements.yaml
+      inventory: scripts/ci/drone/deploy/inventory
+      playbook: scripts/ci/drone/deploy/deploy.yaml
+      private_key:
+        from_secret: ssh_private_key_container_runner
+      user: container-runner
+
 #---
 #kind: pipeline
 #name: "deploy - production"

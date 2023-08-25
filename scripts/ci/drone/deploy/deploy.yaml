@@ -1,0 +1,23 @@
+---
+- name: "Deploy Ledger via podman"
+  hosts: "all"
+  remote_user: "container-runner"
+
+  tasks:
+    - name: "Capture whoami output"
+      ansible.builtin.command: "whoami"
+      register: "username"
+      changed_when: false
+
+    - name: "Display whoami output"
+      ansible.builtin.debug:
+        var: "username.stdout"
+
+    - name: "Capture podman info output"
+      ansible.builtin.command: "podman info"
+      register: "podman_info"
+      changed_when: false
+
+    - name: "Display podman info output"
+      ansible.builtin.debug:
+        var: "podman_info.stdout"
