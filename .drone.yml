@@ -1,25 +1,22 @@
 # repository secrets:
+# -------------------
+# - deploy_to_host
+# - drone_deployer_ssh_key_private
+# - drone_deployer_ssh_username
 # - repository_backend  = registry.domain.tld/namespace/ledger
 # - repository_frontend = registry.domain.tld/namespace/ledger-frontend
-# - repository_backend_development  = registry.domain.tld/namespace/ledger:development
-# - repository_frontend_development = registry.domain.tld/namespace/ledger-frontend:development
-# - ssh_username
-# - ssh_host_dev
-# - ssh_host_prd
-# - ssh_key
 
 # organization secrets:
-# - nyx_git_codeberg_token
-# - nyx_git_flyingfishflash_user
-# - nyx_git_flyingfishflash_password
-# - nyx_git_flyingfishflash_token
-# - nyx_git_github_token
-# - nyx_git_gitlab_token
+# -------------------
+# - nyx_flyingfishflash_token_codeberg
+# - nyx_flyingfishflash_token_github
+# - nyx_flyingfishflash_token_gitlab
+# - nyx_flyingfishflash_token_lan
 # - registry_hostname
-# - registry_username
 # - registry_password
+# - registry_username
 # - sonar_host
-# - sonar_login (user token)
+# - sonar_token
 
 kind: pipeline
 type: docker
@@ -44,46 +41,37 @@ trigger:
     - refs/heads/style-*
     - refs/heads/release
 
-steps:
-  # nyx requires git tags to infer the current version
-  - name: fetch git tags
-    image: alpine/git
-    commands:
-      - git fetch --tags
+environment:
+  VERSION: .version
+  BUILD: .build
 
+steps:
   - name: infer version
     image: registry.flyingfishflash.net/custom/nyx:latest
-    depends_on:
-      - fetch git tags
     commands:
-      - export NYX_SUMMARY=.nyx-summary
-      - export VERSION=.version
-      - rm -fv $NYX_SUMMARY
+      # nyx requires git tags to infer the current version
+      - git fetch --tags -q
       - rm -fv $VERSION
-      - nyx infer --dry-run=false --fatal --summary > $NYX_SUMMARY
-      - cat $NYX_SUMMARY && echo
-      - export NYX_CURRENT_VERSION=$(cat $NYX_SUMMARY | grep 'current version' | awk '{ print $NF }' | tr -d '\n')
-      - echo $NYX_CURRENT_VERSION
-      - echo $NYX_CURRENT_VERSION > $VERSION
+      - echo "export NYX_CURRENT_VERSION=$(nyx infer --fatal | grep 'current version' | awk '{ print $NF }' | tr -d '\n')" > $VERSION
+      - cat $VERSION
 
   - name: build
     image: node:18-alpine
     depends_on:
       - infer version
     commands:
-      - export VERSION=.version
-      - export NYX_VERSION=$(cat .version)
-      - export SCM_COMMIT_SHORT_SHA=$(echo $DRONE_COMMIT_SHA | cut -c1-8)
-      - echo $SCM_COMMIT_SHORT_SHA
-      # define alt location for npm cache
-      - export CLIENT_NPM_CACHE=/drone/drone_cache/$DRONE_REPO/client/npm
-      - echo $CLIENT_NPM_CACHE
-      - mkdir -pv $CLIENT_NPM_CACHE
-      # define alt location for distributable files
-      - export CLIENT_DIST=/drone/drone_cache/$DRONE_REPO/client/dist
-      - echo $CLIENT_DIST
-      - mkdir -pv $CLIENT_DIST
-      - export PATH=/drone/src/frontend/node_modules/.bin:$PATH
+      - source $VERSION
+      - |
+        cat <<EOT >> $BUILD
+        export BUILD_SCM_COMMIT_SHORT_SHA=$(echo $DRONE_COMMIT_SHA | cut -c1-8)
+        export BUILD_CLIENT_NPM_CACHE=/drone/drone_cache/$DRONE_REPO/client/npm
+        export BUILD_CLIENT_DIST=/drone/drone_cache/$DRONE_REPO/client/dist
+        export PATH=/drone/src/frontend/node_modules/.bin:$PATH
+        EOT
+      - source $BUILD
+      - env | awk -v s="BUILD_" 'index($0, s) == 1' | LC_ALL=C sort
+      - mkdir -pv $BUILD_CLIENT_NPM_CACHE
+      - mkdir -pv $BUILD_CLIENT_DIST
       - cd /drone/src/frontend
       - |
         export JSON_BUILD_PROPERTIES=$(node -pe "
@@ -91,20 +79,20 @@ steps:
             artifact: new String('ledger'),
             ciPipelineId: process.env.DRONE_BUILD_NUMBER,
             ciPlatform: new String('drone'),
-            commit: process.env.SCM_COMMIT_SHORT_SHA,
+            commit: process.env.BUILD_SCM_COMMIT_SHORT_SHA,
             group: Symbol(''),
             name: Symbol(''),
             time: Symbol(''),
-            version: process.env.NYX_VERSION
+            version: process.env.NYX_CURRENT_VERSION
           });
         ")
       - echo $JSON_BUILD_PROPERTIES > src/assets/buildProperties.json
       - cat src/assets/buildProperties.json
-      - npm version $NYX_VERSION --no-git-tag-version
-      - npm ci --cache $CLIENT_NPM_CACHE --prefer-offline
+      - npm version $NYX_CURRENT_VERSION --no-git-tag-version
+      - npm ci --cache $BUILD_CLIENT_NPM_CACHE --prefer-offline
       - ng version
-      - ng build --configuration production --output-path=$CLIENT_DIST/ledger-frontend
-      - ls -la $CLIENT_DIST/ledger-frontend
+      - ng build --configuration production --output-path=$BUILD_CLIENT_DIST/ledger-frontend
+      - printf "\n$(ls -1a $BUILD_CLIENT_DIST/ledger-frontend | wc -l) files in $BUILD_CLIENT_DIST/ledger-frontend\n"
     volumes:
       - name: drone_cache
         path: /drone/drone_cache
@@ -144,7 +132,7 @@ services:
 steps:
   # nyx requires git tags to infer the current version
   - name: fetch git tags
-    image: alpine/git
+    image: registry.flyingfishflash.net/custom/nyx:latest
     commands:
       - git fetch --tags
 
@@ -236,41 +224,38 @@ volumes:
     host:
       path: /var/lib/docker/volumes_managed/drone_cache/flyingfishflash/ledger/api/build
 
-  # nyx requires git tags to infer the current version
-steps:
-  - name: fetch git tags
-    image: alpine/git
-    commands:
-      - git fetch --tags
+environment:
+  TAGS: .tags
+  VERSION: .version
 
+steps:
   - name: infer version
     image: registry.flyingfishflash.net/custom/nyx:latest
-    depends_on:
-      - fetch git tags
     commands:
-      - export NYX_SUMMARY=.nyx-summary
-      - export VERSION=.version
-      - export TAGS=.tags
-      - rm -fv $NYX_SUMMARY
+      # nyx requires git tags to infer the current version
+      - git fetch --tags
       - rm -fv $VERSION
-      - nyx infer --dry-run=false --fatal --summary > $NYX_SUMMARY
-      - cat $NYX_SUMMARY && echo
-      - export NYX_CURRENT_VERSION=$(cat $NYX_SUMMARY | grep 'current version' | awk '{ print $NF }' | tr -d '\n')
-      - echo $NYX_CURRENT_VERSION
-      - echo $NYX_CURRENT_VERSION > $VERSION
-      - echo -n $NYX_CURRENT_VERSION > $TAGS
-      - '[ -z "$DRONE_TAG" ] && echo -n ",development" >> $TAGS || echo -n ",latest"  >> $TAGS'
+      - echo "export NYX_CURRENT_VERSION=$(nyx infer --fatal | grep 'current version' | awk '{ print $NF }' | tr -d '\n')" > $VERSION
+      - cat $VERSION
+
+  - name: generate image tags
+    image: registry.flyingfishflash.net/custom/nyx:latest
+    depends_on:
+      - infer version
+    commands:
+      - source $VERSION
+      - echo $NYX_CURRENT_VERSION > $TAGS
+      # DRONE_TAG is only populated for tag events and promotion events that are derived from tags
+      - '[ -z "$DRONE_TAG" ] && echo -n "" >> $TAGS || echo -n ",latest"  >> $TAGS'
       - cat $TAGS && echo
 
   - name: publish frontend
     image: plugins/docker
     depends_on:
-      - infer version
+      - generate image tags
     privileged: true
     settings:
       auto_tag: false
-      cache_from:
-        from_secret: repository_frontend_development
       context: /drone/src/frontend/
       dockerfile: /drone/src/frontend/Dockerfile
       repo:
@@ -288,12 +273,10 @@ steps:
   - name: publish backend
     image: plugins/docker
     depends_on:
-      - infer version
+      - generate image tags
     privileged: true
     settings:
       auto_tag: false
-      cache_from:
-        from_secret: repository_backend_development
       context: /drone/src/backend/
       dockerfile: /drone/src/backend/Dockerfile
       repo:
@@ -328,23 +311,8 @@ volumes:
       path: /var/lib/docker/volumes_managed/drone_cache
 
 steps:
-  # nyx requires git tags to infer the current version
-  - name: fetch git tags
-    image: alpine/git
-    commands:
-      - git fetch --tags
-
-  # nyx is configured to push to the codeberg remote
-  # the codeberg remote propogates itself to github and gitlab
-  - name: add git remote [codeberg]
-    image: alpine/git
-    commands:
-      - git remote add codeberg https://codeberg.org/flyingfishflash/ledger.git
-
   - name: "publish - release"
     image: registry.flyingfishflash.net/custom/nyx:latest
-    depends_on:
-      - fetch git tags
     environment:
       NYX_FLYINGFISHFLASH_TOKEN_CODEBERG:
         from_secret: nyx_flyingfishflash_token_codeberg
@@ -355,9 +323,12 @@ steps:
       NYX_FLYINGFISHFLASH_TOKEN_LAN:
         from_secret: nyx_flyingfishflash_token_lan
     commands:
+      # nyx requires git tags to infer the current version
+      - git fetch --tags
+      # nyx is configured to push to the codeberg remote
+      # the codeberg remote propagates itself to GitHub and gitlab
+      - git remote add codeberg https://codeberg.org/flyingfishflash/ledger.git
       - mkdir /drone/src/build
-      - nyx infer --dry-run=false --fatal
-      - nyx --dry-run=false --fatal --summary
       - nyx publish --dry-run=false
     volumes:
       - name: drone_cache
@@ -381,93 +352,121 @@ trigger:
 depends_on:
   - "publish - image"
 
+environment:
+  VERSION: .version
 
 steps:
-  # nyx requires git tags to infer the current version
-  - name: fetch git tags
-    image: alpine/git
-    commands:
-      - git fetch --tags
-
   - name: infer version
     image: registry.flyingfishflash.net/custom/nyx:latest
-    depends_on:
-      - fetch git tags
     commands:
-      - export NYX_SUMMARY=.nyx-summary
-      - export VERSION=.version
-      - export TAGS=.tags
-      - rm -fv $NYX_SUMMARY
+      # nyx requires git tags to infer the current version
+      - git fetch --tags
       - rm -fv $VERSION
-      - nyx infer --dry-run=false --fatal --summary > $NYX_SUMMARY
-      - cat $NYX_SUMMARY && echo
-      - export NYX_CURRENT_VERSION=$(cat $NYX_SUMMARY | grep 'current version' | awk '{ print $NF }' | tr -d '\n')
-      - echo $NYX_CURRENT_VERSION
-      - echo $NYX_CURRENT_VERSION > $VERSION
-      - echo -n $NYX_CURRENT_VERSION > $TAGS
-      - '[ -z "$DRONE_TAG" ] && echo -n ",development" >> $TAGS || echo -n ",latest"  >> $TAGS'
-      - cat $TAGS && echo
+      - echo "export NYX_CURRENT_VERSION=$(nyx infer --fatal | grep 'current version' | awk '{ print $NF }' | tr -d '\n')" > $VERSION
+      - cat $VERSION
 
   - name: create inventory file
-    image: alpine
+    image: alpine:latest
+    environment:
+      DEPLOY_TO_HOST:
+        from_secret: deploy_to_host
     commands:
-      - echo "nas.home.flyingfishflash.net" > scripts/ci/drone/deploy/inventory
+      - echo "$DEPLOY_TO_HOST" > scripts/ci/drone/deploy/inventory
 
-  - name: check syntax
-    image: plugins/ansible
-    settings:
-      playbook: scripts/ci/drone/deploy/deploy.yaml
-      inventory: scripts/ci/drone/deploy/inventory
-      syntax_check: true
+  - name: create variables file
+    image: alpine
+    depends_on:
+      - infer version
+    environment:
+      REGISTRY_URL:
+        from_secret: REGISTRY_HOSTNAME
+    commands:
+      - source $VERSION
+      - ls -la
+      - echo "---" > scripts/ci/drone/deploy/variables.yaml
+      - 'echo "tag: $NYX_CURRENT_VERSION" >> scripts/ci/drone/deploy/variables.yaml'
+      - 'echo "registry_url: $REGISTRY_URL/ledger" >> scripts/ci/drone/deploy/variables.yaml'
+      - cat scripts/ci/drone/deploy/variables.yaml
 
   # the secret containing the ssh private key must be created via the CLI
   # drone secret add --repository flyingfishflash/ledger --name secret_name --data @/home/xxx/.ssh/id_xxx
   - name: execute playbook
     image: plugins/ansible
     depends_on:
-      - infer version
       - create inventory file
-      - check syntax
+      - create variables file
     settings:
+      extra_vars: 'region=dev'
       galaxy: scripts/ci/drone/deploy/requirements.yaml
       inventory: scripts/ci/drone/deploy/inventory
       playbook: scripts/ci/drone/deploy/deploy.yaml
       private_key:
-        from_secret: ssh_private_key_container_runner
-      user: container-runner
+        from_secret: drone_deployer_ssh_key_private
+      user: drone_deployer_ssh_username
 
-#---
-#kind: pipeline
-#name: "deploy - production"
-#type: docker
-#
-#trigger:
-#  event:
-#    - push
-#    - tag
-#  ref:
-#    - refs/tags/*
-#
-#depends_on:
-#  - "publish - image"
-#
-#clone:
-#  disable: true
-#
-#steps:
-#  - name: deploy
-#    image: alpine/git
-#    commands:
-#      - echo "here's where we would deploy to production"
+---
+kind: pipeline
+name: "deploy - production"
+type: docker
 
-#  - name: deploy
-#    image: appleboy/drone-ssh
-#    settings:
-#      host:
-#        from_secret: ssh_host_prd
-#      username:
-#        from_secret: ssh_username
-#      key:
-#        from_secret: ssh_key
-#      script:
-#        - ~/.local/bin/scripts/ledger-prd-redeploy.sh
+trigger:
+  event:
+    - push
+    - tag
+  ref:
+    - refs/tags/*
+
+depends_on:
+  - "publish - image"
+
+environment:
+  VERSION: .version
+
+steps:
+  - name: infer version
+    image: registry.flyingfishflash.net/custom/nyx:latest
+    commands:
+      # nyx requires git tags to infer the current version
+      - git fetch --tags
+      - rm -fv $VERSION
+      - echo "export NYX_CURRENT_VERSION=$(nyx infer --fatal | grep 'current version' | awk '{ print $NF }' | tr -d '\n')" > $VERSION
+      - cat $VERSION
+
+  - name: create inventory file
+    image: alpine:latest
+    environment:
+      DEPLOY_TO_HOST:
+        from_secret: deploy_to_host
+    commands:
+      - echo "$DEPLOY_TO_HOST" > scripts/ci/drone/deploy/inventory
+
+  - name: create variables file
+    image: alpine
+    depends_on:
+      - infer version
+    environment:
+      REGISTRY_URL:
+        from_secret: REGISTRY_HOSTNAME
+    commands:
+      - source $VERSION
+      - ls -la
+      - echo "---" > scripts/ci/drone/deploy/variables.yaml
+      - 'echo "tag: $NYX_CURRENT_VERSION" >> scripts/ci/drone/deploy/variables.yaml'
+      - 'echo "registry_url: $REGISTRY_URL/ledger" >> scripts/ci/drone/deploy/variables.yaml'
+      - cat scripts/ci/drone/deploy/variables.yaml
+
+  # the secret containing the ssh private key must be created via the CLI
+  # drone secret add --repository flyingfishflash/ledger --name secret_name --data @/home/xxx/.ssh/id_xxx
+  - name: execute playbook
+    image: plugins/ansible
+    depends_on:
+      - create inventory file
+      - create variables file
+    settings:
+      extra_vars: 'region=prd'
+      galaxy: scripts/ci/drone/deploy/requirements.yaml
+      inventory: scripts/ci/drone/deploy/inventory
+      playbook: scripts/ci/drone/deploy/deploy.yaml
+      private_key:
+        from_secret: drone_deployer_ssh_key_private
+      user: drone_deployer_ssh_username

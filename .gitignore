@@ -43,3 +43,4 @@ version
 .version
 .nyx-changelog/
 .tags
+scripts/ci/drone/deploy/variables.yaml

@@ -4,20 +4,77 @@
   remote_user: "container-runner"
 
   tasks:
-    - name: "Capture whoami output"
-      ansible.builtin.command: "whoami"
-      register: "username"
-      changed_when: false
+    - name: Include variables file
+      ansible.builtin.include_vars:
+        file: variables.yaml
 
-    - name: "Display whoami output"
-      ansible.builtin.debug:
-        var: "username.stdout"
+    - name: Stop and remove Ledger containers
+      containers.podman.podman_container:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - ledger-frontend-{{ region }}
+        - ledger-backend-{{ region }}
+        - ledger-postgresql-{{ region }}
 
-    - name: "Capture podman info output"
-      ansible.builtin.command: "podman info"
-      register: "podman_info"
-      changed_when: false
+    - name: Create network ledger-{{ region }}
+      containers.podman.podman_network:
+        name: ledger-{{ region }}
 
-    - name: "Display podman info output"
-      ansible.builtin.debug:
-        var: "podman_info.stdout"
+    - name: Start container ledger-postgresql-{{ region }}
+      containers.podman.podman_container:
+        env:
+          POSTGRES_USER: ledger
+          POSTGRES_PASSWORD: ledger
+          POSTGRES_DB: ledger
+        image: docker.io/postgres:14-alpine
+        label:
+          io.containers.autoupdate: registry
+        log_driver: journald
+        log_opt:
+          tag: podman/ledger-postgresql-{{ region }}
+        name: ledger-postgresql-{{ region }}
+        network: ledger-{{ region }}
+        published_ports:
+          - "53123:5432"
+        state: started
+
+    - name: Start container ledger-backend-{{ region }}
+      containers.podman.podman_container:
+        env:
+          JDK_JAVA_OPTIONS: -Djava.security.egd=file:/dev/./urandom -Duser.timezone="UTC"
+          SPRING_PROFILES_ACTIVE: postgresql
+          SPRING_JPA_SHOW_SQL: false
+          SPRING_DATASOURCE_URL: jdbc:postgresql://ledger-postgresql-{{ region }}:5432/ledger
+          SPRING_DATASOURCE_USERNAME: ledger
+          SPRING_DATASOURCE_PASSWORD: ledger
+          SPRING_DATASOURCE_PLATFORM: POSTGRESQL
+        healthcheck: /bin/sh -c "wget http://127.0.0.1:8181/api/v1/health -T 30 -q -O -"
+        healthcheck_interval: 60s
+        healthcheck_retries: 3
+        healthcheck_start_period: 15s
+        healthcheck_timeout: 5s
+        image: "{{ registry_url }}/ledger:{{ tag }}"
+        log_driver: journald
+        log_opt:
+          tag: podman/ledger-backend-{{ region }}
+        name: "ledger-backend-{{ region }}"
+        network: ledger-{{ region }}
+        published_ports:
+          - "53121:8181"
+        state: started
+
+    - name: Start container ledger-frontend-{{ region }}
+      containers.podman.podman_container:
+        env:
+          UPSTREAM_SERVER: ledger-backend-{{ region }}:8181
+          API_SERVER_URL: https://ledger-{{ region }}.flyingfishflash.net/api/v1
+        image: "{{ registry_url }}/ledger-frontend:{{ tag }}"
+        log_driver: journald
+        log_opt:
+          tag: podman/ledger-frontend-{{ region }}
+        name: "ledger-frontend-{{ region }}"
+        network: ledger-{{ region }}
+        published_ports:
+          - "53122:80"
+        state: started

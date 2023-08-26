@@ -1,2 +1,2 @@
 collections:
-- name: containers.podman
+  - name: containers.podman
