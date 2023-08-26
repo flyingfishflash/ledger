@@ -21,8 +21,9 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
   }
 
   yaml {
-    target("scripts/release/*.yml")
-    jackson().feature("ORDER_MAP_ENTRIES_BY_KEYS", true)
+    target("scripts/ci/drone/deploy/*.yaml")
+    prettier()
+    //    jackson().feature("ORDER_MAP_ENTRIES_BY_KEYS", true)
   }
 
   format("misc") {
