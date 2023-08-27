@@ -70,19 +70,19 @@
 
     - name: Ensure published_ports_postgresql is defined and not empty
       ansible.builtin.fail:
-        msg: registry_url is not defined or empty
+        msg: published_ports_postgresql is not defined or empty
       when:
         - (published_ports_postgresql is not defined) or (published_ports_postgresql | length == 0)
 
     - name: Ensure published_ports_backend is defined and not empty
       ansible.builtin.fail:
-        msg: registry_url is not defined or empty
+        msg: published_ports_backend is not defined or empty
       when:
         - (published_ports_backend is not defined) or (published_ports_backend | length == 0)
 
     - name: Ensure published_ports_frontend is defined and not empty
       ansible.builtin.fail:
-        msg: registry_url is not defined or empty
+        msg: published_ports_frontend is not defined or empty
       when:
         - (published_ports_frontend is not defined) or (published_ports_frontend | length == 0)
 
@@ -140,11 +140,28 @@
         published_ports: "{{ published_ports_backend }}"
         state: started
 
+    - name: Wait for https://ledger-backend-{{ region }}.flyingfishflash.net/api/v1/health
+      ansible.builtin.uri:
+        url: "https://ledger-backend-{{ region }}.flyingfishflash.net/api/v1/health"
+        method: GET
+      register: _result
+      until: _result.status == 200
+      retries: 3
+      delay: 5
+      when:
+        - not ansible_check_mode
+
+    - name: Returned healthcheck status
+      ansible.builtin.debug:
+        var: _result.json
+      when:
+        - not ansible_check_mode
+
     - name: Start container ledger-frontend-{{ region }}
       containers.podman.podman_container:
         env:
           UPSTREAM_SERVER: ledger-backend-{{ region }}:8181
-          API_SERVER_URL: https://ledger-{{ region }}.flyingfishflash.net/api/v1
+          API_SERVER_URL: "https://ledger-{{ region }}.flyingfishflash.net/api/v1"
         image: "{{ registry_url }}/ledger-frontend:{{ tag }}"
         log_driver: journald
         log_opt:
@@ -153,3 +170,20 @@
         network: ledger-{{ region }}
         published_ports: "{{ published_ports_frontend }}"
         state: started
+
+    - name: Wait for https://ledger-{{ region }}.flyingfishflash.net/api/v1/health
+      ansible.builtin.uri:
+        url: "https://ledger-{{ region }}.flyingfishflash.net/api/v1/health"
+        method: GET
+      register: _result
+      until: _result.status == 200
+      retries: 3
+      delay: 5
+      when:
+        - not ansible_check_mode
+
+    - name: Returned healthcheck status
+      ansible.builtin.debug:
+        var: _result.json
+      when:
+        - not ansible_check_mode
