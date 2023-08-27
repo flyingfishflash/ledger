@@ -1,14 +1,92 @@
 ---
-- name: "Deploy Ledger via podman"
-  hosts: "all"
-  remote_user: "container-runner"
+- name: Deploy Ledger via podman
+  hosts: all
+  remote_user: container-runner
+  vars:
+    dev_published_ports_postgresql:
+      - "53123:5432"
+    dev_published_ports_backend:
+      - "53121:8181"
+    dev_published_ports_frontend:
+      - "53122:80"
+    prd_published_ports_postgresql:
+      - "53113:5432"
+    prd_published_ports_backend:
+      - "53111:8181"
+    prd_published_ports_frontend:
+      - "53112:80"
 
   tasks:
     - name: Include variables file
       ansible.builtin.include_vars:
         file: variables.yaml
 
-    - name: Stop and remove Ledger containers
+    - name: Ensure region is defined and either 'dev' or 'prd'
+      ansible.builtin.fail:
+        msg: deployment region is not defined or is not set to 'dev' or 'prd'
+      when:
+        - region is not defined
+        - region != "dev"
+        - region != "prd"
+
+    - name: Ensure tag is defined and not empty
+      ansible.builtin.fail:
+        msg: tag is not defined or empty
+      when:
+        - (tag is not defined) or (tag | length == 0)
+
+    - name: Ensure registry_url is defined and not empty
+      ansible.builtin.fail:
+        msg: registry_url is not defined or empty
+      when:
+        - (registry_url is not defined) or (registry_url | length == 0)
+
+    - name: Define region specific variables - dev
+      ansible.builtin.set_fact:
+        published_ports_postgresql: "{{ dev_published_ports_postgresql }}"
+        published_ports_backend: "{{ dev_published_ports_backend }}"
+        published_ports_frontend: "{{ dev_published_ports_frontend }}"
+        region_configured: true
+      when:
+        - region == "dev"
+        - (published_ports_postgresql is not defined) and (published_ports_backend is not defined) and (published_ports_frontend is not defined)
+        - (dev_published_ports_postgresql is defined) and (dev_published_ports_postgresql | length > 0)
+        - (dev_published_ports_backend is defined) and (dev_published_ports_backend | length > 0)
+        - (dev_published_ports_frontend is defined) and (dev_published_ports_frontend | length > 0)
+
+    - name: Define region specific variables - prd
+      ansible.builtin.set_fact:
+        published_ports_postgresql: "{{ prd_published_ports_postgresql }}"
+        published_ports_backend: "{{ prd_published_ports_backend }}"
+        published_ports_frontend: "{{ prd_published_ports_frontend }}"
+        region_configured: true
+      when:
+        - region_configured is not defined
+        - region == "prd"
+        - (published_ports_postgresql is not defined) and (published_ports_backend is not defined) and (published_ports_frontend is not defined)
+        - (prd_published_ports_postgresql is defined) and (prd_published_ports_postgresql | length > 0)
+        - (prd_published_ports_backend is defined) and (prd_published_ports_backend | length > 0)
+        - (prd_published_ports_frontend is defined) and (prd_published_ports_frontend | length > 0)
+
+    - name: Ensure published_ports_postgresql is defined and not empty
+      ansible.builtin.fail:
+        msg: registry_url is not defined or empty
+      when:
+        - (published_ports_postgresql is not defined) or (published_ports_postgresql | length == 0)
+
+    - name: Ensure published_ports_backend is defined and not empty
+      ansible.builtin.fail:
+        msg: registry_url is not defined or empty
+      when:
+        - (published_ports_backend is not defined) or (published_ports_backend | length == 0)
+
+    - name: Ensure published_ports_frontend is defined and not empty
+      ansible.builtin.fail:
+        msg: registry_url is not defined or empty
+      when:
+        - (published_ports_frontend is not defined) or (published_ports_frontend | length == 0)
+
+    - name: Stop and remove Ledger containers - {{ region }}
       containers.podman.podman_container:
         name: "{{ item }}"
         state: absent
@@ -35,8 +113,7 @@
           tag: podman/ledger-postgresql-{{ region }}
         name: ledger-postgresql-{{ region }}
         network: ledger-{{ region }}
-        published_ports:
-          - "53123:5432"
+        published_ports: "{{ published_ports_postgresql }}"
         state: started
 
     - name: Start container ledger-backend-{{ region }}
@@ -60,8 +137,7 @@
           tag: podman/ledger-backend-{{ region }}
         name: "ledger-backend-{{ region }}"
         network: ledger-{{ region }}
-        published_ports:
-          - "53121:8181"
+        published_ports: "{{ published_ports_backend }}"
         state: started
 
     - name: Start container ledger-frontend-{{ region }}
@@ -75,6 +151,5 @@
           tag: podman/ledger-frontend-{{ region }}
         name: "ledger-frontend-{{ region }}"
         network: ledger-{{ region }}
-        published_ports:
-          - "53122:80"
+        published_ports: "{{ published_ports_frontend }}"
         state: started
