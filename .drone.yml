@@ -50,9 +50,8 @@ steps:
     image: registry.flyingfishflash.net/custom/nyx:latest
     commands:
       # nyx requires git tags to infer the current version
-      - git fetch --tags
+      - git fetch --tags -q
       - rm -fv $VERSION
-      - nyx infer --debug --dry-run=false
       - echo "export NYX_CURRENT_VERSION=$(nyx infer --fatal | grep 'current version' | awk '{ print $NF }' | tr -d '\n')" > $VERSION
       - cat $VERSION
 
