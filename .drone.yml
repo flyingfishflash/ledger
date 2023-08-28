@@ -335,7 +335,6 @@ trigger:
     - refs/heads/fix-*
     - refs/heads/perf-*
     - refs/heads/refactor-*
-    - refs/heads/release
 
 depends_on:
   - "publish - image"
