@@ -134,7 +134,7 @@ steps:
   - name: fetch git tags
     image: registry.flyingfishflash.net/custom/nyx:latest
     commands:
-      - git fetch --tags
+      - git fetch --tags -q
 
   - name: verify postgres
     image: postgres
@@ -229,24 +229,12 @@ environment:
   VERSION: .version
 
 steps:
-  - name: infer version
+  - name: generate image tags
     image: registry.flyingfishflash.net/custom/nyx:latest
     commands:
       # nyx requires git tags to infer the current version
-      - git fetch --tags
-      - rm -fv $VERSION
-      - echo "export NYX_CURRENT_VERSION=$(nyx infer --fatal | grep 'current version' | awk '{ print $NF }' | tr -d '\n')" > $VERSION
-      - cat $VERSION
-
-  - name: generate image tags
-    image: registry.flyingfishflash.net/custom/nyx:latest
-    depends_on:
-      - infer version
-    commands:
-      - source $VERSION
-      - echo $NYX_CURRENT_VERSION > $TAGS
-      # DRONE_TAG is only populated for tag events and promotion events that are derived from tags
-      - '[ -z "$DRONE_TAG" ] && echo -n "" >> $TAGS || echo -n ",latest"  >> $TAGS'
+      - git fetch --tags -q
+      - nyx infer --fatal | grep 'current version' | awk '{ print $NF }' | tr -d '\n' > $TAGS
       - cat $TAGS && echo
 
   - name: publish frontend
@@ -324,7 +312,7 @@ steps:
         from_secret: nyx_flyingfishflash_token_lan
     commands:
       # nyx requires git tags to infer the current version
-      - git fetch --tags
+      - git fetch --tags -q
       # nyx is configured to push to the codeberg remote
       # the codeberg remote propagates itself to GitHub and gitlab
       - git remote add codeberg https://codeberg.org/flyingfishflash/ledger.git
@@ -360,7 +348,7 @@ steps:
     image: registry.flyingfishflash.net/custom/nyx:latest
     commands:
       # nyx requires git tags to infer the current version
-      - git fetch --tags
+      - git fetch --tags -q
       - rm -fv $VERSION
       - echo "export NYX_CURRENT_VERSION=$(nyx infer --fatal | grep 'current version' | awk '{ print $NF }' | tr -d '\n')" > $VERSION
       - cat $VERSION
@@ -427,7 +415,7 @@ steps:
     image: registry.flyingfishflash.net/custom/nyx:latest
     commands:
       # nyx requires git tags to infer the current version
-      - git fetch --tags
+      - git fetch --tags -q
       - rm -fv $VERSION
       - echo "export NYX_CURRENT_VERSION=$(nyx infer --fatal | grep 'current version' | awk '{ print $NF }' | tr -d '\n')" > $VERSION
       - cat $VERSION
