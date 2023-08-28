@@ -27,7 +27,7 @@ dependencies {
   implementation("jakarta.interceptor:jakarta.interceptor-api:2.2.0-RC1")
   implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
   implementation("jakarta.validation:jakarta.validation-api:3.0.2")
-  implementation("org.flywaydb:flyway-core:9.21.1")
+  implementation("org.flywaydb:flyway-core:9.21.2")
   implementation("org.javamoney:moneta:1.4.2")
   implementation("org.postgresql:postgresql:42.6.0")
   implementation("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
