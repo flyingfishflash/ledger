@@ -37,7 +37,7 @@ releaseTypes:
     - release
     - internal
   publicationServices:
-    - codeberg
+#    - codeberg
     - github
     - lan
 #    - gitlab
