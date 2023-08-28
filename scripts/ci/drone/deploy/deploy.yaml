@@ -161,7 +161,7 @@
       containers.podman.podman_container:
         env:
           UPSTREAM_SERVER: ledger-backend-{{ region }}:8181
-          API_SERVER_URL: "https://ledger-{{ region }}.flyingfishflash.net/api/v1"
+          API_SERVER_URL: https://ledger-{{ region }}.flyingfishflash.net/api/v1
         image: "{{ registry_url }}/ledger-frontend:{{ tag }}"
         log_driver: journald
         log_opt:
@@ -173,7 +173,7 @@
 
     - name: Wait for https://ledger-{{ region }}.flyingfishflash.net/api/v1/health
       ansible.builtin.uri:
-        url: "https://ledger-{{ region }}.flyingfishflash.net/api/v1/health"
+        url: https://ledger-{{ region }}.flyingfishflash.net/api/v1/health
         method: GET
       register: _result
       until: _result.status == 200
