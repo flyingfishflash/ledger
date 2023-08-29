@@ -16,6 +16,8 @@
     prd_published_ports_frontend:
       - "53112:80"
 
+    # https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
+
   tasks:
     - name: Include variables file
       ansible.builtin.include_vars:
@@ -86,59 +88,169 @@
       when:
         - (published_ports_frontend is not defined) or (published_ports_frontend | length == 0)
 
-    - name: Stop and remove Ledger containers - {{ region }}
-      containers.podman.podman_container:
+    - name: Stop Ledger container services
+      ansible.builtin.systemd:
         name: "{{ item }}"
+        state: stopped
+        scope: user
+      loop:
+        - ledger-frontend-{{ region }}
+        - ledger-backend-{{ region }}
+        - ledger-postgresql-{{ region }}
+
+    - name: Remove Ledger container quadlets
+      ansible.builtin.file:
+        name: ~/.config/containers/systemd/{{ item }}.container
         state: absent
       loop:
         - ledger-frontend-{{ region }}
         - ledger-backend-{{ region }}
         - ledger-postgresql-{{ region }}
 
-    - name: Create network ledger-{{ region }}
-      containers.podman.podman_network:
-        name: ledger-{{ region }}
+    - name: Remove Ledger network quadlets
+      ansible.builtin.file:
+        name: ~/.config/containers/systemd/ledger-{{ region }}.network
+        state: absent
 
-    - name: Start container ledger-postgresql-{{ region }}
-      containers.podman.podman_container:
-        env:
-          POSTGRES_USER: ledger
-          POSTGRES_PASSWORD: ledger
-          POSTGRES_DB: ledger
-        image: docker.io/postgres:14-alpine
-        label:
-          io.containers.autoupdate: registry
-        log_driver: journald
-        log_opt:
-          tag: podman/ledger-postgresql-{{ region }}
+    - name: Push network quadlet ledger-{{ region }}
+      ansible.builtin.copy:
+        content: "[Network]"
+        dest: ~/.config/containers/systemd/ledger-{{ region }}.network
+        mode: "0644"
+        force: false
+
+    - name: Define quadlet ledger-postgresql-{{ region }}
+      ansible.builtin.set_fact:
+        quadlet_ledger_postgresql:
+          service_name: ledger-postgresql-{{ region }}
+          file_name: ledger-postgresql-{{ region }}.container
+          unit_description: ledger - Application Database
+          unit_start_limit_interval_sec: 150
+          unit_start_limit_burst: 5
+          container_environment:
+            - POSTGRES_USER: ledger
+            - POSTGRES_PASSWORD: ledger
+            - POSTGRES_DB: ledger
+          container_image: docker.io/postgres:15-alpine
+          container_log_driver: journald
+          container_container_name: ledger-postgresql-{{ region }}
+          container_network: ledger-{{ region }}.network
+          container_podman_args:
+            - '--log-opt "tag=podman/ledger-postgresql-{{ region }}"'
+          container_publish_port: "{{ published_ports_postgresql }}"
+          service_restart: on-failure
+          service_restart_sec: 30
+          install_wanted_by: default.target
+
+    - name: Define quadlet ledger-backend-{{ region }}
+      ansible.builtin.set_fact:
+        quadlet_ledger_backend:
+          service_name: ledger-backend-{{ region }}
+          file_name: ledger-backend-{{ region }}.container
+          unit_after: ledger-postgresql-{{ region }}.service
+          unit_description: "ledger - API Server [{{ region }}]"
+          unit_requires: ledger-postgresql-{{ region }}.service
+          unit_start_limit_interval_sec: 175
+          unit_start_limit_burst: 5
+          container_environment:
+            - JDK_JAVA_OPTIONS: -Djava.security.egd=file:/dev/./urandom -Duser.timezone="UTC"
+            - SPRING_PROFILES_ACTIVE: postgresql
+            - SPRING_JPA_SHOW_SQL: false
+            - SPRING_DATASOURCE_URL: jdbc:postgresql://ledger-postgresql-{{ region }}:5432/ledger
+            - SPRING_DATASOURCE_USERNAME: ledger
+            - SPRING_DATASOURCE_PASSWORD: ledger
+            - SPRING_DATASOURCE_PLATFORM: POSTGRESQL
+          container_health_cmd: /bin/sh -c "wget http://127.0.0.1:8181/api/v1/health -T 30 -q -O -"
+          container_health_interval: 60s
+          container_health_retries: 3
+          container_health_start_period: 15s
+          container_health_timeout: 5s
+          container_image: "{{ registry_url }}/ledger:{{ tag }}"
+          container_log_driver: journald
+          container_container_name: ledger-backend-{{ region }}
+          container_network: ledger-{{ region }}.network
+          container_podman_args:
+            - '--log-opt "tag=podman/ledger-backend-{{ region }}"'
+          container_publish_port: "{{ published_ports_backend }}"
+          service_restart: on-failure
+          service_restart_sec: 35
+          install_wanted_by: default.target
+
+    - name: Define quadlet ledger-frontend-{{ region }}
+      ansible.builtin.set_fact:
+        quadlet_ledger_frontend:
+          service_name: ledger-frontend-{{ region }}
+          file_name: ledger-frontend-{{ region }}.container
+          unit_after: ledger-backend-{{ region }}.service
+          unit_description: "ledger - Client  [{{ region }}]"
+          unit_start_limit_interval_sec: 225
+          unit_start_limit_burst: 5
+          container_environment:
+            - UPSTREAM_SERVER: ledger-backend-{{ region }}:8181
+            - API_SERVER_URL: https://ledger-{{ region }}.flyingfishflash.net/api/v1
+          container_image: "{{ registry_url }}/ledger-frontend:{{ tag }}"
+          container_log_driver: journald
+          container_container_name: ledger-frontened-{{ region }}
+          container_network: ledger-{{ region }}.network
+          container_podman_args:
+            - '--log-opt "tag=podman/ledger-frontend-{{ region }}"'
+          container_publish_port: "{{ published_ports_frontend }}"
+          service_exec_start_pre: /usr/bin/curl -i --fail-with-body http://{{ inventory_hostname }}:53121/api/v1/health
+          service_restart: on-failure
+          service_restart_sec: 45
+          install_wanted_by: default.target
+
+    - name: Define quadlet
+      ansible.builtin.set_fact:
+        quadlet: "{{ quadlet_ledger_postgresql }}"
+
+    - name: Push container quadlet
+      ansible.builtin.template:
+        src: quadlets/quadlet.container.j2
+        dest: ~/.config/containers/systemd/{{ quadlet.file_name }}
+        mode: "0644"
+
+    - name: Define quadlet
+      ansible.builtin.set_fact:
+        quadlet: "{{ quadlet_ledger_backend }}"
+
+    - name: Push container quadlet
+      ansible.builtin.template:
+        src: quadlets/quadlet.container.j2
+        dest: ~/.config/containers/systemd/{{ quadlet.file_name }}
+        mode: "0644"
+
+    - name: Define quadlet
+      ansible.builtin.set_fact:
+        quadlet: "{{ quadlet_ledger_frontend }}"
+
+    - name: Push container quadlet
+      ansible.builtin.template:
+        src: quadlets/quadlet.container.j2
+        dest: ~/.config/containers/systemd/{{ quadlet.file_name }}
+        mode: "0644"
+
+    - name: Re-read systemd configuration
+      ansible.builtin.systemd:
+        daemon_reload: true
+        scope: user
+
+    - name: Start ledger-postgresql-{{ region }}
+      ansible.builtin.systemd:
         name: ledger-postgresql-{{ region }}
-        network: ledger-{{ region }}
-        published_ports: "{{ published_ports_postgresql }}"
         state: started
+        scope: user
 
-    - name: Start container ledger-backend-{{ region }}
-      containers.podman.podman_container:
-        env:
-          JDK_JAVA_OPTIONS: -Djava.security.egd=file:/dev/./urandom -Duser.timezone="UTC"
-          SPRING_PROFILES_ACTIVE: postgresql
-          SPRING_JPA_SHOW_SQL: false
-          SPRING_DATASOURCE_URL: jdbc:postgresql://ledger-postgresql-{{ region }}:5432/ledger
-          SPRING_DATASOURCE_USERNAME: ledger
-          SPRING_DATASOURCE_PASSWORD: ledger
-          SPRING_DATASOURCE_PLATFORM: POSTGRESQL
-        healthcheck: /bin/sh -c "wget http://127.0.0.1:8181/api/v1/health -T 30 -q -O -"
-        healthcheck_interval: 60s
-        healthcheck_retries: 3
-        healthcheck_start_period: 15s
-        healthcheck_timeout: 5s
-        image: "{{ registry_url }}/ledger:{{ tag }}"
-        log_driver: journald
-        log_opt:
-          tag: podman/ledger-backend-{{ region }}
-        name: "ledger-backend-{{ region }}"
-        network: ledger-{{ region }}
-        published_ports: "{{ published_ports_backend }}"
+    - name: Pull image ledger:{{ tag }}
+      containers.podman.podman_image:
+        name: registry.flyingfishflash.net/ledger/ledger
+        tag: "{{ tag }}"
+
+    - name: Start ledger-backend-{{ region }}
+      ansible.builtin.systemd:
+        name: ledger-backend-{{ region }}
         state: started
+        scope: user
 
     - name: Wait for https://ledger-backend-{{ region }}.flyingfishflash.net/api/v1/health
       ansible.builtin.uri:
@@ -157,19 +269,16 @@
       when:
         - not ansible_check_mode
 
-    - name: Start container ledger-frontend-{{ region }}
-      containers.podman.podman_container:
-        env:
-          UPSTREAM_SERVER: ledger-backend-{{ region }}:8181
-          API_SERVER_URL: https://ledger-{{ region }}.flyingfishflash.net/api/v1
-        image: "{{ registry_url }}/ledger-frontend:{{ tag }}"
-        log_driver: journald
-        log_opt:
-          tag: podman/ledger-frontend-{{ region }}
-        name: "ledger-frontend-{{ region }}"
-        network: ledger-{{ region }}
-        published_ports: "{{ published_ports_frontend }}"
+    - name: Pull image ledger-frontend:{{ tag }}
+      containers.podman.podman_image:
+        name: registry.flyingfishflash.net/ledger/ledger-frontend
+        tag: "{{ tag }}"
+
+    - name: Start ledger-frontend-{{ region }}
+      ansible.builtin.systemd:
+        name: ledger-frontend-{{ region }}
         state: started
+        scope: user
 
     - name: Wait for https://ledger-{{ region }}.flyingfishflash.net/api/v1/health
       ansible.builtin.uri:

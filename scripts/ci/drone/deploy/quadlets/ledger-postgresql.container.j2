@@ -1,0 +1,21 @@
+[Unit]
+Description={{ description }}
+StartLimitIntervalSec={{ unitStartLimitIntervalSec }}
+StartLimitBurst={{ unitStartLimitBurst }}
+
+[Container]
+Image={{ containerImage }}
+ContainerName={{ containerName }}
+Environment={{ containerEnvironment }}
+LogDriver={{ containerLogDriver }}
+Network={{ containerNetwork }}
+PublishPort={{ containerPublishPort }}
+PodmanArgs={{ containerPodmanArgs }}
+#PodmanArgs=--log-opt "tag=podman/ledger-postgresql-dev"
+
+[Service]
+Restart={{ serviceRestart }}
+RestartSec={{ serviceRestartSec }}
+
+[Install]
+WantedBy={{ installWantedBy }}
