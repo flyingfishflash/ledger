@@ -23,7 +23,9 @@ dependencies {
   implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
   implementation("com.h2database:h2:2.2.220")
   implementation("com.vladmihalcea:hibernate-types-60:2.21.1")
-  implementation("commons-validator:commons-validator:1.7")
+  implementation("commons-validator:commons-validator:1.7") {
+    exclude(group = "commons-logging", module = "commons-logging")
+  }
   implementation("jakarta.interceptor:jakarta.interceptor-api:2.2.0-RC1")
   implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
   implementation("jakarta.validation:jakarta.validation-api:3.0.2")
