@@ -21,7 +21,7 @@ dependencies {
   val springSessionVersion = "3.1.2"
 
   implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
-  implementation("com.h2database:h2:2.2.220")
+  implementation("com.h2database:h2:2.2.222")
   implementation("com.vladmihalcea:hibernate-types-60:2.21.1")
   implementation("commons-validator:commons-validator:1.7") {
     exclude(group = "commons-logging", module = "commons-logging")
