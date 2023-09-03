@@ -89,18 +89,18 @@ export class UserService {
 
     this.http
       .delete<any>(environment.api.server.url + '/users/delete', options)
-      .subscribe(
-        (successResponse) => {
+      .subscribe({
+        next: (successResponse) => {
           log.debug(successResponse)
           // this.subject.next(successResponse.content);
           // const fields = Object.getOwnPropertyNames(payload);
           // const ps = new Date().toLocaleTimeString() + ': ' + 'Updated profile (' + fields.toString().replace(/,/g, ', ').split(/(?=[A-Z])/).map(s => s.toLowerCase()).join(' ') + ')';
           // this.profileUpdateStatus.next(ps);
         },
-        (ledgerErrorResponse) => {
+        error: (ledgerErrorResponse) => {
           this.handleError(ledgerErrorResponse)
         },
-      )
+      })
   }
 
   handleError(httpErrorResponse: HttpErrorResponse) {

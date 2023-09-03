@@ -94,8 +94,8 @@ export class AdminSettingsUserCreateComponent implements OnInit {
     }
     this.createUserStatusSubject.next(createUserStatus)
 
-    this.userService.userSignUp(this.userForm.value).subscribe(
-      (successResponse) => {
+    this.userService.userSignUp(this.userForm.value).subscribe({
+      next: (successResponse) => {
         const ps: CreateUserStatus = this.createUserStatusSubject.getValue()
         ps.userDetailsOk = true
         ps.message =
@@ -104,7 +104,7 @@ export class AdminSettingsUserCreateComponent implements OnInit {
           successResponse.content.message
         this.createUserStatusSubject.next(ps)
       },
-      (ledgerErrorResponse) => {
+      error: (ledgerErrorResponse) => {
         const ps: CreateUserStatus = this.createUserStatusSubject.getValue()
         ps.userDetailsOk = false
         ps.message =
@@ -113,7 +113,7 @@ export class AdminSettingsUserCreateComponent implements OnInit {
           ledgerErrorResponse.error.content.message
         this.createUserStatusSubject.next(ps)
       },
-    )
+    })
   }
 
   onCancel(): void {

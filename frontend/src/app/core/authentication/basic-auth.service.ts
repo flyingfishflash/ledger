@@ -76,18 +76,18 @@ export class BasicAuthService {
       .post<any>(environment.api.server.url + '/auth/signout', {
         parameter,
       })
-      .subscribe(
-        (result) => {
-          if (result.message === 'Successful sign-out') {
+      .subscribe({
+        next: (response) => {
+          if (response.message === 'Successful sign-out') {
             window.sessionStorage.clear()
             this.userSubject.next(null)
             this.router.navigate(['/login'])
           }
         },
-        (err) => {
-          this.handleError(err)
+        error: (error) => {
+          this.handleError(error)
         },
-      )
+      })
   }
 
   redirectToLogin() {

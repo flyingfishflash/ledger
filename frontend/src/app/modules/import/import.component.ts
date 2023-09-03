@@ -103,17 +103,17 @@ export class ImportComponent implements OnInit, OnDestroy {
             return this.importService.uploadFile(uploadFileForm)
           }),
         )
-        .subscribe(
-          (successReponse) => {
+        .subscribe({
+          next: (successReponse) => {
             log.debug('import success')
             log.debug(successReponse)
             this.storageService.saveActiveBookId(this.activeBookId)
           },
-          (ledgerErrorResponse) => {
+          error: (ledgerErrorResponse) => {
             log.debug('import error')
             log.debug(ledgerErrorResponse)
           },
-        )
+        })
     }
   }
 

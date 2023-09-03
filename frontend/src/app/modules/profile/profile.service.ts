@@ -48,8 +48,8 @@ export class ProfileService {
         },
         httpOptions,
       )
-      .subscribe(
-        (response) => {
+      .subscribe({
+        next: (response) => {
           // this.subject.next(res.content)
           const fields = Object.getOwnPropertyNames(payload)
           log.debug(response)
@@ -66,10 +66,10 @@ export class ProfileService {
           //   ')'
           // this.profileUpdateStatus.next(ps)
         },
-        (err) => {
+        error: (err) => {
           this.handleError(err)
         },
-      )
+      })
   }
 
   handleError(error: any) {
