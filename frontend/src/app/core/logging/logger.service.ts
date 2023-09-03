@@ -44,12 +44,17 @@ export enum LogLevel {
 
 /**
  * Log output handler function.
+ *
+ * Must be uncommented for outputs other than console to be configured.
+ *
+ * ```
+ * export type LogOutput = (
+ * source: string,
+ * level: LogLevel,
+ * ...objects: any[]
+ * ) => void
+ * ```
  */
-export type LogOutput = (
-  source: string,
-  level: LogLevel,
-  ...objects: any[]
-) => void
 
 export class Logger {
   /**
@@ -60,8 +65,13 @@ export class Logger {
 
   /**
    * Additional log outputs.
+   *
+   * Must be uncommented for outputs other than console to be configured.
+   *
+   * ```
+   * static outputs: LogOutput[] = []
+   * ```
    */
-  static outputs: LogOutput[] = []
 
   constructor(private source?: string) {}
 
@@ -109,14 +119,16 @@ export class Logger {
   }
 
   private log(func: VoidFunction, level: LogLevel, objects: any[]) {
+    console.log(Logger.level)
     if (level <= Logger.level) {
       const log = this.source
         ? ['[' + this.source + ']'].concat(objects)
         : objects
       func.apply(console, log)
-      Logger.outputs.forEach((output) =>
-        output.apply(output, [this.source, level].concat(objects)),
-      )
+      // * The below 'forEach' loop must be uncommented for outputs other than console to be configured. *
+      // Logger.outputs.forEach((output) => {
+      //   output.apply(output, [this.source, level].concat(objects))
+      // })
     }
   }
 }
