@@ -80,6 +80,6 @@ export class ProfileService {
       errorMessage = `A server-side error occured:\nError Status: ${error.status}\nError Message: ${error.message}`
     }
     log.error(errorMessage)
-    return throwError(error)
+    return throwError(() => error)
   }
 }

@@ -27,6 +27,6 @@ export class BookService {
   }
 
   handleError(httpErrorResponse: HttpErrorResponse) {
-    return throwError(httpErrorResponse)
+    return throwError(() => httpErrorResponse)
   }
 }

@@ -104,6 +104,6 @@ export class UserService {
   }
 
   handleError(httpErrorResponse: HttpErrorResponse) {
-    return throwError(httpErrorResponse)
+    return throwError(() => httpErrorResponse)
   }
 }

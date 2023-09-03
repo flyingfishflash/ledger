@@ -82,6 +82,6 @@ export class AccountsTableComponent implements OnInit {
     }
     this.errorMessage = errorMessage
     log.error(errorMessage)
-    return throwError(error)
+    return throwError(() => error)
   }
 }

@@ -71,9 +71,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
 
         if (!isHandled) {
           if (errorMessage!) {
-            return throwError(error)
+            return throwError(() => error)
           } else {
-            return throwError('Unexpected problem occurred')
+            return throwError(() => 'Unexpected problem occurred')
           }
         } else {
           return of(error)

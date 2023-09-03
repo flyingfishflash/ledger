@@ -105,6 +105,6 @@ export class BasicAuthService {
       errorMessage = `A server-side error occured on SIGN-OUT:\nError Status: ${error.status}\nError Message: ${error.message}`
     }
     log.error(errorMessage)
-    return throwError(error)
+    return throwError(() => error)
   }
 }

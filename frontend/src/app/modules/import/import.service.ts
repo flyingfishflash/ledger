@@ -82,6 +82,6 @@ export class ImportService {
     }
     log.debug('Error handled.')
     log.error(errorMessage)
-    return throwError(errorMessage)
+    return throwError(() => errorMessage)
   }
 }
