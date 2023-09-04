@@ -4,10 +4,11 @@ export enum Role {
   viewer = 'ROLE_VIEWER',
 }
 
-export const reverseRole = new Map<string, Role>()
-Object.keys(Role).forEach((role: Role) => {
-  const roleValue: string = Role[role] as any
-  reverseRole.set(roleValue, role)
+export const reverseRole = new Map<string, string>()
+
+Object.keys(Role).forEach((key) => {
+  const roleValue: string = Role[key] as string
+  reverseRole.set(roleValue, key)
 })
 
 export const rolesArray = Object.keys(Role).map((key) => ({

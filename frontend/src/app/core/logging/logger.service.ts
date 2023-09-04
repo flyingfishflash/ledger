@@ -90,7 +90,7 @@ export class Logger {
 
   /* eslint no-console: ["error", { allow: ["log", "info", "warn", "error"] }] */
 
-  debug(...objects: any[]) {
+  debug(...objects: any) {
     this.log(console.log, LogLevel.debug, objects)
   }
 
@@ -98,7 +98,7 @@ export class Logger {
    * Logs messages or objects  with the info level.
    * Works the same as console.log().
    */
-  info(...objects: any[]) {
+  info(...objects: any) {
     this.log(console.info, LogLevel.info, objects)
   }
 
@@ -106,7 +106,7 @@ export class Logger {
    * Logs messages or objects  with the warning level.
    * Works the same as console.log().
    */
-  warn(...objects: any[]) {
+  warn(...objects: any) {
     this.log(console.warn, LogLevel.warning, objects)
   }
 
@@ -114,12 +114,11 @@ export class Logger {
    * Logs messages or objects  with the error level.
    * Works the same as console.log().
    */
-  error(...objects: any[]) {
+  error(...objects: any) {
     this.log(console.error, LogLevel.error, objects)
   }
 
-  private log(func: VoidFunction, level: LogLevel, objects: any[]) {
-    console.log(Logger.level)
+  private log(func: VoidFunction, level: LogLevel, objects: any) {
     if (level <= Logger.level) {
       const log = this.source
         ? ['[' + this.source + ']'].concat(objects)
