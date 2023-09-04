@@ -10,7 +10,6 @@ import { catchError, map } from 'rxjs/operators'
 // core and shared
 import { environment } from '../../../environments/environment'
 import { BasicAuthService } from '../../core/authentication/basic-auth.service'
-import { TreeUtilitiesService } from '../../shared/tree-utilities/tree-utilties.service'
 import { StorageService } from '../../core/storage/storage.service'
 import { Logger } from '../../core/logging/logger.service'
 import { IAccount } from './account'
@@ -25,7 +24,6 @@ export class AccountsService {
 
   constructor(
     private basicAuthService: BasicAuthService,
-    private treeUtilitiesService: TreeUtilitiesService,
     private http: HttpClient,
     private route: ActivatedRoute,
     private router: Router,
@@ -50,40 +48,6 @@ export class AccountsService {
       )
   }
 
-  /*
-         getAccounts(): Observable<any> {
-             return this.http.get<IAccount[]>(`${this.appConfig.apiServer.url}/accounts`).pipe(
-                 map(res => res), catchError(this.handleError)
-             );
-         }
-    */
-
-  getAccountsTree(): Observable<any> {
-    const httpParams = new HttpParams().set(
-      'bookId',
-      this.storageService.getActiveBookId(),
-    )
-
-    return this.http
-      .get<any>(`${environment.api.server.url}/accounts`, {
-        params: httpParams,
-      })
-      .pipe(
-        map((res) => {
-          return this.treeUtilitiesService.listToTreeSorted(res.content)
-        }),
-        catchError(this.handleError),
-      )
-  }
-
-  /*
-         getAccountsTree(): Observable<any> {
-             return this.http.get<IAccount[]>(`${this.appConfig.apiServer.url}/accounts`).pipe(
-                 map(res => list_to_tree_sorted(res))
-            );
-        }
-     */
-
   getAccountCategories(): Observable<string[]> {
     return this.http
       .get<any>(`${environment.api.server.url}/account-categories`)
@@ -94,14 +58,6 @@ export class AccountsService {
         catchError(this.handleError),
       )
   }
-
-  /*
-         getAccountCategories(): Observable<string[]> {
-             return this.http.get<string[]>(`${this.appConfig.apiServer.url}/account-categories`).pipe(
-                map(res => res), catchError(this.handleError)
-            );
-        }
-    */
 
   handleError(error: any) {
     log.info('zzzzzz')

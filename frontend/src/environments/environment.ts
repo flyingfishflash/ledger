@@ -1,9 +1,15 @@
+declare global {
+  interface Window {
+    env: any
+  }
+}
+
 export const environment = {
   production: false,
   api: {
     server: {
       // eslint-disable-next-line @typescript-eslint/dot-notation
-      url: window['env']['apiServerUrl'] || 'http://localhost:8181/api/v1',
+      url: window.env['apiServerUrl'] || 'http://localhost:8181/api/v1',
     },
   },
 }

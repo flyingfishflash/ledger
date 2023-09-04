@@ -43,7 +43,7 @@ export class UserService {
     )
   }
 
-  userDetailsUpdate(payload): Observable<any> {
+  userDetailsUpdate(payload: any): Observable<any> {
     log.debug(payload)
     return this.http
       .patch<any>(
@@ -61,7 +61,7 @@ export class UserService {
       .pipe(catchError(this.handleError))
   }
 
-  userSignUp(userFormValue): Observable<any> {
+  userSignUp(userFormValue: any): Observable<any> {
     const roles: string[] = []
     roles.push(userFormValue.role)
 
@@ -81,7 +81,7 @@ export class UserService {
       .pipe(catchError(this.handleError))
   }
 
-  userDeleteById(id) {
+  userDeleteById(id: number) {
     const payload: any = {}
     payload.id = id
     const httpParams = new HttpParams().set('id', id)

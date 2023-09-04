@@ -13,7 +13,7 @@ import { UserService } from '../../shared/users/user.service'
 })
 export class AdminSettingsComponent implements OnInit {
   componentHeading = 'Settings'
-  users
+  users: any
 
   constructor(
     private userService: UserService,

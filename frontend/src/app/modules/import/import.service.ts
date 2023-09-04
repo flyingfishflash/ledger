@@ -63,7 +63,7 @@ export class ImportService {
     )
   }
 
-  uploadFile(formData): Observable<any> {
+  uploadFile(formData: any): Observable<any> {
     return this.http
       .post<any[]>(`${environment.api.server.url}/import/gnucash`, formData)
       .pipe(

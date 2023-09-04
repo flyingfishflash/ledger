@@ -7,11 +7,11 @@ export enum Role {
 export const reverseRole = new Map<string, string>()
 
 Object.keys(Role).forEach((key) => {
-  const roleValue: string = Role[key] as string
+  const roleValue: string = Role[key as keyof typeof Role] as string
   reverseRole.set(roleValue, key)
 })
 
 export const rolesArray = Object.keys(Role).map((key) => ({
-  roleValue: Role[key],
+  roleValue: Role[key as keyof typeof Role],
   roleName: key,
 }))

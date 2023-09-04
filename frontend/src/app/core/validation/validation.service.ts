@@ -9,8 +9,10 @@ export class ValidationService {
   public static getValidationErrorMessage(
     validatorName: string,
     validatorValue?: any,
-    // labelName?: string,
-  ): any {
+  ): string {
+    type ConfigKey = keyof typeof config
+    const key = validatorName as ConfigKey
+
     const config = {
       required: 'Field is required.',
       invalidPassword:
@@ -19,7 +21,7 @@ export class ValidationService {
       minlength: `The field must contain atleast ${validatorValue.requiredLength} characters.`,
     }
 
-    return config[validatorName]
+    return config[key]
   }
 
   public static patternValidator(

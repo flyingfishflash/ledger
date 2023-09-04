@@ -11,7 +11,6 @@ import { MaterialModule } from '../../app/material.module'
 import { ActuatorService } from '../shared/actuator/actuator.service'
 import { BookService } from '../shared/books/book.service'
 import { ErrorDialogService } from '../shared/errors/error-dialog.service'
-import { TreeUtilitiesService } from '../shared/tree-utilities/tree-utilties.service'
 import { UserService } from '../shared/users/user.service'
 import { UtilitiesService } from '../shared/utilities/utilities.service'
 
@@ -43,7 +42,6 @@ const sharedComponents = [ErrorDialogComponent, PadWithSpacesPipe]
     ActuatorService,
     BookService,
     ErrorDialogService,
-    TreeUtilitiesService,
     UserService,
     UtilitiesService,
   ],

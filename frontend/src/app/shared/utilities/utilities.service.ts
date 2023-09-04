@@ -10,7 +10,7 @@ const log = new Logger('utilities.service')
   providedIn: 'root',
 })
 export class UtilitiesService {
-  isEmptyObject(obj) {
+  isEmptyObject(obj: any): boolean {
     return JSON.stringify(obj) === '{}'
   }
 }

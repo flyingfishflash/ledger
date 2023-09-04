@@ -29,13 +29,6 @@ const routes: Routes = [
           ),
       },
       {
-        path: 'accounts-tree',
-        loadChildren: () =>
-          import('./modules/accounts-tree/accounts-tree.module').then(
-            (m) => m.AccountsTreeModule,
-          ),
-      },
-      {
         path: 'admin/settings',
         loadChildren: () =>
           import('./modules/admin-settings/admin-settings.module').then(

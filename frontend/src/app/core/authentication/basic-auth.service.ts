@@ -36,7 +36,7 @@ export class BasicAuthService {
     return this.userSubject.value
   }
 
-  signIn(credentials) {
+  signIn(credentials: any) {
     // if POST set 'Content-Type': 'application/json'
     const headers = new HttpHeaders(
       credentials
@@ -67,7 +67,7 @@ export class BasicAuthService {
       )
   }
 
-  createBasicAuthToken(username, password) {
+  createBasicAuthToken(username: string, password: string) {
     return 'Basic ' + window.btoa(username + ':' + password)
   }
 

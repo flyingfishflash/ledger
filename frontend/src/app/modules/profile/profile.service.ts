@@ -36,7 +36,7 @@ export class ProfileService {
       )
   }
 
-  userDetailsUpdate(payload, id) {
+  userDetailsUpdate(payload: any, id: number) {
     this.http
       .patch<any>(
         environment.api.server.url + '/users/' + id,

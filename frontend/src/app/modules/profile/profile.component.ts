@@ -24,13 +24,16 @@ class UserDetailsFormValues {
 
   differences(other: UserDetailsFormValues): any {
     const updatedValues: any = {}
-    let key: string = ''
 
-    for (key of Object.keys(this)) {
-      if (this[key] !== other[key]) {
-        updatedValues[key] = other[key]
+    Object.keys(this).forEach((key) => {
+      if (
+        this[key as keyof UserDetailsFormValues] !==
+        other[key as keyof UserDetailsFormValues]
+      ) {
+        updatedValues[key] = other[key as keyof UserDetailsFormValues]
       }
-    }
+    })
+
     return updatedValues
   }
 }
