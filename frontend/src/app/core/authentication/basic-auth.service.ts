@@ -79,9 +79,8 @@ export class BasicAuthService {
       .subscribe({
         next: (response) => {
           if (response.message === 'Successful sign-out') {
-            window.sessionStorage.clear()
-            this.userSubject.next(null)
-            this.router.navigate(['/login'])
+            this.redirectToLogin()
+            window.location.reload
           }
         },
         error: (error) => {
@@ -92,8 +91,7 @@ export class BasicAuthService {
 
   redirectToLogin() {
     window.sessionStorage.clear()
-    this.userSubject.next(null)
-    //this.userSubject.unsubscribe();
+    this.userSubject.next(new BasicAuthUser(null))
     this.router.navigate(['/login'])
   }
 

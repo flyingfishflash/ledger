@@ -23,21 +23,20 @@ export class StorageService {
     )
   }
 
-  public getAuthenticatedUser(): BasicAuthUser | undefined {
+  public getAuthenticatedUser(): BasicAuthUser {
     const storedValue =
-      sessionStorage.getItem(STORAGE_KEY_AUTHENTICATED_USER) ?? undefined
+      sessionStorage.getItem(STORAGE_KEY_AUTHENTICATED_USER) ?? null
 
-    if (storedValue !== undefined) {
+    if (storedValue !== null) {
       try {
-        const user: BasicAuthUser = JSON.parse(storedValue)
-        return user
+        return JSON.parse(storedValue)
       } catch (err) {
-        log.debug("couldn't retrieve authenticated user from session storage")
-        return undefined
-        //this.redirectToLogin();
+        throw new Error("couldn't parse stored user into BasicAuthUser")
       }
     } else {
-      return undefined
+      log.debug('no user in session storage')
+      return new BasicAuthUser(null)
+      //throw new Error('no user in session storage')
     }
   }
 

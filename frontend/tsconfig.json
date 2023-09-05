@@ -30,9 +30,9 @@
     "noImplicitThis": true,
     "strictBindCallApply": true,
     "strictFunctionTypes": true,
-    //  "strictNullChecks": true,
-    //  "exactOptionalPropertyTypes": true,
-    //  "strictPropertyInitialization": true,
+    "strictNullChecks": true,
+    // "exactOptionalPropertyTypes": true,
+    // "strictPropertyInitialization": true,
     "useUnknownInCatchVariables": true,
     // ---
     "sourceMap": true,

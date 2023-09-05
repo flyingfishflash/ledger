@@ -106,8 +106,8 @@
                         style="word-wrap: break-word; margin: 16px">
                         <mat-error
                           *ngIf="
-                            username.errors['required'] &&
-                            password.errors['required']
+                            username.getError('required') &&
+                            password.getError('required')
                           "
                           >User name and password are required fields</mat-error
                         >
@@ -117,7 +117,7 @@
                           f.submitted && username.invalid && !password.invalid
                         "
                         style="margin: 16px">
-                        <mat-error *ngIf="username.errors['required']"
+                        <mat-error *ngIf="username.getError('required')"
                           >Username is a required field</mat-error
                         >
                       </div>
@@ -126,7 +126,7 @@
                           f.submitted && !username.invalid && password.invalid
                         "
                         style="margin: 16px">
-                        <mat-error *ngIf="password.errors['required']"
+                        <mat-error *ngIf="password.getError('required')"
                           >Password is a required field</mat-error
                         >
                       </div>

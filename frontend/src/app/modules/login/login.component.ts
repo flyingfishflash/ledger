@@ -42,7 +42,8 @@ export class LoginComponent implements OnInit {
     private iconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
   ) {
-    if (this.basicAuthService.userValue) {
+    if (this.basicAuthService.userValue.id !== 0) {
+      log.debug('user id !== 0' + basicAuthService.userValue.id)
       this.router.navigate(['/home'])
     }
 

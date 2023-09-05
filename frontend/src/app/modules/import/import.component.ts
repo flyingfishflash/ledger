@@ -76,8 +76,12 @@ export class ImportComponent implements OnInit, OnDestroy {
 
   uploadSelected(files: File[]): void {
     if (files.length > 0) {
-      this.file = files[0]
-      this.uploadFileName = this.file.name
+      if (files[0] !== undefined) {
+        this.file = files[0]
+        this.uploadFileName = this.file.name
+      } else {
+        throw new Error('Error uploading selected file')
+      }
     }
   }
 

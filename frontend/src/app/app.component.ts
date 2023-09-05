@@ -1,6 +1,7 @@
 // angular
 import { Location } from '@angular/common'
 import { Component, OnInit } from '@angular/core'
+import { Router } from '@angular/router'
 
 // core and shared
 import { BasicAuthService } from './core/authentication/basic-auth.service'
@@ -20,8 +21,15 @@ export class AppComponent implements OnInit {
   constructor(
     private basicAuthService: BasicAuthService,
     private location: Location,
+    private router: Router,
   ) {
-    this.basicAuthService.user.subscribe((x) => (this.user = x))
+    this.basicAuthService.user.subscribe((x) => {
+      this.user = x
+      console.log(this.user)
+      if (this.user.id === 0) {
+        this.router.navigate(['/login'])
+      }
+    })
   }
 
   ngOnInit(): void {

@@ -131,8 +131,9 @@ export class ProfileComponent implements OnInit {
 
       this.profileService.userDetailsUpdate(
         userDetailsPayload,
-        this.userDetailsForm.controls['id'].value,
+        this.userDetailsForm.controls['id']?.value,
       )
+
       this.userDetailsFormInitial = new UserDetailsFormValues(
         this.userDetailsForm.value,
       )

@@ -28,7 +28,7 @@ export class ValidationService {
     regex: RegExp,
     error: ValidationErrors,
   ): ValidatorFn {
-    return (control: AbstractControl): Record<string, any> => {
+    return (control: AbstractControl): Record<string, any> | null => {
       if (!control.value) {
         // if control is empty return no error
         return null

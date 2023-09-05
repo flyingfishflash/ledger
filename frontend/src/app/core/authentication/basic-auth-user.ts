@@ -7,11 +7,11 @@ export class BasicAuthUser {
   readonly roles: BasicAuthUserRole[]
   readonly sessionId: string = ''
 
-  constructor(response: HttpResponse<any>) {
-    this.id = response.body.content.id
-    this.username = response.body.content.username
-    this.roles = response.body.content.roles
-    this.sessionId = response.headers.get('x-auth-token') ?? ''
+  constructor(response: HttpResponse<any> | null) {
+    this.id = response?.body.content.id ?? 0
+    this.username = response?.body.content.username ?? ''
+    this.roles = response?.body.content.roles ?? []
+    this.sessionId = response?.headers.get('x-auth-token') ?? ''
   }
 }
 
