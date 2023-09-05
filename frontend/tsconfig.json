@@ -31,7 +31,7 @@
     "strictBindCallApply": true,
     "strictFunctionTypes": true,
     "strictNullChecks": true,
-    // "exactOptionalPropertyTypes": true,
+    // "exactOptionalPropertyTypes" : true, | Cannot be enabled due to: https://github.com/angular/components/issues/24078
     // "strictPropertyInitialization": true,
     "useUnknownInCatchVariables": true,
     // ---
