@@ -34,7 +34,7 @@ export class AdminSettingsUserCreateComponent implements OnInit {
   hide = true
   isPasswordHidden = true
 
-  createUserStatus$: Observable<CreateUserStatus>
+  createUserStatus$ = new Observable<CreateUserStatus>()
   createUserStatusSubject = new BehaviorSubject<CreateUserStatus>({
     userDetailsOk: false,
     message: '',
@@ -43,11 +43,7 @@ export class AdminSettingsUserCreateComponent implements OnInit {
   constructor(
     private formBuilder: UntypedFormBuilder,
     private userService: UserService,
-  ) {}
-
-  ngOnInit(): void {
-    this.createUserStatus$ = this.createUserStatusSubject.asObservable()
-
+  ) {
     this.userForm = this.formBuilder.group({
       username: [
         '',
@@ -85,6 +81,10 @@ export class AdminSettingsUserCreateComponent implements OnInit {
         ],
       ],
     })
+  }
+
+  ngOnInit(): void {
+    this.createUserStatus$ = this.createUserStatusSubject.asObservable()
   }
 
   onSubmit(): void {

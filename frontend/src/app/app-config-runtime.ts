@@ -20,7 +20,16 @@ export interface IBuildProperties extends AppConfigRuntime {
 
 @Injectable()
 export class AppConfigRuntime implements IBuildProperties {
-  public buildProperties: BuildProperties
+  public buildProperties: BuildProperties = {
+    artifact: 'default',
+    ciPipelineId: '',
+    ciPlatform: 'default',
+    commit: 'default',
+    group: 'default',
+    name: 'default',
+    time: 'default',
+    version: 'default',
+  }
 
   constructor(private readonly http: HttpClient) {}
 

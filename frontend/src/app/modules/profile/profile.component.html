@@ -199,14 +199,14 @@
               <label
                 class="col"
                 [ngClass]="
-                  userDetailsForm.controls['password']?.hasError('required') ||
-                  userDetailsForm.controls['password']?.hasError('hasUppercase')
+                  userDetailsForm.controls['password']?.getError('required') ||
+                  userDetailsForm.controls['password']?.getError('hasUppercase')
                     ? 'text-danger'
                     : 'text-success'
                 ">
                 <i class="material-icons" style="font-size: 1.2rem">{{
-                  userDetailsForm.controls['password']?.hasError('required') ||
-                  userDetailsForm.controls['password']?.hasError('hasUppercase')
+                  userDetailsForm.controls['password']?.getError('required') ||
+                  userDetailsForm.controls['password']?.getError('hasUppercase')
                     ? 'cancel'
                     : 'check_circle'
                 }}</i>
@@ -217,16 +217,16 @@
               <label
                 class="col"
                 [ngClass]="
-                  userDetailsForm.controls['password']?.hasError('required') ||
-                  userDetailsForm.controls['password']?.hasError(
+                  userDetailsForm.controls['password']?.getError('required') ||
+                  userDetailsForm.controls['password']?.getError(
                     'hasSpecialCharacters'
                   )
                     ? 'text-danger'
                     : 'text-success'
                 ">
                 <i class="material-icons" style="font-size: 1.2rem">{{
-                  userDetailsForm.controls['password']?.hasError('required') ||
-                  userDetailsForm.controls['password']?.hasError(
+                  userDetailsForm.controls['password']?.getError('required') ||
+                  userDetailsForm.controls['password']?.getError(
                     'hasSpecialCharacters'
                   )
                     ? 'cancel'

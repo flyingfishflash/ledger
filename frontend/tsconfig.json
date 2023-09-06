@@ -32,7 +32,7 @@
     "strictFunctionTypes": true,
     "strictNullChecks": true,
     // "exactOptionalPropertyTypes" : true, | Cannot be enabled due to: https://github.com/angular/components/issues/24078
-    // "strictPropertyInitialization": true,
+    "strictPropertyInitialization": true,
     "useUnknownInCatchVariables": true,
     // ---
     "sourceMap": true,

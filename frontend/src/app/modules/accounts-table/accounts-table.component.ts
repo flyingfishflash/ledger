@@ -17,16 +17,13 @@ const log = new Logger('accounts-table.component')
   styleUrls: ['./accounts-table.component.css'],
 })
 export class AccountsTableComponent implements OnInit {
-  _listFilter: string
-
+  _listFilter: string = ''
+  accounts: IAccount[] = []
+  accountCategories: string[] = []
   componentHeading = 'Accounts Table'
   displayedColumns: string[] = ['name', 'code', 'description', 'action']
-
   errorMessage: any
-
   filteredAccounts: IAccount[]
-  accounts: IAccount[]
-  accountCategories: string[]
 
   constructor(private accountsService: AccountsService) {
     this.filteredAccounts = this.accounts

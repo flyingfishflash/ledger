@@ -15,8 +15,8 @@ import { environment } from '../environments/environment'
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  username: string
-  user: BasicAuthUser
+  username: string = ''
+  user = new BasicAuthUser(null)
 
   constructor(
     private basicAuthService: BasicAuthService,

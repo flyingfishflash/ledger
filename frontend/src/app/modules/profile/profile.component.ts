@@ -46,7 +46,7 @@ class UserDetailsFormValues {
 export class ProfileComponent implements OnInit {
   componentHeading: string = 'Profile'
   userDetailsForm: FormGroup
-  userDetailsFormInitial: UserDetailsFormValues
+  userDetailsFormInitial: UserDetailsFormValues | undefined
   isPasswordHidden: boolean = true
   profileUpdateStatus: string = ''
   userId: number = 0
@@ -56,9 +56,7 @@ export class ProfileComponent implements OnInit {
     private storageService: StorageService,
     private utilitiesService: UtilitiesService,
     private formBuilder: NonNullableFormBuilder,
-  ) {}
-
-  ngOnInit() {
+  ) {
     this.userDetailsForm = this.formBuilder.group({
       id: [''],
       email: [
@@ -88,7 +86,9 @@ export class ProfileComponent implements OnInit {
         ],
       ],
     })
+  }
 
+  ngOnInit() {
     // User id is determined by backend via authentication process
     if (history.state.data != null) {
       if (history.state.data.userId == 0) {
@@ -101,9 +101,9 @@ export class ProfileComponent implements OnInit {
     }
 
     this.profileService.getProfileById(this.userId).subscribe((response) => {
-      this.userDetailsForm.patchValue(response)
+      this.userDetailsForm?.patchValue(response)
       this.userDetailsFormInitial = new UserDetailsFormValues(
-        this.userDetailsForm.value,
+        this.userDetailsForm?.value,
       )
     })
   }
@@ -116,10 +116,10 @@ export class ProfileComponent implements OnInit {
 
   onSubmit(): void {
     const userDetailsFormCurrent = new UserDetailsFormValues(
-      this.userDetailsForm.value,
+      this.userDetailsForm?.value,
     )
 
-    const userDetailsPayload = this.userDetailsFormInitial.differences(
+    const userDetailsPayload = this.userDetailsFormInitial?.differences(
       userDetailsFormCurrent,
     )
     log.debug(userDetailsPayload)
@@ -127,15 +127,15 @@ export class ProfileComponent implements OnInit {
     if (!this.utilitiesService.isEmptyObject(userDetailsPayload)) {
       log.debug('current form differs from intial form')
       log.debug('initial: ' + JSON.stringify(this.userDetailsFormInitial))
-      log.debug('current: ' + JSON.stringify(this.userDetailsForm.value))
+      log.debug('current: ' + JSON.stringify(this.userDetailsForm?.value))
 
       this.profileService.userDetailsUpdate(
         userDetailsPayload,
-        this.userDetailsForm.controls['id']?.value,
+        this.userDetailsForm?.controls['id']?.value,
       )
 
       this.userDetailsFormInitial = new UserDetailsFormValues(
-        this.userDetailsForm.value,
+        this.userDetailsForm?.value,
       )
     }
   }

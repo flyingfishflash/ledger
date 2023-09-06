@@ -23,7 +23,16 @@ const log = new Logger('login.component')
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-  buildProperties: BuildProperties
+  buildProperties: BuildProperties = {
+    artifact: 'default',
+    ciPipelineId: '',
+    ciPlatform: 'default',
+    commit: 'default',
+    group: 'default',
+    name: 'default',
+    time: 'default',
+    version: 'default',
+  }
   errorMessage = ''
   form: any = {}
   isPasswordHidden = true
@@ -31,7 +40,7 @@ export class LoginComponent implements OnInit {
   isLoginFailed = false
   isLoginDisabled = true
   isLoginViaBackend = true
-  returnUrl: string
+  returnUrl: string = ''
 
   constructor(
     private actuatorService: ActuatorService,

@@ -32,8 +32,8 @@ export class ImportComponent implements OnInit, OnDestroy {
   componentHeading = 'Import'
 
   uploadFileName = ''
-  file: File
-  activeBookId: number
+  file: File | undefined
+  activeBookId: number = 0
 
   displayedColumnsCommodities: string[] = [
     'Component',
@@ -45,8 +45,8 @@ export class ImportComponent implements OnInit, OnDestroy {
   ]
   displayedColumns: string[] = ['Property', 'Value']
 
-  dataSource: Comp[]
-  thisdata: Comp[]
+  // dataSource: Comp[]
+  // thisdata: Comp[]
 
   constructor(
     private bookService: BookService,
@@ -55,20 +55,20 @@ export class ImportComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.fetchImportStatus()
+    // this.fetchImportStatus()
   }
 
-  fetchImportStatus() {
-    this.fetchImportStatusComponentCounts()
-  }
+  // fetchImportStatus() {
+  //   this.fetchImportStatusComponentCounts()
+  // }
 
-  fetchImportStatusComponentCounts() {
-    this.importService.getImportStatus().subscribe((res) => {
-      res = res || []
-      log.debug(res)
-      this.dataSource = res.components
-    })
-  }
+  // fetchImportStatusComponentCounts() {
+  //   this.importService.getImportStatus().subscribe((res) => {
+  //     res = res || []
+  //     log.debug(res)
+  //     this.dataSource = res.components
+  //   })
+  // }
 
   ngOnDestroy() {
     log.debug('ngOnDestroy')
@@ -103,7 +103,12 @@ export class ImportComponent implements OnInit, OnDestroy {
               'bookId',
               '{ "bookId":"' + successResponse.content.id + '" }',
             )
-            uploadFileForm.append('file', this.file)
+
+            if (this.file !== undefined) {
+              uploadFileForm.append('file', this.file)
+            } else {
+              log.debug('this.file is undefined')
+            }
             return this.importService.uploadFile(uploadFileForm)
           }),
         )
