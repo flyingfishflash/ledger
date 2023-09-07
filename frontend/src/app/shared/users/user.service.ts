@@ -67,7 +67,7 @@ export class UserService {
 
     return this.http
       .post<any>(
-        environment.api.server.url + '/users/',
+        environment.api.server.url + '/users',
         {
           email: userFormValue.email,
           firstName: userFormValue.firstName,
