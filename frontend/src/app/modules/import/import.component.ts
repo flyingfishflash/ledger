@@ -6,10 +6,16 @@ import { Component, OnDestroy, OnInit } from '@angular/core'
 
 // core and shared
 // import { environment } from 'environments/environment';
-import { StorageService } from '../../core/storage/storage.service'
-import { Logger } from '../../core/logging/logger.service'
-import { BookService } from '../../shared/books/book.service'
+import { FormsModule } from '@angular/forms'
+import { MatButtonModule } from '@angular/material/button'
+import { MatCardModule } from '@angular/material/card'
+import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatInputModule } from '@angular/material/input'
+import { MatTooltipModule } from '@angular/material/tooltip'
 import { concatMap } from 'rxjs/operators'
+import { Logger } from '../../core/logging/logger.service'
+import { StorageService } from '../../core/storage/storage.service'
+import { BookService } from '../../shared/books/book.service'
 import { ImportService } from './import.service'
 
 const log = new Logger('import.component')
@@ -27,6 +33,15 @@ export interface Comp {
   selector: 'app-import',
   templateUrl: './import.component.html',
   styleUrls: ['./import.component.css'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    MatButtonModule,
+    MatTooltipModule,
+  ],
 })
 export class ImportComponent implements OnInit, OnDestroy {
   componentHeading = 'Import'

@@ -9,8 +9,7 @@ import { ImportComponent } from './import.component'
 import { ImportRoutingModule } from './import.routing'
 
 @NgModule({
-  declarations: [ImportComponent],
-  imports: [SharedModule, ImportRoutingModule],
+  imports: [SharedModule, ImportRoutingModule, ImportComponent],
   exports: [],
   providers: [],
 })

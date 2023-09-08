@@ -10,8 +10,11 @@ import { AdminSettingsUserCreateComponent } from './admin-settings-user-create.c
 import { AdminSettingsUserCreateRoutingModule } from './admin-settings-user-create.routing'
 
 @NgModule({
-  declarations: [AdminSettingsUserCreateComponent],
-  imports: [SharedModule, AdminSettingsUserCreateRoutingModule],
+  imports: [
+    SharedModule,
+    AdminSettingsUserCreateRoutingModule,
+    AdminSettingsUserCreateComponent,
+  ],
   exports: [],
   providers: [],
 })

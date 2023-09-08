@@ -1,9 +1,9 @@
 // angular
-import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
+import { Injectable } from '@angular/core'
 
 // third party
-import { Observable, throwError, map } from 'rxjs'
+import { Observable, map, throwError } from 'rxjs'
 import { catchError } from 'rxjs/operators'
 
 // core and shared

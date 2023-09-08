@@ -1,6 +1,6 @@
 // modules (angular)
 import { NgModule } from '@angular/core'
-import { Routes, RouterModule } from '@angular/router'
+import { RouterModule, Routes } from '@angular/router'
 
 // components
 import { AccountsTableComponent } from './accounts-table.component'

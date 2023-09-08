@@ -1,18 +1,18 @@
 // angular
-import { Injectable } from '@angular/core'
 import {
   HttpEvent,
   HttpHandler,
   HttpInterceptor,
   HttpRequest,
 } from '@angular/common/http'
+import { Injectable } from '@angular/core'
 
 // third party
 import { Observable } from 'rxjs'
 
 // core and shared
-import { StorageService } from '../../core/storage/storage.service'
 import { Logger } from '../../core/logging/logger.service'
+import { StorageService } from '../../core/storage/storage.service'
 
 const log = new Logger('basic-auth.interceptor')
 

@@ -5,9 +5,20 @@ import { Component, OnInit } from '@angular/core'
 import { throwError } from 'rxjs'
 
 // core and shared
+import { NgFor, NgIf } from '@angular/common'
+import { FormsModule } from '@angular/forms'
+import { MatButtonModule } from '@angular/material/button'
+import { MatCardModule } from '@angular/material/card'
+import { MatOptionModule } from '@angular/material/core'
+import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatIconModule } from '@angular/material/icon'
+import { MatInputModule } from '@angular/material/input'
+import { MatSelectModule } from '@angular/material/select'
+import { MatTableModule } from '@angular/material/table'
+import { Logger } from '../../core/logging/logger.service'
 import { IAccount } from '../../shared/accounts/account'
 import { AccountsService } from '../../shared/accounts/accounts.service'
-import { Logger } from '../../core/logging/logger.service'
+import { PadWithSpacesPipe } from '../../shared/pipes/pad-with-spaces.pipe'
 
 const log = new Logger('accounts-table.component')
 
@@ -15,6 +26,21 @@ const log = new Logger('accounts-table.component')
   selector: 'app-accounts-table',
   templateUrl: './accounts-table.component.html',
   styleUrls: ['./accounts-table.component.css'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    NgFor,
+    MatInputModule,
+    FormsModule,
+    NgIf,
+    MatButtonModule,
+    MatIconModule,
+    MatTableModule,
+    PadWithSpacesPipe,
+  ],
 })
 export class AccountsTableComponent implements OnInit {
   _listFilter: string = ''

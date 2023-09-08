@@ -11,5 +11,6 @@
         "parser": "angular"
       }
     }
-  ]
+  ],
+  "plugins": ["prettier-plugin-organize-imports"]
 }

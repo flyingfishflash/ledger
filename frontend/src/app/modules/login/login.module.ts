@@ -9,8 +9,7 @@ import { LoginComponent } from './login.component'
 import { LoginRoutingModule } from './login.routing'
 
 @NgModule({
-  declarations: [LoginComponent],
-  imports: [SharedModule, LoginRoutingModule],
+  imports: [SharedModule, LoginRoutingModule, LoginComponent],
   exports: [],
   providers: [],
 })

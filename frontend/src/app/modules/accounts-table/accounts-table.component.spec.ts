@@ -8,7 +8,7 @@ describe('AccountsTableComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [AccountsTableComponent],
+      imports: [AccountsTableComponent],
     }).compileComponents()
   }))
 

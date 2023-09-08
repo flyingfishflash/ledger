@@ -1,12 +1,11 @@
 // angular
-import { Injectable } from '@angular/core'
 import {
   HttpClient,
   HttpErrorResponse,
   HttpHeaders,
   HttpParams,
 } from '@angular/common/http'
-import { EVENT_MANAGER_PLUGINS } from '@angular/platform-browser'
+import { Injectable } from '@angular/core'
 
 // third party
 import { Observable, throwError } from 'rxjs'

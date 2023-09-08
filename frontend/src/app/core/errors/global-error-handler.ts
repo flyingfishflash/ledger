@@ -2,8 +2,8 @@
 import { ErrorHandler, Injectable, NgZone } from '@angular/core'
 //import { Router } from '@angular/router';
 
-import { ErrorDialogService } from '../../shared/errors/error-dialog.service'
 import { Logger } from '../../core/logging/logger.service'
+import { ErrorDialogService } from '../../shared/errors/error-dialog.service'
 
 const log = new Logger('global-error-handler')
 

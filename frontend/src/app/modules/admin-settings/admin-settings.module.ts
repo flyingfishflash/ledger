@@ -10,8 +10,7 @@ import { AdminSettingsComponent } from './admin-settings.component'
 import { AdminSettingsRoutingModule } from './admin-settings.routing'
 
 @NgModule({
-  declarations: [AdminSettingsComponent],
-  imports: [SharedModule, AdminSettingsRoutingModule],
+  imports: [SharedModule, AdminSettingsRoutingModule, AdminSettingsComponent],
   exports: [],
   providers: [],
 })

@@ -1,18 +1,14 @@
-// angular
-import { Injectable } from '@angular/core'
 import { HttpClient, HttpParams } from '@angular/common/http'
+import { Injectable } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 
-// third party
 import { Observable, throwError } from 'rxjs'
 import { catchError, map } from 'rxjs/operators'
 
-// core and shared
 import { environment } from '../../../environments/environment'
 import { BasicAuthService } from '../../core/authentication/basic-auth.service'
-import { StorageService } from '../../core/storage/storage.service'
 import { Logger } from '../../core/logging/logger.service'
-import { IAccount } from './account'
+import { StorageService } from '../../core/storage/storage.service'
 
 const log = new Logger('account.service')
 

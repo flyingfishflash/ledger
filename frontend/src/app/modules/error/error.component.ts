@@ -1,6 +1,6 @@
 // angular
 import { Component, OnInit } from '@angular/core'
-import { Router, ActivatedRoute } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 
 // core and shared
 import { Logger } from '../../core/logging/logger.service'
@@ -10,6 +10,7 @@ const log = new Logger('error.component')
 @Component({
   templateUrl: './error.component.html',
   styleUrls: ['./error.component.css'],
+  standalone: true,
 })
 export class ErrorComponent implements OnInit {
   errorState: any

@@ -3,15 +3,15 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 
 // third party
-import { Observable, Subject, timer, throwError } from 'rxjs'
+import { Observable, Subject, throwError, timer } from 'rxjs'
 import {
   catchError,
   map,
-  switchMap,
   retry,
-  tap,
   share,
+  switchMap,
   takeUntil,
+  tap,
 } from 'rxjs/operators'
 
 // core and shared

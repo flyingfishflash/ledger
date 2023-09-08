@@ -5,7 +5,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { RouterModule } from '@angular/router'
 
 // modules
-import { MaterialModule } from '../../app/material.module'
 
 // services
 import { ActuatorService } from '../shared/actuator/actuator.service'
@@ -22,21 +21,19 @@ import { ErrorDialogComponent } from './errors/error-dialog/error-dialog.compone
 const sharedComponents = [ErrorDialogComponent, PadWithSpacesPipe]
 
 @NgModule({
-  declarations: [...sharedComponents],
   exports: [
     sharedComponents,
     CommonModule,
     FormsModule,
-    MaterialModule,
     ReactiveFormsModule,
     RouterModule,
   ],
   imports: [
     CommonModule,
     FormsModule,
-    MaterialModule,
     ReactiveFormsModule,
     RouterModule,
+    ...sharedComponents,
   ],
   providers: [
     ActuatorService,

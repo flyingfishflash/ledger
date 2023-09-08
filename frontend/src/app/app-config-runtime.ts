@@ -1,14 +1,14 @@
 // angular
-import { Injectable } from '@angular/core'
 import { HttpClient, HttpErrorResponse } from '@angular/common/http'
+import { Injectable } from '@angular/core'
 
 // third party
 import { EMPTY, Observable } from 'rxjs'
 import { catchError, map } from 'rxjs/operators'
 
 // core and shared
-import { Logger } from './core/logging/logger.service'
 import { BuildProperties } from './app-build-properties'
+import { Logger } from './core/logging/logger.service'
 
 const log = new Logger('app-config')
 

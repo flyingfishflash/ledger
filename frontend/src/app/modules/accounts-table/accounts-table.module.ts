@@ -9,8 +9,7 @@ import { AccountsTableComponent } from './accounts-table.component'
 import { AccountsTableRoutingModule } from './accounts-table.routing'
 
 @NgModule({
-  declarations: [AccountsTableComponent],
-  imports: [SharedModule, AccountsTableRoutingModule],
+  imports: [SharedModule, AccountsTableRoutingModule, AccountsTableComponent],
   exports: [],
   providers: [],
 })

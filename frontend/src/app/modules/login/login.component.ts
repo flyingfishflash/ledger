@@ -1,26 +1,47 @@
 // angular
 import { HttpErrorResponse } from '@angular/common/http'
 import { Component, OnInit } from '@angular/core'
-import { Router, ActivatedRoute } from '@angular/router'
-import { MatIconRegistry } from '@angular/material/icon'
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon'
 import { DomSanitizer } from '@angular/platform-browser'
+import { ActivatedRoute, Router } from '@angular/router'
 
 // third party
-import { first } from 'rxjs/operators'
 import { throwError } from 'rxjs'
+import { first } from 'rxjs/operators'
 
 // core and shared
-import { ActuatorService } from '../../shared/actuator/actuator.service'
-import { AppConfigRuntime } from '../../../app/app-config-runtime'
+import { DatePipe, NgIf } from '@angular/common'
+import { FormsModule } from '@angular/forms'
+import { MatButtonModule } from '@angular/material/button'
+import { MatCardModule } from '@angular/material/card'
+import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatGridListModule } from '@angular/material/grid-list'
+import { MatInputModule } from '@angular/material/input'
+import { MatTabsModule } from '@angular/material/tabs'
 import { BuildProperties } from '../../../app/app-build-properties'
+import { AppConfigRuntime } from '../../../app/app-config-runtime'
 import { BasicAuthService } from '../../core/authentication/basic-auth.service'
 import { Logger } from '../../core/logging/logger.service'
+import { ActuatorService } from '../../shared/actuator/actuator.service'
 
 const log = new Logger('login.component')
 
 @Component({
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    MatTabsModule,
+    NgIf,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatGridListModule,
+    DatePipe,
+  ],
 })
 export class LoginComponent implements OnInit {
   buildProperties: BuildProperties = {

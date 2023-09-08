@@ -1,6 +1,7 @@
 // angular
-import { OverlayContainer } from '@angular/cdk/overlay'
-import { Component, OnInit } from '@angular/core'
+import { Component } from '@angular/core'
+import { RouterOutlet } from '@angular/router'
+import { HeadingComponent } from '../heading/heading.component'
 
 // core and shared
 //import { ThemeService } from '@core/services/theme.service';
@@ -10,6 +11,8 @@ import { Component, OnInit } from '@angular/core'
   selector: 'app-content-layout',
   templateUrl: './content-layout.component.html',
   styleUrls: ['./content-layout.component.scss'],
+  standalone: true,
+  imports: [HeadingComponent, RouterOutlet],
 })
 export class ContentLayoutComponent {
   currentTheme: string = ''

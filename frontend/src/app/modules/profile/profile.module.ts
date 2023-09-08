@@ -9,8 +9,7 @@ import { ProfileComponent } from './profile.component'
 import { ProfileRoutingModule } from './profile.routing'
 
 @NgModule({
-  declarations: [ProfileComponent],
-  imports: [SharedModule, ProfileRoutingModule],
+  imports: [SharedModule, ProfileRoutingModule, ProfileComponent],
   exports: [],
   providers: [],
 })

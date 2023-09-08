@@ -10,13 +10,13 @@ import { Injectable } from '@angular/core'
 import { Router } from '@angular/router'
 
 // third party
-import { Observable, throwError, of } from 'rxjs'
+import { Observable, of, throwError } from 'rxjs'
 import { catchError, retry } from 'rxjs/operators'
 
 // core and shared
 import { BasicAuthService } from '../../core/authentication/basic-auth.service'
-import { ErrorDialogService } from '../../shared/errors/error-dialog.service'
 import { Logger } from '../../core/logging/logger.service'
+import { ErrorDialogService } from '../../shared/errors/error-dialog.service'
 
 const log = new Logger('http-error.interceptor')
 

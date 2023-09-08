@@ -9,8 +9,7 @@ import { ErrorComponent } from './error.component'
 import { ErrorRoutingModule } from './error.routing'
 
 @NgModule({
-  declarations: [ErrorComponent],
-  imports: [SharedModule, ErrorRoutingModule],
+  imports: [SharedModule, ErrorRoutingModule, ErrorComponent],
   exports: [],
   providers: [],
 })

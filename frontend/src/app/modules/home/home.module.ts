@@ -9,8 +9,7 @@ import { HomeComponent } from './home.component'
 import { HomeRoutingModule } from './home.routing'
 
 @NgModule({
-  declarations: [HomeComponent],
-  imports: [SharedModule, HomeRoutingModule],
+  imports: [SharedModule, HomeRoutingModule, HomeComponent],
   exports: [],
   providers: [],
 })

@@ -1,13 +1,27 @@
 // angular
 import { Component, OnInit } from '@angular/core'
-import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms'
+import {
+  FormGroup,
+  FormsModule,
+  NonNullableFormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms'
 
 // core and shared
+import { NgClass, NgIf } from '@angular/common'
+import { MatButtonModule } from '@angular/material/button'
+import { MatCardModule } from '@angular/material/card'
+import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatIconModule } from '@angular/material/icon'
+import { MatInputModule } from '@angular/material/input'
+import { MatTooltipModule } from '@angular/material/tooltip'
+import { RouterLink } from '@angular/router'
+import { Logger } from 'src/app/core/logging/logger.service'
 import { StorageService } from '../../core/storage/storage.service'
 import { ValidationService } from '../../core/validation/validation.service'
 import { UtilitiesService } from '../../shared/utilities/utilities.service'
 import { ProfileService } from './profile.service'
-import { Logger } from 'src/app/core/logging/logger.service'
 
 const log = new Logger('profile componenet')
 
@@ -42,6 +56,20 @@ class UserDetailsFormValues {
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatFormFieldModule,
+    NgIf,
+    MatButtonModule,
+    MatIconModule,
+    NgClass,
+    MatTooltipModule,
+    RouterLink,
+  ],
 })
 export class ProfileComponent implements OnInit {
   componentHeading: string = 'Profile'
