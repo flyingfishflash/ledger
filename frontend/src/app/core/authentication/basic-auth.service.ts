@@ -1,13 +1,8 @@
-// angular
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { Router } from '@angular/router'
-
-// third party
 import { BehaviorSubject, Observable, throwError } from 'rxjs'
 import { tap } from 'rxjs/operators'
-
-// core and shared
 import { environment } from '../../../environments/environment'
 import { Logger } from '../../core/logging/logger.service'
 import { StorageService } from '../../core/storage/storage.service'

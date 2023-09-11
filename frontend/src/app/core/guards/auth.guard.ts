@@ -1,12 +1,9 @@
-// angular
 import { Injectable } from '@angular/core'
 import {
   ActivatedRouteSnapshot,
   Router,
   RouterStateSnapshot,
 } from '@angular/router'
-
-// core and shared
 import { BasicAuthService } from '../../core/authentication/basic-auth.service'
 
 @Injectable({ providedIn: 'root' })

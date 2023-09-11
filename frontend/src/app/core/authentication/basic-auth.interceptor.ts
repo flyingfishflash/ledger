@@ -1,4 +1,3 @@
-// angular
 import {
   HttpEvent,
   HttpHandler,
@@ -6,11 +5,7 @@ import {
   HttpRequest,
 } from '@angular/common/http'
 import { Injectable } from '@angular/core'
-
-// third party
 import { Observable } from 'rxjs'
-
-// core and shared
 import { Logger } from '../../core/logging/logger.service'
 import { StorageService } from '../../core/storage/storage.service'
 

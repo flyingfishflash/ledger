@@ -1,16 +1,11 @@
-// angular
 import { HttpClient, HttpErrorResponse } from '@angular/common/http'
 import { Injectable } from '@angular/core'
-
-// third party
 import { EMPTY, Observable } from 'rxjs'
 import { catchError, map } from 'rxjs/operators'
-
-// core and shared
 import { BuildProperties } from './app-build-properties'
 import { Logger } from './core/logging/logger.service'
 
-const log = new Logger('app-config')
+const log = new Logger('app-config-runtime')
 
 export interface IBuildProperties extends AppConfigRuntime {
   buildProperties: BuildProperties

@@ -1,7 +1,4 @@
-// angular
 import { Injectable } from '@angular/core'
-
-// core and shared
 import { BasicAuthUser } from '../../core/authentication/basic-auth-user'
 import { Logger } from '../../core/logging/logger.service'
 

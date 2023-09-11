@@ -1,12 +1,9 @@
-// angular
-import { Location } from '@angular/common'
 import { Component, OnInit } from '@angular/core'
 import { Router, RouterOutlet } from '@angular/router'
-
-// core and shared
 import { environment } from '../environments/environment'
 import { BasicAuthUser } from './core/authentication/basic-auth-user'
 import { BasicAuthService } from './core/authentication/basic-auth.service'
+import { LayoutComponent } from './core/layout/layout.component'
 import { Logger } from './core/logging/logger.service'
 
 @Component({
@@ -14,7 +11,7 @@ import { Logger } from './core/logging/logger.service'
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, LayoutComponent],
 })
 export class AppComponent implements OnInit {
   username: string = ''
@@ -22,7 +19,6 @@ export class AppComponent implements OnInit {
 
   constructor(
     private basicAuthService: BasicAuthService,
-    private location: Location,
     private router: Router,
   ) {
     this.basicAuthService.user.subscribe((x) => {

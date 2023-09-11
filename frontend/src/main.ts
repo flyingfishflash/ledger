@@ -1,24 +1,83 @@
-// angular
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http'
 import {
   APP_INITIALIZER,
   enableProdMode,
   importProvidersFrom,
 } from '@angular/core'
-import { BrowserModule, bootstrapApplication } from '@angular/platform-browser'
+import { MatDialogModule } from '@angular/material/dialog'
+import { bootstrapApplication } from '@angular/platform-browser'
 import { provideNoopAnimations } from '@angular/platform-browser/animations'
-
-// third party
+import { Routes, provideRouter } from '@angular/router'
 import { Observable } from 'rxjs'
+import { AppConfigRuntime } from './app/app-config-runtime'
+import { AppComponent } from './app/app.component'
+import { AuthInterceptor } from './app/core/authentication/basic-auth.interceptor'
+import { GlobalErrorHandler } from './app/core/error-handling/global-error-handler'
+import { HttpErrorInterceptor } from './app/core/error-handling/http-error.interceptor'
+import { environment } from './environments/environment'
 
-// shared modules
-import { AppConfigRuntime } from 'src/app/app-config-runtime'
-import { AppRoutingModule } from 'src/app/app-routing.module'
-import { AppComponent } from 'src/app/app.component'
-import { CoreModule } from 'src/app/core/core.module'
-import { LoginModule } from 'src/app/modules/login/login.module'
-import { SharedModule } from 'src/app/shared/shared.module'
-import { environment } from 'src/environments/environment'
+const routes: Routes = [
+  {
+    path: 'accounts-table',
+    loadComponent: () =>
+      import(
+        './app/domain/accounts/accounts-table/accounts-table.component'
+      ).then((m) => m.AccountsTableComponent),
+  },
+  {
+    path: 'admin/settings',
+    loadComponent: () =>
+      import(
+        './app/domain/general/admin-settings/admin-settings.component'
+      ).then((m) => m.AdminSettingsComponent),
+  },
+  {
+    path: 'admin/settings/user/create',
+    loadComponent: () =>
+      import(
+        './app/domain/general/admin-settings-user-create/admin-settings-user-create.component'
+      ).then((m) => m.AdminSettingsUserCreateComponent),
+  },
+  {
+    path: 'home',
+    loadComponent: () =>
+      import('./app/domain/general/home/home.component').then(
+        (m) => m.HomeComponent,
+      ),
+  },
+  {
+    path: 'import',
+    loadComponent: () =>
+      import('./app/domain/import/import.component').then(
+        (m) => m.ImportComponent,
+      ),
+  },
+  {
+    path: 'profile',
+    loadComponent: () =>
+      import('./app/domain/general/profile/profile.component').then(
+        (m) => m.ProfileComponent,
+      ),
+  },
+  {
+    path: 'error',
+    loadComponent: () =>
+      import('./app/core/error/error.component').then((m) => m.ErrorComponent),
+  },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./app/domain/general/login/login.component').then(
+        (m) => m.LoginComponent,
+      ),
+  },
+  // { path: '**', redirectTo: '/login' },
+  // { path: '**', component: PageNotFoundComponent },
+]
 
 const appInitializerFn = (
   config: AppConfigRuntime,
@@ -32,13 +91,10 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
-    importProvidersFrom(
-      AppRoutingModule,
-      BrowserModule,
-      CoreModule,
-      LoginModule,
-      SharedModule,
-    ),
+    provideRouter(routes),
+    // someday MatDialog will be standalone and this will be unnecessary
+    // https://github.com/angular/components/issues/26124
+    importProvidersFrom([MatDialogModule]),
     AppConfigRuntime,
     {
       provide: APP_INITIALIZER,
@@ -46,6 +102,9 @@ bootstrapApplication(AppComponent, {
       deps: [AppConfigRuntime],
       multi: true,
     },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
+    GlobalErrorHandler,
     provideHttpClient(withInterceptorsFromDi()),
     provideNoopAnimations(),
   ],

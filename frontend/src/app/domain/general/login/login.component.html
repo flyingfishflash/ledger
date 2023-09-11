@@ -1,0 +1,172 @@
+<div class="pure-g">
+  <div
+    class="pure-u-1-24 pure-u-md-1-24 pure-u-lg-2-24 pure-u-xl-2-24 pure-u-xxl-5-24"></div>
+  <div
+    class="pure-u-22-24 pure-u-md-22-24 pure-u-lg-20-24 pure-u-xl-20-24 pure-u-xxl-14-24">
+    <div id="primary-content" style="box-sizing: border-box">
+      <mat-card appearance="outlined">
+        <mat-card-content>
+          <div id="app-information">
+            <img
+              id="ledger-logo"
+              src="/assets/images/project-icon.png"
+              width="100"
+              height="100"
+              alt="ledger logo" />
+            <h2 class="mat-h2">Ledger</h2>
+            <h3 class="mat-h3" style="margin: 0.8rem">
+              {{ buildProperties.version }}
+            </h3>
+            <p class="mat-small" style="margin: 0.1rem">
+              {{ buildProperties.time | date: 'mediumDate' : 'UTC' }}
+            </p>
+            <p class="mat-small" style="margin: 0.1rem">
+              {{ buildProperties.time | date: 'longTime' : 'UTC' }}
+            </p>
+            <p class="mat-small" style="margin: 0.1rem">
+              <br />
+              {{ buildProperties.ciPlatform }} |
+              {{ buildProperties.ciPipelineId }} |
+              {{ buildProperties.commit }}
+            </p>
+          </div>
+
+          <mat-tab-group
+            animationDuration="0ms"
+            id="login-tab-group"
+            style="margin-top: 3rem">
+            <mat-tab label="Application">
+              <div style="margin: 1rem">
+                <div style="padding: 3rem; height: 300px">
+                  <form
+                    *ngIf="!isLoggedIn && isLoginViaBackend"
+                    name="form"
+                    (ngSubmit)="f.form.valid && onSubmit()"
+                    #f="ngForm"
+                    novalidate>
+                    <mat-form-field>
+                      <input
+                        matInput
+                        type="text"
+                        name="username"
+                        placeholder="User Name"
+                        required
+                        [(ngModel)]="form.username"
+                        [disabled]="isLoginDisabled"
+                        (focusin)="onFocusInEvent()"
+                        #username="ngModel" />
+                    </mat-form-field>
+
+                    <mat-form-field>
+                      <input
+                        matInput
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        required
+                        [(ngModel)]="form.password"
+                        [type]="isPasswordHidden ? 'password' : 'text'"
+                        [disabled]="isLoginDisabled"
+                        (focusin)="onFocusInEvent()"
+                        #password="ngModel" />
+                      <button
+                        mat-icon-button
+                        matSuffix
+                        type="button"
+                        (click)="isPasswordHidden = !isPasswordHidden"
+                        [attr.aria-label]="'Hide password'"
+                        [attr.aria-pressed]="isPasswordHidden">
+                        <mat-icon class="password-visibility-indicator">{{
+                          isPasswordHidden ? 'visibility_off' : 'visibility'
+                        }}</mat-icon>
+                      </button>
+                    </mat-form-field>
+
+                    <button
+                      type="submit"
+                      style="margin-top: 1rem; width: 100%"
+                      mat-flat-button
+                      color="primary"
+                      [disabled]="isLoginDisabled">
+                      Login
+                    </button>
+                    <div style="margin-top: 32px">
+                      <div
+                        *ngIf="
+                          (f.submitted && isLoginFailed) || this.isLoginDisabled
+                        ">
+                        <mat-error
+                          ><span>{{ errorMessage }}</span></mat-error
+                        >
+                      </div>
+                      <div
+                        *ngIf="
+                          f.submitted && username.invalid && password.invalid
+                        "
+                        style="word-wrap: break-word; margin: 16px">
+                        <mat-error
+                          *ngIf="
+                            username.getError('required') &&
+                            password.getError('required')
+                          "
+                          >User name and password are required fields</mat-error
+                        >
+                      </div>
+                      <div
+                        *ngIf="
+                          f.submitted && username.invalid && !password.invalid
+                        "
+                        style="margin: 16px">
+                        <mat-error *ngIf="username.getError('required')"
+                          >Username is a required field</mat-error
+                        >
+                      </div>
+                      <div
+                        *ngIf="
+                          f.submitted && !username.invalid && password.invalid
+                        "
+                        style="margin: 16px">
+                        <mat-error *ngIf="password.getError('required')"
+                          >Password is a required field</mat-error
+                        >
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </mat-tab>
+
+            <mat-tab label="OIDC Provider">
+              <div style="margin: 1rem">
+                <div style="padding: 3rem; height: 300px">
+                  <mat-grid-list cols="2" rowHeight="1:1">
+                    <mat-grid-tile>
+                      <img
+                        id="sso-zitadel"
+                        src="/assets/images/zitadel-logo-solo-dark.svg"
+                        width="35"
+                        height="35"
+                        alt="zitadel logo"
+                        style="padding: 1rem" />Zitadel
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                      <img
+                        id="sso-zitadel"
+                        src="/assets/images/github-mark.svg"
+                        width="35"
+                        height="35"
+                        alt="github logo"
+                        style="padding: 1rem" />Github
+                    </mat-grid-tile>
+                  </mat-grid-list>
+                </div>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+  <div
+    class="pure-u-1-24 pure-u-md-1-24 pure-u-lg-2-24 pure-u-xl-2-24 pure-u-xxl-5-24"></div>
+</div>
